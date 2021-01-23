@@ -3,7 +3,6 @@ title: 'Welcome to CodyMKW'
 layout: post
 tags:
   - welcome
-  - to
   - codymkw
 category: Welcome
 author:     CodyMKW
