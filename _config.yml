@@ -1,25 +1,25 @@
 # Site settings
-title: "Carte Noire"
-email: jacob@jacobtomlinson.co.uk
-description: "A dark blog theme for Jekyll."
+title: "CodyMKW"
+email: codybbrown1991@outlook.com
+description: "Cody's personal blog for whatever he wants!"
 baseurl: ""
-url: "http://carte-noire.jacobtomlinson.co.uk/"
-title_description: "A dark blog theme for Jekyll focusing on a clear reading experience. Large text and a narrow body makes carte noire a gorgeous read. With excellent code snippet support and integrated tools such as AddThis and Disqus giving your Jekyll blog all the functionality your users expect."
-title_image: "https://www.gravatar.com/avatar/00000000000000000000000000000000?s=500&d=mm"
+url: "http://codymkw.github.io"
+title_description: "Hey I'm Cody I love watching anime and playing Nintendo games!"
+title_image: "https://www.gravatar.com/avatar/5127de8a3a295a02ff3fc55bb6b2fabe?s=500&d=mm"
 google_analytics: "UA-20365477-4"
-disqus_account: cartenoire
-github_repository: https://github.com/jacobtomlinson/carte-noire
+disqus_account: codymkw
+github_repository: https://github.com/codymkw/codymkw.github.io
 addthis_id: ra-513c6fa83da6ec67
 post_limit: 5
 
 # Social usernames/URLs
-twitter_username: _jacobtomlinson
-github_username:  jacobtomlinson
-instagram_username: 
-reddit_username: 
-linkedin_link: http://carte-noire.jacobtomlinson.co.uk/
-google_plus_link: http://carte-noire.jacobtomlinson.co.uk/
-stackoverflow_link: http://carte-noire.jacobtomlinson.co.uk/
+twitter_username: codymkw
+github_username:  codymkw
+instagram_username: codymkw
+reddit_username: codymkw
+linkedin_link: 
+google_plus_link: 
+stackoverflow_link: 
 xing_link:
 facebook_link:
 
