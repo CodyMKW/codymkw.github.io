@@ -9,6 +9,8 @@ tags:
   - news
   - update
 category: 'Animal Crossing'
+author:     CodyMKW
+thumbnail:  acrossing
 ---
 ![](https://i.imgur.com/8oSrkVs.png)
 
