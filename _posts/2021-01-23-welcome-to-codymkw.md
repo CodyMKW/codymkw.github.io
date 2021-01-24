@@ -6,7 +6,6 @@ tags:
   - codymkw
 category: Welcome
 author:     CodyMKW
-summary:  Just testing...
 thumbnail:  heart
 ---
 Welcome to CodyMKW my personal blog for random shit I really have no idea what I will use this for probably Nintendo related posts I guess anyway thanks for taking the time and visiting this random blog! :P
