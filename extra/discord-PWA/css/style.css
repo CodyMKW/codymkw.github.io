@@ -1,0 +1,43 @@
+body {
+  font-family: sans-serif;
+}
+/* Make content area fill the entire browser window */
+html,
+.fullscreen {
+  display: flex;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+/* Center the content in the browser window */
+.container {
+  margin: auto;
+  text-align: center;
+}
+.title {
+  font-size: 3rem;
+}
+.subtitle {
+  font-size: 1.5rem;
+}
+#frame {
+  background: #202225;
+  display: none;
+}
+#main {
+  z-index: 2;
+}
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.4);
+  text-align: center;
+}
+.modal-content {
