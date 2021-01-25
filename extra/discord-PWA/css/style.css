@@ -41,3 +41,37 @@ html,
   text-align: center;
 }
 .modal-content {
+  background-color: #fefefe;
+  margin: 35% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: calc(100% - 42px);
+}
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* Display iframe only when opened as PWA */
+@media all and (display-mode: standalone),(display-mode: fullscreen) {
+  #main {
+    display: none;
+  }
+  #frame {
+    display: block;
+  }
+  .fullscreen {
+    background: #202225;
+  }
+  .modal.show {
+	display: block;
+  }
+}
