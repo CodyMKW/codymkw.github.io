@@ -9,6 +9,8 @@ tags:
   - update
   - release
 category: 'Animal Crossing'
+author:     CodyMKW
+thumbnail:  acrossing
 ---
 The release of the next Animal Crossing: New Horizons update has been announced and will be released this Thursday on January 28 once you install this update you will be able to party with Pave for the Festivale event on February 15! :)
 
