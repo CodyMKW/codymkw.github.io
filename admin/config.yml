@@ -31,4 +31,5 @@ collections:
           - { label: "Animal Crossing", value: "acrossing" }
           - { label: "Heart", value: "heart" }
           - { label: "Star", value: "star" }
+          - { label: "Chrome", value: "chrome" }
       - {label: "Body", name: "body", widget: "markdown"}
