@@ -1,16 +1,17 @@
 ---
-title: 'Animal Crossing: New Horizons Festivale update release announced'
 layout: post
+title: "Animal Crossing: New Horizons Festivale update release announced"
+author: CodyMKW
+category: Animal Crossing
 tags:
-  - 'animal crossing'
-  - 'animal crossing new horizons'
+  - animal crossing
+  - animal crossing new horizons
   - nintendo
-  - 'nintendo switch'
+  - nintendo switch
   - update
   - release
-category: 'Animal Crossing'
-author:     CodyMKW
-thumbnail:  acrossing
+date: 2021-01-26T02:25:45.733Z
+thumbnail: acrossing
 ---
 The release of the next Animal Crossing: New Horizons update has been announced and will be released this Thursday on January 28 once you install this update you will be able to party with Pave for the Festivale event on February 15! :)
 
