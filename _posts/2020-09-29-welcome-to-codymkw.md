@@ -1,12 +1,13 @@
 ---
-title: 'Welcome to CodyMKW'
 layout: post
+title: Welcome to CodyMKW
+author: CodyMKW
+category: Welcome
 tags:
   - welcome
   - codymkw
-category: Welcome
-author:     CodyMKW
-thumbnail:  heart
+date: 2020-09-30T00:38:04.067Z
+thumbnail: heart
 ---
 Welcome to CodyMKW my personal blog for random shit I really have no idea what I will use this for probably Nintendo related posts I guess anyway thanks for taking the time and visiting this random blog! :P
 
