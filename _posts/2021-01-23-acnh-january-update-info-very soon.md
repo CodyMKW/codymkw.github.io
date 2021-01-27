@@ -1,5 +1,5 @@
 ---
-title: 'ACNH January update info should be soon...'
+title: 'ACNH January update info should be soon'
 layout: post
 tags:
   - 'animal crossing new horizons'
