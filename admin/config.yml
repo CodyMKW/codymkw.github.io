@@ -23,5 +23,12 @@ collections:
       - {label: "Category", name: "category", widget: "string"}
       - {label: "Tags", name: "tags", widget: "list"}
       - {label: "Publish Date", name: "date", widget: "datetime"}
-      - {label: "Post Thumbnail", name: "thumbnail", widget: "string"}
+      - label: "Post Thumbnail"
+        name: "thumbnail"
+        widget: "select"
+        options:
+          - { label: "Nintendo Switch", value: "ninswitch" }
+          - { label: "Animal Crossing", value: "acrossing" }
+          - { label: "Heart", value: "heart" }
+          - { label: "Star", value: "star" }
       - {label: "Body", name: "body", widget: "markdown"}
