@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Animal Crossing: New Horizons Festivale update release announced"
+title: "ACNH Festivale update release announced"
 author: CodyMKW
 category: Animal Crossing
 tags:
