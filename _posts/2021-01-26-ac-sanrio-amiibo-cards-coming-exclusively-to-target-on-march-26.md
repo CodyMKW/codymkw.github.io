@@ -1,6 +1,6 @@
 ---
 layout: post
-title: AC Sanrio amiibo cards launching exclusively via Target on 26th March
+title: AC Sanrio amiibo cards coming exclusively to Target on March 26
 author: CodyMKW
 category: Animal Crossing
 tags:
