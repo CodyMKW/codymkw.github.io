@@ -22,10 +22,7 @@ collections:
       - {label: "Author", name: "author", widget: "string"}
       - {label: "Category", name: "category", widget: "string"}
       - {label: "Tags", name: "tags", widget: "list"}
-      - label: "Publish Date", 
-        name: "date",
-        preview_path: "posts/{year}}-{{month}}-{{day}}-{{slug}}",
-        widget: "datetime"}
+      - {label: "Publish Date", name: "date", preview_path: "posts/{year}}-{{month}}-{{day}}-{{slug}}", widget: "datetime"}
       - label: "Post Thumbnail"
         name: "thumbnail"
         widget: "select"
