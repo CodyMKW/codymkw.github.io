@@ -2,6 +2,7 @@ backend:
   name: github
   repo: CodyMKW/codymkw.github.io
   branch: main # Branch to update (optional; defaults to master)
+  base_url: https://codymkw.github.io # Path to ext auth provider
   
 # This line should *not* be indented
 publish_mode: editorial_workflow
