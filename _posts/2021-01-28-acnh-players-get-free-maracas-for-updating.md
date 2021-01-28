@@ -12,9 +12,9 @@ tags:
   - free
   - maracas
   - gift
-date: 2021-01-28T00:10:44.048Z
+date: 2021-01-28T00:17:35.907Z
 thumbnail: acrossing
 ---
-
+![](/static/images/uploads/acnh-free-maracas-gift.jpeg)
 
 All players who download the new Animal Crossing: New Horizons update will receive Maracas as a gift in the mailbox in game. Use it during the Festivale event to express your festival spirit! Viva! Festivale!
