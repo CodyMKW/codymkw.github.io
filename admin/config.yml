@@ -1,7 +1,6 @@
 backend:
   name: git-gateway
   repo: CodyMKW/codymkw.github.io
-  locale: America/New_York
   branch: main # Branch to update (optional; defaults to master)
   
 # This line should *not* be indented
