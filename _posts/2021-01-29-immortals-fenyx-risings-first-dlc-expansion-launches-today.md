@@ -14,7 +14,7 @@ thumbnail: ninswitch
 ---
 ![](https://res.cloudinary.com/dgzrtvctq/image/upload/v1611888037/a-new-god-original.original_juib8h.jpg)
 
-Back in November, Ubisoft confirmed it was planning [post-launch DLC](https://www.youtube.com/watch?v=TVVWOuug7E8&feature=emb_title) for **Immortals Fenyx Rising**. So far, that's given us cosmetic crossovers between [Blood of Zeus](https://news.ubisoft.com/en-ca/article/1WyB9gLSchajIuTGLp72Ho/immortals-fenyx-rising-teams-up-with-neflixs-blood-of-zeus) and **[Adventure Time](https://youtu.be/qaoDFnTLeWg)**, but we'd been waiting on the first story expansion, "A New God".
+Back in November, Ubisoft confirmed it was planning [post-launch DLC](https://www.youtube.com/watch?v=TVVWOuug7E8&feature=emb_title) for Immortals Fenyx Rising. So far, that's given us cosmetic crossovers between [Blood of Zeus](https://news.ubisoft.com/en-ca/article/1WyB9gLSchajIuTGLp72Ho/immortals-fenyx-rising-teams-up-with-neflixs-blood-of-zeus) and **[Adventure Time](https://youtu.be/qaoDFnTLeWg)**, but we'd been waiting on the first story expansion, "A New God".
 
 Having initially been listed for January 21st, it's available now on the Switch eShop. Taking place after the main story's conclusion, A New God will allow us to explore Olympos Palace, and Ubisoft outlined just what you can expect within this statement:
 
