@@ -84,3 +84,11 @@
   })();
 </script>
 {% endif %}
+  <script>
+  // register ServiceWorker, remember to use absolute path!
+  if (navigator.serviceWorker) {
+    navigator.serviceWorker.register('/codymkw.github.io/sw.js', {scope: '/codymkw.github.io/'})
+  }
+  
+  // --- Application code here ---
+  </script>
