@@ -8,3 +8,13 @@ fields:
     required: true
   label: Layout
   default: page
+- name: title
+  type: text
+  config:
+    required: false
+  label: Title
+- name: permalink
+  type: text
+  config:
+    required: false
+  label: Permalink
