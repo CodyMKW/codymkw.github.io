@@ -14,4 +14,4 @@ thumbnail: chrome
 ---
 ![](https://i.imgur.com/e2b68Hf.gif)
 
-You can now install this site as a PWA (*[Progressive Web App](https://en.wikipedia.org/wiki/Progressive_web_application)}* and view it even while offline just click the little "+" button at the end of your address bar and you are all set! :D
+You can now install this site as a PWA (*[Progressive Web App](https://en.wikipedia.org/wiki/Progressive_web_application))* and view it even while offline just click the little "+" button at the end of your address bar and you are all set! :D
