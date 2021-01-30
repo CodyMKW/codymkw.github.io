@@ -2,10 +2,10 @@ var APP_PREFIX = 'CodyMKWServiceWorker_'     // Identifier for this app (this ne
 var VERSION = 'version_01'              // Version of the off-line cache (change this value everytime you want to update cache)
 var CACHE_NAME = APP_PREFIX + VERSION
 var URLS = [                            // Add URL you want to cache in this list.
-  'codymkw.github.io/',                     // If you have separate JS/CSS files,
-  'codymkw.github.io/index.html',            // add path to those files here
-  'codymkw.github.io/css/style.css',
-  'codymkw.github.io/js/jekyll-search.js'
+  'https://codymkw.github.io/',                     // If you have separate JS/CSS files,
+  'https://codymkw.github.io/index.html',            // add path to those files here
+  'https://codymkw.github.io/css/style.css',
+  'https://codymkw.github.io/js/jekyll-search.js'
 ]
 
 // Respond with cached resources
