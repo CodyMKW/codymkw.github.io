@@ -6,8 +6,6 @@ xatchat: <p>&lt;iframe src="https://xat.com/embed/chat.php#id=159514655&amp;gn=C
   width="100%" height="515" frameborder="0" scrolling="no"&gt;&lt;/iframe&gt;</p>
 
 ---
-{{ page.xatchat }}
-
 **Chat Rules**
 
 1. No spamming/flooding the chat with messages. The limit is 6 consecutive lines of text/smilies.
