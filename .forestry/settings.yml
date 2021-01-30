@@ -4,6 +4,10 @@ auto_deploy: false
 admin_path: "/admin/forestry"
 webhook_url: 
 sections:
+- type: document
+  path: _data/thumbnail.yml
+  label: Thumbnails
+  match: "**/*"
 - type: jekyll-posts
   label: Posts
   create: all
