@@ -18,3 +18,5 @@ fields:
   config:
     required: false
   label: Permalink
+pages:
+- about-me.md
