@@ -38,3 +38,5 @@ fields:
       file: 
       path: 
   label: Thumbnail
+pages:
+- _posts/test.md
