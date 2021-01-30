@@ -1,5 +1,5 @@
 ---
-layout: page
+layout: none
 title: Xat Chat
 permalink: chat
 xatchat: <p>&lt;iframe src="https://xat.com/embed/chat.php#id=159514655&amp;gn=Codys_Nintendo_Room"
