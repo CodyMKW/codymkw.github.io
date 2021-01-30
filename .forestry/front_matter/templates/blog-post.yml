@@ -4,22 +4,37 @@ hide_body: false
 fields:
 - type: text
   name: layout
-  label: layout
+  label: Layout
+  default: post
 - type: text
   name: title
-  label: title
+  label: Title
 - type: text
   name: author
-  label: author
+  label: Author
 - type: text
   name: category
-  label: category
+  label: Category
 - type: list
   name: tags
-  label: tags
+  label: Tags
 - type: datetime
   name: date
-  label: date
-- type: text
-  name: thumbnail
-  label: thumbnail
+  label: Date
+- name: thumbnail
+  type: select
+  default: []
+  config:
+    required: false
+    options:
+    - ninswitch
+    - acrossing
+    - chrome
+    - star
+    - heart
+    source:
+      type: simple
+      section: 
+      file: 
+      path: 
+  label: Thumbnail
