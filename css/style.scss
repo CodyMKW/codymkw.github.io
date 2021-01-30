@@ -54,7 +54,7 @@ body {
 }
 
 a, a:active {
-	color: $regular-purple;
+	color: $light-blue;
 	text-decoration: none;
 }
 
@@ -135,7 +135,7 @@ ul {
 	padding-right: 30px;
 	margin-top: 20px;
 	box-shadow: 0px 0px 0px 0px, 0px 6px 12px rgba(0, 0, 0, 0.2);
-	border-bottom: 5px solid $regular-purple;
+	border-bottom: 5px solid $light-blue;
 }
 
 #my-menu {
@@ -149,7 +149,7 @@ ul {
 	}
 
 	a:hover {
-		color: $regular-purple;
+		color: $light-blue;
 	}
 
 	.pages {
@@ -252,12 +252,12 @@ ul {
 	}
 
 	.content-panel:nth-of-type(1) {
-		border-bottom: 10px solid $regular-purple;
+		border-bottom: 10px solid $light-blue;
 	}
 
 	.author-header {
 		font-family: 'Montserrat', sans-serif;
-		color: $regular-purple;
+		color: $light-blue;
 		margin-top: 0px;
 		padding-top: 15px;
 		font-size: 30px;
@@ -306,7 +306,7 @@ ul {
 
 		h2 {
 			margin-bottom: 30px;
-			color: $regular-purple;
+			color: $light-blue;
 			font-size: 26px;
 		}
 
@@ -346,7 +346,7 @@ ul {
 		}
 
 		a:hover {
-			color: $regular-purple;
+			color: $light-blue;
 		}
 	}
 
@@ -373,7 +373,7 @@ ul {
 		}
 
 		a:hover {
-			color: $regular-purple;
+			color: $light-blue;
 		}
 
 		ul {
@@ -476,7 +476,7 @@ ul {
 		}
 
 		a:hover {
-			color: $regular-purple;
+			color: $light-blue;
 		}
 
 		h4 {
@@ -699,7 +699,7 @@ ul {
 				}
 
 				a:hover {
-					color: $regular-purple;
+					color: $light-blue;
 				}
 
 			}
@@ -809,7 +809,7 @@ ul {
 		margin-top: 30px;
 
 		a {
-			color: $regular-purple;
+			color: $light-blue;
 		}
 	}
 
@@ -850,8 +850,8 @@ ul {
 }
 
 .btn-categories {
-	background-color: $regular-purple;
-	border-color: $regular-purple;
+	background-color: $light-blue;
+	border-color: $light-blue;
 	color: $white;
 	&:hover {
 		background-color: $dark-blue;
@@ -871,10 +871,10 @@ ul {
 }
 
 .dropdown-menu {
-	background-color: $regular-purple;
+	background-color: $light-blue;
 	color: $white;
 	> li > a {
-		background-color: $regular-purple;
+		background-color: $light-blue;
 		color: $white;
 		&:hover {
 			background-color: $dark-blue;
