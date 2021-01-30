@@ -44,3 +44,6 @@ fields:
       file: 
       path: 
   label: Thumbnail
+- name: published
+  type: boolean
+  label: Published
