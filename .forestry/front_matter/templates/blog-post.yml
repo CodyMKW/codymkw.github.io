@@ -27,11 +27,15 @@ fields:
   config:
     required: false
     options:
-    - ninswitch
-    - acrossing
+    - nintendoswitch
+    - animalcrossing
+    - supermushroom
+    - legendofzelda
+    - pokeball
     - chrome
     - star
     - heart
+    - gamepad
     source:
       type: simple
       section: 
