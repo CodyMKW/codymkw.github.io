@@ -6,6 +6,8 @@ fields:
   name: layout
   label: Layout
   default: post
+  config:
+    required: true
 - type: text
   name: title
   label: Title
