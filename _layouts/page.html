@@ -6,7 +6,21 @@ layout: default
   <div class="row">
     <h2 class="header" itemprop="headline"> {{ page.title }} </h2>
     <div class="col-md-12 content-panel content">
-       {{ content }}
+       <span itemprop="articleBody">{{ content }}</span>
+    </div>
+  </div>
+</div>
+
+
+---
+layout: default
+---
+<div class="container-fluid single">
+  <div class="row">
+    <div itemscope itemtype="http://schema.org/Article" class="col-md-12 article">
+      <h2 class="header" itemprop="headline">{{ page.title }}</h2>
+      <div class="content-panel content">
+        <span itemprop="articleBody">{{ content }}</span>
     </div>
   </div>
 </div>
