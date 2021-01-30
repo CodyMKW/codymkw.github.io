@@ -54,7 +54,7 @@ body {
 }
 
 a, a:active {
-	color: $light-blue;
+	color: $green;
 	text-decoration: none;
 }
 
@@ -252,7 +252,7 @@ ul {
 	}
 
 	.content-panel:nth-of-type(1) {
-		border-bottom: 10px solid $light-blue;
+		border-bottom: 10px solid $green;
 	}
 
 	.author-header {
@@ -871,10 +871,10 @@ ul {
 }
 
 .dropdown-menu {
-	background-color: $light-blue;
+	background-color: $green;
 	color: $white;
 	> li > a {
-		background-color: $light-blue;
+		background-color: $green;
 		color: $white;
 		&:hover {
 			background-color: $dark-blue;
