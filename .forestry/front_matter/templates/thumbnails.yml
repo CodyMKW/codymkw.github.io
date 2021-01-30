@@ -1,0 +1,16 @@
+---
+label: Thumbnails
+hide_body: true
+fields:
+- type: text
+  name: gravatar
+  label: gravatar
+- type: file
+  name: jekyll
+  label: jekyll
+- type: file
+  name: ninswitch
+  label: ninswitch
+- type: file
+  name: acrossing
+  label: acrossing
