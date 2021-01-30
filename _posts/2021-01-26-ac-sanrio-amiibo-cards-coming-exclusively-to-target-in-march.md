@@ -4,15 +4,16 @@ title: AC Sanrio amiibo cards coming exclusively to Target in March
 author: CodyMKW
 category: Animal Crossing
 tags:
-  - animal crossing
-  - animal crossing new horizons
-  - nintendo
-  - nintendo switch
-  - amiibo
-  - sanrio
-  - amiibo cards
-date: 2021-01-26T20:42:15.973Z
-thumbnail: acrossing
+- animal crossing
+- animal crossing new horizons
+- nintendo
+- nintendo switch
+- amiibo
+- sanrio
+- amiibo cards
+date: 2021-01-26T20:42:15.973+00:00
+thumbnail: animalcrossing
+
 ---
 ![](https://res.cloudinary.com/dgzrtvctq/image/upload/v1611848327/sanrio_amiibo_cards_animal_crossing_dqhcbl.jpg)
 
