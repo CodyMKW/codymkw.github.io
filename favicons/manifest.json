@@ -1,6 +1,7 @@
 {
 	"name": "CodyMKW",
 	"short_name": "CodyMKW",
+	"start_url": "https://codymkw.github.io/",
 	"icons": [
 		{
 			"src": "\/favicons\/android-chrome-36x36.png",
