@@ -5,7 +5,10 @@ var URLS = [                            // Add URL you want to cache in this lis
   'https://codymkw.github.io/',                     // If you have separate JS/CSS files,
   'https://codymkw.github.io/index.html',            // add path to those files here
   'https://codymkw.github.io/css/style.css',
-  'https://codymkw.github.io/js/jekyll-search.js'
+  'https://codymkw.github.io/css/highlightjs.piperita.css',
+  'https://codymkw.github.io/css/jquery.mmenu.all.css',
+  'https://codymkw.github.io/js/jekyll-search.js',
+  'https://codymkw.github.io/js/jquery.mmenu.min.all.js'
 ]
 
 // Respond with cached resources
