@@ -135,7 +135,7 @@ ul {
 	padding-right: 30px;
 	margin-top: 20px;
 	box-shadow: 0px 0px 0px 0px, 0px 6px 12px rgba(0, 0, 0, 0.2);
-	border-bottom: 5px solid $light-blue;
+	border-bottom: 5px solid $green;
 }
 
 #my-menu {
@@ -149,7 +149,7 @@ ul {
 	}
 
 	a:hover {
-		color: $light-blue;
+		color: $green;
 	}
 
 	.pages {
@@ -257,7 +257,7 @@ ul {
 
 	.author-header {
 		font-family: 'Montserrat', sans-serif;
-		color: $light-blue;
+		color: $green;
 		margin-top: 0px;
 		padding-top: 15px;
 		font-size: 30px;
@@ -306,7 +306,7 @@ ul {
 
 		h2 {
 			margin-bottom: 30px;
-			color: $light-blue;
+			color: $green;
 			font-size: 26px;
 		}
 
@@ -346,7 +346,7 @@ ul {
 		}
 
 		a:hover {
-			color: $light-blue;
+			color: $green;
 		}
 	}
 
@@ -373,7 +373,7 @@ ul {
 		}
 
 		a:hover {
-			color: $light-blue;
+			color: $green;
 		}
 
 		ul {
@@ -476,7 +476,7 @@ ul {
 		}
 
 		a:hover {
-			color: $light-blue;
+			color: $green;
 		}
 
 		h4 {
@@ -699,7 +699,7 @@ ul {
 				}
 
 				a:hover {
-					color: $light-blue;
+					color: $green;
 				}
 
 			}
@@ -809,7 +809,7 @@ ul {
 		margin-top: 30px;
 
 		a {
-			color: $light-blue;
+			color: $green;
 		}
 	}
 
@@ -850,8 +850,8 @@ ul {
 }
 
 .btn-categories {
-	background-color: $light-blue;
-	border-color: $light-blue;
+	background-color: $green;
+	border-color: $green;
 	color: $white;
 	&:hover {
 		background-color: $dark-blue;
