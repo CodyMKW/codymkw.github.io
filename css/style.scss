@@ -54,7 +54,7 @@ body {
 }
 
 a, a:active {
-	color: $green;
+	color: $regular-purple;
 	text-decoration: none;
 }
 
@@ -135,7 +135,7 @@ ul {
 	padding-right: 30px;
 	margin-top: 20px;
 	box-shadow: 0px 0px 0px 0px, 0px 6px 12px rgba(0, 0, 0, 0.2);
-	border-bottom: 5px solid $green;
+	border-bottom: 5px solid $regular-purple;
 }
 
 #my-menu {
@@ -149,7 +149,7 @@ ul {
 	}
 
 	a:hover {
-		color: $green;
+		color: $regular-purple;
 	}
 
 	.pages {
@@ -252,12 +252,12 @@ ul {
 	}
 
 	.content-panel:nth-of-type(1) {
-		border-bottom: 10px solid $green;
+		border-bottom: 10px solid $regular-purple;
 	}
 
 	.author-header {
 		font-family: 'Montserrat', sans-serif;
-		color: $green;
+		color: $regular-purple;
 		margin-top: 0px;
 		padding-top: 15px;
 		font-size: 30px;
@@ -306,7 +306,7 @@ ul {
 
 		h2 {
 			margin-bottom: 30px;
-			color: $green;
+			color: $regular-purple;
 			font-size: 26px;
 		}
 
@@ -346,7 +346,7 @@ ul {
 		}
 
 		a:hover {
-			color: $green;
+			color: $regular-purple;
 		}
 	}
 
@@ -373,7 +373,7 @@ ul {
 		}
 
 		a:hover {
-			color: $green;
+			color: $regular-purple;
 		}
 
 		ul {
@@ -476,7 +476,7 @@ ul {
 		}
 
 		a:hover {
-			color: $green;
+			color: $regular-purple;
 		}
 
 		h4 {
@@ -699,7 +699,7 @@ ul {
 				}
 
 				a:hover {
-					color: $green;
+					color: $regular-purple;
 				}
 
 			}
@@ -809,7 +809,7 @@ ul {
 		margin-top: 30px;
 
 		a {
-			color: $green;
+			color: $regular-purple;
 		}
 	}
 
@@ -850,8 +850,8 @@ ul {
 }
 
 .btn-categories {
-	background-color: $green;
-	border-color: $green;
+	background-color: $regular-purple;
+	border-color: $regular-purple;
 	color: $white;
 	&:hover {
 		background-color: $dark-blue;
@@ -871,10 +871,10 @@ ul {
 }
 
 .dropdown-menu {
-	background-color: $green;
+	background-color: $regular-purple;
 	color: $white;
 	> li > a {
-		background-color: $green;
+		background-color: $regular-purple;
 		color: $white;
 		&:hover {
 			background-color: $dark-blue;
