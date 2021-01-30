@@ -4,7 +4,7 @@ title: Xat Chat
 permalink: chat
 
 ---
-<iframe src="[https://xat.com/embed/chat.php#id=159514655&gn=Codys_Nintendo_Room](https://xat.com/embed/chat.php#id=159514655&gn=Codys_Nintendo_Room "https://xat.com/embed/chat.php#id=159514655&gn=Codys_Nintendo_Room")" width="100%" height="100%" frameborder="0" scrolling="no"></iframe>
+<iframe src="[https://xat.com/embed/chat.php#id=159514655&gn=Codys_Nintendo_Room](https://xat.com/embed/chat.php#id=159514655&gn=Codys_Nintendo_Room "https://xat.com/embed/chat.php#id=159514655&gn=Codys_Nintendo_Room")" width="100%" height="515" frameborder="0" scrolling="no"></iframe>
 
 **Chat Rules**
 
