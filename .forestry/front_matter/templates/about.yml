@@ -17,3 +17,5 @@ fields:
     schema:
       format: markdown
   label: About
+pages:
+- About.md
