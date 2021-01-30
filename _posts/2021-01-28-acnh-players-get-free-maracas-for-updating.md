@@ -4,16 +4,17 @@ title: ACNH players get free Maracas for updating
 author: CodyMKW
 category: Animal Crossing
 tags:
-  - animal crossing
-  - animal crossing new horizons
-  - nintendo
-  - nintendo switch
-  - update
-  - free
-  - maracas
-  - gift
-date: 2021-01-28T00:22:22.754Z
-thumbnail: acrossing
+- animal crossing
+- animal crossing new horizons
+- nintendo
+- nintendo switch
+- update
+- free
+- maracas
+- gift
+date: 2021-01-28T00:22:22.754+00:00
+thumbnail: animalcrossing
+
 ---
 ![](https://res.cloudinary.com/dgzrtvctq/image/upload/v1611837993/acnh-free-maracas-gift_mdjlmb.jpg)
 
