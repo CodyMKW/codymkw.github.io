@@ -2,9 +2,11 @@
 layout: page
 title: Xat Chat
 permalink: chat
+xatchat: <p>&lt;iframe src="https://xat.com/embed/chat.php#id=159514655&amp;gn=Codys_Nintendo_Room"
+  width="100%" height="515" frameborder="0" scrolling="no"&gt;&lt;/iframe&gt;</p>
 
 ---
-<iframe src="[https://xat.com/embed/chat.php#id=159514655&gn=Codys_Nintendo_Room](https://xat.com/embed/chat.php#id=159514655&gn=Codys_Nintendo_Room "https://xat.com/embed/chat.php#id=159514655&gn=Codys_Nintendo_Room")" width="100%" height="515" frameborder="0" scrolling="no"></iframe>
+{{ page.xatchat }}
 
 **Chat Rules**
 
