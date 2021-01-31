@@ -13,7 +13,7 @@ sections:
   templates:
   - blog-post
 upload_dir: ''
-public_path: ''
+public_path: https://res.cloudinary.com/dgzrtvctq/image/upload
 front_matter_path: ''
 use_front_matter_path: false
 file_template: ":filename:"
