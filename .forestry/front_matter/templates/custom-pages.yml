@@ -20,4 +20,5 @@ fields:
   label: Permalink
 pages:
 - about-me.md
+- contact-me.md
 - xat-chat.md
