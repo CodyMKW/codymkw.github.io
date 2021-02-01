@@ -1,8 +1,7 @@
 ---
 layout: post
 thumbnail: pokeball
-title: Pokemon Masters EX celebrates Palentine’s Day with special dessert-themed trainer
-  outfits
+title: Pokemon Masters EX celebrates Palentine’s Day with dessert-themed outfits
 author: CodyMKW
 category: Pokemon
 tags:
@@ -12,8 +11,7 @@ tags:
 - android
 - ios
 - pokemon masters ex
-date: 2021-01-30 13:52:00 -0500
-published: true
+date: 2021-01-30T13:52:00.000-05:00
 
 ---
 ![](https://res.cloudinary.com/dgzrtvctq/image/upload/v1612068102/pokemon_masters_ex_palentines_day_ovprzt.jpg)
