@@ -46,8 +46,8 @@ fields:
   label: Thumbnail
   showOnly:
     field: thumbnail
-  description: chrome,star,heart, and gamepad are Font Awesome so be sure to use the
-    field below for those!
+  description: chrome,star,heart, and gamepad are Font Awesome icons so be sure to
+    use the field below for those!
 - name: fatype
   type: text
   config:
