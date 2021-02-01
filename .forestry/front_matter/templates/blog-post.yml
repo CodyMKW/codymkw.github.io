@@ -44,8 +44,12 @@ fields:
       file: 
       path: 
   label: Thumbnail
+- name: fatype
+  type: text
+  config:
+    required: false
+  label: Font Awesome Type
+  description: s,r,l,d, or b
 - name: published
   type: boolean
   label: Published
-pages:
-- _posts/pokemon-masters-ex-celebrates-palentine-s-day-with-special-dessert-themed-trainer-outfits.md
