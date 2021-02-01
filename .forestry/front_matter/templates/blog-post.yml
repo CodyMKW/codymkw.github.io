@@ -49,7 +49,8 @@ fields:
   config:
     required: false
   label: Font Awesome Type
-  description: s,r,l,d, or b
+  description: s,r,l,d, or b if not using a Font Awesome icon for the thumbnail above
+    then just leave this blank!
 - name: published
   type: boolean
   label: Published
