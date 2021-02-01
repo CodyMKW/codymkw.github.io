@@ -25,7 +25,7 @@ facebook_link: https://www.facebook.com/CodyMKW/
 
 # Footer
 footer_left: "© 2013 - 2021 <a href=\"https://twitter.com/CodyMKW\">CodyMKW</a>. All rights reserved."
-footer_right: "Theme made with <i class=\"fa fa-heart\"></i> by <a href=\"https://twitter.com/_JacobTomlinson\">Jacob Tomlinson</a>"
+footer_right: "Theme made with <i class=\"fas fa-heart\"></i> by <a href=\"https://twitter.com/_JacobTomlinson\">Jacob Tomlinson</a>"
 
 # Build settings
 markdown: kramdown
