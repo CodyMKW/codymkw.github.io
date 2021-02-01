@@ -57,6 +57,9 @@ fields:
   label: Font Awesome Type
   description: s,r,l,d, or b if not using a Font Awesome icon for the thumbnail above
     then just leave this blank!
+  showOnly:
+    field: thumbnail
+  hidden: false
 - name: published
   type: boolean
   label: Published
