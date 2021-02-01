@@ -38,6 +38,8 @@ fields:
     - star
     - heart
     - gamepad
+    - playstation
+    - xbox
     source:
       type: simple
       section: 
