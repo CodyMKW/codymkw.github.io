@@ -46,8 +46,6 @@ fields:
       file: 
       path: 
   label: Thumbnail
-  showOnly:
-    field: thumbnail
   description: chrome,star,heart, and gamepad are Font Awesome icons so be sure to
     use the field below for those!
 - name: fatype
@@ -59,8 +57,6 @@ fields:
   label: Font Awesome Type
   description: s,r,l,d, or b if not using a Font Awesome icon for the thumbnail above
     then just leave this blank!
-  showOnly:
-    field: thumbnail
   hidden: false
 - name: published
   type: boolean
