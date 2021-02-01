@@ -61,3 +61,5 @@ fields:
 - name: published
   type: boolean
   label: Published
+pages:
+- _posts/test.md
