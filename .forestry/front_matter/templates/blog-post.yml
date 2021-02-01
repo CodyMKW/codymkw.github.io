@@ -54,6 +54,8 @@ fields:
   type: text
   config:
     required: false
+    min: 1
+    max: 1
   label: Font Awesome Type
   description: s,r,l,d, or b if not using a Font Awesome icon for the thumbnail above
     then just leave this blank!
