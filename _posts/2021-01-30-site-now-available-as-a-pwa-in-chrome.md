@@ -11,6 +11,7 @@ tags:
 - chrome
 date: 2021-01-30T04:58:52.468+00:00
 thumbnail: chrome
+fatype: b
 
 ---
 ![](https://i.imgur.com/e2b68Hf.gif)
