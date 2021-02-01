@@ -25,7 +25,7 @@ fields:
   label: Date
 - name: thumbnail
   type: select
-  default: []
+  default: ''
   config:
     required: false
     options:
@@ -44,6 +44,10 @@ fields:
       file: 
       path: 
   label: Thumbnail
+  showOnly:
+    field: thumbnail
+  description: chrome,star,heart, and gamepad are Font Awesome so be sure to use the
+    field below for those!
 - name: fatype
   type: text
   config:
