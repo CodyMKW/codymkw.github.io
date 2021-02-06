@@ -62,8 +62,3 @@ fields:
 - name: published
   type: boolean
   label: Published
-pages:
-- _posts/acnh-february-2021-family-photo.md
-- _posts/acnh-super-mario-update-arrives-this-march.md
-- _posts/fan-brings-pokemon-cards-to-life-with-augmented-reality.md
-- _posts/nintendo-themed-toys-at-burger-king-until-march-15th.md

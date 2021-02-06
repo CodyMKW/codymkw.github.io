@@ -9,9 +9,10 @@ tags:
 - nintendo switch
 - animal crossing new horizons
 - animal crossing
-date: 
+date: 2021-02-05 20:17:00 -0500
 thumbnail: animalcrossing
 published: true
+
 ---
 ![ACNH February 2021 Family photo](https://pbs.twimg.com/media/EteL2-bVgAECo3I?format=jpg&name=large)
 
