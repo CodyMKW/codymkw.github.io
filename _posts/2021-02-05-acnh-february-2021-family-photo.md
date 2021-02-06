@@ -9,7 +9,7 @@ tags:
 - nintendo switch
 - animal crossing new horizons
 - animal crossing
-date: 2021-02-05 20:17:00 -0500
+date: 2021-02-05 15:17:00 -0500
 thumbnail: animalcrossing
 published: true
 
