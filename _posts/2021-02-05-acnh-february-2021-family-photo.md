@@ -11,9 +11,7 @@ tags:
 - animal crossing
 date: 
 thumbnail: animalcrossing
-fatype: ''
 published: true
-
 ---
 ![ACNH February 2021 Family photo](https://pbs.twimg.com/media/EteL2-bVgAECo3I?format=jpg&name=large)
 
