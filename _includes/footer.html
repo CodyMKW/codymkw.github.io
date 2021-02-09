@@ -84,11 +84,9 @@
   })();
 </script>
 {% endif %}
-  <script>
-  // register ServiceWorker, remember to use absolute path!
-  if (navigator.serviceWorker) {
-    navigator.serviceWorker.register('https://codymkw.github.io/sw.js', {scope: 'https://codymkw.github.io/'})
-  }
-  
-  // --- Application code here ---
-  </script>
+<script type="module">
+import 'https://cdn.jsdelivr.net/npm/@pwabuilder/pwaupdate';
+
+const el = document.createElement('pwa-update');
+document.body.appendChild(el);
+</script>
