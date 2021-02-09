@@ -10,6 +10,7 @@ tags:
 - animal crossing new horizons
 - peanut wedding
 - animal crossing
+- wedding
 date: 2020-07-23 13:24:00 -0500
 thumbnail: animalcrossing
 published: true
