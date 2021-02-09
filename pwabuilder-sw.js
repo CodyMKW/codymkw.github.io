@@ -1,6 +1,6 @@
 // This is the "Offline copy of assets" service worker
 
-const CACHE = "codymkw-offline";
+const CACHE = "pwabuilder-offline";
 const QUEUE_NAME = "bgSyncQueue";
 
 importScripts('https://storage.googleapis.com/workbox-cdn/releases/5.1.2/workbox-sw.js');
