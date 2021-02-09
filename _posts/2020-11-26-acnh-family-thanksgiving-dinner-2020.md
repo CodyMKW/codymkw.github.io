@@ -9,6 +9,7 @@ tags:
 - nintendo switch
 - animal crossing new horizons
 - animal crossing
+- thanksgiving
 date: 2020-11-26 15:17:00 -0500
 thumbnail: animalcrossing
 published: true
