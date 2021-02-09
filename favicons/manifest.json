@@ -51,7 +51,20 @@
 			"purpose": "any maskable"
                 }
            ],
+	"screenshots" : [
+                {
+                        "src": "/screenshots/screenshot1.webp",
+                        "sizes": "1366x768",
+                        "type": "image/webp"
+                },
+                {
+                        "src": "/screenshots/screenshot2.webp",
+                        "sizes": "392x749",
+                        "type": "image/webp"
+                }
+           ],
            "theme_color": "#2d2d29",
            "background_color": "#2d2d29",
-           "display": "standalone"
+           "display": "standalone",
+	   "orientation": "any"
 }
