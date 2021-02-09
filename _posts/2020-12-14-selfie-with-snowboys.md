@@ -10,7 +10,7 @@ tags:
 - animal crossing new horizons
 - animal crossing
 - snowboys
-date: 2020-12-14 20:57:00 -0500
+date: 2020-12-14 17:47:00 -0500
 thumbnail: animalcrossing
 published: true
 
