@@ -62,3 +62,5 @@ fields:
 - name: published
   type: boolean
   label: Published
+pages:
+- _posts/acnh-festivale-party-2021.md
