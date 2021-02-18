@@ -63,6 +63,7 @@
                         "type": "image/webp"
                 }
            ],
+	   "categories": ["nintendo", "personal", "blog"],
            "theme_color": "#2d2d29",
            "background_color": "#2d2d29",
            "display": "standalone",
