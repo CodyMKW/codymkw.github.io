@@ -1,5 +1,5 @@
 ---
-layout: page
+layout: defaultwithcomments
 title: Friend Info
 permalink: friend-info
 
