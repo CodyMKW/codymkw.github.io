@@ -12,7 +12,7 @@ tags:
 - animal crossing
 - animal crossing new horizons
 - acnh
-date: 2021-03-18 21:00:00 -0400
+date: 2021-03-18 19:00:00 -0400
 thumbnail: animalcrossing
 fatype: ''
 published: true
