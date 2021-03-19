@@ -1,7 +1,6 @@
 ---
 layout: post
-title: 'Animal Crossing: New Horizons Update 1.9.0 Patch Notes - First Anniversary,
-  Bunny Day And More'
+title: 'Animal Crossing: New Horizons Update 1.9.0 Patch Notes'
 author: CodyMKW
 category: Animal Crossing
 tags:
@@ -10,8 +9,8 @@ tags:
 - nintendo
 - nintendo switch
 - animal crossing
-- animal crossing new horizons
 - acnh
+- animal crossing new horizons
 date: 2021-03-18 19:00:00 -0400
 thumbnail: animalcrossing
 fatype: ''
