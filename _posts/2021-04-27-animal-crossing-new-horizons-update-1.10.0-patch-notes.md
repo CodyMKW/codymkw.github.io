@@ -23,7 +23,7 @@ The seasonal events May Day, Museum Day and Wedding Season have all been updated
 
 Along with this are some fixes, various other adjustments, and "corrections" to further improve the gameplay experience. Here are the full patch notes, courtesy of Nintendo's official support page:
 
-### Animal Crossing: New Horizons Ver. 1.10.0 (Released April 27, 2021)
+### Ver. 1.10.0 (Released April 27, 2021)
 
 The software has been updated if you see “Ver. 1.10.0” in the upper-right corner of the title screen.
 
