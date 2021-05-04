@@ -63,5 +63,4 @@ fields:
   type: boolean
   label: Published
 pages:
-- _posts/animal-crossing-new-horizons-update-1.10.0-patch-notes.md
-- _posts/animal-crossing-new-horizons-update-1.9.0-patch-notes-first-anniversary-bunny-day-and-more.md
+- _posts/test-post.md
