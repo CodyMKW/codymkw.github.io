@@ -62,5 +62,3 @@ fields:
 - name: published
   type: boolean
   label: Published
-pages:
-- _posts/2021-05-01-test-post.md
