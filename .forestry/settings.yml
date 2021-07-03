@@ -2,7 +2,7 @@
 new_page_extension: md
 auto_deploy: false
 admin_path: "/admin"
-webhook_url: ''
+webhook_url: https://discord.com/api/webhooks/860849033798090753/xGdYRudx0DkDIHMP1ZMgwfD8XkUDIitCwUjPTbnj_M6K5527pe1pCQs81u5VNRw3qoa9
 sections:
 - type: jekyll-pages
   label: Pages
