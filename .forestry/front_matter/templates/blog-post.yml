@@ -62,3 +62,5 @@ fields:
 - name: published
   type: boolean
   label: Published
+pages:
+- _posts/nintendo-direct-9-23-21.md
