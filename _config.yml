@@ -6,7 +6,7 @@ baseurl: ""
 url: "http://codymkw.github.io"
 title_description: "Hey I'm Cody I love watching anime and playing Nintendo games!"
 title_image: "https://www.gravatar.com/avatar/5127de8a3a295a02ff3fc55bb6b2fabe?s=500&d=mm"
-google_analytics: "UA-97772887-1"
+google_analytics: "G-PQK3TLHN46"
 disqus_account: codymkw
 github_repository: https://github.com/codymkw/codymkw.github.io
 addthis_id: ra-600ad46b8b8f1c95
@@ -27,7 +27,7 @@ facebook_link: https://www.facebook.com/CodyMKW/
 cody_age: "31"
 
 # Footer
-footer_left: "© 2013 - 2021 <a href=\"https://twitter.com/CodyMKW\">CodyMKW</a>. All rights reserved."
+footer_left: "© 2013 - 2022 <a href=\"https://twitter.com/CodyMKW\">CodyMKW</a>. All rights reserved."
 footer_right: "Theme made with <i class=\"fas fa-heart\"></i> by <a href=\"https://twitter.com/_JacobTomlinson\">Jacob Tomlinson</a>"
 
 # Build settings
