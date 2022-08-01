@@ -12,7 +12,7 @@ tags:
 date: 2022-07-09 22:44:00 -0400
 thumbnail: animalcrossing
 fatype: ''
-published: false
+published: true
 
 ---
 ![](https://res.cloudinary.com/dgzrtvctq/image/upload/v1659334035/FXRca_dUsAEjG0S_k92weh.jpg)
