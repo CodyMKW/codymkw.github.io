@@ -11,7 +11,7 @@ tags:
 date: 2022-06-30T08:00:00.000-04:00
 thumbnail: nintendoswitch
 fatype: ''
-published: false
+published: true
 
 ---
 Me acting as a distraction then Joseph taking the guys out lol
