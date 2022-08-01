@@ -2,44 +2,30 @@
 label: Blog Post
 hide_body: false
 fields:
-- name: layout
-  type: text
-  config:
-    required: false
-  default: post
+- type: text
+  name: layout
   label: Layout
-  hidden: true
-- name: title
-  type: text
+  default: post
   config:
-    required: false
+    required: true
+- type: text
+  name: title
   label: Title
-- name: author
-  type: text
-  config:
-    required: false
+- type: text
+  name: author
   label: Author
-- name: category
-  type: text
-  config:
-    required: false
+- type: text
+  name: category
   label: Category
-- name: tags
-  type: tag_list
-  default: []
+- type: list
+  name: tags
   label: Tags
-- name: date
-  type: datetime
+- type: datetime
+  name: date
   label: Date
-  description: ''
-  config:
-    required: false
-    date_format: 
-    time_format: 
-    display_utc: false
 - name: thumbnail
   type: select
-  default: []
+  default: ''
   config:
     required: false
     options:
@@ -67,10 +53,15 @@ fields:
   type: text
   config:
     required: false
+    min: 
     max: 1
   label: Font Awesome Type
-  description: s,r,l,d, or b if using a Font Awesome icon for the thumbnail above
+  description: s,r,l,d, or b if not using a Font Awesome icon for the thumbnail above
     then just leave this blank!
+  hidden: false
 - name: published
   type: boolean
   label: Published
+pages:
+- _posts/2021-09-23-nintendo-direct-9-23-21.md
+- _posts/2022-06-30-fortnite-distraction-plan.md
