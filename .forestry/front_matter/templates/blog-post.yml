@@ -1,4 +1,76 @@
 ---
 label: Blog Post
 hide_body: false
-fields: []
+fields:
+- name: layout
+  type: text
+  config:
+    required: false
+  default: post
+  label: Layout
+  hidden: true
+- name: title
+  type: text
+  config:
+    required: false
+  label: Title
+- name: author
+  type: text
+  config:
+    required: false
+  label: Author
+- name: category
+  type: text
+  config:
+    required: false
+  label: Category
+- name: tags
+  type: tag_list
+  default: []
+  label: Tags
+- name: date
+  type: datetime
+  label: Date
+  description: ''
+  config:
+    required: false
+    date_format: 
+    time_format: 
+    display_utc: false
+- name: thumbnail
+  type: select
+  default: []
+  config:
+    required: false
+    options:
+    - nintendoswitch
+    - animalcrossing
+    - supermushroom
+    - legendofzelda
+    - pokeball
+    - chrome
+    - star
+    - heart
+    - gamepad
+    - playstation
+    - xbox
+    - newspaper
+    source:
+      type: simple
+      section: 
+      file: 
+      path: 
+  label: Thumbnail
+  description: chrome,star,heart,newspaper,xbox,playstation, and gamepad are Font
+    Awesome icons so be sure to use the field below for those!
+- name: fatype
+  type: text
+  config:
+    required: false
+    max: 1
+  label: Font Awesome Type
+  description: s,r,l,d, or b if using a Font Awesome icon for the thumbnail above
+    then just leave this blank!
+- name: published
+  type: boolean
+  label: Published
