@@ -1,16 +1,26 @@
 ---
 layout: page
 title: Dream Address
-permalink: friend-code
+permalink: dream-address
 published: false
 
 ---
-Scan the following QR code to open the Nintendo Switch Online mobile app and send me a friend request! 😊
+<p align="center">Ula'ula
+DA-2561-1806-9323
+Dream Address was last updated on August 3, 2022</p>
 
-**![](https://res.cloudinary.com/dgzrtvctq/image/upload/v1659376190/nintendo_switch_friend_code_qr_dc8zex.jpg)**
+**![](https://res.cloudinary.com/dgzrtvctq/image/upload/v1659717503/codyda_vub3hv.jpg)**
 
-<p align="center">or</p>
+Nothing too special on my island, but feel free to dream about it whenever you want! 😊
 
-If you don't have the Nintendo Switch Online mobile app here's the friend code to add manually on the Switch!
+Also, if you see something in the free area you want, and it's still there on my island, you can come via dodo code and get it, [just let me know](/contact).
 
-<p align="center"><b>Friend Code:</b> SW-2549-4631-6600</p>
+**Number of Visitors:** 582 (as of 08/03/2022)
+
+**Places of Interest:**
+
+* Etika and Iwata memorial
+* Island Entrance
+* Lookout Point
+* Museum + Café
+* Campsite
