@@ -2,7 +2,6 @@
 layout: page
 title: Dream Address
 permalink: dream-address
-published: false
 
 ---
 <p align="center">Ula'ula
