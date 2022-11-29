@@ -6,6 +6,7 @@
 
 /* Colours */
 $twitter:        #6dabda;
+$mastodon:       #3974d4;
 $linkedin:       #2b77b1;
 $xing:           #006567;
 $google-plus:    #c95644;
@@ -182,6 +183,10 @@ ul {
 
 	.fa-twitter:hover {
 		color: $twitter;
+	}
+	
+	.fa-mastodon:hover {
+		color: $mastodon;
 	}
 
 	.fa-linkedin:hover {
