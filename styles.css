@@ -58,3 +58,22 @@ footer {
   padding: 10px;
   text-align: center;
 }
+
+.dark-mode {
+  background-color: #1c1c1c;
+  color: #fff;
+}
+
+.dark-mode h1, .dark-mode h2 {
+  color: #f9f9f9;
+}
+
+.dark-mode nav ul li a {
+  color: #f9f9f9;
+}
+
+.dark-mode footer {
+  background-color: #1c1c1c;
+  color: #fff;
+}
+
