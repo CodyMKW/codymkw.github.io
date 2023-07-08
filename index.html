@@ -25,6 +25,14 @@
       font-size: 30px;
       margin-bottom: 20px;
     }
+    
+    a {
+      color: #E85A4F;
+    }
+    
+    a:hover {
+      color: #C04A40;
+    }
 
     img {
       max-width: 200px;
@@ -42,32 +50,107 @@
       text-align: center;
       color: #888;
     }
+
+    /* Button styles */
+    .button-container {
+      margin-bottom: 20px;
+    }
+
+    .button-container button {
+      background-color: #E85A4F;
+      color: #FFF;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      margin-right: 10px;
+      cursor: pointer;
+    }
+
+    .button-container button:hover {
+      background-color: #C04A40;
+    }
+
+    /* Content styles */
+    #about,
+    #switchfc,
+    #tbd {
+      display: none;
+    }
+
+    #about {
+      display: block;
+    }
   </style>
+  <script>
+    function showAbout() {
+      document.getElementById('about').style.display = 'block';
+      document.getElementById('switchfc').style.display = 'none';
+      document.getElementById('tbd').style.display = 'none';
+    }
+
+    function showSwitchFC() {
+      document.getElementById('about').style.display = 'none';
+      document.getElementById('switchfc').style.display = 'block';
+      document.getElementById('tbd').style.display = 'none';
+    }
+
+    function showTBD() {
+      document.getElementById('about').style.display = 'none';
+      document.getElementById('switchfc').style.display = 'none';
+      document.getElementById('tbd').style.display = 'block';
+    }
+  </script>
 </head>
 <body>
   <div class="container">
     <h1>Welcome to CodyMKW</h1>
     <img src="profile.png" alt="Cody's Profile Picture">
-    <p>
-      I'm Cody, a 32-year-old Nintendo fan and Animal Crossing enthusiast.
-      I've been playing Animal Crossing since the original game on the GameCube,
-      and I've been hooked ever since. I love the peaceful and relaxing atmosphere
-      of the game, and I enjoy the sense of community that comes from playing with
-      friends and family.
-    </p>
-    <p>
-      My other favorite Nintendo games include Mario Kart, Splatoon, and the
-      Legend of Zelda series. I'm also a big fan of anime, and my favorite series
-      is Clannad.
-    </p>
-    <p>
-      I'm passionate about Nintendo, and I'm always looking for new ways to
-      experience their games. I'm also a big fan of the Nintendo community.
-    </p>
-    <p>
-      I'm excited to see what the future holds for Nintendo. I'm confident that
-      they will continue to create amazing games that will bring people together.
-    </p>
+    <div class="button-container">
+      <button onclick="showAbout()">About</button>
+      <button onclick="showSwitchFC()">Switch Friend Code</button>
+      <button onclick="showTBD()">TBD</button>
+    </div>
+    <div id="about">
+      <p>
+        I'm Cody, a 32-year-old Nintendo fan and Animal Crossing enthusiast.
+        I've been playing Animal Crossing since the original game on the GameCube,
+        and I've been hooked ever since. I love the peaceful and relaxing atmosphere
+        of the game, and I enjoy the sense of community that comes from playing with
+        friends and family.
+      </p>
+      <p>
+        My other favorite Nintendo games include Mario Kart, Splatoon, and the
+        Legend of Zelda series. I'm also a big fan of anime, and my favorite series
+        is Clannad.
+      </p>
+      <p>
+        I'm passionate about Nintendo, and I'm always looking for new ways to
+        experience their games. I'm also a big fan of the Nintendo community.
+      </p>
+      <p>
+        I'm excited to see what the future holds for Nintendo. I'm confident that
+        they will continue to create amazing games that will bring people together.
+      </p>
+    </div>
+    <div id="switchfc">
+      <p>
+        Scan the following QR code to open the Nintendo Switch Online mobile app for <a href="https://play.google.com/store/apps/details?id=com.nintendo.znca&hl=en_US&gl=US" target="_blank">Android</a>/<a href="https://apps.apple.com/app/id1234806557" target="_blank">iOS</a> and send me a friend request! 😊
+      </p>
+      <p>
+        <img src="switchqr.jpg" alt="Switch QR Code" style="max-width: 350px; max-height: 250px; margin-bottom: 20px; border-radius: 0%;">
+      </p>
+      <p>
+        or
+      </p>
+      <p>
+        If you don't have the Nintendo Switch Online mobile app here's the friend code to add manually on the Switch! <b>Friend Code:</b> SW-2549-4631-6600
+      </p>
+    </div>
+    <div id="tbd">
+      <p>
+        Nothing to see here at the moment... 🫣
+      </p>
+    </div>
   </div>
 
   <footer>
