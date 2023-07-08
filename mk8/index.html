@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Mario Kart 8 Deluxe Randomizer</title>
+    <script src="https://kit.fontawesome.com/a4a758bcac.js" crossorigin="anonymous"></script>
+    <link rel="apple-touch-icon" sizes="76x76" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="keywords" content="Mario Kart 8 Deluxe, randomizer, generator, races, characters, tracks, vehicles, wheels, gliders">
+    <meta name="description" content="The Mario Kart 8 Deluxe Randomizer generates a random character, track, vehicle, wheel, and glider combination for Mario Kart 8 Deluxe players.">
+    <meta name="author" content="CodyMKW">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="canonical" href="https://codyswebapps.netlify.app/mk8/">
+    <meta name="theme-color" content="#7289DA">
+    <meta property="og:title" content="Mario Kart 8 Deluxe Randomizer">
+    <meta property="og:description" content="The Mario Kart 8 Deluxe Randomizer generates a random character, track, vehicle, wheel, and glider combination for Mario Kart 8 Deluxe players.">
+    <meta property="og:image" content="https://codyswebapps.netlify.app/mk8/assets/8.png">
+    <meta property="og:url" content="https://codyswebapps.netlify.app/mk8/">
+    <meta property="og:type" content="website">
+    <meta name="twitter:creator" content="@CodyMKW" />
+	  <meta name="twitter:title" content="Mario Kart 8 Deluxe Randomizer" />
+	  <meta name="twitter:description" content="The Mario Kart 8 Deluxe Randomizer generates a random character, track, vehicle, wheel, and glider combination for Mario Kart 8 Deluxe players." />
+  	<meta name="twitter:image:src" content="https://codyswebapps.netlify.app/mk8/assets/8.png" />
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <div class="container">
+      <h1>Mario Kart 8 Deluxe Randomizer</h1>
+      <div class="card-container">
+        <div class="card">
+          <h2>Character:</h2>
+          <p id="character" class="randomizedtext"></p>
+        </div>
+      </div>
+      <div class="card-container">
+        <div class="card track-card">
+          <h2>Track:</h2>
+          <p id="track" class="randomizedtext"></p>
+        </div>         
+        <div class="card">
+          <h2>Vehicle:</h2>
+          <p id="vehicle" class="randomizedtext"></p>
+        </div>
+        <div class="card">
+          <h2>Wheel:</h2>
+          <p id="wheel" class="randomizedtext"></p>
+        </div>
+        <div class="card">
+          <h2>Glider:</h2>
+          <p id="glider" class="randomizedtext"></p>
+        </div>
+        <div class="options-card card">
+          <h2>Options:</h2>
+          <label>
+            <input type="checkbox" id="hide-gold-parts" /> Hide gold vehicle parts
+          </label>
+          <label>
+            <input type="checkbox" id="hide-gold-mario" /> Hide Gold Mario
+          </label>
+          <label>
+            <input type="checkbox" id="hide-alternate-costumes" /> Hide Alternate costumes
+          </label>
+          <label>
+            <input type="checkbox" id="hide-track" /> Hide tracks
+          </label>
+          <div class="button-container">
+            <button id="close-button">Close</button>
+          </div>
+        </div>
+      </div>     
+      <div class="button-container">
+        <button id="randomize-button">Randomize</button>
+      </div>       
+      <div class="button-container">
+        <button id="options-button">Options</button>
+        <button id="patch-notes-button">Patch Notes</button>
+        <button id="tweet-button" disabled>Copy Results</button>
+      </div>
+      <div class="card-container">
+      <div class="card patch-notes-card" style="display: none;">
+        <h2>Latest Patch Notes:</h2>
+        <ul>
+          <li>Added the 8 new tracks in Wave 5 of DLC: Koopa Cape, Los Angeles Laps, Moonview Highway, Squeaky Clean Sprint, Athens Dash, Daisy Cruiser, Sunset Wilds, Vancouver Velocity</li>
+          <li>Added the 3 new characters in Wave 5 of DLC: Petey Piranha, Wiggler, Kamek</li>
+        </ul>
+        <div class="button-container">
+            <button id="patch-notes-close-button">Close</button>
+        </div>
+      </div>
+      </div>
+      <div class="footer">
+        <p>&copy; Codys Web Apps 2023</p>
+      </div>
+    </div>    
+    <script src="script.js"></script>
+  </body>  
+</html>
