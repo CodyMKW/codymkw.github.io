@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Splatoon 3 Randomizer</title>
+    <script src="https://kit.fontawesome.com/a4a758bcac.js" crossorigin="anonymous"></script>
+    <link rel="apple-touch-icon" sizes="76x76" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="keywords" content="Splatoon 3, randomizer, weapons, headgear, shirts, shoes, gaming, Nintendo">
+    <meta name="description" content="Get out of your comfort zone and try something new with the Splatoon 3 Randomizer. Get randomized loadouts and experience Splatoon 3 like never before!">
+    <meta name="author" content="CodyMKW">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#7289DA">
+    <link rel="canonical" href="https://codymkw.github.io/splat3/">
+    <meta property="og:title" content="Splatoon 3 Randomizer">
+    <meta property="og:description" content="Get out of your comfort zone and try something new with the Splatoon 3 Randomizer. Get randomized loadouts and experience Splatoon 3 like never before!">
+    <meta property="og:image" content="https://codymkw.github.io/splat3/assets/3.png">
+    <meta property="og:url" content="https://codymkw.github.io/splat3/">
+    <meta property="og:type" content="website">
+    <meta name="twitter:creator" content="@CodyMKW" />
+	  <meta name="twitter:title" content="Splatoon 3 Randomizer" />
+	  <meta name="twitter:description" content="Get out of your comfort zone and try something new with the Splatoon 3 Randomizer. Get randomized loadouts and experience Splatoon 3 like never before!" />
+  	<meta name="twitter:image:src" content="https://codymkw.github.io/splat3/assets/3.png" />
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <div class="container">
+      <h1>Splatoon 3 Randomizer</h1>
+      <div class="card-container">
+        <div class="card weapon-card">
+          <h2>Weapon:</h2>
+          <p id="weapon" class="randomizedtext"></p>
+        </div>
+        <div class="card">
+          <h2>Headgear:</h2>
+          <p id="headgear" class="randomizedtext"></p>
+        </div>
+        <div class="card">
+          <h2>Shirt:</h2>
+          <p id="shirt" class="randomizedtext"></p>
+        </div>
+        <div class="card">
+          <h2>Shoes:</h2>
+          <p id="shoe" class="randomizedtext"></p>
+        </div>
+      </div>
+      <div class="options-card card">
+        <h2>Options:</h2>
+        <label>
+          <input type="checkbox" id="hide-amiibo-gear" /> Hide amiibo gear
+        </label>
+        <div class="button-container">
+          <button id="close-button">Close</button>
+        </div>
+      </div>
+      <div class="button-container">
+        <button id="randomize-button">Randomize</button>
+      </div>
+      <div class="button-container">
+        <button id="options-button">Options</button>
+        <button id="patch-notes-button">Patch Notes</button>
+        <button id="tweet-button" disabled>Copy Results</button>
+      </div>
+      <div class="card-container">
+        <div class="card patch-notes-card" style="display: none;">
+          <h2>Latest Patch Notes:</h2>
+          <ul>
+            <li>Added new weapons: Painbrush and S-Blast '92</li>
+            <li>Added 9 other weapons: Tenta Sorella Brella, Custom Duelie Squelchers, Light Tetra Duelies, Heavy Splatling Deco, H-3 Nozzlenose D, Rapid Blaster Pro Deco, Splatana Wiper Deco, Annaki Splattershot Nova, and Big Swig Roller Express</li>
+            <li>Added Salmon Run gear for June 2023: Commander Cap</li>
+            <li>Added 4.0.0 gear see <a href="https://twitter.com/LeanYoshi/status/1663727817345978369" target="_blank">this tweet</a>.</li>
+          </ul>
+          <div class="button-container">
+            <button id="patch-notes-close-button">Close</button>
+          </div>
+        </div>
+      </div>
+      <div class="footer">
+        <p>&copy; CodyMKW 2023</p>
+      </div>
+    </div>    
+    <script src="script.js"></script>
+  </body>
+</html>
