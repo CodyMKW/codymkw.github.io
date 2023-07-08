@@ -58,37 +58,3 @@ footer {
   padding: 10px;
   text-align: center;
 }
-
-button#toggle-dark-mode {
-  background-color: #E85A4F;
-  color: #fff;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  font-size: 16px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-button#toggle-dark-mode:hover {
-  background-color: #C6473E;
-}
-
-.dark-mode {
-  background-color: #1c1c1c;
-  color: #fff;
-}
-
-.dark-mode h1, .dark-mode h2 {
-  color: #f9f9f9;
-}
-
-.dark-mode nav ul li a {
-  color: #f9f9f9;
-}
-
-.dark-mode footer {
-  background-color: #1c1c1c;
-  color: #fff;
-}
-
