@@ -1,0 +1,100 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #222;
+    color: #FFF;
+  }
+
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px;
+    text-align: center;
+  }
+
+  h1 {
+    color: #0d8100;
+    font-size: 30px;
+    margin-bottom: 20px;
+  }
+  
+  a {
+    color: #0d8100;
+  }
+  
+  a:hover {
+    color: #095a00;
+  }
+
+  img {
+    max-width: 200px;
+    border-radius: 50%;
+    margin-bottom: 20px;
+  }
+
+  p {
+    margin-bottom: 20px;
+  }
+
+  footer {
+    background-color: #111;
+    padding: 10px;
+    text-align: center;
+    color: #888;
+  }
+
+  /* Button styles */
+  .button-container {
+    margin-bottom: 20px;
+  }
+
+  .button-container button {
+    background-color: #0d8100;
+    color: #FFF;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    margin-right: 10px;
+    cursor: pointer;
+  }
+
+  .button-container button:hover {
+    background-color: #095a00;
+  }
+
+  /* Content styles */
+  #about,
+  #switchfc,
+  #socialmedia {
+    display: none;
+  }
+
+  #about {
+    display: block;
+  }
+
+  /* Social Media styles */
+  #socialmedia {
+    display: none;
+  }
+
+  .social-icons {
+    margin-top: 20px;
+  }
+
+  .social-icons a {
+    display: inline-block;
+    margin-right: 10px;
+    transition: transform 0.3s;
+  }
+
+  .social-icons a:hover {
+    transform: scale(1.2);
+  }
+
+  .social-icons img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+  }
