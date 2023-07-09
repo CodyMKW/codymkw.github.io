@@ -104,24 +104,19 @@ footer {
 }
 
 /* Secret theme styles */
-@keyframes rotateColors {
-  0% {
-    background-color: #000000;
-  }
-  25% {
-    background-color: #ff0000;
-  }
-  50% {
-    background-color: #00ff00;
-  }
-  75% {
-    background-color: #0000ff;
-  }
-  100% {
-    background-color: #ffffff;
-  }
+.dark-red {
+  background-color: #5A0000;
+  color: #FFFFFF;
 }
-
-.secret-theme {
-  animation: rotateColors 5s infinite;
+.dark-blue {
+  background-color: #00125a;
+  color: #FFFFFF;
+}
+.dark-green {
+  background-color: #005a03;
+  color: #FFFFFF;
+}
+.dark-purple {
+  background-color: #2a005a;
+  color: #FFFFFF;
 }
