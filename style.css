@@ -102,3 +102,14 @@ footer {
   height: 40px;
   border-radius: 50%;
 }
+
+/* Secret theme styles */
+.container.rainbow-theme {
+  background: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet);
+  animation: rainbow 5s infinite linear;
+}
+
+@keyframes rainbow {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
+}
