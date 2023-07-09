@@ -115,6 +115,10 @@ footer {
   text-align: left;
 }
 
+#ninnews h3 {
+  display: none;
+}
+
 #ninnews h4 {
   color: #0d8100;
   font-size: 24px;
