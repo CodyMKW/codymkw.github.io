@@ -27,12 +27,19 @@ function showSocialMedia() {
 }
 
 <!-- Secret theme code below -->
-var clickCount = 0;
-var container = document.querySelector('.container');
-container.addEventListener('click', function() {
-  clickCount++;
-  if (clickCount === 17) {
-    container.classList.add('rotating-colors');
+var counter = 0;
+var colors = ["red", "blue", "green", "yellow", "purple"];
+
+function clickProfilePicture() {
+  counter++;
+  if (counter === 17) {
+    document.body.classList.add("secret-theme");
+    setInterval(function() {
+      var randomColor = colors[Math.floor(Math.random() * colors.length)];
+      document.body.style.color = randomColor;
+    }, 1000);
   }
-});
+}
+
+document.querySelector("img").addEventListener("click", clickProfilePicture);
 
