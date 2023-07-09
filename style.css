@@ -112,11 +112,19 @@ footer {
   background-color: #00125a;
   color: #FFFFFF;
 }
-.dark-green {
-  background-color: #005a03;
-  color: #FFFFFF;
-}
 .dark-purple {
   background-color: #2a005a;
   color: #FFFFFF;
+}
+.light-pink {
+  background-color: #e24bf2;
+  color: #000000;
+}
+.light-blue {
+  background-color: #37d8ed;
+  color: #000000;
+}
+.light-yellow {
+  background-color: #ede45f;
+  color: #000000;
 }
