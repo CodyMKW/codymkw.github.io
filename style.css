@@ -108,13 +108,14 @@ footer {
 #ninnews {
   display: none;
   padding: 20px;
-  background-color: #FFF;
+  background-color: #111;
+  border: 2px solid #000
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   text-align: left;
 }
 
-#ninnews h2 {
+#ninnews h4 {
   color: #0d8100;
   font-size: 24px;
   margin-bottom: 10px;
@@ -122,15 +123,15 @@ footer {
 
 #ninnews p {
   margin-bottom: 10px;
-  color: #000;
+  color: #fff;
 }
 
 #ninnews a {
-  color: #0d8100;
+  color: #0d8100 !important;
 }
 
 #ninnews a:hover {
-  color: #095a00;
+  color: #095a00 !important;
 }
 
 /* Birthday sparkle */
