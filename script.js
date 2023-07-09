@@ -59,6 +59,9 @@ profilePicture.addEventListener('click', activateSecretTheme);
     // Define the target date for the birthday (January 17th)
     var birthday = new Date(currentDate.getFullYear(), 0, 17);
 
+   // Calculate the age based on the difference in years
+    var age = currentDate.getFullYear() - targetDate.getFullYear();
+
     // Check if it's the birthday
     if (
       currentDate.getMonth() === birthday.getMonth() &&
@@ -71,3 +74,9 @@ profilePicture.addEventListener('click', activateSecretTheme);
       // Add sparkle effect
       codyHeading.classList.add("sparkle-effect");
     }
+
+if (currentDate < birthday) {
+    age -= 1; // Subtract 1 if the birthday hasn't occurred yet
+  }
+// Update the age element in the HTML
+  document.getElementById("age").textContent = age;
