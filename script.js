@@ -43,7 +43,7 @@ function showSocialMedia() {
 }
 
 function fetchNews() {
-  fetch('https://www.nintendolife.com/feeds/latest')
+  fetch('https://mynintendonews.com/feed/')
     .then(response => response.text())
     .then(data => {
       // Process the RSS feed data and populate the news container
