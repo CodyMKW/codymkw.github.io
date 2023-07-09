@@ -104,3 +104,24 @@ footer {
 }
 
 /* Secret theme styles */
+@keyframes rotateColors {
+  0% {
+    background-color: #000000;
+  }
+  25% {
+    background-color: #ff0000;
+  }
+  50% {
+    background-color: #00ff00;
+  }
+  75% {
+    background-color: #0000ff;
+  }
+  100% {
+    background-color: #ffffff;
+  }
+}
+
+.secret-theme {
+  animation: rotateColors 5s infinite;
+}
