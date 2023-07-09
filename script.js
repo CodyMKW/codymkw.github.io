@@ -3,7 +3,7 @@ var clickCount = 0;
 function showAbout() {
   document.getElementById('about').style.display = 'block';
   document.getElementById('switchfc').style.display = 'none';
-  document.getElementById('tbd').style.display = 'none';
+  document.getElementById('ninnews').style.display = 'none';
   document.getElementById('webapps').style.display = 'none';
   document.getElementById('socialmedia').style.display = 'none';
 }
@@ -11,23 +11,25 @@ function showAbout() {
 function showSwitchFC() {
   document.getElementById('about').style.display = 'none';
   document.getElementById('switchfc').style.display = 'block';
-  document.getElementById('tbd').style.display = 'none';
+  document.getElementById('ninnews').style.display = 'none';
   document.getElementById('webapps').style.display = 'none';
   document.getElementById('socialmedia').style.display = 'none';
 }
 
-function showTBD() {
+function showNinNews() {
   document.getElementById('about').style.display = 'none';
   document.getElementById('switchfc').style.display = 'none';
-  document.getElementById('tbd').style.display = 'block';
+  document.getElementById('ninnews').style.display = 'block';
   document.getElementById('webapps').style.display = 'none';
   document.getElementById('socialmedia').style.display = 'none';
+
+  fetchNews(); // Call the function to fetch and display the news
 }
 
 function showWebApps() {
   document.getElementById('about').style.display = 'none';
   document.getElementById('switchfc').style.display = 'none';
-  document.getElementById('tbd').style.display = 'none';
+  document.getElementById('ninnews').style.display = 'none';
   document.getElementById('webapps').style.display = 'block';
   document.getElementById('socialmedia').style.display = 'none';
 }
@@ -35,9 +37,24 @@ function showWebApps() {
 function showSocialMedia() {
   document.getElementById('about').style.display = 'none';
   document.getElementById('switchfc').style.display = 'none';
-  document.getElementById('tbd').style.display = 'none';
+  document.getElementById('ninnews').style.display = 'none';
   document.getElementById('webapps').style.display = 'none';
   document.getElementById('socialmedia').style.display = 'block';
+}
+
+function fetchNews() {
+  fetch('https://www.nintendolife.com/feeds/latest')
+    .then(response => response.text())
+    .then(data => {
+      // Process the RSS feed data and populate the news container
+      const newsContainer = document.getElementById('ninnews');
+      newsContainer.innerHTML = data; // Replace this line with the appropriate code to parse and display the news
+    })
+    .catch(error => {
+      console.error('Failed to fetch news:', error);
+      const newsContainer = document.getElementById('ninnews');
+      newsContainer.textContent = 'Failed to fetch news. Please try again later.';
+    });
 }
 
 function activateSecretTheme() {
