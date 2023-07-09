@@ -27,15 +27,11 @@ function showSocialMedia() {
 }
 
 <!-- Secret theme code below -->
-let clickCount = 0;
-
-function activateSecretTheme() {
+var clickCount = 0;
+var profilePic = document.getElementById('profile-pic');
+profilePic.addEventListener('click', function() {
   clickCount++;
   if (clickCount === 17) {
-    const profilePic = document.getElementById('profile-pic');
-    profilePic.classList.add('rainbow-theme');
+    profilePic.classList.add('rotating-colors');
   }
-}
-
-const profilePic = document.getElementById('profile-pic');
-profilePic.addEventListener('click', activateSecretTheme);
+});
