@@ -104,17 +104,15 @@ footer {
 }
 
 /* Secret theme styles */
-.rainbow-theme {
-  animation: rainbow 5s infinite;
+.rotating-colors {
+  animation: rotate-colors 5s infinite;
 }
 
-@keyframes rainbow {
-  0% { background: red; }
-  14% { background: orange; }
-  28% { background: yellow; }
-  42% { background: green; }
-  57% { background: blue; }
-  71% { background: indigo; }
-  85% { background: violet; }
-  100% { background: red; }
+@keyframes rotate-colors {
+  0% { background-color: red; }
+  20% { background-color: orange; }
+  40% { background-color: yellow; }
+  60% { background-color: green; }
+  80% { background-color: blue; }
+  100% { background-color: purple; }
 }
