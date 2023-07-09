@@ -29,14 +29,19 @@ function showSocialMedia() {
 }
 
 function activateSecretTheme() {
-  var body = document.getElementsByTagName('body')[0];
-  body.classList.toggle('secret-theme');
-}
-
-function handleClick() {
   clickCount++;
+  
   if (clickCount === 17) {
-    activateSecretTheme();
-    clickCount = 0; // Reset the click count
+    var bodyElement = document.querySelector('body');
+    var themes = ['dark-red', 'dark-blue', 'dark-green', 'dark-purple']; // Add more colors if desired
+    
+    setInterval(function() {
+      var randomTheme = themes[Math.floor(Math.random() * themes.length)];
+      bodyElement.className = randomTheme;
+    }, 1000);
   }
 }
+
+// Attach click event listener to the profile picture
+var profilePicture = document.querySelector('img[alt="Cody\'s Profile Picture"]');
+profilePicture.addEventListener('click', activateSecretTheme);
