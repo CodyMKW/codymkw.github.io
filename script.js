@@ -33,8 +33,11 @@ var colors = ["red", "blue", "green", "yellow", "purple"];
 function clickProfilePicture() {
   counter++;
   if (counter === 17) {
-    document.querySelector("img").addEventListener("click", clickProfilePicture);
-    document.documentElement.classList.add("secret-theme");
-    document.documentElement.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+    document.querySelector("#secret").classList.add("secret-theme");
+    setInterval(function() {
+      var randomColor = colors[Math.floor(Math.random() * colors.length)];
+      document.querySelector("#secret").style.color = randomColor;
+      document.querySelector("#secret").style.backgroundColor = randomColor;
+    }, 1000);
   }
 }
