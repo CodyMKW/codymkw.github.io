@@ -105,15 +105,19 @@ footer {
 
 /* Birthday sparkle */
 @keyframes sparkle {
-  0% { opacity: 1; }
-  50% { opacity: 0.5; }
-  100% { opacity: 1; }
+  0%, 100% {
+    color: #0d8100;
+    text-shadow: none;
+  }
+  50% {
+    color: yellow;
+    text-shadow: 0 0 5px yellow, 0 0 10px yellow, 0 0 15px yellow, 0 0 20px orange, 0 0 25px orange, 0 0 30px orange, 0 0 35px orange;
+  }
 }
 
 .sparkle-effect {
   animation: sparkle 1s infinite;
 }
-
 
 /* Secret theme styles */
 .alizarin-crimson {
