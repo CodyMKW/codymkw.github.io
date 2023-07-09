@@ -38,7 +38,7 @@ function activateSecretTheme() {
     secretThemeInterval = setInterval(function() {
       var randomTheme = themes[Math.floor(Math.random() * themes.length)];
       bodyElement.className = randomTheme;
-    }, 1000);
+    }, 900);
 
     // Show seizure warning popup
     alert("Seizure Warning: The secret theme may contain flashing lights or rapidly changing colors. If you have photosensitive epilepsy or any similar condition, please disable the secret theme immediately by clicking the profile picture again.");
