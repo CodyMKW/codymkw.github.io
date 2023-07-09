@@ -28,10 +28,11 @@ function showSocialMedia() {
 
 <!-- Secret theme code below -->
 var clickCount = 0;
-var profilePic = document.getElementById('profile-pic');
-profilePic.addEventListener('click', function() {
+var container = document.querySelector('.container');
+container.addEventListener('click', function() {
   clickCount++;
   if (clickCount === 17) {
-    profilePic.classList.add('rotating-colors');
+    container.classList.add('rotating-colors');
   }
 });
+
