@@ -52,3 +52,22 @@ function activateSecretTheme() {
 // Attach click event listener to the profile picture
 var profilePicture = document.getElementById('profile-picture');
 profilePicture.addEventListener('click', activateSecretTheme);
+
+// Get the current date
+    var currentDate = new Date();
+
+    // Define the target date for the birthday (January 17th)
+    var birthday = new Date(currentDate.getFullYear(), 0, 17);
+
+    // Check if it's the birthday
+    if (
+      currentDate.getMonth() === birthday.getMonth() &&
+      currentDate.getDate() === birthday.getDate()
+    ) {
+      // Add cake emojis and sparkle effect to the heading
+      var codyHeading = document.getElementById("cody-heading");
+      codyHeading.innerHTML = "🎂 CodyMKW 🎂";
+
+      // Add sparkle effect
+      codyHeading.classList.add("sparkle-effect");
+    }
