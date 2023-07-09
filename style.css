@@ -104,11 +104,3 @@ footer {
 }
 
 /* Secret theme styles */
-.rotating-colors {
-  animation: rotate-colors 5s infinite;
-}
-
-@keyframes rotate-colors {
-  0% { filter: hue-rotate(0deg); }
-  100% { filter: hue-rotate(360deg); }
-}
