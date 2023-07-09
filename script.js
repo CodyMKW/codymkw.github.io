@@ -33,7 +33,7 @@ function activateSecretTheme() {
 
   if (clickCount === 17) {
     var bodyElement = document.querySelector('body');
-    var themes = ['dark-red', 'dark-blue', 'dark-purple', 'light-pink', 'light-blue', 'light-yellow']; // Add more colors if desired
+    var themes = ['alizarin-crimson', 'absolute-zero', 'amethyst', 'baby-pink', 'aquamarine', 'arylide-yellow', 'orange']; // Add more colors if desired
 
     secretThemeInterval = setInterval(function() {
       var randomTheme = themes[Math.floor(Math.random() * themes.length)];
