@@ -78,8 +78,11 @@ profilePicture.addEventListener('click', activateSecretTheme);
     ) {
       // Add cake emojis and sparkle effect to the heading
       var codyHeading = document.getElementById("cody-heading");
+      var codyHeading2 = document.getElementById("cody-heading2");
       codyHeading.innerHTML = "🎂 CodyMKW 🎂";
+      codyHeading2.innerHTML = "Happy Birthday!! 🥳";
 
-      // Add sparkle effect
-      codyHeading.classList.add("sparkle-effect");
+      // Add shimmer effect
+      codyHeading.classList.add("shimmer");
+      codyHeading2.classList.add("shimmer");
     }
