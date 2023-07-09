@@ -25,3 +25,20 @@ function showSocialMedia() {
   document.getElementById('webapps').style.display = 'none';
   document.getElementById('socialmedia').style.display = 'block';
 }
+
+<!-- Secret theme code below -->
+  let clickCount = 0;
+    const profilePic = document.getElementById("profile-pic");
+
+    profilePic.addEventListener("click", function() {
+      clickCount++;
+
+      if (clickCount === 17) {
+        activateRainbowTheme();
+      }
+    });
+
+    function activateRainbowTheme() {
+      const container = document.querySelector(".container");
+      container.classList.add("rainbow-theme");
+    }
