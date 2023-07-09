@@ -27,18 +27,15 @@ function showSocialMedia() {
 }
 
 <!-- Secret theme code below -->
-  let clickCount = 0;
-    const profilePic = document.getElementById("profile-pic");
+let clickCount = 0;
 
-    profilePic.addEventListener("click", function() {
-      clickCount++;
+function activateSecretTheme() {
+  clickCount++;
+  if (clickCount === 17) {
+    const profilePic = document.getElementById('profile-pic');
+    profilePic.classList.add('rainbow-theme');
+  }
+}
 
-      if (clickCount === 17) {
-        activateRainbowTheme();
-      }
-    });
-
-    function activateRainbowTheme() {
-      const container = document.querySelector(".container");
-      container.classList.add("rainbow-theme");
-    }
+const profilePic = document.getElementById('profile-pic');
+profilePic.addEventListener('click', activateSecretTheme);
