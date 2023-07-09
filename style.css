@@ -103,6 +103,18 @@ footer {
   border-radius: 50%;
 }
 
+/* Birthday sparkle */
+@keyframes sparkle {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+
+.sparkle-effect {
+  animation: sparkle 1s infinite;
+}
+
+
 /* Secret theme styles */
 .alizarin-crimson {
   background-color: #E32636;
