@@ -3,6 +3,7 @@ var clickCount = 0;
 function showAbout() {
   document.getElementById('about').style.display = 'block';
   document.getElementById('switchfc').style.display = 'none';
+  document.getElementById('tbd').style.display = 'none';
   document.getElementById('webapps').style.display = 'none';
   document.getElementById('socialmedia').style.display = 'none';
 }
@@ -10,6 +11,15 @@ function showAbout() {
 function showSwitchFC() {
   document.getElementById('about').style.display = 'none';
   document.getElementById('switchfc').style.display = 'block';
+  document.getElementById('tbd').style.display = 'none';
+  document.getElementById('webapps').style.display = 'none';
+  document.getElementById('socialmedia').style.display = 'none';
+}
+
+function showTBD() {
+  document.getElementById('about').style.display = 'none';
+  document.getElementById('switchfc').style.display = 'none';
+  document.getElementById('tbd').style.display = 'block';
   document.getElementById('webapps').style.display = 'none';
   document.getElementById('socialmedia').style.display = 'none';
 }
@@ -17,6 +27,7 @@ function showSwitchFC() {
 function showWebApps() {
   document.getElementById('about').style.display = 'none';
   document.getElementById('switchfc').style.display = 'none';
+  document.getElementById('tbd').style.display = 'none';
   document.getElementById('webapps').style.display = 'block';
   document.getElementById('socialmedia').style.display = 'none';
 }
@@ -24,6 +35,7 @@ function showWebApps() {
 function showSocialMedia() {
   document.getElementById('about').style.display = 'none';
   document.getElementById('switchfc').style.display = 'none';
+  document.getElementById('tbd').style.display = 'none';
   document.getElementById('webapps').style.display = 'none';
   document.getElementById('socialmedia').style.display = 'block';
 }
