@@ -104,12 +104,17 @@ footer {
 }
 
 /* Secret theme styles */
-.container.rainbow-theme {
-  background: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet);
-  animation: rainbow 5s infinite linear;
+.rainbow-theme {
+  animation: rainbow 5s infinite;
 }
 
 @keyframes rainbow {
-  0% { background-position: 0% 50%; }
-  100% { background-position: 100% 50%; }
+  0% { background: red; }
+  14% { background: orange; }
+  28% { background: yellow; }
+  42% { background: green; }
+  57% { background: blue; }
+  71% { background: indigo; }
+  85% { background: violet; }
+  100% { background: red; }
 }
