@@ -30,18 +30,25 @@ function showSocialMedia() {
 
 function activateSecretTheme() {
   clickCount++;
-  
+
   if (clickCount === 17) {
     var bodyElement = document.querySelector('body');
     var themes = ['dark-red', 'dark-blue', 'dark-purple', 'light-pink', 'light-blue', 'light-yellow']; // Add more colors if desired
-    
-    setInterval(function() {
+
+    secretThemeInterval = setInterval(function() {
       var randomTheme = themes[Math.floor(Math.random() * themes.length)];
       bodyElement.className = randomTheme;
     }, 1000);
+
+    // Show seizure warning popup
+    alert("Seizure Warning: The secret theme may contain flashing lights or rapidly changing colors. If you have photosensitive epilepsy or any similar condition, please disable the secret theme immediately by clicking the profile picture again.");
+  } else if (clickCount === 18) {
+    clearInterval(secretThemeInterval); // Disable the secret theme
+    document.querySelector('body').className = ''; // Remove any theme classes
+    clickCount = 0; // Reset click count
   }
 }
 
 // Attach click event listener to the profile picture
-var profilePicture = document.querySelector('img[alt="Cody\'s Profile Picture"]');
+var profilePicture = document.getElementById('profile-picture');
 profilePicture.addEventListener('click', activateSecretTheme);
