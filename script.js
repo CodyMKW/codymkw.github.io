@@ -38,7 +38,7 @@ function activateSecretTheme() {
     setInterval(function() {
       var randomTheme = themes[Math.floor(Math.random() * themes.length)];
       bodyElement.className = randomTheme;
-    }, 1000);
+    }, 500);
   }
 }
 
