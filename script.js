@@ -35,9 +35,6 @@ function clickProfilePicture() {
   if (counter === 17) {
     document.querySelector("img").addEventListener("click", clickProfilePicture);
     document.documentElement.classList.add("secret-theme");
-    setInterval(function() {
-      var randomColor = colors[Math.floor(Math.random() * colors.length)];
-      document.documentElement.style.color = randomColor;
-    }, 1000);
+    document.documentElement.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
   }
 }
