@@ -89,7 +89,7 @@ profilePicture.addEventListener('click', activateSecretTheme);
     var birthday = new Date(currentDate.getFullYear(), 0, 17);
 
    // Calculate the age based on the difference in years
-    var age = currentDate.getFullYear() - targetDate.getFullYear();
+    var age = currentDate.getFullYear() - birthday.getFullYear();
 
     // Check if it's the birthday
     if (
