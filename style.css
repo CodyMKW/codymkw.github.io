@@ -104,6 +104,34 @@ footer {
   border-radius: 50%;
 }
 
+/* Nintendo News styles */
+#ninnews {
+  display: none;
+  padding: 20px;
+  background-color: #FFF;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  text-align: left;
+}
+
+#ninnews h2 {
+  color: #0d8100;
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+#ninnews p {
+  margin-bottom: 10px;
+}
+
+#ninnews a {
+  color: #0d8100;
+}
+
+#ninnews a:hover {
+  color: #095a00;
+}
+
 /* Birthday sparkle */
 @keyframes sparkle {
   0%, 100% {
