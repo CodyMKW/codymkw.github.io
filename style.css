@@ -104,27 +104,31 @@ footer {
 }
 
 /* Secret theme styles */
-.dark-red {
-  background-color: #5A0000;
+.alizarin-crimson {
+  background-color: #E32636;
   color: #FFFFFF;
 }
-.dark-blue {
-  background-color: #00125a;
+.absolute-zero {
+  background-color: #0048BA;
   color: #FFFFFF;
 }
-.dark-purple {
-  background-color: #2a005a;
+.amethyst {
+  background-color: #9966CC;
   color: #FFFFFF;
 }
-.light-pink {
-  background-color: #e24bf2;
+.baby-pink {
+  background-color: #F4C2C2;
   color: #000000;
 }
-.light-blue {
-  background-color: #37d8ed;
+.aquamarine {
+  background-color: #7FFFD4;
   color: #000000;
 }
-.light-yellow {
-  background-color: #ede45f;
+.arylide-yellow {
+  background-color: #E9D66B;
   color: #000000;
+}
+.orange {
+  background-color: #FFA500;
+  color: #FFFFFF;
 }
