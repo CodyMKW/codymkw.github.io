@@ -75,13 +75,48 @@ footer {
   display: none;
 }
 
+
+/* About News styles */
 #about {
   display: block;
+  padding: 20px;
+  background-color: #111;
+  border: 2px solid #000;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  text-align: left;
+}
+
+#about p {
+  color: #fff;
+}
+
+/* Switch FC styles */
+#switchfc {
+  display: none;
+  padding: 20px;
+  background-color: #111;
+  border: 2px solid #000;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+#switchfc p {
+  color: #fff;
 }
 
 /* Social Media styles */
 #socialmedia {
   display: none;
+  padding: 20px;
+  background-color: #111;
+  border: 2px solid #000;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+#socialmedia p {
+  color: #fff;
 }
 
 .social-icons {
@@ -109,7 +144,7 @@ footer {
   display: none;
   padding: 20px;
   background-color: #111;
-  border: 2px solid #000;   
+  border: 2px solid #000;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   text-align: left;
@@ -136,6 +171,20 @@ footer {
 
 #ninnews a:hover {
   color: #095a00 !important;
+}
+
+/* Web Apps styles */
+#webapps {
+  display: none;
+  padding: 20px;
+  background-color: #111;
+  border: 2px solid #000;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+#webapps p {
+  color: #fff;
 }
 
 /* Birthday sparkle */
