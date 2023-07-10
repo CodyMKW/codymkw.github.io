@@ -7,6 +7,7 @@ var leaderboardData = [
   { rank: 5, player: "Vic35000vr", score: 5000 },
   { rank: 6, player: "Believe", score: 5000 }
 ];
+var leaderboardUpdated = false;
 
 function showAbout() {
   document.getElementById('about').style.display = 'block';
@@ -47,9 +48,10 @@ function showLeaderboard() {
   var currentDate = new Date();
 
   // Check if current day is Friday (day index 5)
-  if (currentDate.getDay() === 5) {
-    // Update leaderboard if it's Friday
+  if (currentDate.getDay() === 5 && !leaderboardUpdated) {
+    // Update leaderboard if it's Friday and not already updated
     updateLeaderboard();
+    leaderboardUpdated = true;
   }
 }
 
