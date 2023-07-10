@@ -40,6 +40,7 @@ p {
 footer {
   background-color: #111;
   padding: 10px;
+  font-size: medium;
   text-align: center;
   color: #888;
 }
@@ -222,6 +223,10 @@ footer {
 
 #leaderboard p {
   color: #fff;
+}
+
+#vrexplanation {
+  font-size: x-small;
 }
 
 
