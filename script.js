@@ -43,13 +43,14 @@ function showLeaderboard() {
   document.getElementById('webapps').style.display = 'none';
   document.getElementById('socialmedia').style.display = 'none';
   
-  // Update leaderboard initially
-  updateLeaderboard();
+    // Get current date
+  var currentDate = new Date();
 
-  // Check for updates every hour
-  setInterval(function () {
+  // Check if current day is Friday (day index 5)
+  if (currentDate.getDay() === 5) {
+    // Update leaderboard if it's Friday
     updateLeaderboard();
-  }, 1000 * 60 * 60); // 1 hour interval
+  }
 }
 
 function showWebApps() {
