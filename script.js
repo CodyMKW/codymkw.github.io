@@ -47,16 +47,11 @@ function showLeaderboard() {
   // Get current date
   var currentDate = new Date();
 
-  // Check if it's Friday (day index 5) or the leaderboard hasn't been updated yet
-  if (currentDate.getDay() === 5 || !leaderboardUpdated) {
-    // Add daily points to player scores
-    addDailyPointsToLeaderboard();
-
+  // Check if it's Friday and the leaderboard hasn't been updated yet
+  if (currentDate.getDay() === 5 && !leaderboardUpdated) {
     // Update leaderboard if it's Friday and not already updated
-    if (currentDate.getDay() === 5 && !leaderboardUpdated) {
-      updateLeaderboard();
-      leaderboardUpdated = true;
-    }
+    updateLeaderboard();
+    leaderboardUpdated = true;
   }
 }
 
