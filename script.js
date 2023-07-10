@@ -43,18 +43,20 @@ function showLeaderboard() {
   document.getElementById('leaderboard').style.display = 'block';
   document.getElementById('webapps').style.display = 'none';
   document.getElementById('socialmedia').style.display = 'none';
-  
-    // Add daily points to player scores
-  addDailyPoints();
-    
-    // Get current date
+
+  // Get current date
   var currentDate = new Date();
 
-  // Check if current day is Friday (day index 5)
-  if (currentDate.getDay() === 5 && !leaderboardUpdated) {
+  // Check if it's Friday (day index 5) or the leaderboard hasn't been updated yet
+  if (currentDate.getDay() === 5 || !leaderboardUpdated) {
+    // Add daily points to player scores
+    addDailyPointsToLeaderboard();
+
     // Update leaderboard if it's Friday and not already updated
-    updateLeaderboard();
-    leaderboardUpdated = true;
+    if (currentDate.getDay() === 5 && !leaderboardUpdated) {
+      updateLeaderboard();
+      leaderboardUpdated = true;
+    }
   }
 }
 
