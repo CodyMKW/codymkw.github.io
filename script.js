@@ -1,4 +1,12 @@
 var clickCount = 0;
+var leaderboardData = [
+  { rank: 1, player: "FalconXD", score: 5000 },
+  { rank: 2, player: "Cody", score: 5000 },
+  { rank: 3, player: "Joseph", score: 5000 },
+  { rank: 4, player: "Brandon", score: 5000 },
+  { rank: 5, player: "Vic35000vr", score: 5000 },
+  { rank: 6, player: "Believe", score: 5000 }
+];
 
 function showAbout() {
   document.getElementById('about').style.display = 'block';
@@ -34,6 +42,14 @@ function showLeaderboard() {
   document.getElementById('leaderboard').style.display = 'block';
   document.getElementById('webapps').style.display = 'none';
   document.getElementById('socialmedia').style.display = 'none';
+  
+  // Update leaderboard initially
+  updateLeaderboard();
+
+  // Check for updates every hour
+  setInterval(function () {
+    updateLeaderboard();
+  }, 1000 * 60 * 60); // 1 hour interval
 }
 
 function showWebApps() {
@@ -52,6 +68,38 @@ function showSocialMedia() {
   document.getElementById('leaderboard').style.display = 'none';
   document.getElementById('webapps').style.display = 'none';
   document.getElementById('socialmedia').style.display = 'block';
+}
+
+function updateLeaderboard() {
+  // Check if current day is Friday (day index 5)
+  if (new Date().getDay() !== 5) {
+    return; // Do not update if it's not Friday
+  }
+
+  // Update player scores randomly
+  leaderboardData.forEach(function (entry) {
+    // Generate a random score change (-500 to 500)
+    var scoreChange = Math.floor(Math.random() * 1001) - 500;
+    entry.score += scoreChange;
+  });
+
+  // Sort leaderboard based on scores
+  leaderboardData.sort(function (a, b) {
+    return b.score - a.score;
+  });
+
+  // Update leaderboard table
+  var leaderboardTable = document.querySelector('#leaderboard tbody');
+
+  // Clear existing rows
+  leaderboardTable.innerHTML = '';
+
+  // Create new rows based on the updated leaderboard data
+  leaderboardData.forEach(function (entry) {
+    var row = document.createElement('tr');
+    row.innerHTML = '<td>' + entry.rank + '</td><td>' + entry.player + '</td><td>' + entry.score + '</td>';
+    leaderboardTable.appendChild(row);
+  });
 }
 
 function activateSecretTheme() {
