@@ -76,13 +76,16 @@ function showSocialMedia() {
   document.getElementById('socialmedia').style.display = 'block';
 }
 
-function addDailyPoints() {
+function addDailyPointsToLeaderboard() {
   leaderboardData.forEach(function (entry) {
     // Generate a random daily score increase (50 to 350)
     var dailyIncrease = Math.floor(Math.random() * 301) + 50;
     entry.score += dailyIncrease;
   });
 }
+
+// Call addDailyPointsToLeaderboard() every 24 hours (86400000 milliseconds)
+setInterval(addDailyPointsToLeaderboard, 86400000);
 
 function updateLeaderboard() {
   // Check if current day is Friday (day index 5)
