@@ -220,6 +220,11 @@ footer {
   background-color: #444;
 }
 
+#leaderboard p {
+  color: #fff;
+}
+
+
 /* Web Apps styles */
 #webapps {
   display: none;
