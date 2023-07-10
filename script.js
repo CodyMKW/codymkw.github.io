@@ -44,6 +44,9 @@ function showLeaderboard() {
   document.getElementById('webapps').style.display = 'none';
   document.getElementById('socialmedia').style.display = 'none';
   
+    // Add daily points to player scores
+  addDailyPoints();
+    
     // Get current date
   var currentDate = new Date();
 
@@ -71,6 +74,14 @@ function showSocialMedia() {
   document.getElementById('leaderboard').style.display = 'none';
   document.getElementById('webapps').style.display = 'none';
   document.getElementById('socialmedia').style.display = 'block';
+}
+
+function addDailyPoints() {
+  leaderboardData.forEach(function (entry) {
+    // Generate a random daily score increase (50 to 350)
+    var dailyIncrease = Math.floor(Math.random() * 301) + 50;
+    entry.score += dailyIncrease;
+  });
 }
 
 function updateLeaderboard() {
