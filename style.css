@@ -173,6 +173,53 @@ footer {
   color: #095a00 !important;
 }
 
+/* Leaderboard styles */
+#leaderboard {
+  display: none;
+  margin-top: 40px;
+  padding: 20px;
+  background-color: #111;
+  border: 2px solid #000;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+#leaderboard h2 {
+  color: #0d8100;
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+#leaderboard table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+#leaderboard th,
+#leaderboard td {
+  padding: 8px;
+  border: 1px solid #000;
+  text-align: center;
+}
+
+#leaderboard th {
+  background-color: #0d8100;
+  color: #fff;
+}
+
+#leaderboard td {
+  background-color: #222;
+  color: #fff;
+}
+
+#leaderboard tr:nth-child(even) {
+  background-color: #333;
+}
+
+#leaderboard tr:hover {
+  background-color: #444;
+}
+
 /* Web Apps styles */
 #webapps {
   display: none;
