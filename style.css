@@ -221,6 +221,23 @@ footer {
   background-color: #444;
 }
 
+#games-table a {
+  color: #0d8100;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+#games-table a:hover {
+  color: #095a00;
+  text-decoration: underline;
+}
+
+.playtime-note {
+  color: #888;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
 /* Web Apps styles */
 #webapps {
   display: none;
