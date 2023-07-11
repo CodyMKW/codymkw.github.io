@@ -174,8 +174,8 @@ footer {
   color: #095a00 !important;
 }
 
-/* Leaderboard styles */
-#leaderboard {
+/* Most Played Games styles */
+#most-played-games {
   display: none;
   margin-top: 40px;
   padding: 20px;
@@ -185,66 +185,41 @@ footer {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-#leaderboard h2 {
+#most-played-games h2 {
   color: #0d8100;
   font-size: 24px;
   margin-bottom: 10px;
 }
 
-#leaderboard table {
+#games-table {
   width: 100%;
   border-collapse: collapse;
 }
 
-#leaderboard th,
-#leaderboard td {
+#games-table th,
+#games-table td {
   padding: 8px;
   border: 1px solid #000;
   text-align: center;
 }
 
-#leaderboard th {
+#games-table th {
   background-color: #0d8100;
   color: #fff;
 }
 
-#leaderboard td {
+#games-table td {
   background-color: #222;
   color: #fff;
 }
 
-#leaderboard tr:nth-child(even) {
+#games-table tr:nth-child(even) {
   background-color: #333;
 }
 
-#leaderboard tr:hover {
+#games-table tr:hover {
   background-color: #444;
 }
-
-#leaderboard p {
-  color: #fff;
-}
-
-#leaderboard tr:nth-child(1) td {
-  background-color: gold;
-  color: #000;
-}
-
-#leaderboard tr:nth-child(2) td {
-  background-color: silver;
-  color: #000;
-}
-
-#leaderboard tr:nth-child(3) td {
-  background-color: #cd7f32;
-  color: #000;
-}
-
-
-#vrexplanation {
-  font-size: x-small;
-}
-
 
 /* Web Apps styles */
 #webapps {
