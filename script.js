@@ -1,19 +1,40 @@
 var clickCount = 0;
-var leaderboardData = [
-  { rank: 1, player: "FalconXD", score: 5000 },
-  { rank: 2, player: "Cody", score: 5000 },
-  { rank: 3, player: "Joseph", score: 5000 },
-  { rank: 4, player: "Brandon", score: 5000 },
-  { rank: 5, player: "Vic35000vr", score: 5000 },
-  { rank: 6, player: "Believe", score: 5000 }
+var gamesData = [
+  { name: "Animal Crossing: New Horizons", playtime: 6165, link: "https://www.nintendo.com/store/products/animal-crossing-new-horizons-switch" },
+  { name: "Fortnite", playtime: 2790, link: "https://www.nintendo.com/store/products/fortnite-switch" },
+  { name: "Splatoon 3", playtime: 380, link: "https://www.nintendo.com/store/products/splatoon-3-switch" },
+  { name: "Fall Guys", playtime: 145, link: "https://www.nintendo.com/store/products/fall-guys-switch" },
+  { name: "Ninjala", playtime: 230, link: "https://www.nintendo.com/store/products/ninjala-switch" }
 ];
-var leaderboardUpdated = false;
+
+// Sort games based on playtime in descending order
+gamesData.sort(function (a, b) {
+  return b.playtime - a.playtime;
+});
+
+// Update games table
+var gamesTable = document.querySelector('#games-table tbody');
+
+// Clear existing rows
+gamesTable.innerHTML = '';
+
+// Create new rows based on the updated games data
+gamesData.forEach(function (game) {
+  var row = document.createElement('tr');
+  row.innerHTML = '<td><a href="' + game.link + '" target="_blank">' + game.name + '</a></td><td>' + formatPlaytime(game.playtime) + ' hours</td>';
+  gamesTable.appendChild(row);
+});
+
+// Function to format playtime with comma for thousands
+function formatPlaytime(playtime) {
+  return playtime.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
 
 function showAbout() {
   document.getElementById('about').style.display = 'block';
   document.getElementById('switchfc').style.display = 'none';
   document.getElementById('ninnews').style.display = 'none';
-  document.getElementById('leaderboard').style.display = 'none';
+  document.getElementById('most-played-games').style.display = 'none';
   document.getElementById('webapps').style.display = 'none';
   document.getElementById('socialmedia').style.display = 'none';
 }
@@ -22,7 +43,7 @@ function showSwitchFC() {
   document.getElementById('about').style.display = 'none';
   document.getElementById('switchfc').style.display = 'block';
   document.getElementById('ninnews').style.display = 'none';
-  document.getElementById('leaderboard').style.display = 'none';
+  document.getElementById('most-played-games').style.display = 'none';
   document.getElementById('webapps').style.display = 'none';
   document.getElementById('socialmedia').style.display = 'none';
 }
@@ -31,35 +52,26 @@ function showNinNews() {
   document.getElementById('about').style.display = 'none';
   document.getElementById('switchfc').style.display = 'none';
   document.getElementById('ninnews').style.display = 'block';
-  document.getElementById('leaderboard').style.display = 'none';
+  document.getElementById('most-played-games').style.display = 'none';
   document.getElementById('webapps').style.display = 'none';
   document.getElementById('socialmedia').style.display = 'none';
 }
 
-function showLeaderboard() {
+function showMostPlayedGames() {
   document.getElementById('about').style.display = 'none';
   document.getElementById('switchfc').style.display = 'none';
   document.getElementById('ninnews').style.display = 'none';
-  document.getElementById('leaderboard').style.display = 'block';
+  document.getElementById('most-played-games').style.display = 'block';
   document.getElementById('webapps').style.display = 'none';
   document.getElementById('socialmedia').style.display = 'none';
-
-  // Get current date
-  var currentDate = new Date();
-
-  // Check if it's Friday and the leaderboard hasn't been updated yet
-  if (currentDate.getDay() === 5 && !leaderboardUpdated) {
-    // Update leaderboard if it's Friday and not already updated
-    updateLeaderboard();
-    leaderboardUpdated = true;
-  }
 }
+
 
 function showWebApps() {
   document.getElementById('about').style.display = 'none';
   document.getElementById('switchfc').style.display = 'none';
   document.getElementById('ninnews').style.display = 'none';
-  document.getElementById('leaderboard').style.display = 'none';
+  document.getElementById('most-played-games').style.display = 'none';
   document.getElementById('webapps').style.display = 'block';
   document.getElementById('socialmedia').style.display = 'none';
 }
@@ -68,52 +80,9 @@ function showSocialMedia() {
   document.getElementById('about').style.display = 'none';
   document.getElementById('switchfc').style.display = 'none';
   document.getElementById('ninnews').style.display = 'none';
-  document.getElementById('leaderboard').style.display = 'none';
+  document.getElementById('most-played-games').style.display = 'none';
   document.getElementById('webapps').style.display = 'none';
   document.getElementById('socialmedia').style.display = 'block';
-}
-
-function addDailyPointsToLeaderboard() {
-  leaderboardData.forEach(function (entry) {
-    // Generate a random daily score increase (50 to 350)
-    var dailyIncrease = Math.floor(Math.random() * 301) + 50;
-    entry.score += dailyIncrease;
-  });
-}
-
-// Call addDailyPointsToLeaderboard() every 24 hours (86400000 milliseconds)
-setInterval(addDailyPointsToLeaderboard, 86400000);
-
-function updateLeaderboard() {
-  // Check if current day is Friday (day index 5)
-  if (new Date().getDay() !== 5) {
-    return; // Do not update if it's not Friday
-  }
-
-  // Update player scores randomly
-  leaderboardData.forEach(function (entry) {
-    // Generate a random score change (-500 to 500)
-    var scoreChange = Math.floor(Math.random() * 1001) - 500;
-    entry.score += scoreChange;
-  });
-
-  // Sort leaderboard based on scores
-  leaderboardData.sort(function (a, b) {
-    return b.score - a.score;
-  });
-
-  // Update leaderboard table
-  var leaderboardTable = document.querySelector('#leaderboard tbody');
-
-  // Clear existing rows
-  leaderboardTable.innerHTML = '';
-
-  // Create new rows based on the updated leaderboard data
-  leaderboardData.forEach(function (entry) {
-    var row = document.createElement('tr');
-    row.innerHTML = '<td>' + entry.rank + '</td><td>' + entry.player + '</td><td>' + entry.score + '</td>';
-    leaderboardTable.appendChild(row);
-  });
 }
 
 function activateSecretTheme() {
