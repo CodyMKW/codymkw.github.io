@@ -225,6 +225,22 @@ footer {
   color: #fff;
 }
 
+#leaderboard tr:nth-child(1) td {
+  background-color: gold;
+  color: #000;
+}
+
+#leaderboard tr:nth-child(2) td {
+  background-color: silver;
+  color: #000;
+}
+
+#leaderboard tr:nth-child(3) td {
+  background-color: #cd7f32;
+  color: #000;
+}
+
+
 #vrexplanation {
   font-size: x-small;
 }
