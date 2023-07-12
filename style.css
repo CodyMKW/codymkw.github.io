@@ -104,6 +104,19 @@ footer {
 
 #switchfc p {
   color: #fff;
+  margin-bottom: 10px;
+}
+
+#switchfc img {
+  max-width: 350px;
+  max-height: 250px;
+  margin-bottom: 20px;
+  border-radius: 4px;
+}
+
+#switchfc b:hover {
+  text-decoration: underline;
+  cursor: pointer;
 }
 
 /* Social Media styles */
