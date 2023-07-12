@@ -238,6 +238,13 @@ footer {
   margin-top: 10px;
 }
 
+.game-cover {
+  max-width: 70px;
+  max-height: 114px;
+  margin-right: 10px;
+  border-radius: 4px;
+}
+
 /* Web Apps styles */
 #webapps {
   display: none;
