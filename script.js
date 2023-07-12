@@ -211,7 +211,7 @@ profilePicture.addEventListener('click', activateSecretTheme);
 var footer = document.querySelector('footer');
 
 // Get the start year
-var startYear = 2013; // Replace with the desired start year
+var startYear = 2023; // Replace with the desired start year
 
 // Get the current year
 var currentYear = new Date().getFullYear();
