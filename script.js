@@ -2,13 +2,13 @@ var clickCount = 0;
 var gamesData = [
   {
     name: "Animal Crossing: New Horizons",
-    playtime: 6165,
+    playtime: 6175,
     link: "https://www.nintendo.com/store/products/animal-crossing-new-horizons-switch",
     cover: "https://art.gametdb.com/switch/coverHQ/US/ACBAA.jpg"
   },
   {
     name: "Splatoon 3",
-    playtime: 380,
+    playtime: 385,
     link: "https://www.nintendo.com/store/products/splatoon-3-switch",
     cover: "https://art.gametdb.com/switch/coverM/US/AV5JA.jpg"
   },
@@ -140,6 +140,25 @@ function activateSecretTheme() {
     clickCount = 0; // Reset click count
   }
 }
+
+// Check the hash value in the URL and show the corresponding section
+function showSectionFromHash() {
+  var hash = window.location.hash;
+  var sections = ['about', 'switchfc', 'ninnews', 'most-played-games', 'webapps', 'socialmedia'];
+
+  // Hide all sections
+  sections.forEach(function (section) {
+    document.getElementById(section).style.display = 'none';
+  });
+
+  // Show the section corresponding to the hash value
+  if (sections.includes(hash.substr(1))) {
+    document.getElementById(hash.substr(1)).style.display = 'block';
+  }
+}
+
+// Call the function on page load
+showSectionFromHash();
 
 // Attach click event listener to the profile picture
 var profilePicture = document.getElementById('profile-picture');
