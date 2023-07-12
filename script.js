@@ -154,20 +154,32 @@ function showSectionFromHash() {
   // Show the section corresponding to the hash value
   if (sections.includes(hash.substr(1))) {
     document.getElementById(hash.substr(1)).style.display = 'block';
+
+    // Scroll to the "CodyMKW" text
+    document.getElementById('cody-heading').scrollIntoView({ behavior: 'smooth', block: 'start' });
   } else {
-    // If the hash value is not a valid section ID, show the default section
+    // If the hash value is not a valid section ID, show the default section (About)
     document.getElementById('about').style.display = 'block';
+
+    // Scroll to the "CodyMKW" text
+    document.getElementById('cody-heading').scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
+}
+
+// Function to update the hash value in the URL and display the corresponding section
+function updateHash(section) {
+  // Remove the previous hash from the URL
+  history.pushState('', document.title, window.location.pathname);
+
+  // Add the new hash to the URL
+  window.location.hash = section;
+
+  // Show the corresponding section and scroll to the "CodyMKW" text
+  showSectionFromHash();
 }
 
 // Call the function on page load
 showSectionFromHash();
-
-// Function to update the hash value in the URL and display the corresponding section
-function updateHash(section) {
-  window.location.hash = section;
-  showSectionFromHash(); // Display the corresponding section
-}
 
 // Attach click event listener to the profile picture
 var profilePicture = document.getElementById('profile-picture');
