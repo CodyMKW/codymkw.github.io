@@ -207,6 +207,17 @@ profilePicture.addEventListener('click', activateSecretTheme);
       codyHeading2.classList.add("shimmer");
     }
 
+    // Calculate age based on birthdate
+var birthDate = new Date(1991, 0, 17);
+var currentDate = new Date();
+var age = currentDate.getFullYear() - birthDate.getFullYear();
+
+// Update age in the HTML code
+var ageElement = document.getElementById('age');
+if (ageElement) {
+  ageElement.textContent = age.toString();
+}
+
    // Get the footer element
 var footer = document.querySelector('footer');
 
