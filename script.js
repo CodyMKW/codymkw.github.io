@@ -154,11 +154,19 @@ function showSectionFromHash() {
   // Show the section corresponding to the hash value
   if (sections.includes(hash.substr(1))) {
     document.getElementById(hash.substr(1)).style.display = 'block';
+  } else {
+    // If the hash value is not a valid section ID, show the default section
+    document.getElementById('about').style.display = 'block';
   }
 }
 
 // Call the function on page load
 showSectionFromHash();
+
+// Function to update the hash value in the URL when a button is pressed
+function updateHash(section) {
+  window.location.hash = section;
+}
 
 // Attach click event listener to the profile picture
 var profilePicture = document.getElementById('profile-picture');
