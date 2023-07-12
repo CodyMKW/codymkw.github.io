@@ -4,19 +4,19 @@ var gamesData = [
     name: "Animal Crossing: New Horizons",
     playtime: 6175,
     link: "https://www.nintendo.com/store/products/animal-crossing-new-horizons-switch",
-    cover: "https://art.gametdb.com/switch/coverHQ/US/ACBAA.jpg"
+    cover: "https://static-cdn.jtvnw.net/ttv-boxart/509538_IGDB-144x192.jpg"
   },
   {
     name: "Splatoon 3",
     playtime: 385,
     link: "https://www.nintendo.com/store/products/splatoon-3-switch",
-    cover: "https://art.gametdb.com/switch/coverM/US/AV5JA.jpg"
+    cover: "https://static-cdn.jtvnw.net/ttv-boxart/1158884259_IGDB-144x192.jpg"
   },
   {
     name: "Ninjala",
     playtime: 230,
     link: "https://www.nintendo.com/store/products/ninjala-switch",
-    cover: "https://art.gametdb.com/switch/coverM/JA/AJL5A.jpg"
+    cover: "https://static-cdn.jtvnw.net/ttv-boxart/508259_IGDB-144x192.jpg"
   },
   {
     name: "Fall Guys",
