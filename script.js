@@ -207,7 +207,7 @@ profilePicture.addEventListener('click', activateSecretTheme);
       codyHeading2.classList.add("shimmer");
     }
 
-    // Get the footer element
+   // Get the footer element
 var footer = document.querySelector('footer');
 
 // Get the start year
@@ -217,7 +217,7 @@ var startYear = 2023; // Replace with the desired start year
 var currentYear = new Date().getFullYear();
 
 // Build the footer text
-var footerText = '&copy; ' + startYear + ' - ' + currentYear + ' CodyMKW. All rights reserved.';
+var footerText = '&copy; ' + (startYear === currentYear ? startYear : startYear + ' - ' + currentYear) + ' CodyMKW. All rights reserved.';
 
 // Update the footer text
 footer.innerHTML = footerText;
