@@ -163,9 +163,10 @@ function showSectionFromHash() {
 // Call the function on page load
 showSectionFromHash();
 
-// Function to update the hash value in the URL when a button is pressed
+// Function to update the hash value in the URL and display the corresponding section
 function updateHash(section) {
   window.location.hash = section;
+  showSectionFromHash(); // Display the corresponding section
 }
 
 // Attach click event listener to the profile picture
