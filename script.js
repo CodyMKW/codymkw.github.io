@@ -31,54 +31,6 @@ var gamesData = [
     cover: "https://static-cdn.jtvnw.net/ttv-boxart/33214-144x192.jpg"
   }
 ];
-// Achievement data
-var achievements = [
-  {
-    name: "Secret Theme Activated",
-    title: "Secret Theme Activated",
-    description: "Congratulations! You've activated the secret theme.",
-    icon: "achievement-icons/colorful.jpg"
-  },
-  // Add more achievements here...
-];
-
-// Show achievement notification
-function showAchievementNotification(achievement) {
-  var notificationContainer = document.createElement('div');
-  notificationContainer.classList.add('achievement-notification');
-
-  var iconElement = document.createElement('img');
-  iconElement.classList.add('achievement-icon');
-  iconElement.src = achievement.icon;
-  iconElement.alt = achievement.title;
-  notificationContainer.appendChild(iconElement);
-
-  var textContainer = document.createElement('div');
-  var titleElement = document.createElement('div');
-  titleElement.classList.add('achievement-title');
-  titleElement.textContent = achievement.title;
-  textContainer.appendChild(titleElement);
-
-  var descriptionElement = document.createElement('div');
-  descriptionElement.classList.add('achievement-description');
-  descriptionElement.textContent = achievement.description;
-  textContainer.appendChild(descriptionElement);
-
-  notificationContainer.appendChild(textContainer);
-  document.body.appendChild(notificationContainer);
-
-  // Automatically remove the notification after 5 seconds
-  setTimeout(function() {
-    notificationContainer.remove();
-  }, 5000);
-}
-
-// Usage example
-var secretThemeAchievement = achievements.find(function(a) {
-  return a.name === "Secret Theme Activated";
-});
-
-showAchievementNotification(secretThemeAchievement);
 
 // Sort games based on playtime in descending order
 gamesData.sort(function (a, b) {
@@ -172,29 +124,23 @@ function activateSecretTheme() {
   clickCount++;
 
   if (clickCount === 17) {
-    // Check if the achievement has already been achieved
-    var secretThemeAchievement = achievements.find(function (a) {
-      return a.name === "Secret Theme Activated";
-    });
+    var bodyElement = document.querySelector('body');
+    var themes = ['alizarin-crimson', 'absolute-zero', 'amethyst', 'baby-pink', 'aquamarine', 'arylide-yellow', 'orange']; // Add more colors if desired
 
-    if (!secretThemeAchievement.achieved) {
-      var bodyElement = document.querySelector('body');
-      var themes = ['alizarin-crimson', 'absolute-zero', 'amethyst', 'baby-pink', 'aquamarine', 'arylide-yellow', 'orange']; // Add more colors if desired
-
-      secretThemeInterval = setInterval(function () {
-        var randomTheme = themes[Math.floor(Math.random() * themes.length)];
-        bodyElement.className = randomTheme;
-      }, 900);
-
-      // Set the achievement as achieved
-      secretThemeAchievement.achieved = true;
-
-      // Show the achievement notification
-      showAchievementNotification(secretThemeAchievement);
-    }
+    secretThemeInterval = setInterval(function() {
+      var randomTheme = themes[Math.floor(Math.random() * themes.length)];
+      bodyElement.className = randomTheme;
+    }, 900);
 
     // Show seizure warning popup
     alert("Seizure Warning: The secret theme may contain flashing lights or rapidly changing colors. If you have photosensitive epilepsy or any similar condition, please disable the secret theme immediately by clicking the profile picture again.");
+
+    // Show achievement notification
+    var secretThemeAchievement = achievements.find(function(a) {
+      return a.name === "Secret Theme Activated";
+    });
+
+    showAchievementNotification(secretThemeAchievement);
   } else if (clickCount === 18) {
     clearInterval(secretThemeInterval); // Disable the secret theme
     document.querySelector('body').className = ''; // Remove any theme classes

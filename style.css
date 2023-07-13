@@ -372,34 +372,3 @@ footer {
   background-color: #FFA500;
   color: #FFFFFF;
 }
-
-/* Achievement Notification styles */
-.achievement-notification {
-  position: fixed;
-  top: 20px;
-  left: 20px;
-  display: flex;
-  align-items: center;
-  background-color: #222;
-  color: #FFF;
-  padding: 10px;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  z-index: 999;
-}
-
-.achievement-icon {
-  width: 40px;
-  height: 40px;
-  margin-right: 10px;
-  border-radius: 50%;
-}
-
-.achievement-title {
-  font-size: 18px;
-  font-weight: bold;
-}
-
-.achievement-description {
-  font-size: 14px;
-}
