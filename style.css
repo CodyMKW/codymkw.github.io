@@ -372,3 +372,28 @@ footer {
   background-color: #FFA500;
   color: #FFFFFF;
 }
+
+/* Achievement System styles */
+.achievement-notification {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  display: flex;
+  align-items: center;
+  background-color: #f00;
+  color: #fff;
+  padding: 10px;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  z-index: 9999;
+}
+
+.achievement-notification img {
+  width: 24px;
+  height: 24px;
+  margin-right: 10px;
+}
+
+.achievement-notification span {
+  font-weight: bold;
+}

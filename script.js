@@ -31,6 +31,34 @@ var gamesData = [
     cover: "https://static-cdn.jtvnw.net/ttv-boxart/33214-144x192.jpg"
   }
 ];
+var achievements = [
+  {
+    name: "Secret Theme Activated",
+    description: "Unleash the power of the secret theme!",
+    icon: "achievement-icons/colors.jpg"
+  },
+  // Add more achievements here
+];
+
+function showAchievementNotification(achievement) {
+  var notification = document.createElement('div');
+  notification.classList.add('achievement-notification');
+  
+  var icon = document.createElement('img');
+  icon.src = achievement.icon;
+  icon.alt = achievement.name;
+  
+  var text = document.createElement('span');
+  text.textContent = achievement.name;
+  
+  notification.appendChild(icon);
+  notification.appendChild(text);
+  document.body.appendChild(notification);
+  
+  setTimeout(function() {
+    notification.remove();
+  }, 5000);
+}
 
 // Sort games based on playtime in descending order
 gamesData.sort(function (a, b) {
@@ -134,6 +162,13 @@ function activateSecretTheme() {
 
     // Show seizure warning popup
     alert("Seizure Warning: The secret theme may contain flashing lights or rapidly changing colors. If you have photosensitive epilepsy or any similar condition, please disable the secret theme immediately by clicking the profile picture again.");
+
+    // Show achievement notification
+    var secretThemeAchievement = achievements.find(function(a) {
+      return a.name === "Secret Theme Activated";
+    });
+
+    showAchievementNotification(secretThemeAchievement);
   } else if (clickCount === 18) {
     clearInterval(secretThemeInterval); // Disable the secret theme
     document.querySelector('body').className = ''; // Remove any theme classes
