@@ -373,30 +373,33 @@ footer {
   color: #FFFFFF;
 }
 
-/* Schievement System styles */
+/* Achievement Notification styles */
 .achievement-notification {
   position: fixed;
   top: 20px;
   left: 20px;
-  z-index: 9999;
-  background-color: rgba(0, 0, 0, 0.8);
-  color: #FFF;
-  padding: 10px;
-  border-radius: 4px;
-}
-
-.achievement-content {
   display: flex;
   align-items: center;
+  background-color: #222;
+  color: #FFF;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  z-index: 999;
 }
 
-.achievement-content h4 {
-  margin: 0;
+.achievement-icon {
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
+  border-radius: 50%;
+}
+
+.achievement-title {
   font-size: 18px;
   font-weight: bold;
 }
 
-.achievement-content p {
-  margin: 0;
+.achievement-description {
   font-size: 14px;
 }

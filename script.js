@@ -31,36 +31,54 @@ var gamesData = [
     cover: "https://static-cdn.jtvnw.net/ttv-boxart/33214-144x192.jpg"
   }
 ];
+// Achievement data
 var achievements = [
   {
     name: "Secret Theme Activated",
-    description: "Discover the secret theme by clicking the profile picture 17 times.",
-    achieved: false
+    title: "Secret Theme Activated",
+    description: "Congratulations! You've activated the secret theme.",
+    icon: "secret-achievement.png"
   },
-  // Add more achievements here
+  // Add more achievements here...
 ];
 
+// Show achievement notification
 function showAchievementNotification(achievement) {
-  // Create the notification element
-  var notification = document.createElement('div');
-  notification.className = 'achievement-notification';
+  var notificationContainer = document.createElement('div');
+  notificationContainer.classList.add('achievement-notification');
 
-  // Create the content of the notification
-  var content = document.createElement('div');
-  content.className = 'achievement-content';
-  content.innerHTML = '<h4>' + achievement.name + '</h4><p>' + achievement.description + '</p>';
+  var iconElement = document.createElement('img');
+  iconElement.classList.add('achievement-icon');
+  iconElement.src = achievement.icon;
+  iconElement.alt = achievement.title;
+  notificationContainer.appendChild(iconElement);
 
-  // Append the content to the notification
-  notification.appendChild(content);
+  var textContainer = document.createElement('div');
+  var titleElement = document.createElement('div');
+  titleElement.classList.add('achievement-title');
+  titleElement.textContent = achievement.title;
+  textContainer.appendChild(titleElement);
 
-  // Append the notification to the body
-  document.body.appendChild(notification);
+  var descriptionElement = document.createElement('div');
+  descriptionElement.classList.add('achievement-description');
+  descriptionElement.textContent = achievement.description;
+  textContainer.appendChild(descriptionElement);
 
-  // Set a timeout to remove the notification after a certain time
-  setTimeout(function () {
-    document.body.removeChild(notification);
-  }, 5000); // Adjust the time (in milliseconds) as desired
+  notificationContainer.appendChild(textContainer);
+  document.body.appendChild(notificationContainer);
+
+  // Automatically remove the notification after 5 seconds
+  setTimeout(function() {
+    notificationContainer.remove();
+  }, 5000);
 }
+
+// Usage example
+var secretThemeAchievement = achievements.find(function(a) {
+  return a.name === "Secret Theme Activated";
+});
+
+showAchievementNotification(secretThemeAchievement);
 
 // Sort games based on playtime in descending order
 gamesData.sort(function (a, b) {
