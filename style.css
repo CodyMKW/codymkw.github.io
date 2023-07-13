@@ -372,3 +372,31 @@ footer {
   background-color: #FFA500;
   color: #FFFFFF;
 }
+
+/* Schievement System styles */
+.achievement-notification {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 9999;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: #FFF;
+  padding: 10px;
+  border-radius: 4px;
+}
+
+.achievement-content {
+  display: flex;
+  align-items: center;
+}
+
+.achievement-content h4 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.achievement-content p {
+  margin: 0;
+  font-size: 14px;
+}
