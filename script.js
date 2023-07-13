@@ -134,6 +134,7 @@ function activateSecretTheme() {
 
     // Show seizure warning popup
     alert("Seizure Warning: The secret theme may contain flashing lights or rapidly changing colors. If you have photosensitive epilepsy or any similar condition, please disable the secret theme immediately by clicking the profile picture again.");
+  }
 }
 
 // Check the hash value in the URL and show the corresponding section
