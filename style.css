@@ -380,8 +380,9 @@ footer {
   left: 20px;
   display: flex;
   align-items: center;
-  background-color: #f00;
-  color: #fff;
+  background-color: #f7f7f7;
+  border: 2px solid #e3e3e3;
+  color: #000;
   padding: 10px;
   border-radius: 4px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
@@ -389,11 +390,12 @@ footer {
 }
 
 .achievement-notification img {
-  width: 24px;
-  height: 24px;
+  width: 36px;
+  height: 36px;
   margin-right: 10px;
 }
 
 .achievement-notification span {
   font-weight: bold;
 }
+
