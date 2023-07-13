@@ -31,45 +31,6 @@ var gamesData = [
     cover: "https://static-cdn.jtvnw.net/ttv-boxart/33214-144x192.jpg"
   }
 ];
-var achievements = [
-  {
-    name: "Secret Theme Activated",
-    description: "Unleash the power of the secret theme!",
-    icon: "achievement-icons/colors.jpg"
-  },
-  // Add more achievements here
-];
-
-function showAchievementNotification(achievement) {
-  var notification = document.createElement('div');
-  notification.classList.add('achievement-notification');
-  
-  var icon = document.createElement('img');
-  icon.src = achievement.icon;
-  icon.alt = achievement.name;
-  
-  var content = document.createElement('div');
-  content.classList.add('achievement-content');
-  
-  var title = document.createElement('span');
-  title.classList.add('achievement-title');
-  title.textContent = achievement.name;
-  
-  var description = document.createElement('p');
-  description.classList.add('achievement-description');
-  description.textContent = achievement.description;
-  
-  content.appendChild(title);
-  content.appendChild(description);
-  
-  notification.appendChild(icon);
-  notification.appendChild(content);
-  document.body.appendChild(notification);
-  
-  setTimeout(function() {
-    notification.remove();
-  }, 5000);
-}
 
 // Sort games based on playtime in descending order
 gamesData.sort(function (a, b) {
