@@ -212,10 +212,43 @@ var birthDate = new Date(1991, 0, 17);
 var currentDate = new Date();
 var age = currentDate.getFullYear() - birthDate.getFullYear();
 
+// Check if it's the birthday
+if (
+  currentDate.getMonth() === birthDate.getMonth() &&
+  currentDate.getDate() === birthDate.getDate()
+) {
+  // Add cake emojis and sparkle effect to the heading
+  var codyHeading = document.getElementById("cody-heading");
+  var codyHeading2 = document.getElementById("cody-heading2");
+  codyHeading.innerHTML = "🎂 CodyMKW 🎂";
+  codyHeading2.innerHTML = "Happy " + age + getOrdinalSuffix(age) + " Birthday!! 🥳";
+
+  // Add shimmer effect
+  codyHeading.classList.add("shimmer");
+  codyHeading2.classList.add("shimmer");
+}
+
 // Update age in the HTML code
 var ageElement = document.getElementById('age');
 if (ageElement) {
   ageElement.textContent = age.toString();
+}
+
+// Function to get the ordinal suffix for the age
+function getOrdinalSuffix(number) {
+  var suffix = 'th';
+  var lastDigit = number % 10;
+  var lastTwoDigits = number % 100;
+
+  if (lastDigit === 1 && lastTwoDigits !== 11) {
+    suffix = 'st';
+  } else if (lastDigit === 2 && lastTwoDigits !== 12) {
+    suffix = 'nd';
+  } else if (lastDigit === 3 && lastTwoDigits !== 13) {
+    suffix = 'rd';
+  }
+
+  return suffix;
 }
 
    // Get the footer element
