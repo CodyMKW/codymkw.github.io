@@ -48,11 +48,22 @@ function showAchievementNotification(achievement) {
   icon.src = achievement.icon;
   icon.alt = achievement.name;
   
-  var text = document.createElement('span');
-  text.textContent = achievement.name;
+  var content = document.createElement('div');
+  content.classList.add('achievement-content');
+  
+  var title = document.createElement('span');
+  title.classList.add('achievement-title');
+  title.textContent = achievement.name;
+  
+  var description = document.createElement('p');
+  description.classList.add('achievement-description');
+  description.textContent = achievement.description;
+  
+  content.appendChild(title);
+  content.appendChild(description);
   
   notification.appendChild(icon);
-  notification.appendChild(text);
+  notification.appendChild(content);
   document.body.appendChild(notification);
   
   setTimeout(function() {

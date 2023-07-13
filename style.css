@@ -380,9 +380,9 @@ footer {
   left: 20px;
   display: flex;
   align-items: center;
-  background-color: #f7f7f7;
-  border: 2px solid #e3e3e3;
-  color: #000;
+  background-color: #f7f7f717;
+  border: 2px solid #e3e3e300;
+  color: #fff;
   padding: 10px;
   border-radius: 4px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
@@ -399,3 +399,15 @@ footer {
   font-weight: bold;
 }
 
+.achievement-content {
+  flex-grow: 1;
+  margin-left: 10px;
+}
+
+.achievement-title {
+  font-weight: bold;
+}
+
+.achievement-description {
+  margin-top: 5px;
+}
