@@ -37,7 +37,7 @@ var achievements = [
     name: "Secret Theme Activated",
     title: "Secret Theme Activated",
     description: "Congratulations! You've activated the secret theme.",
-    icon: "achievement-icons/colorful.png"
+    icon: "achievement-icons/colorful.jpg"
   },
   // Add more achievements here...
 ];
