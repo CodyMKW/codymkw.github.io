@@ -27,9 +27,9 @@ body {
   .rules ul {
     list-style-type: disc;
     padding-left: 20px;
-    text-align: center;
   }
 
   .rules li {
     margin-bottom: 10px;
+    text-align: left;
   }
