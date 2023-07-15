@@ -66,3 +66,17 @@ body {
 body {
   cursor: url('https://codymkw.github.io/splat3/assets/inkling.png'), auto;
 }
+
+#chat-warning {
+  display: none;
+  color: #ccc;
+  text-align: center;
+  font-weight: bold;
+  font-size: 18px;
+  margin-top: 10px;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 10px;
+  border-radius: 5px;
+  max-width: 300px;
+  margin: 0 auto;
+}
