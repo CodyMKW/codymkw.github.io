@@ -22,16 +22,19 @@ body {
   max-height: 486px;
 }
 
-.chat-container::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: url('https://codymkw.github.io/splat3/assets/chat-bg.jpg');
-  background-repeat: no-repeat;
-  background-size: cover;
+.chat-frame {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+#chat-warning {
+  display: none;
+  color: #ccc;
+  text-align: center;
+  font-weight: bold;
+  font-size: 18px;
+  margin-top: 10px;
 }
 
 .rules {
