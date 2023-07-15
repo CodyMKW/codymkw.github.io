@@ -4,6 +4,14 @@ body {
   background-size: cover;
 }
 
+a {
+  color: yellow;
+}
+
+a:hover {
+  color: #7a7a01;
+}
+
 .container {
   display: flex;
   flex-direction: column;
