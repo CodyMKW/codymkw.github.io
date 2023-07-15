@@ -3,7 +3,7 @@ body {
     background-repeat: no-repeat;
     background-size: cover;
   }
-
+  
   .container {
     display: flex;
     flex-direction: column;
@@ -13,23 +13,39 @@ body {
     color: #ccc;
     text-align: center;
   }
-
+  
   .chat-container {
     width: 728px;
     height: 486px;
   }
+  
   .rules {
     margin-top: 20px;
     color: #ccc;
     text-align: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 800px;
+    margin: 0 auto;
   }
-
+  
+  .rules h2 {
+    margin-bottom: 10px;
+  }
+  
   .rules ul {
     list-style-type: disc;
     padding-left: 20px;
   }
-
+  
   .rules li {
     margin-bottom: 10px;
     text-align: left;
   }
+  
+  /* Change cursor to an image */
+  body {
+    cursor: url('https://codymkw.github.io/splat3/assets/inkling.png'), auto;
+  }
+  
