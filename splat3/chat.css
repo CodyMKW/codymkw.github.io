@@ -20,6 +20,36 @@ a:hover {
   height: 100vh;
   color: #ccc;
   text-align: center;
+  position: relative; /* Add position relative */
+}
+
+.side-image {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 200px; /* Adjust height as needed */
+  width: auto; /* Adjust width as needed */
+  z-index: 1;
+}
+
+.side-image.left {
+  left: 0;
+  background-image: url('https://place-hold.it/300x500'); /* Replace with the path to your left image */
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.side-image.right {
+  right: 0;
+  background-image: url('https://place-hold.it/300x500'); /* Replace with the path to your right image */
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+@media (max-width: 728px) {
+  .side-image {
+    display: none; /* Hide side images on smaller screens */
+  }
 }
 
 .chat-container {
