@@ -15,8 +15,10 @@ body {
   }
   
   .chat-container {
-    width: 728px;
-    height: 486px;
+    width: auto;
+    height: auto;
+    max-width: 728px;
+    max-height: 486px;
   }
   
   .rules {
