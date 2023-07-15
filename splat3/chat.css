@@ -15,11 +15,12 @@ body {
   }
 
   .chat-container {
-    width: 540px;
-    height: 405px;
+    width: 650px;
+    height: 486px;
   }
   .rules {
     margin-top: 20px;
+    color: #ccc;
     text-align: center;
   }
 
