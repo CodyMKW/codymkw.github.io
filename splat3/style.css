@@ -168,6 +168,9 @@ button:hover {
   padding-top: 20px;
   border-top: 1px solid #7289DA;
 }
+footer {
+  color: #DCDDDE;
+}
 .footer p {
   margin: 0;
   color: #DCDDDE;
