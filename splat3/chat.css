@@ -1,0 +1,59 @@
+body {
+    background-image: url('/assets/splat-wallpaper.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    text-align: center;
+  }
+
+  .chat-container {
+    width: 540px;
+    height: 405px;
+  }
+  * { 
+    cursor: url('/assets/inkling.png'), auto 
+    } 
+    * { 
+    font-family: Roboto; 
+    } 
+    h1 { 
+    font-family: Roboto !important; 
+    color: #3b04d2; 
+    text-shadow: 0px 0px 4px #000000; 
+    } 
+    .rulesContainer { 
+    text-align: left !important; 
+    color: #FFF; 
+    font-family: Roboto; 
+    border-radius: 10px; 
+    -o-border-radius: 10px; 
+    -moz-border-radius: 10px; 
+    -webkit-border-radius: 10px; 
+    padding: 25px; 
+    background: #010054; 
+    width: 900px; 
+    box-shadow: 0px 0px 10px 3px #000000; 
+    -o-box-shadow: 0px 0px 10px 3px #000000; 
+    -moz-box-shadow: 0px 0px 10px 3px #000000; 
+    -webkit-box-shadow: 0px 0px 10px35px #000000; 
+    } 
+    .rulesContainer:hover { 
+    margin-left: 5%; 
+    } 
+    a:link { 
+    color: #07FFA5; 
+    } 
+    a:hover { 
+    color: #07D489; 
+    text-shadow: 0 0 15px #FFFFFF; 
+    } 
+    a:visited { 
+    color: #07D489; 
+}
