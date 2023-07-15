@@ -18,7 +18,7 @@ window.addEventListener('DOMContentLoaded', function() {
   });
   
      // Get the footer element
-var footer = document.querySelector('footer');
+var footer = document.querySelector('.footer');
 
 // Get the start year
 var startYear = 2023; // Replace with the desired start year

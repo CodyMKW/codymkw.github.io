@@ -48,7 +48,7 @@ a:hover {
 }
 
 #chat-warning p {
-  text-align: justify;
+  text-align: initial;
 }
 
 .rules {
@@ -92,7 +92,7 @@ body {
   padding: 10px;
   border-radius: 5px;
   max-width: 300px;
-  margin: 200px auto;
+  margin: 120px auto;
 }
 
 p {
