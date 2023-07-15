@@ -20,40 +20,6 @@ a:hover {
   height: 100vh;
   color: #ccc;
   text-align: center;
-  position: relative;
-}
-
-.left-image,
-.right-image {
-  display: none;
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 100px;
-  height: 100px;
-  /* Add any additional styling for the side images */
-}
-
-@media screen and (min-width: 729px) {
-  .chat-container {
-    /* Adjust the max-width to make space for the side images */
-    max-width: 600px;
-    margin: 0 auto;
-  }
-
-  .left-image {
-    display: block;
-    left: 0;
-    /* Adjust the path to your left image */
-    background-image: url('https://placehold.co/300x500/000000/016301/png');
-  }
-
-  .right-image {
-    display: block;
-    right: 0;
-    /* Adjust the path to your right image */
-    background-image: url('https://placehold.co/300x500/000000/016301/png');
-  }
 }
 
 .chat-container {
