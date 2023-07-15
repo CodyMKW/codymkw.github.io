@@ -4,7 +4,7 @@ window.addEventListener('DOMContentLoaded', function() {
     var chatWarning = chatContainer.querySelector('#chat-warning');
   
     function checkChatContainerSize() {
-      if (chatContainer.clientWidth < chatFrame.clientWidth) {
+      if (chatContainer.clientWidth < chatFrame.offsetWidth) {
         chatFrame.style.display = 'none';
         chatWarning.style.display = 'block';
       } else {
