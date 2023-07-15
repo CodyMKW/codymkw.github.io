@@ -115,3 +115,19 @@ footer {
   margin: 0;
   color: #DCDDDE;
 }
+
+.side-image {
+  display: none;
+}
+@media (min-width: 728px) {
+  .chat-container {
+    display: flex;
+  }
+  .side-image {
+    display: block;
+    width: 300px;
+    height: 500px;
+    background-image: url('https://placehold.co/300x500/000000/016301.png');
+    background-size: cover;
+  }
+}
