@@ -794,3 +794,18 @@ randomizeButton.addEventListener('click', () => {
 });
 
 randomizeButton.addEventListener("click", randomize);
+
+   // Get the footer element
+   var footer = document.querySelector('footer');
+
+   // Get the start year
+   var startYear = 2023; // Replace with the desired start year
+   
+   // Get the current year
+   var currentYear = new Date().getFullYear();
+   
+   // Build the footer text
+   var footerText = '&copy; ' + (startYear === currentYear ? startYear : startYear + ' - ' + currentYear) + ' CodyMKW. All rights reserved.';
+   
+   // Update the footer text
+   footer.innerHTML = footerText;

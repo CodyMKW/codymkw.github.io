@@ -172,3 +172,11 @@ button:hover {
   margin: 0;
   color: #DCDDDE;
 }
+
+a {
+  color: green;
+}
+
+a:hover {
+  color: darkgreen;
+}
