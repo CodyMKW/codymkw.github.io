@@ -20,35 +20,39 @@ a:hover {
   height: 100vh;
   color: #ccc;
   text-align: center;
-  position: relative; /* Add position relative */
+  position: relative;
 }
 
-.side-image {
+.left-image,
+.right-image {
+  display: none;
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  height: 200px; /* Adjust height as needed */
-  width: auto; /* Adjust width as needed */
-  z-index: 1;
+  width: 100px;
+  height: 100px;
+  /* Add any additional styling for the side images */
 }
 
-.side-image.left {
-  left: 0;
-  background-image: url('https://place-hold.it/300x500'); /* Replace with the path to your left image */
-  background-repeat: no-repeat;
-  background-size: cover;
-}
+@media screen and (min-width: 729px) {
+  .chat-container {
+    /* Adjust the max-width to make space for the side images */
+    max-width: 600px;
+    margin: 0 auto;
+  }
 
-.side-image.right {
-  right: 0;
-  background-image: url('https://place-hold.it/300x500'); /* Replace with the path to your right image */
-  background-repeat: no-repeat;
-  background-size: cover;
-}
+  .left-image {
+    display: block;
+    left: 0;
+    /* Adjust the path to your left image */
+    background-image: url('https://placehold.co/300x500/000000/016301/png');
+  }
 
-@media (max-width: 728px) {
-  .side-image {
-    display: none; /* Hide side images on smaller screens */
+  .right-image {
+    display: block;
+    right: 0;
+    /* Adjust the path to your right image */
+    background-image: url('https://placehold.co/300x500/000000/016301/png');
   }
 }
 
