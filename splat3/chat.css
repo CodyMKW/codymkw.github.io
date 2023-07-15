@@ -1,5 +1,5 @@
 body {
-    background-image: url('/assets/splat-wallpaper.jpg');
+    background-image: url('https://codymkw.netlify.app/splat3/assets/splat-wallpaper.jpg');
     background-repeat: no-repeat;
     background-size: cover;
   }
@@ -19,7 +19,7 @@ body {
   }
   .rules {
     margin-top: 20px;
-    text-align: left;
+    text-align: center;
   }
 
   .rules ul {
