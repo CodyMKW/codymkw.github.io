@@ -4,12 +4,12 @@ window.addEventListener('DOMContentLoaded', function() {
     var chatWarning = chatContainer.querySelector('#chat-warning');
   
     function checkChatContainerSize() {
-      if (chatContainer.clientWidth >= chatFrame.clientWidth) {
-        chatFrame.style.display = 'block';
-        chatWarning.style.display = 'none';
-      } else {
+      if (chatContainer.clientWidth < chatFrame.clientWidth) {
         chatFrame.style.display = 'none';
         chatWarning.style.display = 'block';
+      } else {
+        chatFrame.style.display = 'block';
+        chatWarning.style.display = 'none';
       }
     }
   
