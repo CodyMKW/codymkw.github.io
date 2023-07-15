@@ -15,7 +15,7 @@ body {
   }
 
   .chat-container {
-    width: 650px;
+    width: 728px;
     height: 486px;
   }
   .rules {
@@ -27,6 +27,7 @@ body {
   .rules ul {
     list-style-type: disc;
     padding-left: 20px;
+    text-align: center;
   }
 
   .rules li {
