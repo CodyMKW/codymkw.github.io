@@ -13,7 +13,17 @@ window.addEventListener('DOMContentLoaded', function() {
       }
     }
   
-    window.addEventListener('resize', checkChatContainerSize);
+    function observeResize() {
+      var resizeObserver = new ResizeObserver(checkChatContainerSize);
+      resizeObserver.observe(chatContainer);
+    }
+  
+    if (typeof ResizeObserver === 'undefined') {
+      window.addEventListener('resize', checkChatContainerSize);
+    } else {
+      observeResize();
+    }
+  
     checkChatContainerSize();
   });
   
