@@ -47,6 +47,10 @@ a:hover {
   margin-top: 10px;
 }
 
+#chat-warning p {
+  text-align: justify;
+}
+
 .rules {
   margin-top: 20px;
   color: #ccc;
@@ -89,4 +93,24 @@ body {
   border-radius: 5px;
   max-width: 300px;
   margin: 200px auto;
+}
+
+p {
+  text-align: center;
+}
+
+.footer {
+  text-align: center;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #7289DA;
+}
+
+footer {
+  color: #DCDDDE;
+}
+
+.footer p {
+  margin: 0;
+  color: #DCDDDE;
 }
