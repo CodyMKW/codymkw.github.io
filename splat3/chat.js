@@ -4,7 +4,7 @@ window.addEventListener('DOMContentLoaded', function() {
     var chatWarning = chatContainer.querySelector('#chat-warning');
   
     function checkChatContainerSize() {
-      if (chatContainer.clientWidth < chatFrame.offsetWidth) {
+      if (window.matchMedia("(max-width: 728px)").matches) {
         chatFrame.style.display = 'none';
         chatWarning.style.display = 'block';
       } else {
@@ -13,17 +13,7 @@ window.addEventListener('DOMContentLoaded', function() {
       }
     }
   
-    function observeResize() {
-      var resizeObserver = new ResizeObserver(checkChatContainerSize);
-      resizeObserver.observe(chatContainer);
-    }
-  
-    if (typeof ResizeObserver === 'undefined') {
-      window.addEventListener('resize', checkChatContainerSize);
-    } else {
-      observeResize();
-    }
-  
+    window.addEventListener('resize', checkChatContainerSize);
     checkChatContainerSize();
   });
   
