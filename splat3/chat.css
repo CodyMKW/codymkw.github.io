@@ -20,6 +20,26 @@ a:hover {
   height: 100vh;
   color: #ccc;
   text-align: center;
+  position: relative;
+}
+
+.side-images {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.side-image {
+  display: none;
+}
+
+@media (min-width: 728px) {
+  .side-image {
+    display: block;
+    max-width: 300px;
+    max-height: 500px;
+  }
 }
 
 .chat-container {
