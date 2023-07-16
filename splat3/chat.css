@@ -2,30 +2,28 @@ body {
   background-image: url('https://codymkw.github.io/splat3/assets/splat-wallpaper.jpg');
   background-repeat: no-repeat;
   background-size: cover;
-  overflow: hidden; /* Prevent scrolling overflow */
 }
 
 /* Ink splatter animation */
 @keyframes ink-splatter {
   0% {
-    transform: translate(-50%, -50%) scale(0);
+    transform: scale(0);
     opacity: 0;
   }
   50% {
-    transform: translate(-50%, -50%) scale(1);
+    transform: scale(1);
     opacity: 1;
   }
   100% {
-    transform: translate(-50%, -50%) scale(0);
+    transform: scale(0);
     opacity: 0;
   }
 }
 
 .ink-splatter {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  position: absolute;
+  top: 0;
+  left: 0;
   pointer-events: none; /* Ignore mouse events */
   z-index: 9999;
   opacity: 0;

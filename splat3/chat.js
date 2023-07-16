@@ -31,6 +31,7 @@ window.addEventListener('DOMContentLoaded', function() {
       // Animate the ink splatter
       setTimeout(function() {
         splatter.style.opacity = '1';
+        splatter.style.transform = 'scale(1)';
         splatter.style.animation = 'ink-splatter 1s ease-out';
       }, 10);
   
@@ -42,7 +43,7 @@ window.addEventListener('DOMContentLoaded', function() {
   
     document.addEventListener('mousemove', createInkSplatter);
   });
-  
+    
   window.addEventListener('DOMContentLoaded', function() {
     // Get the footer element
     var footer = document.querySelector('footer');
