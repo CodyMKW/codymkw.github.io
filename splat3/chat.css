@@ -20,42 +20,46 @@ a:hover {
   height: 100vh;
   color: #ccc;
   text-align: center;
-  position: relative;
-}
-
-.chat-wrapper {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 20px;
-}
-
-.side-image {
-  display: none;
-}
-
-@media (min-width: 728px) {
-  .side-image {
-    display: block;
-    max-width: 300px;
-    max-height: 500px;
-  }
 }
 
 .chat-container {
   position: relative;
   width: 100%;
-  height: 486px;
   max-width: 728px;
+  height: 486px;
   max-height: 486px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.left {
-  order: 1;
+.side-image {
+  display: none;
+  width: 300px;
+  height: 500px;
+  background-size: cover;
+  background-position: center;
 }
 
-.right {
-  order: 3;
+.left-image {
+  background-image: url('https://placehold.co/300x500/000000/016301/png'); /* Left side image URL */
+  margin-right: 10px; /* Space between image and chat container */
+}
+
+.right-image {
+  background-image: url('https://placehold.co/300x500/000000/016301/png'); /* Right side image URL */
+  margin-left: 10px; /* Space between image and chat container */
+}
+
+@media (min-width: 768px) {
+  .chat-container {
+    height: 516px; /* Adjust height to accommodate the side images */
+  }
+
+  .side-image {
+    display: block;
+  }
 }
 
 .chat-frame {
