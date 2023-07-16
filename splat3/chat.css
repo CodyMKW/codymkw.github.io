@@ -119,10 +119,15 @@ footer {
 .side-image {
   display: none;
 }
+
 @media (min-width: 728px) {
   .chat-container {
     display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
   }
+
   .side-image {
     display: block;
     width: 300px;
