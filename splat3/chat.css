@@ -23,7 +23,7 @@ a:hover {
   position: relative;
 }
 
-.side-images {
+.chat-wrapper {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -48,6 +48,14 @@ a:hover {
   height: 486px;
   max-width: 728px;
   max-height: 486px;
+}
+
+.left {
+  order: 1;
+}
+
+.right {
+  order: 3;
 }
 
 .chat-frame {
