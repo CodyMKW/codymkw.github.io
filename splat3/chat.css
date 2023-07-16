@@ -45,10 +45,12 @@ a:hover {
 
 .left-image {
   background-position: left center;
+  margin-right: 20px; /* Add margin to push image away from chat container */
 }
 
 .right-image {
   background-position: right center;
+  margin-left: 20px; /* Add margin to push image away from chat container */
 }
 
 @media (min-width: 729px) {
@@ -62,7 +64,7 @@ a:hover {
   }
 
   .chat-frame {
-    width: calc(100% - 620px);
+    width: calc(100% - 640px); /* Adjust width to accommodate margin for both side images */
   }
 }
 
