@@ -2,6 +2,34 @@ body {
   background-image: url('https://codymkw.github.io/splat3/assets/splat-wallpaper.jpg');
   background-repeat: no-repeat;
   background-size: cover;
+  overflow: hidden; /* Prevent scrolling overflow */
+}
+
+/* Ink splatter animation */
+@keyframes ink-splatter {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0;
+  }
+}
+
+.ink-splatter {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none; /* Ignore mouse events */
+  z-index: 9999;
+  opacity: 0;
+  transition: opacity 0.3s ease-out;
 }
 
 a {
@@ -20,6 +48,8 @@ a:hover {
   height: 100vh;
   color: #ccc;
   text-align: center;
+  position: relative; /* Ensure z-index works */
+  z-index: 1; /* Place container above ink splatters */
 }
 
 .chat-container {

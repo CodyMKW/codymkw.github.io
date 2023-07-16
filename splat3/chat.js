@@ -16,6 +16,32 @@ window.addEventListener('DOMContentLoaded', function() {
     window.addEventListener('resize', checkChatContainerSize);
     checkChatContainerSize();
   });
+
+  window.addEventListener('DOMContentLoaded', function() {
+    var container = document.querySelector('.container');
+  
+    function createInkSplatter(event) {
+      var splatter = document.createElement('div');
+      splatter.classList.add('ink-splatter');
+      splatter.style.left = event.clientX + 'px';
+      splatter.style.top = event.clientY + 'px';
+  
+      container.appendChild(splatter);
+  
+      // Animate the ink splatter
+      setTimeout(function() {
+        splatter.style.opacity = '1';
+        splatter.style.animation = 'ink-splatter 1s ease-out';
+      }, 10);
+  
+      // Remove the ink splatter after animation completes
+      setTimeout(function() {
+        splatter.remove();
+      }, 1000);
+    }
+  
+    document.addEventListener('mousemove', createInkSplatter);
+  });
   
   window.addEventListener('DOMContentLoaded', function() {
     // Get the footer element
