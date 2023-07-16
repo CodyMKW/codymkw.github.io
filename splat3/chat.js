@@ -18,32 +18,20 @@ window.addEventListener('DOMContentLoaded', function() {
   });
 
   window.addEventListener('DOMContentLoaded', function() {
-    var container = document.querySelector('.container');
+    var particleContainer = document.createElement('div');
+    particleContainer.classList.add('particle-container');
   
-    function createInkSplatter(event) {
-      var splatter = document.createElement('div');
-      splatter.classList.add('ink-splatter');
-      splatter.style.left = event.clientX + 'px';
-      splatter.style.top = event.clientY + 'px';
-  
-      container.appendChild(splatter);
-  
-      // Animate the ink splatter
-      setTimeout(function() {
-        splatter.style.opacity = '1';
-        splatter.style.transform = 'scale(1)';
-        splatter.style.animation = 'ink-splatter 1s ease-out';
-      }, 10);
-  
-      // Remove the ink splatter after animation completes
-      setTimeout(function() {
-        splatter.remove();
-      }, 1000);
+    for (var i = 0; i < 50; i++) {
+      var particle = document.createElement('div');
+      particle.classList.add('particle');
+      particle.style.left = Math.random() * 100 + '%';
+      particle.style.animationDuration = (Math.random() * 3 + 2) + 's';
+      particleContainer.appendChild(particle);
     }
   
-    document.addEventListener('mousemove', createInkSplatter);
-  });
-    
+    document.body.appendChild(particleContainer);
+  });  
+  
   window.addEventListener('DOMContentLoaded', function() {
     // Get the footer element
     var footer = document.querySelector('footer');
