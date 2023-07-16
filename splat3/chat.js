@@ -18,9 +18,21 @@ window.addEventListener('DOMContentLoaded', function() {
   });
 
   window.addEventListener('DOMContentLoaded', function() {
-    var inkAnimation = document.createElement('div');
-    inkAnimation.classList.add('ink-animation');
-    document.body.appendChild(inkAnimation);
+    var inkSplatterContainer = document.querySelector('.ink-splatter-container');
+  
+    function createInkSplatter(event) {
+      var inkSplatter = document.createElement('div');
+      inkSplatter.classList.add('ink-splatter');
+      inkSplatter.style.left = event.clientX - 50 + 'px';
+      inkSplatter.style.top = event.clientY - 50 + 'px';
+      inkSplatterContainer.appendChild(inkSplatter);
+  
+      setTimeout(function() {
+        inkSplatter.remove();
+      }, 1000);
+    }
+  
+    document.addEventListener('click', createInkSplatter);
   });  
   
   window.addEventListener('DOMContentLoaded', function() {
