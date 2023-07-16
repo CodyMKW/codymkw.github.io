@@ -16,24 +16,6 @@ window.addEventListener('DOMContentLoaded', function() {
     window.addEventListener('resize', checkChatContainerSize);
     checkChatContainerSize();
   });
-
-  window.addEventListener('DOMContentLoaded', function() {
-    var inkSplatterContainer = document.querySelector('.ink-splatter-container');
-  
-    function createInkSplatter(event) {
-      var inkSplatter = document.createElement('div');
-      inkSplatter.classList.add('ink-splatter');
-      inkSplatter.style.left = event.clientX - 50 + 'px';
-      inkSplatter.style.top = event.clientY - 50 + 'px';
-      inkSplatterContainer.appendChild(inkSplatter);
-  
-      setTimeout(function() {
-        inkSplatter.remove();
-      }, 1000);
-    }
-  
-    document.addEventListener('click', createInkSplatter);
-  });  
   
   window.addEventListener('DOMContentLoaded', function() {
     // Get the footer element
