@@ -3,8 +3,7 @@ const CACHE_NAME = 'mk8-cache';
 // Add whichever assets you want to precache here:
 const PRECACHE_ASSETS = [
     '/mk8/assets/',
-    '/mk8/script.js',
-    '/mk8/style.css'
+    '/mk8/'
 ]
 
 // Listener for the install event - precaches our assets list on service worker install.
