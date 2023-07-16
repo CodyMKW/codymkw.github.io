@@ -18,18 +18,9 @@ window.addEventListener('DOMContentLoaded', function() {
   });
 
   window.addEventListener('DOMContentLoaded', function() {
-    var particleContainer = document.createElement('div');
-    particleContainer.classList.add('particle-container');
-  
-    for (var i = 0; i < 50; i++) {
-      var particle = document.createElement('div');
-      particle.classList.add('particle');
-      particle.style.left = Math.random() * 100 + '%';
-      particle.style.animationDuration = (Math.random() * 3 + 2) + 's';
-      particleContainer.appendChild(particle);
-    }
-  
-    document.body.appendChild(particleContainer);
+    var inkAnimation = document.createElement('div');
+    inkAnimation.classList.add('ink-animation');
+    document.body.appendChild(inkAnimation);
   });  
   
   window.addEventListener('DOMContentLoaded', function() {
