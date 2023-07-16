@@ -1,6 +1,6 @@
 {
     "theme_color": "#141515",
-    "background_color": "#207de2",
+    "background_color": "#6923d1",
     "display": "standalone",
     "scope": "/mk8",
     "start_url": "/mk8",
@@ -27,6 +27,12 @@
             "src": "/mk8/assets/icon-512x512.png",
             "sizes": "512x512",
             "type": "image/png"
+        },
+        {
+            "src": "/mk8/assets/maskable_icon.png",
+            "sizes": "196x196",
+            "type": "image/png",
+            "purpose": "any maskable"
         }
     ]
 }
