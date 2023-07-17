@@ -455,6 +455,33 @@ if ("serviceWorker" in navigator) {
     });
 }
 
+// Wait for the page to load
+document.addEventListener('DOMContentLoaded', function () {
+  // Check if the PWA notification is already dismissed
+  if (!localStorage.getItem('pwaNotificationDismissed')) {
+    // Show the PWA notification
+    showPwaNotification();
+  }
+});
+
+// Show the PWA notification
+function showPwaNotification() {
+  var pwaNotification = document.getElementById('pwa-notification');
+  if (pwaNotification) {
+    pwaNotification.style.display = 'block';
+  }
+}
+
+// Hide the PWA notification
+function hidePwaNotification() {
+  var pwaNotification = document.getElementById('pwa-notification');
+  if (pwaNotification) {
+    pwaNotification.style.display = 'none';
+  }
+  // Store the dismissal state in local storage
+  localStorage.setItem('pwaNotificationDismissed', 'true');
+}
+
    // Get the footer element
    var footer = document.querySelector('footer');
 
