@@ -2,13 +2,13 @@ var clickCount = 0;
 var gamesData = [
   {
     name: "Animal Crossing: New Horizons",
-    playtime: 6175,
+    playtime: 6265,
     link: "https://www.nintendo.com/store/products/animal-crossing-new-horizons-switch",
     cover: "https://static-cdn.jtvnw.net/ttv-boxart/509538_IGDB-144x192.jpg"
   },
   {
     name: "Splatoon 3",
-    playtime: 385,
+    playtime: 400,
     link: "https://www.nintendo.com/store/products/splatoon-3-switch",
     cover: "https://static-cdn.jtvnw.net/ttv-boxart/1158884259_IGDB-144x192.jpg"
   },
@@ -26,7 +26,7 @@ var gamesData = [
   },
   {
     name: "Fortnite",
-    playtime: 2790,
+    playtime: 2795,
     link: "https://www.nintendo.com/store/products/fortnite-switch",
     cover: "https://static-cdn.jtvnw.net/ttv-boxart/33214-144x192.jpg"
   }
