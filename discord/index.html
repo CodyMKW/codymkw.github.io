@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Claim your exclusive Discord Nitro subscription!">
+<meta name="keywords" content="Discord, Nitro, Offer, Prank, Exclusive">
+<title>Exclusive Discord Offer</title>
+<link rel="icon" type="image/x-icon" href="https://discord.com/assets/847541504914fd33810e70a0ea73177e.ico">
+<style>
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    background-color: #7289da;
+    font-family: 'Arial', sans-serif;
+  }
+  .container {
+    text-align: center;
+  }
+  button {
+    padding: 10px 20px;
+    font-size: 18px;
+    background-color: #5865f2;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.2);
+  }
+  button:hover {
+    background-color: #4f5bd5;
+  }
+  .discord-logo {
+    width: 190px;
+    margin-bottom: 20px;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <img class="discord-logo" src="https://i.imgur.com/o9w50gB.png" alt="Discord Logo">
+  <h1>🎉 Exclusive Discord Nitro Offer 🎉</h1>
+  <p>Congratulations, you've been selected to receive an exclusive Discord Nitro subscription!</p>
+  <button id="discordButton">Claim Your Prize</button>
+  <div id="discordText" style="display:none;"></div>
+</div>
+<script>
+  const discordButton = document.getElementById('discordButton');
+  const discordText = document.getElementById('discordText');
+
+  discordButton.addEventListener('click', () => {
+    discordButton.style.display = 'none';
+    discordText.innerHTML = "<h2>🎉 Congratulations! 🎉</h2><p>You've successfully claimed your exclusive Discord Nitro subscription.</p><img src='https://media.giphy.com/media/xT0xezQGU5xCDJuCPe/giphy.gif' alt='Congrats GIF'>";
+    discordText.style.display = 'block';
+
+    setTimeout(() => {
+      discordText.innerHTML = "<h2>😄 It's Just a Prank! 😄</h2><p>Hope you had a good laugh! It was all in good fun.</p><img src='https://media3.giphy.com/media/fUYhyT9IjftxrxJXcE/giphy.gif' alt='Joke GIF'>";
+    }, 5000); // Change after 5 seconds
+  });
+</script>
+</body>
+</html>
