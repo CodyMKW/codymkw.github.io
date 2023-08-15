@@ -46,6 +46,20 @@
     width: 190px;
     margin-bottom: 20px;
   }
+  .fake-code-box {
+    background-color: #ffffff;
+    width: 300px;
+    border-radius: 10px;
+    padding: 10px;
+    margin-top: 20px;
+    font-size: 24px;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.2);
+  }
+  .claim-code-text {
+    font-size: 20px;
+    margin-top: 10px;
+    font-weight: bold;
+  }
 </style>
 </head>
 <body>
@@ -53,22 +67,49 @@
   <img class="discord-logo" src="https://i.imgur.com/o9w50gB.png" alt="Discord Logo">
   <h1>🎉 Exclusive Discord Nitro Offer 🎉</h1>
   <p>Congratulations, you've been selected to receive an exclusive Discord Nitro subscription!</p>
-  <button id="discordButton">Claim Your Prize</button>
+  <div class="fake-code-box" id="fakeCode" style="display:none;"></div>
   <div id="discordText" style="display:none;"></div>
+  <button id="discordButton">Claim Your Prize</button>
 </div>
 <script>
   const discordButton = document.getElementById('discordButton');
   const discordText = document.getElementById('discordText');
+  const fakeCode = document.getElementById('fakeCode');
 
   discordButton.addEventListener('click', () => {
     discordButton.style.display = 'none';
-    discordText.innerHTML = "<h2>🎉 Congratulations! 🎉</h2><p>You've successfully claimed your exclusive Discord Nitro subscription.</p><img src='https://media.giphy.com/media/xT0xezQGU5xCDJuCPe/giphy.gif' alt='Congrats GIF'>";
+
+    // Generate and display a fake code
+    const fakeNitroCode = generateFakeCode();
+
+    discordText.innerHTML = "<h2>🎉 Congratulations! 🎉</h2>" +
+      "<center><div class='fake-code-box'>" + "<div class='claim-code-text'>Claim your code:</div>" + "<strong>" + fakeNitroCode + "</strong></div></center>" +
+      "<p>You've successfully claimed your exclusive Discord Nitro subscription.</p>" +
+      "<img src='https://media.giphy.com/media/xT0xezQGU5xCDJuCPe/giphy.gif' alt='Congrats GIF'>";
     discordText.style.display = 'block';
 
     setTimeout(() => {
-      discordText.innerHTML = "<h2>😄 It's Just a Prank! 😄</h2><p>Hope you had a good laugh! It was all in good fun.</p><img src='https://media3.giphy.com/media/fUYhyT9IjftxrxJXcE/giphy.gif' alt='Joke GIF'>";
-    }, 5000); // Change after 5 seconds
+      discordText.innerHTML = "<h2>😄 It's Just a Prank! 😄</h2>" +
+        "<p>Hope you had a good laugh! It was all in good fun.</p>" +
+        "<img src='https://media3.giphy.com/media/fUYhyT9IjftxrxJXcE/giphy.gif' alt='Joke GIF'>";
+      fakeCode.style.display = 'none';
+    }, 9000); // Change after 9 seconds
   });
+
+  // Function to generate a random fake code
+  function generateFakeCode() {
+    const blocks = [];
+    for (let i = 0; i < 4; i++) {
+      let block = '';
+      for (let j = 0; j < 4; j++) {
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        const randomIndex = Math.floor(Math.random() * characters.length);
+        block += characters.charAt(randomIndex);
+      }
+      blocks.push(block);
+    }
+    return blocks.join('-');
+  }
 </script>
 </body>
 </html>
