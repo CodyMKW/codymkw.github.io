@@ -88,7 +88,9 @@ const weapons = [
   "Rapid Blaster Pro Deco",
   "Splatana Wiper Deco",
   "Annaki Splattershot Nova",
-  "Big Swig Roller Express"
+  "Big Swig Roller Express",
+  "Dread Wringer",
+  "Heavy Edit Splatling"
 ];
 
 const headgears = [
