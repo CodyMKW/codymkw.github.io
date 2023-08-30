@@ -90,7 +90,15 @@ const weapons = [
   "Annaki Splattershot Nova",
   "Big Swig Roller Express",
   "Dread Wringer",
-  "Heavy Edit Splatling"
+  "Heavy Edit Splatling",
+  "Gold Dynamo Roller",
+  "Octobrush Nouveau",
+  "Custom Goo Tuber",
+  "Sloshing Machine Neo",
+  "Bloblobber Deco",
+  "Ballpoint Splatling Nouveau",
+  "Sorella Brella",
+  "Inkline Tri-Stringer"
 ];
 
 const headgears = [
