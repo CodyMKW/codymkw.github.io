@@ -263,7 +263,15 @@ const headgears = [
   "Retro Future Helmet",
   "Do-Rag, Cap & Glasses",
   "Seashell Bamboo Hat",
-  "Noise Cancelers"
+  "Noise Cancelers",
+  "Headlamp Hat",
+  "Swim Cap",
+  "Urchin Understitch",
+  "Aux Boxes",
+  "Away-Team Catcher",
+  "Welding Mask",
+  "Cap of Legend",
+  "3D Glasses"
 ];
 
 
@@ -498,7 +506,16 @@ const shirts = [
   "Umibozu Road Jersey",
   "Hype Stripe Button Up",
   "Black Ranger Vest",
-  "Retro Future Suit"
+  "Retro Future Suit",
+  "Takoroka \m/ Crab",
+  "Takoroka \m/ Alien",
+  "Plum Barazushi Wrap",
+  "King Mesh Tee",
+  "Lime Hoodless",
+  "Dark Distressed Vest",
+  "Garden Gear",
+  "Crustwear XXL",
+  "Brinestone Jacket"
 ];
 
 
@@ -644,7 +661,15 @@ const shoes = [
   "Annaki Strappy Sandals",
   "Pro Trail Boots",
   "Icy Down Boots",
-  "Dappled Hammerheads"
+  "Dappled Hammerheads",
+  "Blue & Black Squidkid III",
+  "Red & White Squidkid III",
+  "Squid Bone Unslips",
+  "Field Duck Boots",
+  "Red-Shift Moto Boots",
+  "Nonslip Senseis",
+  "Flipper Floppers",
+  "Brinestone Boots"
 ];
 
 
