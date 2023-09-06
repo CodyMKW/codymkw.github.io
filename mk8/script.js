@@ -444,17 +444,6 @@ randomizeButton.addEventListener('click', () => {
 randomizeButton.addEventListener("click", randomize);
 hideTrackCheckbox.addEventListener("change", hideTrack);
 
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker
-    .register("/sw.js")
-    .then(serviceWorker => {
-      console.log("Service Worker registered: ", serviceWorker);
-    })
-    .catch(error => {
-      console.error("Error registering the Service Worker: ", error);
-    });
-}
-
    // Get the footer element
    var footer = document.querySelector('footer');
 
