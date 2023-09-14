@@ -251,7 +251,11 @@ const characters = [
   "Mii",
   "Petey Piranha",
   "Wiggler",
-  "Kamek"
+  "Kamek",
+  "Diddy Kong",
+  "Funky Kong",
+  "Pauline",
+  "Peachette"
 ];
 
 const trackElement = document.getElementById("track");
