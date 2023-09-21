@@ -1,13 +1,11 @@
-// Smooth scrolling
-$(window).scroll(function() {
-  $('a[href*=#]').click(function(e) {
-      e.preventDefault();
-      $('html, body').animate({ scrollTop: $($(this).attr('href')).offset().top }, 500);
+function showContent(tabName) {
+  const contentTabs = document.querySelectorAll('.tabContent');
+  contentTabs.forEach(tab => {
+      tab.style.display = 'none';
   });
-});
 
-// Portfolio grid
-$('.portfolio-grid').masonry({
-  itemSelector: '.portfolio-item',
-  columnWidth: '.portfolio-item'
-});
+  document.getElementById(tabName + 'Content').style.display = 'block';
+}
+
+// Show the 'About' content by default
+showContent('about');
