@@ -44,7 +44,7 @@ a:hover {
 }
 
 button {
-  background-color: #333;
+  background-color: #0d8100;
   color: #fff;
   border: none;
   padding: 10px 20px;
@@ -53,7 +53,7 @@ button {
 }
 
 button:hover {
-  background-color: #555;
+  background-color: #095a00;
 }
 
 .tabContent {
@@ -85,6 +85,15 @@ button:hover {
 .header-text p {
   margin: 0;
   font-size: 14px;
+}
+
+/* 404 Page styles */
+#notfound {
+  padding: 20px;
+  background-color: #111;
+  border: 2px solid #000;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 /* About styles */
