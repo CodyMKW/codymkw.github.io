@@ -15,13 +15,13 @@ var clickCount = 0;
 var gamesData = [
   {
     name: "Animal Crossing: New Horizons",
-    playtime: 6265,
+    playtime: 6490,
     link: "https://www.nintendo.com/store/products/animal-crossing-new-horizons-switch",
     cover: "https://static-cdn.jtvnw.net/ttv-boxart/509538_IGDB-144x192.jpg"
   },
   {
     name: "Splatoon 3",
-    playtime: 400,
+    playtime: 515,
     link: "https://www.nintendo.com/store/products/splatoon-3-switch",
     cover: "https://static-cdn.jtvnw.net/ttv-boxart/1158884259_IGDB-144x192.jpg"
   },
@@ -33,13 +33,13 @@ var gamesData = [
   },
   {
     name: "Fall Guys",
-    playtime: 145,
+    playtime: 150,
     link: "https://www.nintendo.com/store/products/fall-guys-switch",
     cover: "https://static-cdn.jtvnw.net/ttv-boxart/512980-144x192.jpg"
   },
   {
     name: "Fortnite",
-    playtime: 2795,
+    playtime: 2875,
     link: "https://www.nintendo.com/store/products/fortnite-switch",
     cover: "https://static-cdn.jtvnw.net/ttv-boxart/33214-144x192.jpg"
   }
