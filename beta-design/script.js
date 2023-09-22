@@ -78,32 +78,7 @@ function generateCoverArtHTML(coverURL, gameName) {
   return '<img src="' + coverURL + '" alt="Cover Art" title="' + gameName + '" style="max-width: 70px; margin-right: 10px; margin-right: 10px; border-radius: 4px;">';
 }
 
-// Secret Theme code
-function activateSecretTheme() {
-  clickCount++;
-
-  if (clickCount === 17) {
-    var bodyElement = document.querySelector('body');
-    var themes = ['alizarin-crimson', 'absolute-zero', 'amethyst', 'baby-pink', 'aquamarine', 'arylide-yellow', 'orange']; // Add more colors if desired
-
-    secretThemeInterval = setInterval(function() {
-      var randomTheme = themes[Math.floor(Math.random() * themes.length)];
-      bodyElement.className = randomTheme;
-    }, 900);
-
-    // Show seizure warning popup
-    alert("Seizure Warning: The secret theme may contain flashing lights or rapidly changing colors. If you have photosensitive epilepsy or any similar condition, please disable the secret theme immediately by clicking the profile picture again.");
-  } else if (clickCount === 18) {
-    clearInterval(secretThemeInterval); // Disable the secret theme
-    document.querySelector('body').className = ''; // Remove any theme classes
-    clickCount = 0; // Reset click count
-  }
-}
-
-// Attach click event listener to the profile picture
-var profilePicture = document.getElementById('profile-picture');
-profilePicture.addEventListener('click', activateSecretTheme);
-
+// Birthday code
 // Get the current date
     var currentDate = new Date();
 
@@ -169,3 +144,18 @@ function getOrdinalSuffix(number) {
 
   return suffix;
 }
+
+   // Get the footer element
+   var footer = document.querySelector('footer');
+
+   // Get the start year
+   var startYear = 2023; // Replace with the desired start year
+   
+   // Get the current year
+   var currentYear = new Date().getFullYear();
+   
+   // Build the footer text
+   var footerText = '&copy; ' + (startYear === currentYear ? startYear : startYear + ' - ' + currentYear) + ' CodyMKW. All rights reserved.';
+   
+   // Update the footer text
+   footer.innerHTML = footerText;
