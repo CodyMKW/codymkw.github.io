@@ -77,3 +77,95 @@ function formatPlaytime(playtime) {
 function generateCoverArtHTML(coverURL, gameName) {
   return '<img src="' + coverURL + '" alt="Cover Art" title="' + gameName + '" style="max-width: 70px; margin-right: 10px; margin-right: 10px; border-radius: 4px;">';
 }
+
+// Secret Theme code
+function activateSecretTheme() {
+  clickCount++;
+
+  if (clickCount === 17) {
+    var bodyElement = document.querySelector('body');
+    var themes = ['alizarin-crimson', 'absolute-zero', 'amethyst', 'baby-pink', 'aquamarine', 'arylide-yellow', 'orange']; // Add more colors if desired
+
+    secretThemeInterval = setInterval(function() {
+      var randomTheme = themes[Math.floor(Math.random() * themes.length)];
+      bodyElement.className = randomTheme;
+    }, 900);
+
+    // Show seizure warning popup
+    alert("Seizure Warning: The secret theme may contain flashing lights or rapidly changing colors. If you have photosensitive epilepsy or any similar condition, please disable the secret theme immediately by clicking the profile picture again.");
+  } else if (clickCount === 18) {
+    clearInterval(secretThemeInterval); // Disable the secret theme
+    document.querySelector('body').className = ''; // Remove any theme classes
+    clickCount = 0; // Reset click count
+  }
+}
+
+// Attach click event listener to the profile picture
+var profilePicture = document.getElementById('profile-picture');
+profilePicture.addEventListener('click', activateSecretTheme);
+
+// Get the current date
+    var currentDate = new Date();
+
+    // Define the target date for the birthday (January 17th)
+    var birthday = new Date(currentDate.getFullYear(), 0, 17);
+
+    // Check if it's the birthday
+    if (
+      currentDate.getMonth() === birthday.getMonth() &&
+      currentDate.getDate() === birthday.getDate()
+    ) {
+      // Add cake emojis and sparkle effect to the heading
+      var codyHeading = document.getElementById("cody-heading");
+      var codyHeading2 = document.getElementById("cody-heading2");
+      codyHeading.innerHTML = "🎂 CodyMKW 🎂";
+      codyHeading2.innerHTML = "Happy Birthday!! 🥳";
+
+      // Add shimmer effect
+      codyHeading.classList.add("shimmer");
+      codyHeading2.classList.add("shimmer");
+    }
+
+    // Calculate age based on birthdate
+var birthDate = new Date(1991, 0, 17);
+var currentDate = new Date();
+var age = currentDate.getFullYear() - birthDate.getFullYear();
+
+// Check if it's the birthday
+if (
+  currentDate.getMonth() === birthDate.getMonth() &&
+  currentDate.getDate() === birthDate.getDate()
+) {
+  // Add cake emojis and sparkle effect to the heading
+  var codyHeading = document.getElementById("cody-heading");
+  var codyHeading2 = document.getElementById("cody-heading2");
+  codyHeading.innerHTML = "🎂 CodyMKW 🎂";
+  codyHeading2.innerHTML = "Happy " + age + getOrdinalSuffix(age) + " Birthday!! 🥳";
+
+  // Add shimmer effect
+  codyHeading.classList.add("shimmer");
+  codyHeading2.classList.add("shimmer");
+}
+
+// Update age in the HTML code
+var ageElement = document.getElementById('age');
+if (ageElement) {
+  ageElement.textContent = age.toString();
+}
+
+// Function to get the ordinal suffix for the age
+function getOrdinalSuffix(number) {
+  var suffix = 'th';
+  var lastDigit = number % 10;
+  var lastTwoDigits = number % 100;
+
+  if (lastDigit === 1 && lastTwoDigits !== 11) {
+    suffix = 'st';
+  } else if (lastDigit === 2 && lastTwoDigits !== 12) {
+    suffix = 'nd';
+  } else if (lastDigit === 3 && lastTwoDigits !== 13) {
+    suffix = 'rd';
+  }
+
+  return suffix;
+}

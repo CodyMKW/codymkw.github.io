@@ -6,9 +6,21 @@ body {
   padding: 20px;
 }
 
+a {
+  color: #0d8100;
+}
+
+a:hover {
+  color: #095a00;
+}
+
 .container {
   max-width: 800px;
   margin: 0 auto;
+}
+
+.content {
+  text-align: center;
 }
 
 .tabs {
@@ -254,4 +266,95 @@ button:hover {
 
 #webAppsContent p {
   color: #fff;
+}
+
+/* Secret theme styles */
+.alizarin-crimson {
+  background-color: #E32636;
+  color: #FFFFFF;
+}
+.absolute-zero {
+  background-color: #0048BA;
+  color: #FFFFFF;
+}
+.amethyst {
+  background-color: #9966CC;
+  color: #FFFFFF;
+}
+.baby-pink {
+  background-color: #F4C2C2;
+  color: #000000;
+}
+.aquamarine {
+  background-color: #7FFFD4;
+  color: #000000;
+}
+.arylide-yellow {
+  background-color: #E9D66B;
+  color: #000000;
+}
+.orange {
+  background-color: #FFA500;
+  color: #FFFFFF;
+}
+
+/* Birthday shimmer */
+.shimmer {
+  color: rgba(13, 129, 0, 0.7);
+  background: -webkit-gradient(linear, left top, right top, from(#222), to(#222), color-stop(0.5, #fff));
+  background: -moz-gradient(linear, left top, right top, from(#222), to(#222), color-stop(0.5, #fff));
+  background: gradient(linear, left top, right top, from(#222), to(#222), color-stop(0.5, #fff));
+  -webkit-background-size: 125px 100%;
+  -moz-background-size: 125px 100%;
+  background-size: 125px 100%;
+  -webkit-background-clip: text;
+  -moz-background-clip: text;
+  background-clip: text;
+  -webkit-animation-name: shimmer;
+  -moz-animation-name: shimmer;
+  animation-name: shimmer;
+  -webkit-animation-duration: 2s;
+  -moz-animation-duration: 2s;
+  animation-duration: 2s;
+  -webkit-animation-iteration-count: infinite;
+  -moz-animation-iteration-count: infinite;
+  animation-iteration-count: infinite;
+  background-repeat: no-repeat;
+  background-position: 0 0;
+}
+
+@-moz-keyframes shimmer {
+  0% {
+      background-position: top left;
+  }
+  100% {
+      background-position: top right;
+  }
+}
+
+@-webkit-keyframes shimmer {
+  0% {
+      background-position: top left;
+  }
+  100% {
+      background-position: top right;
+  }
+}
+
+@-o-keyframes shimmer {
+  0% {
+      background-position: top left;
+  }
+  100% {
+      background-position: top right;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+      background-position: top left;
+  }
+  100% {
+      background-position: top right;
+  }
 }
