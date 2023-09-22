@@ -1,14 +1,25 @@
 function showContent(tabName) {
   const contentTabs = document.querySelectorAll('.tabContent');
   contentTabs.forEach(tab => {
-      tab.style.display = 'none';
+    tab.style.display = 'none';
   });
 
-  document.getElementById(tabName + 'Content').style.display = 'block';
+  if (document.getElementById(tabName + 'Content')) {
+    document.getElementById(tabName + 'Content').style.display = 'block';
+  }
 }
 
-// Show the 'About' content by default
-showContent('about');
+// Get the tabName from the URL path
+const url = window.location.href;
+const tabNameIndex = url.lastIndexOf('/') + 1;
+const tabName = url.substring(tabNameIndex);
+
+// Show the specified tab or the default 'about' tab
+if (tabName) {
+  showContent(tabName);
+} else {
+  showContent('about');
+}
 
 // Most Played Games table info
 var clickCount = 0;
