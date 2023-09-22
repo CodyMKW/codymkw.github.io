@@ -4,9 +4,19 @@ body {
   color: #fff;
   margin: 0;
   padding: 20px;
-  background-image: url('bg.gif');
+}
+
+body::before {
+  content: "";
+  background-image: url(bg.gif);
   background-size: cover;
-  background-blur: 10px; /* Adjust the blur intensity as needed */
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  filter: blur(7px);
+  z-index: -1;
 }
 
 a {
@@ -20,6 +30,7 @@ a:hover {
 .container {
   max-width: 800px;
   margin: 0 auto;
+  padding: 40px;
 }
 
 .content {
