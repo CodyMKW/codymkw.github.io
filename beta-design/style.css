@@ -84,7 +84,7 @@ button:hover {
   text-align: left;
 }
 
-#aboutContent p {
+#aboutContent p, h2 {
   color: #fff;
 }
 
@@ -98,7 +98,7 @@ button:hover {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-#friendCodeContent p {
+#friendCodeContent p, h2 {
   color: #fff;
   margin-bottom: 10px;
 }
@@ -125,7 +125,7 @@ button:hover {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-#socialMediaContent p {
+#socialMediaContent p, h2 {
   color: #fff;
 }
 
@@ -264,7 +264,7 @@ button:hover {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-#webAppsContent p {
+#webAppsContent p, h2 {
   color: #fff;
 }
 
