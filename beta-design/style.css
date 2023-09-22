@@ -60,3 +60,198 @@ button:hover {
   margin: 0;
   font-size: 14px;
 }
+
+/* About styles */
+#aboutContent {
+  display: block;
+  padding: 20px;
+  background-color: #111;
+  border: 2px solid #000;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  text-align: left;
+}
+
+#aboutContent p {
+  color: #fff;
+}
+
+/* Switch FC styles */
+#friendCodeContent {
+  display: none;
+  padding: 20px;
+  background-color: #111;
+  border: 2px solid #000;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+#friendCodeContent p {
+  color: #fff;
+  margin-bottom: 10px;
+}
+
+#friendCodeContent img {
+  max-width: 350px;
+  max-height: 250px;
+  margin-bottom: 20px;
+  border-radius: 4px;
+}
+
+#friendCodeContent b:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* Social Media styles */
+#socialMediaContent {
+  display: none;
+  padding: 20px;
+  background-color: #111;
+  border: 2px solid #000;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+#socialMediaContent p {
+  color: #fff;
+}
+
+.social-icons {
+  margin-top: 20px;
+}
+
+.social-icons a {
+  display: inline-block;
+  margin-right: 10px;
+  transition: transform 0.3s;
+}
+
+.social-icons a:hover {
+  transform: scale(1.2);
+}
+
+.social-icons img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+/* Nintendo News styles */
+#nintendoNewsContent {
+  display: none;
+  padding: 20px;
+  background-color: #111;
+  border: 2px solid #000;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  text-align: left;
+}
+
+#nintendoNewsContent h3 {
+  display: none;
+}
+
+#nintendoNewsContent h4 {
+  color: #0d8100;
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+#nintendoNewsContent p {
+  margin-bottom: 10px;
+  color: #fff;
+}
+
+#nintendoNewsContent a {
+  color: #0d8100 !important;
+}
+
+#nintendoNewsContent a:hover {
+  color: #095a00 !important;
+}
+
+/* Most Played Games styles */
+#mostPlayedGamesContent {
+  display: none;
+  margin-top: 40px;
+  padding: 20px;
+  background-color: #111;
+  border: 2px solid #000;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+#mostPlayedGamesContent h2 {
+  color: #0d8100;
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+#games-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+#games-table th,
+#games-table td {
+  padding: 8px;
+  border: 1px solid #000;
+  text-align: center;
+}
+
+#games-table th {
+  background-color: #0d8100;
+  color: #fff;
+}
+
+#games-table td {
+  background-color: #222;
+  color: #fff;
+}
+
+#games-table tr:nth-child(even) {
+  background-color: #333;
+}
+
+#games-table tr:hover {
+  background-color: #444;
+}
+
+#games-table a {
+  color: #0d8100;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+#games-table a:hover {
+  color: #095a00;
+  text-decoration: underline;
+}
+
+.playtime-note {
+  color: #888;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+.game-cover {
+  max-width: 70px;
+  max-height: 114px;
+  margin-right: 10px;
+  border-radius: 4px;
+}
+
+/* Web Apps styles */
+#webAppsContent {
+  display: none;
+  padding: 20px;
+  background-color: #111;
+  border: 2px solid #000;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+#webAppsContent p {
+  color: #fff;
+}
