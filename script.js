@@ -15,6 +15,9 @@ var backgrounds = [
 // Get a random index to select a random background
 var randomIndex = Math.floor(Math.random() * backgrounds.length);
 
+// Remove any existing background image set in the CSS
+document.body.style.backgroundImage = 'none';
+
 // Set the background image using the random index
 document.body.style.backgroundImage = 'url(' + backgrounds[randomIndex] + ')';
 
