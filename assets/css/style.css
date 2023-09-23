@@ -82,6 +82,23 @@ button:hover {
   font-size: 14px;
 }
 
+.avatar-frame {
+  position: relative;
+  display: inline-block;
+}
+
+.avatar-frame img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 200px; /* Adjust the width as needed */
+  border-radius: 50%;
+}
+
+.avatar-frame img:first-child {
+  z-index: 1; /* Place the frame image below the avatar image */
+}
+
 /* 404 Page styles */
 #notfound {
   background-color: #111;
