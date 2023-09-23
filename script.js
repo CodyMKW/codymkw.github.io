@@ -4,27 +4,18 @@ function showContent(tabName) {
     tab.style.display = 'none';
   });
 
-  const specifiedTabContent = document.getElementById(tabName + 'Content');
-
-  if (specifiedTabContent) {
-    specifiedTabContent.style.display = 'block';
+  if (tabName) {
+    document.getElementById(tabName).style.display = 'block';
   } else {
-    // If the specified tab is not found, display the default 'about' tab
-    showContent('about');
+    // Default to the "About" tab if no specific tabName is provided
+    document.getElementById('aboutContent').style.display = 'block';
   }
 }
 
-// Get the tabName from the URL path
-const url = window.location.href;
-const tabNameIndex = url.lastIndexOf('/') + 1;
-const tabName = url.substring(tabNameIndex);
-
-// Show the specified tab or the default 'about' tab
-if (tabName) {
-  showContent(tabName);
-} else {
-  showContent('about');
-}
+// Parse the URL to get the tabName parameter
+const urlParams = new URLSearchParams(window.location.search);
+const tabNameParam = urlParams.get('tabName');
+showContent(tabNameParam);
 
 // Get the tabName from the URL path
 const url = window.location.href;
