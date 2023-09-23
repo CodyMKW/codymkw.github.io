@@ -19,9 +19,14 @@ function getRandomBackgroundImage() {
   return backgroundImages[randomIndex];
 }
 
-// Update body::before with a random background image
-const bodyBefore = document.querySelector('body::before');
-bodyBefore.style.backgroundImage = `url(${getRandomBackgroundImage()})`;
+// Function to set a random background image
+function setRandomBackground() {
+  const bodyBefore = document.querySelector('body::before');
+  bodyBefore.style.backgroundImage = `url(${getRandomBackgroundImage()})`;
+}
+
+// Call the function to set the initial random background image
+setRandomBackground();
 
 function showContent(page) {
   const contentTabs = document.querySelectorAll('.tabContent');
