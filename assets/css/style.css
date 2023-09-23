@@ -87,16 +87,16 @@ button:hover {
   display: inline-block;
 }
 
-.avatar-frame img {
+.avatar-frame .frame-image {
+  width: 200px; /* Adjust the width as needed */
+}
+
+.avatar-frame .avatar-image {
   position: absolute;
   top: 0;
   left: 0;
   width: 200px; /* Adjust the width as needed */
   border-radius: 50%;
-}
-
-.avatar-frame img:first-child {
-  z-index: 1; /* Place the frame image below the avatar image */
 }
 
 /* 404 Page styles */
