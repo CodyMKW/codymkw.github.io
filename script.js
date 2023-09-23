@@ -12,12 +12,21 @@ var backgrounds = [
 ];
 
 var randomIndex = Math.floor(Math.random() * backgrounds.length);
+var imageUrl = 'url(' + backgrounds[randomIndex] + ')';
 
-// Set the background image
-document.body.style.backgroundImage = 'url(' + backgrounds[randomIndex] + ')';
+// Set the background image for the separate background element
+var backgroundElement = document.getElementById('background-image');
+backgroundElement.style.backgroundImage = imageUrl;
 
-// Add the background-image class to the body element
-document.body.classList.add('background-image');
+// Apply blur effect only to the separate background element
+backgroundElement.style.backgroundSize = 'cover';
+backgroundElement.style.position = 'fixed';
+backgroundElement.style.top = '0';
+backgroundElement.style.left = '0';
+backgroundElement.style.right = '0';
+backgroundElement.style.bottom = '0';
+backgroundElement.style.filter = 'blur(5px)';
+backgroundElement.style.zIndex = '-1';
 
 function showContent(page) {
   const contentTabs = document.querySelectorAll('.tabContent');
