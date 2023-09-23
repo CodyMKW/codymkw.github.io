@@ -5,7 +5,10 @@ function showContent(tabName) {
   });
 
   if (tabName) {
-    document.getElementById(tabName).style.display = 'block';
+    const contentElement = document.getElementById(tabName + 'Content');
+    if (contentElement) {
+      contentElement.style.display = 'block';
+    }
   } else {
     // Default to the "About" tab if no specific tabName is provided
     document.getElementById('aboutContent').style.display = 'block';
@@ -16,18 +19,6 @@ function showContent(tabName) {
 const urlParams = new URLSearchParams(window.location.search);
 const tabNameParam = urlParams.get('tabName');
 showContent(tabNameParam);
-
-// Get the tabName from the URL path
-const url = window.location.href;
-const tabNameIndex = url.lastIndexOf('/') + 1;
-const tabName = url.substring(tabNameIndex);
-
-// Show the specified tab or the default 'about' tab
-if (tabName) {
-  showContent(tabName);
-} else {
-  showContent('about');
-}
 
 // Most Played Games table info
 var clickCount = 0;
