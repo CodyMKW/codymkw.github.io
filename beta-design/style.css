@@ -118,6 +118,10 @@ h1.notfoundheading {
   text-align: left;
 }
 
+#aboutContent h2 {
+  text-align: center;
+}
+
 #aboutContent p, h2 {
   color: #fff;
 }

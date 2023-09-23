@@ -1,14 +1,43 @@
+function updateMetadata(tabName) {
+  let title, description, imageUrl;
+
+  // Set metadata based on the displayed tab
+  if (tabName === 'aboutContent') {
+    title = 'About Me - CodyMKW';
+    description = 'Learn more about Cody, a dedicated Nintendo fan and passionate Animal Crossing player.';
+    imageUrl = 'https://www.gravatar.com/avatar/5127de8a3a295a02ff3fc55bb6b2fabe?s=2048';  // Update with appropriate image URL
+  } else if (tabName === 'friendCodeContent') {
+    title = 'My Switch Friend Code - CodyMKW';
+    description = 'Connect with Cody on Nintendo Switch and embark on gaming adventures together!';
+    imageUrl = 'https://cdn.wikimg.net/en/splatoonwiki/images/7/70/Switch.png';  // Update with appropriate image URL
+  }
+
+  // Update metadata
+  document.head.querySelector('title').textContent = title;
+  document.head.querySelector('meta[name="description"]').setAttribute('content', description);
+  document.head.querySelector('meta[property="og:title"]').setAttribute('content', title);
+  document.head.querySelector('meta[property="og:description"]').setAttribute('content', description);
+  document.head.querySelector('meta[property="og:image"]').setAttribute('content', imageUrl);
+}
+
 function showContent(tabName) {
   const contentTabs = document.querySelectorAll('.tabContent');
   contentTabs.forEach(tab => {
-      tab.style.display = 'none';
+    tab.style.display = 'none';
   });
 
-  document.getElementById(tabName + 'Content').style.display = 'block';
+  if (tabName) {
+    const contentElement = document.getElementById(tabName + 'Content');
+    if (contentElement) {
+      contentElement.style.display = 'block';
+      updateMetadata(tabName);  // Update metadata for the displayed tab
+    }
+  } else {
+    // Default to the "About" tab if no specific tabName is provided
+    document.getElementById('aboutContent').style.display = 'block';
+    updateMetadata('aboutContent');  // Update metadata for the default tab
+  }
 }
-
-// Show the 'About' content by default
-showContent('about');
 
 // Most Played Games table info
 var clickCount = 0;
