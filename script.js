@@ -1,24 +1,24 @@
 function showContent(page) {
   const contentTabs = document.querySelectorAll('.tabContent');
   contentTabs.forEach(tab => {
-      tab.style.display = 'none';
+    tab.style.display = 'none';
   });
 
-  let validPages = ['about', 'friendCode', 'nintendoNews', 'mostPlayedGames', 'webApps', 'socialMedia'];
-
-  if (page && validPages.includes(page)) {
-      const contentElement = document.getElementById(page + 'Content');
-      if (contentElement) {
-          contentElement.style.display = 'block';
+  if (page) {
+    const contentElement = document.getElementById(page + 'Content');
+    if (contentElement) {
+      contentElement.style.display = 'block';
+    } else {
+      // If the requested page doesn't exist, show a custom 404 message
+      const errorElement = document.getElementById('errorContent');
+      if (errorElement) {
+        errorElement.style.display = 'block';
       }
+    }
   } else {
-      // Redirect to the 404 page
-      window.location.href = '404.html';
-      return; // Ensure the following default behavior is not executed
+    // Default to the "About" tab if no specific page is provided
+    document.getElementById('aboutContent').style.display = 'block';
   }
-
-  // Default to the "About" tab if no specific page is provided or if the page is invalid
-  document.getElementById('aboutContent').style.display = 'block';
 }
 
 // Parse the URL to get the page parameter
