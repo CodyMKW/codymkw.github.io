@@ -1,17 +1,65 @@
 function showContent(tabName) {
   const contentTabs = document.querySelectorAll('.tabContent');
   contentTabs.forEach(tab => {
-    tab.style.display = 'none';
+      tab.style.display = 'none';
   });
 
+  // Update metadata based on the selected tab
+  let title = "";
+  let description = "";
+  let keywords = "";
+
+  switch (tabName) {
+      case 'friendCode':
+          title = "Switch Friend Code";
+          description = "Connect with Cody on Nintendo Switch. Scan the QR code or use the Friend Code to play games together!";
+          keywords = "CodyMKW, Nintendo Switch, Friend Code, QR code, gaming adventures.";
+          break;
+      case 'nintendoNews':
+          title = "Nintendo News";
+          description = "Stay updated with the latest Nintendo news and updates. Get insights into upcoming game releases, events, and Nintendo's exciting future.";
+          keywords = "Nintendo news, game updates, upcoming releases, gaming events, Nintendo updates";
+          break;
+      case 'mostPlayedGames':
+          title = "Most Played Games";
+          description = "Discover Cody's most played games on Nintendo Switch. Dive into the gaming adventures, playtime, and explore the exciting worlds of these top games.";
+          keywords = "Most played games, Nintendo Switch games, gaming adventures, playtime, top games";
+          break;
+      case 'webApps':
+          title = "Web Apps";
+          description = "Explore fun and engaging web apps created for gaming enthusiasts. Generate random Mario Kart combinations and Splatoon loadouts with these entertaining tools.";
+          keywords = "Web apps, Mario Kart 8 Deluxe randomizer, Splatoon 3 randomizer, gaming tools, random combinations";
+          break;
+      case 'socialMedia':
+          title = "Social Media";
+          description = "Follow Cody on various social media platforms to stay updated with gaming adventures, insights, and exciting updates. Join the community and connect with fellow gaming enthusiasts.";
+          keywords = "Social media, CodyMKW, gaming community, gaming adventures, Nintendo, follow, community";
+          break;
+      default:
+          title = "About";
+          description = "Learn more about Cody, a dedicated Nintendo fan and passionate Animal Crossing player.";
+          keywords = "CodyMKW, Nintendo fan, Animal Crossing, Nintendo Switch, Mario Kart, Pokémon, gaming enthusiast, peaceful gaming, relaxing atmosphere, gaming community, Nintendo Switch gaming, gaming adventures, video games, Nintendo games, gaming journey, social media, gaming community, anime, Clannad, future of Nintendo, QR code, Nintendo news, web apps, social links, gaming fun, Friend Code, gaming enthusiast, gaming community.";
+          // For other tabs or the default behavior
+          // You can set a default description and keywords here
+          break;
+  }
+
+  // Update the meta tags
+  document.querySelector('meta[name="description"]').setAttribute("content", description);
+  document.querySelector('meta[name="og:title"]').setAttribute("content", title);
+  document.querySelector('meta[name="og:description"]').setAttribute("content", description);
+  document.querySelector('meta[name="twitter:title"]').setAttribute("content", title);
+  document.querySelector('meta[name="twitter:description"]').setAttribute("content", description);
+  document.querySelector('meta[name="keywords"]').setAttribute("content", keywords);
+
   if (tabName) {
-    const contentElement = document.getElementById(tabName + 'Content');
-    if (contentElement) {
-      contentElement.style.display = 'block';
-    }
+      const contentElement = document.getElementById(tabName + 'Content');
+      if (contentElement) {
+          contentElement.style.display = 'block';
+      }
   } else {
-    // Default to the "About" tab if no specific tabName is provided
-    document.getElementById('aboutContent').style.display = 'block';
+      // Default to the "About" tab if no specific tabName is provided
+      document.getElementById('aboutContent').style.display = 'block';
   }
 }
 
