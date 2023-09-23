@@ -4,9 +4,26 @@ function showContent(tabName) {
     tab.style.display = 'none';
   });
 
-  if (document.getElementById(tabName + 'Content')) {
-    document.getElementById(tabName + 'Content').style.display = 'block';
+  const specifiedTabContent = document.getElementById(tabName + 'Content');
+
+  if (specifiedTabContent) {
+    specifiedTabContent.style.display = 'block';
+  } else {
+    // If the specified tab is not found, display the default 'about' tab
+    showContent('about');
   }
+}
+
+// Get the tabName from the URL path
+const url = window.location.href;
+const tabNameIndex = url.lastIndexOf('/') + 1;
+const tabName = url.substring(tabNameIndex);
+
+// Show the specified tab or the default 'about' tab
+if (tabName) {
+  showContent(tabName);
+} else {
+  showContent('about');
 }
 
 // Get the tabName from the URL path
