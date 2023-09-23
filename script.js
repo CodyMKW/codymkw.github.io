@@ -1,3 +1,28 @@
+// Array of background images
+const backgroundImages = [
+  'bg.gif',
+  'bg2.gif',
+  'bg3.gif',
+  'bg4.gif',
+  'bg5.gif',
+  'bg6.gif',
+  'b7.gif',
+  'bg8.gif',
+  'bg9.gif',
+  'bg10.gif',
+  // Add more background image URLs as needed
+];
+
+// Function to get a random background image URL
+function getRandomBackgroundImage() {
+  const randomIndex = Math.floor(Math.random() * backgroundImages.length);
+  return backgroundImages[randomIndex];
+}
+
+// Update body::before with a random background image
+const bodyBefore = document.querySelector('body::before');
+bodyBefore.style.backgroundImage = `url(${getRandomBackgroundImage()})`;
+
 function showContent(page) {
   const contentTabs = document.querySelectorAll('.tabContent');
   contentTabs.forEach(tab => {
