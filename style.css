@@ -41,6 +41,7 @@ a:hover {
   display: flex;
   justify-content: space-around;
   margin-bottom: 20px;
+  flex-wrap: wrap;  /* Allow buttons to wrap on smaller screens */
 }
 
 button {
@@ -50,6 +51,8 @@ button {
   padding: 10px 20px;
   cursor: pointer;
   transition: background-color 0.3s;
+  margin: 5px;  /* Add margin to separate the buttons */
+  flex: 1;  /* Make buttons flexible to use available space */
 }
 
 button:hover {
