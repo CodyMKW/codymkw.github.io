@@ -13,16 +13,11 @@ var backgrounds = [
 
 var randomIndex = Math.floor(Math.random() * backgrounds.length);
 
-// Set background properties including background-size, position, and filter
+// Set the background image
 document.body.style.backgroundImage = 'url(' + backgrounds[randomIndex] + ')';
-document.body.style.backgroundSize = 'cover';
-document.body.style.position = 'fixed';
-document.body.style.top = '0';
-document.body.style.left = '0';
-document.body.style.right = '0';
-document.body.style.bottom = '0';
-document.body.style.filter = 'blur(5px)';
-document.body.style.zIndex = '-1';
+
+// Add the background-image class to the body element
+document.body.classList.add('background-image');
 
 function showContent(page) {
   const contentTabs = document.querySelectorAll('.tabContent');
