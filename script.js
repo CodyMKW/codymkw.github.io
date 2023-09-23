@@ -1,4 +1,3 @@
-// Array of background image URLs
 var backgrounds = [
   'bg.gif',
   'bg2.gif',
@@ -12,14 +11,18 @@ var backgrounds = [
   'bg10.gif'
 ];
 
-// Get a random index to select a random background
 var randomIndex = Math.floor(Math.random() * backgrounds.length);
 
-// Remove any existing background image set in the CSS
-document.body.style.backgroundImage = 'none';
-
-// Set the background image using the random index
+// Set background properties including background-size, position, and filter
 document.body.style.backgroundImage = 'url(' + backgrounds[randomIndex] + ')';
+document.body.style.backgroundSize = 'cover';
+document.body.style.position = 'fixed';
+document.body.style.top = '0';
+document.body.style.left = '0';
+document.body.style.right = '0';
+document.body.style.bottom = '0';
+document.body.style.filter = 'blur(5px)';
+document.body.style.zIndex = '-1';
 
 function showContent(page) {
   const contentTabs = document.querySelectorAll('.tabContent');

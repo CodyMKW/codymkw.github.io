@@ -6,19 +6,6 @@ body {
   padding: 20px;
 }
 
-body::before {
-  content: "";
-  background-image: url(bg.gif);
-  background-size: cover;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  filter: blur(5px);
-  z-index: -1;
-}
-
 a {
   color: #0d8100;
 }
