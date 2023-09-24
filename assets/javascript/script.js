@@ -247,6 +247,7 @@ function updateCountdown(days, hours, minutes, seconds) {
 }
 
 function updateCountdownTitle(title) {
+  const countdownTitle = document.querySelector('.countdown-title');
   countdownTitle.textContent = title;
 }
 
@@ -283,6 +284,7 @@ function loadCountdown() {
           const remainingSeconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
 
           updateCountdown(remainingDays, remainingHours, remainingMinutes, remainingSeconds);
+          updateCountdownTitle(countdownTitleValue);
         }
       }, 1000);
     } else {
