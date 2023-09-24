@@ -299,67 +299,6 @@ document.querySelector('.countdown-form').addEventListener('submit', startCountd
 
 loadCountdown();
 
-// Metadata updater based on page
-function updateMetadataBasedOnUrl() {
-  const urlParams = new URLSearchParams(window.location.search);
-
-  const pageTitle = urlParams.get('page');
-  let title = 'CodyMKW';
-  let description = '';
-  let keywords = '';
-  
-  switch (pageTitle) {
-    case 'friendCode':
-      title = 'CodyMKW - Friend Code';
-      description = 'Share gaming adventures with Cody through the Nintendo Switch Friend Code. Let\'s race, splat, and build together!';
-      keywords = 'CodyMKW, Nintendo Switch, Friend Code, gaming adventures, community, Nintendo, Mario Kart, Splatoon, gaming enthusiast';
-      break;
-    case 'nintendoNews':
-      title = 'CodyMKW - Nintendo News';
-      description = 'Stay updated with the latest and greatest from the Nintendo world. News, releases, and excitement await the Nintendo fanatic in you.';
-      keywords = 'CodyMKW, Nintendo, news, updates, releases, gaming, excitement, community';
-      break;
-    case 'mostPlayedGames':
-      title = 'CodyMKW - Most Played Games';
-      description = 'Dive into Cody\'s gaming realm and explore the most-played Nintendo games. Discover the adventures that stole my gaming heart.';
-      keywords = 'CodyMKW, Nintendo, most played games, gaming, adventures, community, favorites';
-      break;
-    case 'webApps':
-      title = 'CodyMKW - Web Apps';
-      description = 'Unlock the fun with Cody\'s web apps! From Mario Kart to Splatoon, randomize your gaming experience and add a dash of excitement.';
-      keywords = 'CodyMKW, web apps, Mario Kart, Splatoon, randomizer, gaming fun, community, Nintendo, excitement';
-      break;
-    case 'socialMedia':
-      title = 'CodyMKW - Social Media';
-      description = 'Connect with Cody on various social platforms and dive into a world of gaming, anime, and delightful conversations. Let\'s share the joy!';
-      keywords = 'CodyMKW, social media, connect, gaming, anime, community, conversations, Nintendo, joy';
-      break;
-    case 'countdown':
-      title = 'CodyMKW - Countdown Timer';
-      description = 'Count down to exciting events with Cody! Set your timer, hold onto your seat, and let\'s make the wait worthwhile together.';
-      keywords = 'CodyMKW, countdown timer, exciting events, anticipation, community, gaming, anime';
-      break;
-    // Add cases for other pages and their respective metadata
-
-    default:
-      title = 'CodyMKW';
-      description = 'Learn more about Cody, a dedicated Nintendo fan and passionate Animal Crossing player.';
-      keywords = 'CodyMKW, Nintendo fan, Animal Crossing, Nintendo Switch, Mario Kart, Pokémon, gaming enthusiast, peaceful gaming, relaxing atmosphere, gaming community, Nintendo Switch gaming, gaming adventures, video games, Nintendo games, gaming journey, social media, gaming community, anime, Clannad, future of Nintendo, QR code, Nintendo news, web apps, social links, gaming fun, Friend Code, gaming enthusiast, gaming community.';
-      break;
-  }
-
-  // Update meta tags
-  document.querySelector('meta[name="description"]').setAttribute('content', description);
-  document.querySelector('meta[name="keywords"]').setAttribute('content', keywords);
-  document.querySelector('meta[property="og:title"]').setAttribute('content', title);
-  document.querySelector('meta[property="og:description"]').setAttribute('content', description);
-  document.querySelector('meta[name="twitter:title"]').setAttribute('content', title);
-  document.querySelector('meta[name="twitter:description"]').setAttribute('content', description);
-}
-
-// Call the function to update metadata based on the URL
-updateMetadataBasedOnUrl();
-
 // Function to change the location to the specified URL
 function changeLocation(url) {
   window.location.href = url;
