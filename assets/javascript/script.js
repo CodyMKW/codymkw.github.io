@@ -168,24 +168,6 @@ if (
   codyHeading2.classList.add("shimmer");
 }
 
-// Splatoon stages
-async function getStageInfo() {
-  const response = await fetch('https://splatoon3.ink/data/schedules.json');
-  const data = await response.json();
-
-  const stages = [];
-  for (const match of data.regularMatches) {
-    for (const stage of match.regularMatchSetting.vsStages) {
-      stages.push({
-        name: stage.name,
-        image: stage.image.url,
-      });
-    }
-  }
-
-  return stages;
-}
-
 // Update age in the HTML code
 var ageElement = document.getElementById('age');
 if (ageElement) {
