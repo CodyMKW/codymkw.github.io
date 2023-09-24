@@ -126,6 +126,44 @@ h1.notfoundheading {
   text-align: center;
 }
 
+/* Countdown styles */
+#countdownContent {
+  display: none;
+  padding: 20px;
+  background-color: #111;
+  border: 2px solid #000;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+#countdownContent h2 {
+  color: #0d8100;
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+#countdownContent label {
+  color: #fff;
+}
+
+#countdownContent input {
+  background-color: #222;
+  color: #fff;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  font-size: 1rem;
+  margin-bottom: 20px;
+}
+
+#countdownContent button[type="submit"] {
+  background-color: #0d8100;
+}
+
+#countdownContent button[type="submit"]:hover {
+  background-color: #095a00;
+}
+
 /* Credits styles */
 #creditsContent {
   display: none;

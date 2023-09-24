@@ -156,6 +156,37 @@
                     </a>
                   </div>
             </div>
+            <div id="countdownContent" class="tabContent">
+              <h2>Countdown Timer</h2>
+              <div class="countdown-container">
+                <h2>Countdown Timer</h2>
+                <div class="countdown-timer">
+                  <div class="countdown-days">
+                    <span class="countdown-value">--</span>
+                    <span class="countdown-label">Days</span>
+                  </div>
+                  <div class="countdown-hours">
+                    <span class="countdown-value">--</span>
+                    <span class="countdown-label">Hours</span>
+                  </div>
+                  <div class="countdown-minutes">
+                    <span class="countdown-value">--</span>
+                    <span class="countdown-label">Minutes</span>
+                  </div>
+                  <div class="countdown-seconds">
+                    <span class="countdown-value">--</span>
+                    <span class="countdown-label">Seconds</span>
+                  </div>
+                </div>
+                <form class="countdown-form">
+                  <label for="countdown-title">Countdown Title</label>
+                  <input type="text" name="countdown-title" id="countdown-title" required>
+                  <label for="countdown-date">Countdown Date and Time</label>
+                  <input type="datetime-local" name="countdown-date" id="countdown-date" required>
+                  <button type="submit">Start Countdown</button>
+                </form>
+              </div>              
+            </div>
             <div id="creditsContent" class="tabContent">
               <h2>Credits</h2>
               <ul class="credit-list">
