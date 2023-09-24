@@ -403,14 +403,17 @@ h1.notfoundheading {
 
 #mostPlayedGamesContent #games-table tbody tr:nth-child(1) {
   background-color: gold;
+  color: #000;
 }
 
 #mostPlayedGamesContent #games-table tbody tr:nth-child(2) {
   background-color: silver;
+  color: #000;
 }
 
 #mostPlayedGamesContent #games-table tbody tr:nth-child(3) {
   background-color: #CD7F32; /* Bronze color */
+  color: #000;
 }
 
 .playtime-note {
