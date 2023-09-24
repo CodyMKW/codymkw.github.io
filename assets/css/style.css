@@ -402,16 +402,16 @@ h1.notfoundheading {
   text-decoration: underline;
 }
 
-#games-table tr.gold {
+#mostPlayedGamesContent #games-table tbody tr:nth-child(1) {
   background-color: gold;
 }
 
-#games-table tr.silver {
+#mostPlayedGamesContent #games-table tbody tr:nth-child(2) {
   background-color: silver;
 }
 
-#games-table tr.bronze {
-  background-color: #cd7f32; /* Bronze color */
+#mostPlayedGamesContent #games-table tbody tr:nth-child(3) {
+  background-color: #CD7F32; /* Bronze color */
 }
 
 .playtime-note {
