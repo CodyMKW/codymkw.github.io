@@ -184,8 +184,11 @@ h1.notfoundheading {
 }
 
 @media screen and (max-width: 480px) {
-  .countdown-value {
-    font-size: 3rem; /* Adjust the font size as needed */
+  .countdown-container {
+    padding: 10px; /* Adjust padding for smaller screens */
+  }
+  .countdown-timer > div {
+    margin: 0 10px; /* Adjust margins for smaller screens */
   }
 }
 
