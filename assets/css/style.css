@@ -22,12 +22,12 @@ a:hover {
 .emoji {
   background-position: center center;
   background-repeat: no-repeat;
-  background-size: 1em 1em;
+  background-size: 1.5em 1.5em; /* Adjusted size */
   display: inline-block;
-  height: 1em;
+  height: 1.5em; /* Adjusted size */
   margin: 0 .05em 0 .1em;
   vertical-align: -.1em;
-  width: 1em
+  width: 1.5em; /* Adjusted size */
 }
 
 .container {
