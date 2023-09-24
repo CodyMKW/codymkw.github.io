@@ -201,7 +201,7 @@ function getOrdinalSuffix(number) {
    var currentYear = new Date().getFullYear();
    
    // Build the footer text
-   var footerText = '&copy; ' + (startYear === currentYear ? startYear : startYear + ' - ' + currentYear) + ' CodyMKW. All rights reserved.';
+   var footerText = '&copy; ' + (startYear === currentYear ? startYear : startYear + ' - ' + currentYear) + ' CodyMKW. All rights reserved. | <a href="?page=credits" onclick="showContent(\'creditsContent\')">Credits</a>';
    
    // Update the footer text
    footer.innerHTML = footerText;
