@@ -88,6 +88,18 @@ var gamesData = [
     playtime: 2875,
     link: "https://www.nintendo.com/store/products/fortnite-switch",
     cover: "https://static-cdn.jtvnw.net/ttv-boxart/33214-144x192.jpg"
+  },
+  {
+    name: "Pokémon Violet",
+    playtime: 115,
+    link: "https://www.nintendo.com/store/products/pokemon-violet-switch",
+    cover: "https://static-cdn.jtvnw.net/ttv-boxart/670867987-144x192.jpg"
+  },
+  {
+    name: "Dragon Ball: Xenoverse 2",
+    playtime: 100,
+    link: "https://www.nintendo.com/store/products/dragon-ball-xenoverse-2-for-nintendo-switch-switch",
+    cover: "https://static-cdn.jtvnw.net/ttv-boxart/492731_IGDB-144x192.jpg"
   }
 ];
 
