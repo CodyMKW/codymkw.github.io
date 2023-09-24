@@ -191,6 +191,10 @@ function getOrdinalSuffix(number) {
   return suffix;
 }
 
+// Function to change the location to the specified URL
+function changeLocation(url) {
+  window.location.href = url;
+}
    // Get the footer element
    var footer = document.querySelector('footer');
 
