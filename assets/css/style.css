@@ -138,6 +138,7 @@ h1.notfoundheading {
 
 .credit-section {
   margin-bottom: 20px;
+  text-align: left;
 }
 
 .credit-section p {
@@ -152,6 +153,15 @@ h1.notfoundheading {
 
 .credit-section a:hover {
   text-decoration: underline;
+}
+
+.credit-list {
+  list-style-type: disc;
+  padding-left: 20px;
+}
+
+.credit-list li {
+  margin-bottom: 10px;
 }
 
 /* About styles */
