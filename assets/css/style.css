@@ -183,9 +183,9 @@ h1.notfoundheading {
   font-size: 4rem;
 }
 
-@media screen and (max-width: 480px) {
-  .countdown-value {
-    font-size: 3rem; /* Adjust the font size as needed */
+@media (max-width: 480px) {
+  .countdown-timer {
+    flex-direction: column; /* Stack the countdown elements vertically on smaller screens */
   }
 }
 
