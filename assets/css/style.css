@@ -379,12 +379,11 @@ h1.notfoundheading {
 }
 
 #games-table td {
-  background-color: #222;
   color: #fff;
 }
 
-#games-table tr:nth-child(even) {
-  background-color: #333;
+#games-table tr, #games-table tr:nth-child(even) {
+  background-color: #222;
 }
 
 #games-table tr:hover {
