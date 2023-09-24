@@ -378,10 +378,6 @@ h1.notfoundheading {
   color: #fff;
 }
 
-#games-table td {
-  color: #fff;
-}
-
 #games-table tr, #games-table tr:nth-child(even) {
   background-color: #222;
 }
