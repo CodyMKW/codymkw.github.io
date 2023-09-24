@@ -156,6 +156,38 @@ h1.notfoundheading {
   margin-bottom: 20px;
 }
 
+.countdown-container {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: center;
+  padding: 20px;
+}
+
+.countdown-timer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 50px;
+  font-size: 2rem;
+}
+
+.countdown-timer > div {
+  display: flex;
+  flex-direction: column;
+  margin: 0 20px;
+}
+
+.countdown-value {
+  font-weight: bold;
+  font-size: 4rem;
+}
+
+.countdown-label {
+  text-transform: uppercase;
+  font-size: 1rem;
+}
+
 #countdownContent button[type="submit"] {
   background-color: #0d8100;
 }
