@@ -72,6 +72,12 @@ var gamesData = [
     cover: "https://static-cdn.jtvnw.net/ttv-boxart/1158884259_IGDB-144x192.jpg"
   },
   {
+    name: "Splatoon 2",
+    playtime: 220,
+    link: "https://www.nintendo.com/store/products/splatoon-2-switch",
+    cover: "https://static-cdn.jtvnw.net/ttv-boxart/495064_IGDB-144x192.jpg"
+  },
+  {
     name: "Ninjala",
     playtime: 230,
     link: "https://www.nintendo.com/store/products/ninjala-switch",
