@@ -43,10 +43,10 @@ const FILES_TO_CACHE = [
 
 self.addEventListener('install', event => {
   console.log('Service Worker: Installing...');
-
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => {
       console.log('Service Worker: Caching files during install');
+      console.log(FILES_TO_CACHE);  // Log the files being cached
       return cache.addAll(FILES_TO_CACHE);
     })
   );
