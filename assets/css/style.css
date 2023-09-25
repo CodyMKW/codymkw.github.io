@@ -322,6 +322,10 @@ h1.notfoundheading {
   text-align: left;
 }
 
+#nintendoNewsContent h2 {
+  text-align: center;
+}
+
 #nintendoNewsContent h3 {
   display: none;
 }
