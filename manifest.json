@@ -1,7 +1,7 @@
 {
     "name": "CodyMKW",
     "short_name": "Cody",
-    "start_url": "https://codymkw.github.io/",  // Adjust the URL as per your project structure
+    "start_url": "https://codymkw.github.io/",
     "icons": [
       {
         "src": "favicon.png",
