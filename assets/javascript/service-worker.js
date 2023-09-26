@@ -50,6 +50,7 @@ self.addEventListener('install', event => {
 });
 
 self.addEventListener('fetch', event => {
+  console.log('Fetching:', event.request.url);  // Log the URL being fetched
   event.respondWith(
     caches.match(event.request).then(response => {
       if (response) {
