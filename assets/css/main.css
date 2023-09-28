@@ -448,26 +448,40 @@ h1.notfoundheading {
   position: sticky;
   top: 0;
   z-index: 2;
-  background-color: #111;
-  padding: 10px;
-  font-size: 16px;
+  background: linear-gradient(90deg, rgba(17, 17, 17, 0.9) 0%, rgba(17, 17, 17, 0) 100%);
+  padding: 15px;
+  font-size: 18px;
   text-align: center;
-  color: #fff;
+  color: #ffffff;
+  transition: background-color 0.3s;
+}
+
+/* Sticky Header Styles on Hover */
+.sticky-header:hover {
+  background-color: rgba(17, 17, 17, 0.9);
 }
 
 /* Sticky Header Styles - Normal */
 .sticky-header .normal {
   color: #0d8100;
+  transition: color 0.3s;
+}
+
+/* Sticky Header Styles - Normal on Hover */
+.sticky-header:hover .normal {
+  color: #095a00;
 }
 
 /* Sticky Header Styles - Warning */
 .sticky-header .warning {
   color: #ff8c00;
+  background-color: #660000; /* A contrasting color for warning */
 }
 
 /* Sticky Header Styles - Important */
 .sticky-header .important {
   color: #ff0000;
+  background-color: #330000; /* A contrasting color for important */
 }
 
 footer {
