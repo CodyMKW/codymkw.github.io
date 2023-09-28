@@ -103,6 +103,7 @@ button:hover {
 .avatar-frame {
   position: relative;
   display: inline-block;
+  z-index: 1;
 }
 
 .avatar-frame .avatar-image {
@@ -446,6 +447,7 @@ h1.notfoundheading {
 .sticky-header {
   position: sticky;
   top: 0;
+  z-index: 2;
   background-color: #111;
   padding: 10px;
   font-size: 16px;
