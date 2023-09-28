@@ -442,6 +442,32 @@ h1.notfoundheading {
   color: #fff;
 }
 
+/* Sticky Header Styles */
+.sticky-header {
+  position: sticky;
+  top: 0;
+  background-color: #111;
+  padding: 10px;
+  font-size: 16px;
+  text-align: center;
+  color: #fff;
+}
+
+/* Sticky Header Styles - Normal */
+.sticky-header .normal {
+  color: #0d8100;
+}
+
+/* Sticky Header Styles - Warning */
+.sticky-header .warning {
+  color: #ff8c00;
+}
+
+/* Sticky Header Styles - Important */
+.sticky-header .important {
+  color: #ff0000;
+}
+
 footer {
   background-color: #111;
   padding: 10px;
