@@ -476,12 +476,18 @@ h1.notfoundheading {
 .sticky-header .warning {
   color: #ff8c00;
   background-color: #660000; /* A contrasting color for warning */
+  padding: 10px;
+  border-radius: 5px;
+  font-weight: bold;
 }
 
 /* Sticky Header Styles - Important */
 .sticky-header .important {
   color: #ff0000;
   background-color: #330000; /* A contrasting color for important */
+  padding: 10px;
+  border-radius: 5px;
+  font-weight: bold;
 }
 
 footer {
