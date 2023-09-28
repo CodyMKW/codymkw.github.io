@@ -450,20 +450,21 @@ h1.notfoundheading {
   z-index: 2;
   background: linear-gradient(90deg, rgba(17, 17, 17, 0.9) 0%, rgba(17, 17, 17, 0) 100%);
   padding: 15px;
-  font-size: 18px;
+  font-size: 20px; /* Increased font size */
   text-align: center;
   color: #ffffff;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s, font-size 0.3s; /* Added font-size transition */
+  border-radius: 10px; /* Added border radius for a softer look */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Added box shadow for depth */
 }
 
-/* Sticky Header Styles on Hover */
 .sticky-header:hover {
   background-color: rgba(17, 17, 17, 0.9);
 }
 
 .sticky-header .important {
-  color: #0056b3; /* A shade of blue */
-  background-color: #001f44; /* A darker shade of blue for background */
+  color: #0056b3;
+  background-color: #001f44;
   padding: 10px;
   border-radius: 5px;
   font-weight: bold;
