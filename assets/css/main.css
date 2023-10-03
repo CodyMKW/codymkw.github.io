@@ -349,39 +349,6 @@ h1.notfoundheading {
   color: #095a00 !important;
 }
 
-/* Style for the review container */
-#reviewsContent {
-  display: none;
-  margin-top: 40px;
-  padding: 20px;
-  background-color: #111;
-  border: 2px solid #000;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-/* Style for the game name */
-.review h3 {
-  margin-bottom: 10px;
-  font-size: 18px;
-}
-
-/* Style for the comment */
-.review p {
-  margin-bottom: 10px;
-}
-
-/* Style for the star rating */
-.rating-stars span {
-  color: gold; /* Stars will appear gold */
-  font-size: 24px;
-}
-
-/* Style for the rating description */
-.review .rating-description {
-  font-style: italic;
-}
-
 /* Most Played Games styles */
 #mostPlayedGamesContent {
   display: none;

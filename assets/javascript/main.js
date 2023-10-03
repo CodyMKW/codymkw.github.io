@@ -358,34 +358,3 @@ var backgrounds = [
      
      // Update the footer text
      footer.innerHTML = footerText;
-
-     // Reviews code
-const reviewsContainer = document.getElementById('reviews-container'); // Assuming you have a container for reviews in your HTML
-
-for (const review of reviewsData.reviews) {
-  const reviewElement = document.createElement('div');
-  reviewElement.classList.add('review');
-
-  const gameName = document.createElement('h3');
-  gameName.textContent = `Game: ${review.gameName}`;
-  reviewElement.appendChild(gameName);
-
-  const comment = document.createElement('p');
-  comment.textContent = `Comment: ${review.comment}`;
-  reviewElement.appendChild(comment);
-
-  const ratingStars = document.createElement('div');
-  ratingStars.classList.add('rating-stars');
-  for (let i = 0; i < review.rating.stars; i++) {
-    const star = document.createElement('span');
-    star.textContent = '★';
-    ratingStars.appendChild(star);
-  }
-  reviewElement.appendChild(ratingStars);
-
-  const ratingDescription = document.createElement('p');
-  ratingDescription.textContent = `Rating: ${review.rating.description}`;
-  reviewElement.appendChild(ratingDescription);
-
-  reviewsContainer.appendChild(reviewElement);
-}
