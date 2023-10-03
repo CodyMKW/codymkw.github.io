@@ -106,6 +106,12 @@ var backgrounds = [
       playtime: 100,
       link: "https://www.nintendo.com/store/products/dragon-ball-xenoverse-2-for-nintendo-switch-switch",
       cover: "https://static-cdn.jtvnw.net/ttv-boxart/492731_IGDB-144x192.jpg"
+    },
+    {
+      name: "My Hero Ultra Rumble",
+      playtime: 50,
+      link: "https://www.nintendo.com/store/products/my-hero-ultra-rumble-switch",
+      cover: "https://static-cdn.jtvnw.net/ttv-boxart/451007760_IGDB-144x192.jpg"
     }
   ];
   
