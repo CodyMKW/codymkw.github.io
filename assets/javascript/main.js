@@ -372,7 +372,7 @@ var backgrounds = [
             const reviewElement = document.createElement("div");
             reviewElement.classList.add("review");
             reviewElement.innerHTML = `
-              <div class="username">${review.username}</div>
+              <div class="gameName">${review.gameName}</div>
               <div class="comment">${review.comment}</div>
               <div class="rating">Rating: ${review.rating}</div>
             `;

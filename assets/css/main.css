@@ -351,10 +351,13 @@ h1.notfoundheading {
 
 /* Style for the review container */
 #reviewsContent {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin: 20px;
+  display: none;
+  margin-top: 40px;
+  padding: 20px;
+  background-color: #111;
+  border: 2px solid #000;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 /* Style for each individual review */
@@ -367,8 +370,8 @@ h1.notfoundheading {
   background-color: #f9f9f9;
 }
 
-/* Style for the username */
-.username {
+/* Style for the game name */
+.gameName {
   font-weight: bold;
   margin-bottom: 5px;
 }
