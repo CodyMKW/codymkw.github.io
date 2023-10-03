@@ -246,8 +246,16 @@ var backgrounds = [
       if (remainingTime <= 0) {
         clearInterval(countdownInterval);
         updateCountdown(0, 0, 0, 0);
+  
+        // Display custom message or default message
         countdownTitle.textContent = customMessage || 'Time is up!';
-        countdownTitle.textContent = '';
+  
+        // Also set the title
+        updateCountdownTitle(customMessage || 'Time is up!');
+  
+        // Store custom message in localStorage
+        localStorage.setItem('customMessage', customMessage || 'Time is up!');
+        
         localStorage.removeItem('countdownDate');
         localStorage.removeItem('countdownTitle');
       } else {
@@ -263,7 +271,7 @@ var backgrounds = [
     updateCountdownTitle(countdownTitleValue);
     localStorage.setItem('countdownDate', countdownDate);
     localStorage.setItem('countdownTitle', countdownTitleValue);
-  }
+  }  
   
   function updateCountdown(days, hours, minutes, seconds) {
     countdownDays.textContent = days;
