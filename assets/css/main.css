@@ -360,31 +360,26 @@ h1.notfoundheading {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-/* Style for each individual review */
-.review {
-  border: 1px solid #ccc;
-  padding: 10px;
-  margin-bottom: 10px;
-  width: 80%;
-  max-width: 400px;
-  background-color: #f9f9f9;
-}
-
 /* Style for the game name */
-.gameName {
-  font-weight: bold;
-  margin-bottom: 5px;
+.review h3 {
+  margin-bottom: 10px;
+  font-size: 18px;
 }
 
 /* Style for the comment */
-.comment {
+.review p {
   margin-bottom: 10px;
 }
 
-/* Style for the rating */
-.rating {
+/* Style for the star rating */
+.rating-stars span {
+  color: gold; /* Stars will appear gold */
+  font-size: 24px;
+}
+
+/* Style for the rating description */
+.review .rating-description {
   font-style: italic;
-  color: #888;
 }
 
 /* Most Played Games styles */
