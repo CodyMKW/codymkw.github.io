@@ -228,6 +228,7 @@ var backgrounds = [
   
     const countdownDate = new Date(event.target.elements['countdown-date'].value);
     const countdownTitleValue = event.target.elements['countdown-title'].value.trim();
+    const customMessage = event.target.elements['custom-message'].value.trim();
     const currentTime = new Date();
     const countdownTime = countdownDate.getTime() - currentTime.getTime();
   
@@ -245,6 +246,7 @@ var backgrounds = [
       if (remainingTime <= 0) {
         clearInterval(countdownInterval);
         updateCountdown(0, 0, 0, 0);
+        countdownTitle.textContent = customMessage || 'Time is up!';
         countdownTitle.textContent = '';
         localStorage.removeItem('countdownDate');
         localStorage.removeItem('countdownTitle');
@@ -312,8 +314,10 @@ var backgrounds = [
           }
         }, 1000);
       } else {
+        countdownTitle.textContent = localStorage.getItem('customMessage') || '';
         localStorage.removeItem('countdownDate');
         localStorage.removeItem('countdownTitle');
+        localStorage.removeItem('customMessage');
       }
     }
   }
