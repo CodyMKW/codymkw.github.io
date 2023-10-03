@@ -358,3 +358,27 @@ var backgrounds = [
      
      // Update the footer text
      footer.innerHTML = footerText;
+
+     // Reviews code
+     document.addEventListener("DOMContentLoaded", () => {
+      // Fetch the JSON file
+      fetch("reviews.json")
+        .then(response => response.json())
+        .then(data => {
+          const reviews = data.reviews;
+    
+          // Loop through the reviews and display them
+          reviews.forEach(review => {
+            const reviewElement = document.createElement("div");
+            reviewElement.classList.add("review");
+            reviewElement.innerHTML = `
+              <div class="username">${review.username}</div>
+              <div class="comment">${review.comment}</div>
+              <div class="rating">Rating: ${review.rating}</div>
+            `;
+            document.getElementById("reviewsContent").appendChild(reviewElement);
+          });
+        })
+        .catch(error => console.error("Error fetching reviews:", error));
+    });
+    

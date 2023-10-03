@@ -1,0 +1,15 @@
+{
+    "reviews": [
+      {
+        "username": "Player1",
+        "comment": "This game is fantastic!",
+        "rating": 5
+      },
+      {
+        "username": "GamerGirl",
+        "comment": "Not bad, but could be improved.",
+        "rating": 3
+      }
+    ]
+  }
+  
