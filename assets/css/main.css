@@ -484,7 +484,7 @@ h1.notfoundheading {
 #close-button {
   cursor: pointer;
   float: right;
-  color: white;
+  color: #c3c3c3;
   font-weight: bold;
   padding: 0 10px;
 }
