@@ -343,6 +343,21 @@ var backgrounds = [
   function changeLocation(url) {
     window.location.href = url;
   }
+
+  function toggleHeader() {
+    const header = document.getElementById('sticky-header');
+    header.style.display = header.style.display === 'none' || header.style.display === '' ? 'block' : 'none';
+    localStorage.setItem('headerVisibility', header.style.display);
+}
+
+// On page load, check and set the header visibility
+document.addEventListener('DOMContentLoaded', () => {
+    const header = document.getElementById('sticky-header');
+    const headerVisibility = localStorage.getItem('headerVisibility');
+    if (headerVisibility) {
+        header.style.display = headerVisibility;
+    }
+});
   
      // Get the footer element
      var footer = document.querySelector('footer');

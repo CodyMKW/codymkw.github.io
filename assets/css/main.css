@@ -481,6 +481,19 @@ h1.notfoundheading {
   font-weight: bold;
 }
 
+#close-button {
+  cursor: pointer;
+  float: right;
+  color: white;
+  font-weight: bold;
+  padding: 0 10px;
+}
+
+#close-button:hover {
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 5px;
+}
+
 footer {
   background-color: #111;
   padding: 10px;
