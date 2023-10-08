@@ -369,7 +369,31 @@ document.addEventListener('DOMContentLoaded', () => {
      var currentYear = new Date().getFullYear();
      
      // Build the footer text
-     var footerText = '&copy; ' + (startYear === currentYear ? startYear : startYear + ' - ' + currentYear) + ' CodyMKW. All rights reserved. | <a href="?page=credits" onclick="showContent(\'creditsContent\')">Credits</a>';
+     var footerText = '&copy; ' + (startYear === currentYear ? startYear : startYear + ' - ' + currentYear) + ' CodyMKW. All rights reserved. | <a href="?page=credits" onclick="showContent(\'creditsContent\')">Credits</a> | <a href="#" id="manage-cookies">Manage Cookies</a> ';
      
      // Update the footer text
      footer.innerHTML = footerText;
+
+// Function to delete all cookies
+function deleteAllCookies() {
+  var cookies = document.cookie.split("; ");
+  for (var c = 0; c < cookies.length; c++) {
+    var d = window.location.hostname.split(".");
+    while (d.length > 0) {
+      var cookieBase = encodeURIComponent(cookies[c].split(";")[0].split("=")[0]) + '=; expires=Thu, 01-Jan-1970 00:00:01 GMT; domain=' + d.join('.') + ' ;path=';
+      var p = location.pathname.split('/');
+      document.cookie = cookieBase + '/';
+      while (p.length > 0) {
+        document.cookie = cookieBase + p.join('/');
+        p.pop();
+      }
+      d.shift();
+    }
+  }
+}
+
+// Handle the click event on the "Manage Cookies" link
+document.getElementById("manage-cookies").addEventListener("click", function() {
+  deleteAllCookies(); // Call the function to delete cookies
+  alert("Cookies deleted."); // Show an alert (you can replace this with your desired action)
+});
