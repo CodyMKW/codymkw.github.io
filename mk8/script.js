@@ -85,7 +85,8 @@ const tracks = [
   "(Tour) Athens Dash",
   "(GCN) Daisy Cruiser",
   "(GBA) Sunset Wilds",
-  "(Tour) Vancouver Velocity"
+  "(Tour) Vancouver Velocity",
+  "(Wii) Daisy Circuit"
 ];
 
 const vehicles = [
