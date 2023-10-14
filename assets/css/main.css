@@ -12,11 +12,11 @@ body {
 }
 
 a {
-  color: #0d8100;
+  color: #00C900;
 }
 
 a:hover {
-  color: #095a00;
+  color: #008a00;
 }
 
 .emoji {
@@ -48,8 +48,8 @@ a:hover {
 }
 
 button {
-  background-color: #0d8100;
-  color: #fff;
+  background-color: #00C900;
+  color: #000;
   border: none;
   padding: 10px 20px;
   cursor: pointer;
@@ -59,7 +59,8 @@ button {
 }
 
 button:hover {
-  background-color: #095a00;
+  background-color: #008a00;
+  color: #000;
 }
 
 .tabContent {
@@ -204,11 +205,13 @@ h1.notfoundheading {
 }
 
 #countdownContent button[type="submit"] {
-  background-color: #0d8100;
+  background-color: #00C900;
+  color: #000;
 }
 
 #countdownContent button[type="submit"]:hover {
-  background-color: #095a00;
+  background-color: #008a00;
+  color: #fff;
 }
 
 /* Credits styles */
@@ -342,7 +345,7 @@ h1.notfoundheading {
 }
 
 #nintendoNewsContent h4 {
-  color: #0d8100;
+  color: #00C900;
   font-size: 24px;
   margin-bottom: 10px;
 }
@@ -353,11 +356,11 @@ h1.notfoundheading {
 }
 
 #nintendoNewsContent a {
-  color: #0d8100 !important;
+  color: #00C900 !important;
 }
 
 #nintendoNewsContent a:hover {
-  color: #095a00 !important;
+  color: #008a00 !important;
 }
 
 /* Most Played Games styles */
@@ -389,7 +392,7 @@ h1.notfoundheading {
 }
 
 #games-table th {
-  background-color: #0d8100;
+  background-color: #00C900;
   color: #fff;
 }
 
@@ -402,13 +405,13 @@ h1.notfoundheading {
 }
 
 #games-table a {
-  color: #0d8100;
+  color: #00C900;
   text-decoration: none;
   font-weight: bold;
 }
 
 #games-table a:hover {
-  color: #095a00;
+  color: #008a00;
   text-decoration: underline;
 }
 
