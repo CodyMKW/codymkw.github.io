@@ -469,7 +469,7 @@ color: #066d06;
 }
 
 /* Web Apps styles */
-#webAppsContent {
+#OtherStuffContent {
   display: none;
   padding: 20px;
   background-color: #111;
@@ -478,7 +478,7 @@ color: #066d06;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-#webAppsContent p, h2 {
+#OtherStuffContent p, h2 {
   color: #fff;
 }
 
