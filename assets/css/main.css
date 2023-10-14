@@ -447,11 +447,11 @@ color: #017101;
 }
 
 #mostPlayedGamesContent #games-table tbody tr:nth-child(3) a {
-  color: #059c05;
+  color: #098009;
 }
 
 #mostPlayedGamesContent #games-table tbody tr:nth-child(3) a:hover {
-color: #017101;
+color: #066d06;
 }
 
 .playtime-note {
