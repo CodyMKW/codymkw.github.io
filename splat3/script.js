@@ -271,7 +271,11 @@ const headgears = [
   "Away-Team Catcher",
   "Welding Mask",
   "Cap of Legend",
-  "3D Glasses"
+  "3D Glasses",
+  "Undead Head",
+  "Swim Reaper",
+  "The Plankton Walker",
+  "Bleak Beak"
 ];
 
 
