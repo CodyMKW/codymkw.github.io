@@ -420,14 +420,38 @@ h1.notfoundheading {
   color: #000;
 }
 
+#mostPlayedGamesContent #games-table tbody tr:nth-child(1) a {
+    color: #059c05;
+}
+
+#mostPlayedGamesContent #games-table tbody tr:nth-child(1) a:hover {
+  color: #017101;
+}
+
 #mostPlayedGamesContent #games-table tbody tr:nth-child(2) {
   background-color: silver;
   color: #000;
 }
 
+#mostPlayedGamesContent #games-table tbody tr:nth-child(2) a {
+  color: #059c05;
+}
+
+#mostPlayedGamesContent #games-table tbody tr:nth-child(2) a:hover {
+color: #017101;
+}
+
 #mostPlayedGamesContent #games-table tbody tr:nth-child(3) {
   background-color: #CD7F32; /* Bronze color */
   color: #000;
+}
+
+#mostPlayedGamesContent #games-table tbody tr:nth-child(3) a {
+  color: #059c05;
+}
+
+#mostPlayedGamesContent #games-table tbody tr:nth-child(3) a:hover {
+color: #017101;
 }
 
 .playtime-note {
