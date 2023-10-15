@@ -16,46 +16,46 @@ self.addEventListener("install", event => {
 				"favicon-16x16.png", // Favicon, default
 				"favicon-32x32.png", // Favicon, Safari on Mac OS
 				"index.html", // Main HTML file
-				"/assets/javascript/main.js", // Main Javascript file
-				"/assets/javascript/manifest.json", // Manifest file
+				"./assets/javascript/main.js", // Main Javascript file
+				"./assets/javascript/manifest.json", // Manifest file
 				"mstile-150x150.png", // Favicon, Windows 8 / IE11
 				"safari-pinned-tab.svg", // Favicon, Safari pinned tab
-				"/assets/css/style.css", // Main CSS file
-                "/assets/css/emoji.css", // Emoji CSS file
-                "/assets/images/facebook.png", // Site image
-                "/assets/images/instagram.png", // Site image
-                "/assets/images/mario_oops.png", // Site image
-                "/assets/images/mastodon.png", // Site image
-                "/assets/images/switchqr.png", // Site image
-                "/assets/images/threads.png", // Site image
-                "/assets/images/twitter.png", // Site image
-                "/assets/images/youtube.png", // Site image
-                "/assets/images/backgrounds/bg.gif", // Site BG image
-                "/assets/images/backgrounds/bg2.gif", // Site BG image
-                "/assets/images/backgrounds/bg3.gif", // Site BG image
-                "/assets/images/backgrounds/bg4.gif", // Site BG image
-                "/assets/images/backgrounds/bg5.gif", // Site BG image
-                "/assets/images/backgrounds/bg6.gif", // Site BG image
-                "/assets/images/backgrounds/bg7.gif", // Site BG image
-                "/assets/images/backgrounds/bg8.gif", // Site BG image
-                "/assets/images/backgrounds/bg9.gif", // Site BG image
-                "/assets/images/backgrounds/bg10.gif", // Site BG image
-                "/assets/images/emojis/coolDoge.png", // Site Emoji image
-                "/assets/images/emojis/guraWave.png", // Site Emoji image
-                "/assets/images/emojis/MHUR.png", // Site Emoji image
-                "/assets/images/emojis/ninSwitch.png", // Site Emoji image
-                "/assets/images/emojis/peepoNerd.png", // Site Emoji image
-                "/assets/images/emojis/penguinHype.png", // Site Emoji image
-                "/assets/images/emojis/superMushroom.png", // Site Emoji image
-                "/assets/images/emojis/umaruCola.png", // Site Emoji image
-                "/assets/images/splatfest/Team_Aliens.png", // Site Splatfest frame image
-                "/assets/images/splatfest/Team_BigMan.png", // Site Splatfest frame image
-                "/assets/images/splatfest/Team_Love.png", // Site Splatfest frame image
-                "/assets/images/splatfest/Team_MintChip.png", // Site Splatfest frame image
-                "/assets/images/splatfest/Team_Power.png", // Site Splatfest frame image
-                "/assets/images/splatfest/Team_Sweet.png", // Site Splatfest frame image
-                "/assets/images/splatfest/Team_Water.png", // Site Splatfest frame image
-                "/assets/images/splatfest/Team_WhiteChocolate.png", // Site Splatfest frame image
+				"./assets/css/style.css", // Main CSS file
+                "./assets/css/emoji.css", // Emoji CSS file
+                "./assets/images/facebook.png", // Site image
+                "./assets/images/instagram.png", // Site image
+                "./assets/images/mario_oops.png", // Site image
+                "./assets/images/mastodon.png", // Site image
+                "./assets/images/switchqr.png", // Site image
+                "./assets/images/threads.png", // Site image
+                "./assets/images/twitter.png", // Site image
+                "./assets/images/youtube.png", // Site image
+                "./assets/images/backgrounds/bg.gif", // Site BG image
+                "./assets/images/backgrounds/bg2.gif", // Site BG image
+                "./assets/images/backgrounds/bg3.gif", // Site BG image
+                "./assets/images/backgrounds/bg4.gif", // Site BG image
+                "./assets/images/backgrounds/bg5.gif", // Site BG image
+                "./assets/images/backgrounds/bg6.gif", // Site BG image
+                "./assets/images/backgrounds/bg7.gif", // Site BG image
+                "./assets/images/backgrounds/bg8.gif", // Site BG image
+                "./assets/images/backgrounds/bg9.gif", // Site BG image
+                "./assets/images/backgrounds/bg10.gif", // Site BG image
+                "./assets/images/emojis/coolDoge.png", // Site Emoji image
+                "./assets/images/emojis/guraWave.png", // Site Emoji image
+                "./assets/images/emojis/MHUR.png", // Site Emoji image
+                "./assets/images/emojis/ninSwitch.png", // Site Emoji image
+                "./assets/images/emojis/peepoNerd.png", // Site Emoji image
+                "./assets/images/emojis/penguinHype.png", // Site Emoji image
+                "./assets/images/emojis/superMushroom.png", // Site Emoji image
+                "./assets/images/emojis/umaruCola.png", // Site Emoji image
+                "./assets/images/splatfest/Team_Aliens.png", // Site Splatfest frame image
+                "./assets/images/splatfest/Team_BigMan.png", // Site Splatfest frame image
+                "./assets/images/splatfest/Team_Love.png", // Site Splatfest frame image
+                "./assets/images/splatfest/Team_MintChip.png", // Site Splatfest frame image
+                "./assets/images/splatfest/Team_Power.png", // Site Splatfest frame image
+                "./assets/images/splatfest/Team_Sweet.png", // Site Splatfest frame image
+                "./assets/images/splatfest/Team_Water.png", // Site Splatfest frame image
+                "./assets/images/splatfest/Team_WhiteChocolate.png", // Site Splatfest frame image
 			]);
 		})
 	);

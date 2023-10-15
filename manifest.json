@@ -2,7 +2,7 @@
 	"name": "CodyMKW",
 	"short_name": "CodyMKW",
 	"display": "standalone",
-	"start_url": "https://codymkw.github.io",
+	"start_url": "./?utm_source=pwa_install",
 	"scope": ".",
 	"theme_color": "#00C900",
 	"background_color": "#111",
