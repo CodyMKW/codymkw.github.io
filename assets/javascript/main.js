@@ -409,4 +409,15 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
+// Function to display the preview of the selected avatar frame
+function displayPreview() {
+  const frameSelection = document.getElementById('frameSelection');
+  const selectedFrame = frameSelection.value;
+  const previewImage = document.getElementById('preview-image');
+  
+  previewImage.src = `assets/images/splatfest/${selectedFrame}`;
+}
+
+// Attach event listener to the dropdown menu to trigger the preview function
+document.getElementById('frameSelection').addEventListener('change', displayPreview);
   
