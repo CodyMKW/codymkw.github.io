@@ -326,6 +326,17 @@ h1.notfoundheading {
   text-align: center;
 }
 
+/* Change Splatfest Frame page styles */
+#ChangeSplatfestFrameContent {
+  display: none;
+  padding: 20px;
+  background-color: #111;
+  border: 2px solid #000;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
 /* Nintendo News styles */
 #nintendoNewsContent {
   display: none;
