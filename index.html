@@ -40,7 +40,18 @@
         <div class="header">
             <h1 id="cody-heading2"></h1>
             <h1 id="cody-heading">CodyMKW</h1>
-            <div class="avatar-frame" id="avatar-frame" onclick="selectAvatarFrame()">
+            <div class="avatar-frame">
+              <select id="frame-dropdown" onchange="changeAvatarFrame()">
+                <option value="Team_Aliens.png">Team Aliens</option>
+                <option value="Team_BigMan.png">Team Big Man</option>
+                <option value="Team_Love.png">Team Love</option>
+                <option value="Team_MintChip.png">Team Mint Chip</option>
+                <option value="Team_Power.png">Team Power</option>
+                <option value="Team_Sweet.png">Team Sweet</option>
+                <option value="Team_Water.png">Team Water</option>
+                <option value="Team_WhiteChocolate.png">Team White Chocolate</option>
+                <!-- Add options for other frames -->
+              </select>
                <img src="assets/images/splatfest/Team_BigMan.png" alt="Avatar Frame" class="frame-image">
                <img src="https://www.gravatar.com/avatar/5127de8a3a295a02ff3fc55bb6b2fabe?s=2048" alt="Cody's Avatar" class="avatar-image">
             </div>
