@@ -416,7 +416,23 @@ function displayPreview() {
   const previewImage = document.getElementById('preview-image');
   
   previewImage.src = `assets/images/splatfest/${selectedFrame}`;
+
+  // Save the selected frame to localStorage
+  localStorage.setItem('selectedFramePreview', selectedFrame);
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Retrieve the previously selected frame from localStorage
+  const storedFrame = localStorage.getItem('selectedFramePreview');
+  if (storedFrame) {
+    // Set the selected frame in the dropdown menu
+    setSelectedFrame(storedFrame);
+
+    // Display the preview for the stored frame
+    const previewImage = document.getElementById('preview-image');
+    previewImage.src = `assets/images/splatfest/${storedFrame}`;
+  }
+});
 
 // Attach event listener to the dropdown menu to trigger the preview function
 document.getElementById('frameSelection').addEventListener('change', displayPreview);
