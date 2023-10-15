@@ -373,3 +373,49 @@ document.addEventListener('DOMContentLoaded', () => {
      
      // Update the footer text
      footer.innerHTML = footerText;
+
+     function selectAvatarFrame() {
+      // Assume you have the list of frame names
+      const frameNames = [
+        'Team_Aliens.png',
+        'Team_BigMan.png',
+        'Team_Love.png',
+        'Team_MintChip.png',
+        'Team_Power.png',
+        'Team_Sweet.png',
+        'Team_Water.png',
+        'Team_WhiteChocolate.png',
+        // ... add other frame names
+      ];
+    
+      // Prompt the user to select a frame
+      const selectedFrame = prompt('Select an avatar frame:', 'Team_BigMan.png');
+    
+      // Validate if the selected frame is in the list
+      if (frameNames.includes(selectedFrame)) {
+        // Update the avatar frame
+        const avatarFrame = document.getElementById('avatar-frame');
+        avatarFrame.innerHTML = `
+          <img src="assets/images/splatfest/${selectedFrame}" alt="Avatar Frame" class="frame-image">
+          <img src="https://www.gravatar.com/avatar/5127de8a3a295a02ff3fc55bb6b2fabe?s=2048" alt="Cody's Avatar" class="avatar-image">
+        `;
+    
+        // Save the selected frame to localStorage
+        localStorage.setItem('selectedFrame', selectedFrame);
+      } else {
+        alert('Invalid avatar frame selection.');
+      }
+    }
+    
+    // Retrieve the stored frame and set it on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      const storedFrame = localStorage.getItem('selectedFrame');
+      if (storedFrame) {
+        const avatarFrame = document.getElementById('avatar-frame');
+        avatarFrame.innerHTML = `
+          <img src="assets/images/splatfest/${storedFrame}" alt="Avatar Frame" class="frame-image">
+          <img src="https://www.gravatar.com/avatar/5127de8a3a295a02ff3fc55bb6b2fabe?s=2048" alt="Cody's Avatar" class="avatar-image">
+        `;
+      }
+    });
+    
