@@ -389,7 +389,8 @@ document.addEventListener('DOMContentLoaded', () => {
       ];
 
       // Prompt the user to select a frame
-      const selectedFrame = prompt('Change the avatar frame with any on the below list!\nValid list of frames:\n-Team_Aliens.png\n-Team_BigMan.png\n-Team_Love.png\n-Team_MintChip.png\n-Team_Power.png\n-Team_Water.png\n-Team_Sweet.png\n-Team_WhiteChocolate.png', 'Team_BigMan.png');
+      const lastSelectedFrame = localStorage.getItem('selectedFrame') || 'Team_BigMan.png';
+      const selectedFrame = prompt('Change the avatar frame with any on the below list!\nValid list of frames:\n-Team_Aliens.png\n-Team_BigMan.png\n-Team_Love.png\n-Team_MintChip.png\n-Team_Power.png\n-Team_Water.png\n-Team_Sweet.png\n-Team_WhiteChocolate.png', lastSelectedFrame);
 
       // Validate if the selected frame is in the list
       if (frameNames.includes(selectedFrame)) {
