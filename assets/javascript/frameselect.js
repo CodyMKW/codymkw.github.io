@@ -16,7 +16,19 @@ function setSelectedFrame(selectedFrame) {
     `;
   
     localStorage.setItem('selectedFrame', selectedFrame);
-  }
+
+      // Add a green success message
+  const successMessage = document.createElement('p');
+  successMessage.textContent = 'Selection successfully saved';
+  successMessage.style.color = '#00C900';
+  document.getElementById('ChangeSplatfestFrameContent').appendChild(successMessage);
+
+  // Remove the success message after a few seconds
+  setTimeout(() => {
+    successMessage.remove();
+  }, 3000); // 3000 milliseconds (3 seconds)
+
+}
   
   document.addEventListener('DOMContentLoaded', () => {
     const storedFrame = localStorage.getItem('selectedFrame');
