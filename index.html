@@ -192,6 +192,14 @@
               <div id="framePreviewContainer">
                 <img id="framePreview" src="/assets/images/splatfest/octopus/Team_Aliens.png" alt="Frame Preview" class="preview-image" />
               </div>
+              <div id="frameTypeSelection">
+                <label>
+                    <input type="radio" name="frameType" value="octopus" checked="checked" onchange="updateFrameOptions()"> Octopus
+                </label>
+                <label>
+                    <input type="radio" name="frameType" value="squid" onchange="updateFrameOptions()"> Squid
+                </label>
+             </div>
                       <div>
                           <label for="frameSelection">Select a frame:</label>
                           <select id="frameSelection" onchange="displayFramePreview()">
@@ -225,14 +233,6 @@
                               <!-- Add more frame options here -->
                           </select>
                       </div>
-                      <div id="frameTypeSelection">
-                        <label>
-                            <input type="radio" name="frameType" value="octopus" checked="checked" onchange="updateFrameOptions()"> Octopus
-                        </label>
-                        <label>
-                            <input type="radio" name="frameType" value="squid" onchange="updateFrameOptions()"> Squid
-                        </label>
-                     </div>
                       <div>
                           <label for="imageSelection">Upload an image:</label>
                           <input type="file" id="imageSelection" accept="image/*">
