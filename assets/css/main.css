@@ -350,6 +350,11 @@ h1.notfoundheading {
   text-align: center;
 }
 
+.preview-image {
+  width: 400px;
+  height: 400px;
+}
+
 /* Nintendo News styles */
 #nintendoNewsContent {
   display: none;
