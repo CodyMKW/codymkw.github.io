@@ -339,8 +339,8 @@ h1.notfoundheading {
   text-align: center;
 }
 
-/* Change Splatfest Frame page styles */
-#ChangeSplatfestFrameContent {
+/* Splatfest Frames page styles */
+#SplatfestFramesContent {
   display: none;
   padding: 20px;
   background-color: #111;
