@@ -19,9 +19,12 @@ function setSelectedFrame(selectedFrame) {
 
       // Add a green success message
   const successMessage = document.createElement('p');
-  successMessage.textContent = 'Selection successfully saved';
+  successMessage.textContent = 'Selection successfully saved!';
   successMessage.style.color = '#00C900';
   document.getElementById('ChangeSplatfestFrameContent').appendChild(successMessage);
+
+  // Insert the success message before the button
+  parentElement.insertBefore(successMessage, document.querySelector('button'));
 
   // Remove the success message after a few seconds
   setTimeout(() => {
