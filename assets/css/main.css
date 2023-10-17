@@ -328,17 +328,6 @@ h1.notfoundheading {
   border-radius: 50%;
 }
 
-/* Contact styles */
-#ContactContent {
-  display: none;
-  padding: 20px;
-  background-color: #111;
-  border: 2px solid #000;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  text-align: center;
-}
-
 /* Splatfest Frames page styles */
 #SplatfestFramesContent {
   display: none;
