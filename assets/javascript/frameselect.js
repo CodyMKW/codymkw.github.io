@@ -23,9 +23,6 @@ function setSelectedFrame(selectedFrame) {
   successMessage.style.color = '#00C900';
   document.getElementById('ChangeSplatfestFrameContent').appendChild(successMessage);
 
-  // Insert the success message before the button
-  parentElement.insertBefore(successMessage, document.querySelector('button'));
-
   // Remove the success message after a few seconds
   setTimeout(() => {
     successMessage.remove();
