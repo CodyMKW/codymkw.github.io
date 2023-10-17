@@ -189,9 +189,13 @@
             <div id="SplatfestFramesContent" class="tabContent">
               <h2><i class="emoji ninSplat"></i></h2>
               <h2>Add a Splatfest frame to your own avatar</h2>
+              <div id="framePreviewContainer">
+                <h3>Frame Preview:</h3>
+                <img id="framePreview" src="" alt="Frame Preview" />
+              </div>
                       <div>
                           <label for="frameSelection">Select a frame:</label>
-                          <select id="frameSelection">
+                          <select id="frameSelection" onchange="displayFramePreview()">
                             <option value="/assets/images/splatfest/Team_Aliens.png">Team Aliens</option>
                             <option value="/assets/images/splatfest/Team_Nessie.png">Team Nessie</option>
                             <option value="/assets/images/splatfest/Team_Bigfoot.png">Team Bigfoot</option>
@@ -227,7 +231,7 @@
                           <input type="file" id="imageSelection" accept="image/*">
                       </div>
                       <button onclick="mergeImages()">Merge and Download</button>
-                      <a id="downloadLink" style="display: none" download="merged_image.png">Download Merged Image</a>
+                      <a id="downloadLink" style="display: none" download="splatfest_avatar.png">Download Merged Image</a>
             </div>
             <div id="countdownContent" class="tabContent">
               <h2><i class="emoji penguinHype"></i></h2>

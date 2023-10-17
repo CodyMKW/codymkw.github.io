@@ -41,3 +41,11 @@ function mergeImages() {
       };
   }
 }
+
+function displayFramePreview() {
+  const frameSelection = document.getElementById('frameSelection');
+  const selectedFrame = frameSelection.value;
+
+  const framePreview = document.getElementById('framePreview');
+  framePreview.src = selectedFrame;
+}
