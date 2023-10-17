@@ -190,41 +190,49 @@
               <h2><i class="emoji ninSplat"></i></h2>
               <h2>Add a Splatfest frame to your own avatar</h2>
               <div id="framePreviewContainer">
-                <img id="framePreview" src="/assets/images/splatfest/Team_Aliens.png" alt="Frame Preview" class="preview-image" />
+                <img id="framePreview" src="/assets/images/splatfest/octopus/Team_Aliens.png" alt="Frame Preview" class="preview-image" />
               </div>
                       <div>
                           <label for="frameSelection">Select a frame:</label>
                           <select id="frameSelection" onchange="displayFramePreview()">
-                            <option value="/assets/images/splatfest/Team_Aliens.png">Team Aliens</option>
-                            <option value="/assets/images/splatfest/Team_Nessie.png">Team Nessie</option>
-                            <option value="/assets/images/splatfest/Team_Bigfoot.png">Team Bigfoot</option>
-                            <option value="/assets/images/splatfest/Team_Frye.png">Team Frye</option>
-                            <option value="/assets/images/splatfest/Team_Shiver.png">Team Shiver</option>
-                            <option value="/assets/images/splatfest/Team_BigMan.png">Team Big Man</option>
-                            <option value="/assets/images/splatfest/Team_Love.png">Team Love</option>
-                            <option value="/assets/images/splatfest/Team_Fame.png">Team Fame</option>
-                            <option value="/assets/images/splatfest/Team_Money.png">Team Money</option>
-                            <option value="/assets/images/splatfest/Team_MintChip.png">Team Mint Chip</option>
-                            <option value="/assets/images/splatfest/Team_Vanilla.png">Team Vanilla</option>
-                            <option value="/assets/images/splatfest/Team_Strawberry.png">Team Strawberry</option>
-                            <option value="/assets/images/splatfest/Team_Power.png">Team Power</option>
-                            <option value="/assets/images/splatfest/Team_Wisdom.png">Team Wisdom</option>
-                            <option value="/assets/images/splatfest/Team_Courage.png">Team Courage</option>
-                            <option value="/assets/images/splatfest/Team_Sweet.png">Team Sweet</option>
-                            <option value="/assets/images/splatfest/Team_Sour.png">Team Sour</option>
-                            <option value="/assets/images/splatfest/Team_Spicy.png">Team Spicy</option>
-                            <option value="/assets/images/splatfest/Team_Water.png">Team Water</option>
-                            <option value="/assets/images/splatfest/Team_Grass.png">Team Grass</option>
-                            <option value="/assets/images/splatfest/Team_Fire.png">Team Fire</option>
-                            <option value="/assets/images/splatfest/Team_WhiteChocolate.png">Team White Chocolate</option>
-                            <option value="/assets/images/splatfest/Team_MilkChocolate.png">Team Milk Chocolate</option>
-                            <option value="/assets/images/splatfest/Team_DarkChocolate.png">Team Dark Chocolate</option>
-                            <option value="/assets/images/splatfest/Team_Zombie.png">Team Zombie</option>
-                            <option value="/assets/images/splatfest/Team_Skeleton.png">Team Skeleton</option>
-                            <option value="/assets/images/splatfest/Team_Ghost.png">Team Ghost</option>
+                            <option value="/assets/images/splatfest/octopus/Team_Aliens.png">Team Aliens</option>
+                            <option value="/assets/images/splatfest/octopus/Team_Nessie.png">Team Nessie</option>
+                            <option value="/assets/images/splatfest/octopus/Team_Bigfoot.png">Team Bigfoot</option>
+                            <option value="/assets/images/splatfest/octopus/Team_Frye.png">Team Frye</option>
+                            <option value="/assets/images/splatfest/octopus/Team_Shiver.png">Team Shiver</option>
+                            <option value="/assets/images/splatfest/octopus/Team_BigMan.png">Team Big Man</option>
+                            <option value="/assets/images/splatfest/octopus/Team_Love.png">Team Love</option>
+                            <option value="/assets/images/splatfest/octopus/Team_Fame.png">Team Fame</option>
+                            <option value="/assets/images/splatfest/octopus/Team_Money.png">Team Money</option>
+                            <option value="/assets/images/splatfest/octopus/Team_MintChip.png">Team Mint Chip</option>
+                            <option value="/assets/images/splatfest/octopus/Team_Vanilla.png">Team Vanilla</option>
+                            <option value="/assets/images/splatfest/octopus/Team_Strawberry.png">Team Strawberry</option>
+                            <option value="/assets/images/splatfest/octopus/Team_Power.png">Team Power</option>
+                            <option value="/assets/images/splatfest/octopus/Team_Wisdom.png">Team Wisdom</option>
+                            <option value="/assets/images/splatfest/octopus/Team_Courage.png">Team Courage</option>
+                            <option value="/assets/images/splatfest/octopus/Team_Sweet.png">Team Sweet</option>
+                            <option value="/assets/images/splatfest/octopus/Team_Sour.png">Team Sour</option>
+                            <option value="/assets/images/splatfest/octopus/Team_Spicy.png">Team Spicy</option>
+                            <option value="/assets/images/splatfest/octopus/Team_Water.png">Team Water</option>
+                            <option value="/assets/images/splatfest/octopus/Team_Grass.png">Team Grass</option>
+                            <option value="/assets/images/splatfest/octopus/Team_Fire.png">Team Fire</option>
+                            <option value="/assets/images/splatfest/octopus/Team_WhiteChocolate.png">Team White Chocolate</option>
+                            <option value="/assets/images/splatfest/octopus/Team_MilkChocolate.png">Team Milk Chocolate</option>
+                            <option value="/assets/images/splatfest/octopus/Team_DarkChocolate.png">Team Dark Chocolate</option>
+                            <option value="/assets/images/splatfest/octopus/Team_Zombie.png">Team Zombie</option>
+                            <option value="/assets/images/splatfest/octopus/Team_Skeleton.png">Team Skeleton</option>
+                            <option value="/assets/images/splatfest/octopus/Team_Ghost.png">Team Ghost</option>
                               <!-- Add more frame options here -->
                           </select>
                       </div>
+                      <div id="frameTypeSelection">
+                        <label>
+                            <input type="radio" name="frameType" value="octopus" checked="checked" onchange="updateFrameOptions()"> Octopus
+                        </label>
+                        <label>
+                            <input type="radio" name="frameType" value="squid" onchange="updateFrameOptions()"> Squid
+                        </label>
+                     </div>
                       <div>
                           <label for="imageSelection">Upload an image:</label>
                           <input type="file" id="imageSelection" accept="image/*">

@@ -49,3 +49,87 @@ function displayFramePreview() {
   const framePreview = document.getElementById('framePreview');
   framePreview.src = selectedFrame;
 }
+
+function updateFrameOptions() {
+  const frameTypeSelection = document.querySelector('input[name="frameType"]:checked').value;
+  const frameSelection = document.getElementById('frameSelection');
+  frameSelection.innerHTML = '';  // Clear existing options
+
+  const frameOptions = {
+      octopus: [
+          "Team_Aliens.png",
+          "Team_Nessie.png",
+          "Team_Bigfoot.png",
+          "Team_Frye.png",
+          "Team_Shiver.png",
+          "Team_BigMan.png",
+          "Team_Love.png",
+          "Team_Fame.png",
+          "Team_Money.png",
+          "Team_MintChip.png",
+          "Team_Vanilla.png",
+          "Team_Strawberry.png",
+          "Team_Power.png",
+          "Team_Wisdom.png",
+          "Team_Courage.png",
+          "Team_Sweet.png",
+          "Team_Sour.png",
+          "Team_Spicy.png",
+          "Team_Water.png",
+          "Team_Grass.png",
+          "Team_Fire.png",
+          "Team_WhiteChocolate.png",
+          "Team_MilkChocolate.png",
+          "Team_DarkChocolate.png",
+          "Team_Zombie.png",
+          "Team_Skeleton.png",
+          "Team_Ghost.png",
+          // Add more octopus frame options here
+      ],
+      squid: [
+        "Team_Aliens.png",
+        "Team_Nessie.png",
+        "Team_Bigfoot.png",
+        "Team_Frye.png",
+        "Team_Shiver.png",
+        "Team_BigMan.png",
+        "Team_Love.png",
+        "Team_Fame.png",
+        "Team_Money.png",
+        "Team_MintChip.png",
+        "Team_Vanilla.png",
+        "Team_Strawberry.png",
+        "Team_Power.png",
+        "Team_Wisdom.png",
+        "Team_Courage.png",
+        "Team_Sweet.png",
+        "Team_Sour.png",
+        "Team_Spicy.png",
+        "Team_Water.png",
+        "Team_Grass.png",
+        "Team_Fire.png",
+        "Team_WhiteChocolate.png",
+        "Team_MilkChocolate.png",
+        "Team_DarkChocolate.png",
+        "Team_Zombie.png",
+        "Team_Skeleton.png",
+        "Team_Ghost.png",
+          // Add more squid frame options here
+      ]
+  };
+
+  frameOptions[frameTypeSelection].forEach(option => {
+      const optionElement = document.createElement('option');
+      optionElement.value = `/assets/images/splatfest/${frameTypeSelection}/${option}`;
+      optionElement.textContent = option.replace('.png', '').replace(/_/g, ' ');
+      frameSelection.appendChild(optionElement);
+  });
+
+  // Display the preview of the first frame in the updated options
+  displayFramePreview();
+}
+
+// Initialize frame options and preview on page load
+document.addEventListener('DOMContentLoaded', () => {
+  updateFrameOptions();
+});
