@@ -355,6 +355,10 @@ h1.notfoundheading {
   height: 200px;
 }
 
+#frameTypeSelection {
+  padding-bottom: 10px;
+}
+
 /* Nintendo News styles */
 #nintendoNewsContent {
   display: none;
