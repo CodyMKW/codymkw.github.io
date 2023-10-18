@@ -76,7 +76,7 @@ function generateRandomFortniteMap() {
 
   fortniteMapInfoDiv.innerHTML = `
     <h2>${randomMap.name}</h2>
-    <p>Map Code: <a href="https://www.fortnite.com/creative/island-codes/${randomMap.code}" target="_blank">${randomMap.code}</a></p>
     ${generateMapHTML(randomMap.image, "Fortnite Map Image")}
+    <p>Map Code: <a href="https://www.fortnite.com/creative/island-codes/${randomMap.code}" target="_blank">${randomMap.code}</a></p>
   `;
 }
