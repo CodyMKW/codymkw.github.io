@@ -9,7 +9,7 @@ function generateRandomFortniteMap() {
     const mapInfoDiv = document.getElementById("fortniteMapInfo");
     mapInfoDiv.innerHTML = `
       <img src="${randomMapImage}" alt="Fortnite Map Image" class="fortnite-map-image">
-      <p>Map Code: ${randomMapCode}</p>
+      <p>Map Code: <a href="https://www.fortnite.com/@user/${randomMapCode}" target="_blank">${randomMapCode}</a></p>
     `;
   }
   
