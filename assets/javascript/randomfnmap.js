@@ -76,7 +76,7 @@ var fortniteMaps = [
 
 // Function to generate the HTML for the map image
 function generateMapHTML(imageUrl, altText) {
-  return '<img src="' + imageUrl + '" alt="' + altText + '" class="fortnite-map-image">';
+  return `<img src="${imageUrl || '/assets/images/fort-404.png'}" alt="${altText}" class="fortnite-map-image">`;
 }
 
 // Update Fortnite map info
