@@ -76,7 +76,7 @@ var fortniteMaps = [
 
 // Function to generate the HTML for the map image
 function generateMapHTML(imageUrl, altText) {
-  return `<img src="${imageUrl || '/assets/images/fort-404.png'}" alt="${altText}" class="fortnite-map-image">`;
+  return `<img src="${imageUrl}" alt="${altText}" class="fortnite-map-image">`;
 }
 
 // Update Fortnite map info
@@ -88,7 +88,7 @@ function generateRandomFortniteMap() {
 
   fortniteMapInfoDiv.innerHTML = `
     <h2>${randomMap.name}</h2>
-    <small>By: <a href="https://www.fortnite.com/@${randomMap.creator}" target="_blank">${randomMap.creator}</a></small>
+    <small>created by: <a href="https://www.fortnite.com/@${randomMap.creator}" target="_blank">${randomMap.creator}</a></small>
     ${generateMapHTML(randomMap.image, "Fortnite Map Image")}
     <p>Map Code: <a href="https://www.fortnite.com/creative/island-codes/${randomMap.code}" target="_blank">${randomMap.code}</a></p>
   `;
