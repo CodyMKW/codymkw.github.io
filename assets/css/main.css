@@ -328,6 +328,22 @@ h1.notfoundheading {
   border-radius: 50%;
 }
 
+/* Personality Generator page styles */
+#PersonalityGeneratorContent {
+  display: none;
+  padding: 20px;
+  background-color: #111;
+  border: 2px solid #000;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+.personality-image {
+  max-width: 100%;  /* Limit the image width to the container width */
+  height: auto;     /* Maintain the image's aspect ratio */
+}
+
 /* Random Fortnite Map page styles */
 #RandomFortniteMapContent {
   display: none;
