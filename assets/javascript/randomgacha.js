@@ -123,28 +123,36 @@ function generateCharacterHTML(imageUrl, altText) {
   return `<img src="${imageUrl}" alt="${altText}" class="character-image">`;
 }
 
+// Define rarity probabilities based on your character data
+const rarityProbabilities = [
+  { rarity: "Common", probability: 75 },
+  { rarity: "Uncommon", probability: 60 },
+  { rarity: "Rare", probability: 45 },
+  { rarity: "Epic", probability: 35 },
+  { rarity: "Mythic", probability: 2 }
+];
+
+// Function to select a random rarity based on probabilities
+function selectRandomRarity() {
+  const randomChance = Math.floor(Math.random() * 100) + 1;
+  let selectedRarity = "Common"; // Default to Common if no rarity is selected
+
+  for (const rarityData of rarityProbabilities) {
+    if (randomChance <= rarityData.probability) {
+      selectedRarity = rarityData.rarity;
+      break;
+    }
+  }
+
+  return selectedRarity;
+}
+
 // Update Character info
 var CharacterInfoDiv = document.getElementById("CharacterInfo");
 
 function spinGacha() {
-  // Generate a random number between 1 and 100
-  const randomChance = Math.floor(Math.random() * 100) + 1;
-
-  const rarityProbabilities = [
-    { rarity: "Common", probability: 75 },
-    { rarity: "Uncommon", probability: 60 },
-    { rarity: "Epic", probability: 45 },
-    { rarity: "Legendary", probability: 35 },
-    { rarity: "Mythic", probability: 2 }
-  ];
-
-  let randomRarity;
-  for (const rarityData of rarityProbabilities) {
-    if (randomChance <= rarityData.probability) {
-      randomRarity = rarityData.rarity;
-      break;
-    }
-  }
+  // Select a random rarity
+  const randomRarity = selectRandomRarity();
 
   // Filter characters based on the selected rarity
   const availableCharacters = Characters.filter(character => character.rarity === randomRarity);
