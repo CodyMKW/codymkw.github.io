@@ -111,12 +111,13 @@ var Personalitys = [
 
   let randomIndex;
   if (randomChance === 1) {
-    // 1% chance for Golden Mario
+    // 20% chance for Golden Mario (1 in 5)
     randomIndex = Personalitys.findIndex(personality => personality.name === "Golden Mario");
   } else {
-    // 99% chance for others
-    randomIndex = Math.floor(Math.random() * (Personalitys.length - 1));
-  }  
+    // 80% chance for others (4 in 5)
+    randomIndex = Math.floor(Math.random() * Personalitys.length);
+  }
+    
     const randomPersonality = Personalitys[randomIndex];
   
     PersonalityInfoDiv.innerHTML = `
