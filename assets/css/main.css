@@ -328,8 +328,8 @@ h1.notfoundheading {
   border-radius: 50%;
 }
 
-/* Character Gacha page styles */
-#CharacterGachaContent {
+/* Personality Generator page styles */
+#PersonalityGeneratorContent {
   display: none;
   padding: 20px;
   background-color: #111;
@@ -339,33 +339,9 @@ h1.notfoundheading {
   text-align: center;
 }
 
-.character-image {
+.personality-image {
   max-width: 400px;  /* Limit the image width to the container width */
   height: 400px;     /* Maintain the image's aspect ratio */
-}
-
-.common-rarity {
-  color: grey;
-}
-
-.uncommon-rarity {
-  color: green;
-}
-
-.rare-rarity {
-  color: blue;
-}
-
-.epic-rarity {
-  color: purple;
-}
-
-.legendary-rarity {
-  color: orange;
-}
-
-.mythic-rarity {
-  color: gold;
 }
 
 /* Random Fortnite Map page styles */
