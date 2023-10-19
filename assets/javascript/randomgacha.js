@@ -131,20 +131,20 @@ function spinGacha() {
   const randomChance = Math.floor(Math.random() * 100) + 1;
 
   let randomIndex;
-  if (randomChance <= 80) {
-    // 72% chance for Common characters
-    randomIndex = Math.floor(Math.random() * 2);
-} else if (randomChance <= 95) {
-    // 15% chance for Uncommon characters
+  if (randomChance <= 75) {
+    // 75% chance for Common characters
+    randomIndex = Characters.findIndex(character => character.rarity === "Common");
+} else if (randomChance <= 135) {
+    // 60% chance for Uncommon characters
     randomIndex = Characters.findIndex(character => character.rarity === "Uncommon");
-} else if (randomChance <= 98) {
-    // 3% chance for Epic characters
+} else if (randomChance <= 180) {
+    // 45% chance for Epic characters
     randomIndex = Characters.findIndex(character => character.rarity === "Epic");
-} else if (randomChance <= 100) {
-    // 2% chance for Legendary characters
+} else if (randomChance <= 215) {
+    // 35% chance for Legendary characters
     randomIndex = Characters.findIndex(character => character.rarity === "Legendary");
 } else {
-    // 1% chance for Mythic characters
+    // 2% chance for Mythic characters
     randomIndex = Characters.findIndex(character => character.rarity === "Mythic");
 }
 
