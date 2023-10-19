@@ -125,11 +125,12 @@ function generateCharacterHTML(imageUrl, altText) {
 
 // Define rarity probabilities based on your character data
 const rarityProbabilities = [
-  { rarity: "Common", probability: 75 },
-  { rarity: "Uncommon", probability: 60 },
-  { rarity: "Rare", probability: 45 },
-  { rarity: "Epic", probability: 35 },
-  { rarity: "Mythic", probability: 2 }
+  { rarity: "Common", probability: 80 },
+  { rarity: "Uncommon", probability: 75 },
+  { rarity: "Rare", probability: 70 },
+  { rarity: "Epic", probability: 60 },
+  { rarity: "Legendary", probability: 50 },
+  { rarity: "Mythic", probability: 4 }
 ];
 
 // Function to select a random rarity based on probabilities
