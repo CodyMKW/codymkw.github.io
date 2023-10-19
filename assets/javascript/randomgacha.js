@@ -131,22 +131,22 @@ function spinGacha() {
   const randomChance = Math.floor(Math.random() * 100) + 1;
 
   let randomIndex;
-  if (randomChance <= 80) {
-    // 80% chance for Common characters
+  if (randomChance <= 8) {
+    // 8% chance for Epic characters
+    randomIndex = Characters.findIndex(character => character.rarity === "Epic");
+  } else if (randomChance <= 13) {
+    // 5% chance for Legendary characters
+    randomIndex = Characters.findIndex(character => character.rarity === "Legendary");
+  } else if (randomChance <= 80) {
+    // 72% chance for Common characters
     randomIndex = Math.floor(Math.random() * 2);
-} else if (randomChance <= 95) {
+  } else if (randomChance <= 95) {
     // 15% chance for Uncommon characters
     randomIndex = Characters.findIndex(character => character.rarity === "Uncommon");
-} else if (randomChance <= 98) {
-    // 3% chance for Epic characters
-    randomIndex = Characters.findIndex(character => character.rarity === "Epic");
-} else if (randomChance <= 100) {
-    // 2% chance for Legendary characters
-    randomIndex = Characters.findIndex(character => character.rarity === "Legendary");
-} else {
+  } else {
     // 1% chance for Mythic characters
     randomIndex = Characters.findIndex(character => character.rarity === "Mythic");
-}
+  }  
 
   const randomCharacter = Characters[randomIndex];
 
@@ -163,7 +163,7 @@ function spinGacha() {
   CharacterInfoDiv.innerHTML = `
     <h2>${randomCharacter.name}</h2>
     ${generateCharacterHTML(randomCharacter.image, "Character Image")}
-    <p class="${rarityClasses[randomCharacter.rarity]}">Rarity: ${randomCharacter.rarity}</p>
+    <p class="${rarityClasses[randomCharacter.rarity]}">${randomCharacter.rarity}</p>
     <p>${randomCharacter.description}</p>
   `;
 }
