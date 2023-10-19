@@ -130,40 +130,45 @@ function spinGacha() {
   // Generate a random number between 1 and 100
   const randomChance = Math.floor(Math.random() * 100) + 1;
 
-  let randomIndex;
-  if (randomChance <= 75) {
-    // 75% chance for Common characters
-    randomIndex = Characters.findIndex(character => character.rarity === "Common");
-} else if (randomChance <= 135) {
-    // 60% chance for Uncommon characters
-    randomIndex = Characters.findIndex(character => character.rarity === "Uncommon");
-} else if (randomChance <= 180) {
-    // 45% chance for Epic characters
-    randomIndex = Characters.findIndex(character => character.rarity === "Epic");
-} else if (randomChance <= 215) {
-    // 35% chance for Legendary characters
-    randomIndex = Characters.findIndex(character => character.rarity === "Legendary");
-} else {
-    // 2% chance for Mythic characters
-    randomIndex = Characters.findIndex(character => character.rarity === "Mythic");
-}
+  const rarityProbabilities = [
+    { rarity: "Common", probability: 75 },
+    { rarity: "Uncommon", probability: 60 },
+    { rarity: "Epic", probability: 45 },
+    { rarity: "Legendary", probability: 35 },
+    { rarity: "Mythic", probability: 2 }
+  ];
 
-  const randomCharacter = Characters[randomIndex];
+  let randomRarity;
+  for (const rarityData of rarityProbabilities) {
+    if (randomChance <= rarityData.probability) {
+      randomRarity = rarityData.rarity;
+      break;
+    }
+  }
 
-  // Define CSS classes based on rarity
-  const rarityClasses = {
-    "Common": "common-rarity",
-    "Uncommon": "uncommon-rarity",
-    "Rare": "rare-rarity",
-    "Epic": "epic-rarity",
-    "Legendary": "legendary-rarity",
-    "Mythic": "mythic-rarity",
-  };
+  // Find the character index based on randomRarity
+  const randomIndex = Characters.findIndex(character => character.rarity === randomRarity);
 
-  CharacterInfoDiv.innerHTML = `
-    <h2>${randomCharacter.name}</h2>
-    ${generateCharacterHTML(randomCharacter.image, "Character Image")}
-    <p class="${rarityClasses[randomCharacter.rarity]}">${randomCharacter.rarity}</p>
-    <p>${randomCharacter.description}</p>
-  `;
+  if (randomIndex !== -1) {
+    const randomCharacter = Characters[randomIndex];
+
+    // Define CSS classes based on rarity
+    const rarityClasses = {
+      "Common": "common-rarity",
+      "Uncommon": "uncommon-rarity",
+      "Rare": "rare-rarity",
+      "Epic": "epic-rarity",
+      "Legendary": "legendary-rarity",
+      "Mythic": "mythic-rarity",
+    };
+
+    CharacterInfoDiv.innerHTML = `
+      <h2>${randomCharacter.name}</h2>
+      ${generateCharacterHTML(randomCharacter.image, "Character Image")}
+      <p class="${rarityClasses[randomCharacter.rarity]}">${randomCharacter.rarity}</p>
+      <p>${randomCharacter.description}</p>
+    `;
+  } else {
+    CharacterInfoDiv.innerHTML = "Character not found.";
+  }
 }
