@@ -89,6 +89,11 @@ var Personalitys = [
         name: "WALL-E (WALL-E)",
         description: "Optimistic, hardworking, and always willing to do the right thing. Can be a bit lonely at times, but is always willing to make new friends.",
         image: "assets/images/personalitys/WALL-E.png"
+    },
+    {
+        name: "Golden Mario (Nintendo)",
+        description: "A legendary figure who is said to embody the purest form of heroism and determination. Possesses an aura of invincibility and is said to be able to overcome any obstacle.",
+        image: "assets/images/personalitys/GoldenMario.png"
     }
   ];
   
@@ -101,7 +106,17 @@ var Personalitys = [
   var PersonalityInfoDiv = document.getElementById("PersonalityInfo");
   
   function generatePersonality() {
-    const randomIndex = Math.floor(Math.random() * Personalitys.length);
+  // Generate a random number between 1 and 100
+  const randomChance = Math.floor(Math.random() * 100) + 1;
+
+  let randomIndex;
+  if (randomChance === 1) {
+    // 1% chance for Golden Mario
+    randomIndex = Personalitys.findIndex(personality => personality.name === "Golden Mario");
+  } else {
+    // 99% chance for others
+    randomIndex = Math.floor(Math.random() * (Personalitys.length - 1));
+  }  
     const randomPersonality = Personalitys[randomIndex];
   
     PersonalityInfoDiv.innerHTML = `
