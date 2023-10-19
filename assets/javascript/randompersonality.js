@@ -44,6 +44,51 @@ var Personalitys = [
         name: "Light Yagami (Death Note)",
         description: "Intelligent, ambitious, and always willing to take risks. Can be a bit ruthless at times, but is always willing to do whatever it takes to achieve his goals.",
         image: "assets/images/personalitys/Light.png"
+    },
+    {
+        name: "Hermione Granger (Harry Potter)",
+        description: "Intelligent, studious, and always willing to help others. Can be a bit of a know-it-all at times, but is always willing to learn new things.",
+        image: "assets/images/personalitys/Hermione.png"
+    },
+    {
+        name: "Captain America (Marvel Cinematic Universe)",
+        description: "Brave, honest, and always willing to stand up for what he believes in. Can be a bit of a stickler for the rules, but is always willing to fight for what is right.",
+        image: "assets/images/personalitys/CapAmerica.png"
+    },
+    {
+        name: "Rey (Star Wars)",
+        description: "Determined, resourceful, and always willing to stand up for what she believes in. Can be a bit reckless at times, but is always willing to learn from her mistakes.",
+        image: "assets/images/personalitys/Rey.png"
+    },
+    {
+        name: "Iron Man (Marvel Cinematic Universe)",
+        description: "Intelligent, witty, and always willing to take on a challenge. Can be a bit arrogant at times, but is always willing to do what it takes to save the day.",
+        image: "assets/images/personalitys/IronMan.png"
+    },
+    {
+        name: "Black Panther (Marvel Cinematic Universe)",
+        description: "Wise, compassionate, and always willing to protect his people. Can be a bit reserved at times, but is always willing to listen to others.",
+        image: "assets/images/personalitys/Panther.png"
+    },
+    {
+        name: "Wonder Woman (DC Extended Universe)",
+        description: "Strong, compassionate, and always willing to fight for justice. Can be a bit of a warrior at times, but is always willing to show mercy.",
+        image: "assets/images/personalitys/WonderWoman.png"
+    },
+    {
+        name: "Harley Quinn (DC Extended Universe)",
+        description: "Chaotic, unpredictable, and always up for a good time. Can be a bit dangerous at times, but is always willing to be herself.",
+        image: "assets/images/personalitys/Harley.png"
+    },
+    {
+        name: "Totoro (My Neighbor Totoro)",
+        description: "Gentle, wise, and always willing to help those in need. Can be a bit mysterious at times, but is always there to offer comfort and support.",
+        image: "assets/images/personalitys/Totoro.png"
+    },
+    {
+        name: "WALL-E (WALL-E)",
+        description: "Optimistic, hardworking, and always willing to do the right thing. Can be a bit lonely at times, but is always willing to make new friends.",
+        image: "assets/images/personalitys/WALL-E.png"
     }
   ];
   
