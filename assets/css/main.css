@@ -341,7 +341,8 @@ h1.notfoundheading {
 
 .character-grid {
   display: flex; /* Use flexbox to create a horizontal row */
-  flex-wrap: wrap; /* Allow characters to wrap to the next line */
+  flex-direction: row; /* Display characters from left to right */
+  flex-wrap: nowrap; /* Prevent characters from wrapping to the next line */
   justify-content: space-between; /* Space characters evenly */
 }
 
