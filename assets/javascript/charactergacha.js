@@ -125,6 +125,60 @@ var characters = [
         description: "A Nintendo gamer who adores Animal Crossing and anime.",
         image: "https://www.gravatar.com/avatar/5127de8a3a295a02ff3fc55bb6b2fabe?s=2048",
         rarity: "Mythic"
+    },
+    {
+        name: "Mickey Mouse (Disney)",
+        description: "The iconic cartoon character created by Walt Disney, known for his red shorts and large yellow shoes.",
+        image: "assets/images/characters/Mickey.png",
+        rarity: "Common"
+    },
+    {
+        name: "Solid Snake (Metal Gear)",
+        description: "A legendary soldier and spy known for his stealth tactics and gruff demeanor.",
+        image: "assets/images/characters/Snake.png",
+        rarity: "Rare"
+    },
+    {
+        name: "Princess Peach (Nintendo)",
+        description: "The ruler of the Mushroom Kingdom and Mario's frequent damsel in distress.",
+        image: "assets/images/characters/Peach.png",
+        rarity: "Uncommon"
+    },
+    {
+        name: "Sailor Moon (Sailor Moon)",
+        description: "A magical girl with the power to protect the world, known for her sailor suit and tiara.",
+        image: "assets/images/characters/SailorMoon.png",
+        rarity: "Rare"
+    },
+    {
+        name: "Doraemon (Doraemon)",
+        description: "A robotic cat from the future with a pocket full of gadgets to help his owner, Nobita.",
+        image: "assets/images/characters/Doraemon.png",
+        rarity: "Uncommon"
+    },
+    {
+        name: "Superman (DC Comics)",
+        description: "The Man of Steel with superhuman abilities, known for his iconic 'S' symbol.",
+        image: "assets/images/characters/Superman.png",
+        rarity: "Legendary"
+    },
+    {
+        name: "SpongeBob SquarePants (SpongeBob SquarePants)",
+        description: "The cheerful and spongey inhabitant of Bikini Bottom, known for his pineapple house.",
+        image: "assets/images/characters/SpongeBob.png",
+        rarity: "Common"
+    },
+    {
+        name: "Darth Vader (Star Wars)",
+        description: "The Sith Lord and former Jedi Anakin Skywalker, known for his black armor and deep voice.",
+        image: "assets/images/characters/Vader.png",
+        rarity: "Epic"
+    },
+    {
+        name: "Winnie the Pooh (Winnie the Pooh)",
+        description: "The lovable bear with a penchant for honey and adventures in the Hundred Acre Wood.",
+        image: "assets/images/characters/Pooh.png",
+        rarity: "Rare"
     }
   ];
 
