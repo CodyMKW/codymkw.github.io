@@ -329,17 +329,17 @@ h1.notfoundheading {
 }
 
 /* Personality Generator page styles */
-#PersonalityGeneratorContent {
-  display: block; /* Show the Character Gacha content by default */
-  text-align: center;
+#CharacterGachaContent {
+  display: none;
   padding: 20px;
-  background-color: #f0f0f0; /* Use a light background color */
-  border: 2px solid #00c900; /* Green border */
-  border-radius: 10px; /* Rounded corners */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  background-color: #111;
+  border: 2px solid #000;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  text-align: center;
 }
 
-.personality-image {
+.character-image {
   max-width: 400px;  /* Limit the image width to the container width */
   height: 400px;     /* Maintain the image's aspect ratio */
 }
