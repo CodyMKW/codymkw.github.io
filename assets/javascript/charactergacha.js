@@ -82,7 +82,7 @@ var characters = [
         name: "FalconXD (Thunderbirds Gaming)",
         description: "A skilled Smash Bros player who hosts tournaments and has a fondness for playing as R.O.B.",
         image: "assets/images/characters/Falcon.jpg",
-        rarity: "Legendary"
+        rarity: "Exotic"
     },
     {
         name: "Black Panther (Marvel Cinematic Universe)",
@@ -124,7 +124,7 @@ var characters = [
         name: "CodyMKW (Owner of this page your on)",
         description: "A Nintendo gamer who adores Animal Crossing and anime.",
         image: "https://www.gravatar.com/avatar/5127de8a3a295a02ff3fc55bb6b2fabe?s=2048",
-        rarity: "Mythic"
+        rarity: "Exotic"
     },
     {
         name: "Mickey Mouse (Disney)",
@@ -190,6 +190,7 @@ var characters = [
     "Epic": "epic-rarity",
     "Legendary": "legendary-rarity",
     "Mythic": "mythic-rarity",
+    "Exotic": "exotic-rarity", // For those Cody deems worthy
 };
   
 // Function to generate the HTML for displaying a character

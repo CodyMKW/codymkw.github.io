@@ -374,6 +374,15 @@ h1.notfoundheading {
   color: gold;
 }
 
+.exotic-rarity {
+  color: Cyan;
+  text-shadow:
+    3px 3px 0 LightBlue,
+    -3px 3px 0 LightBlue,
+    -3px -3px 0 LightBlue,
+    3px -3px 0 LightBlue;
+}
+
 /* Random Fortnite Map page styles */
 #RandomFortniteMapContent {
   display: none;
