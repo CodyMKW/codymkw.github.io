@@ -340,8 +340,8 @@ h1.notfoundheading {
 }
 
 .character-image {
-  max-width: 400px;  /* Limit the image width to the container width */
-  height: 400px;     /* Maintain the image's aspect ratio */
+  max-width: 300px;  /* Limit the image width to the container width */
+  height: 300px;     /* Maintain the image's aspect ratio */
 }
 
 .character-info-box {
