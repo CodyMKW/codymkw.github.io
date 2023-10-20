@@ -339,9 +339,15 @@ h1.notfoundheading {
   text-align: center;
 }
 
-.character-image {
-  max-width: 300px;  /* Limit the image width to the container width */
-  height: 300px;     /* Maintain the image's aspect ratio */
+.character-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr); /* 5 columns */
+  grid-gap: 10px; /* Gap between characters */
+  text-align: center;
+}
+
+.character-grid .character-image {
+  max-width: 100%; /* Image size */
 }
 
 .character-info-box {
@@ -379,6 +385,7 @@ h1.notfoundheading {
   -webkit-text-stroke-width: 1px;
   -webkit-text-stroke-color: lightblue;
 }
+
 
 /* Random Fortnite Map page styles */
 #RandomFortniteMapContent {

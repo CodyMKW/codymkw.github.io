@@ -206,11 +206,19 @@ function generateCharacterHTML(character) {
 // Update the Character Gacha info
 var characterInfoDiv = document.getElementById("CharacterInfo");
 
-function generateCharacter() {
-  // Generate a random index to select a character
-  var randomIndex = Math.floor(Math.random() * characters.length);
-  var randomCharacter = characters[randomIndex];
+function generateCharacters(count) {
+    // Shuffle the characters array to get a random order
+    var shuffledCharacters = characters.slice().sort(() => Math.random() - 0.5);
 
-  // Display the randomly selected character
-  characterInfoDiv.innerHTML = generateCharacterHTML(randomCharacter);
+    var charactersHTML = '';
+    for (var i = 0; i < count; i++) {
+        var randomCharacter = shuffledCharacters[i];
+        charactersHTML += generateCharacterHTML(randomCharacter);
+    }
+
+    // Display the characters in rows of 5
+    characterInfoDiv.innerHTML = charactersHTML;
+
+    // Add a class to style the grid
+    characterInfoDiv.classList.add('character-grid');
 }
