@@ -206,25 +206,11 @@ function generateCharacterHTML(character) {
 // Update the Character Gacha info
 var characterInfoDiv = document.getElementById("CharacterInfo");
 
-function generateCharacters(count) {
-    // Shuffle the characters array to get a random order
-    var shuffledCharacters = characters.slice().sort(() => Math.random() - 0.5);
+function generateCharacter() {
+  // Generate a random index to select a character
+  var randomIndex = Math.floor(Math.random() * characters.length);
+  var randomCharacter = characters[randomIndex];
 
-    // Get the top and bottom row divs
-    var topRow = document.querySelectorAll('.character-row')[0];
-    var bottomRow = document.querySelectorAll('.character-row')[1];
-
-    // Clear any previous characters
-    topRow.innerHTML = '';
-    bottomRow.innerHTML = '';
-
-    for (var i = 0; i < count; i++) {
-        var randomCharacter = shuffledCharacters[i];
-        var characterHTML = generateCharacterHTML(randomCharacter);
-
-        // Alternate between top and bottom rows
-        var targetRow = i < 5 ? topRow : bottomRow;
-        targetRow.innerHTML += characterHTML;
-    }
+  // Display the randomly selected character
+  characterInfoDiv.innerHTML = generateCharacterHTML(randomCharacter);
 }
-

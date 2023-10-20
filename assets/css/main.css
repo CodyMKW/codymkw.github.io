@@ -339,20 +339,9 @@ h1.notfoundheading {
   text-align: center;
 }
 
-.character-grid {
-  display: flex; /* Use flexbox to create a horizontal row */
-  flex-direction: row; /* Display characters from left to right */
-  flex-wrap: nowrap; /* Prevent characters from wrapping to the next line */
-  justify-content: space-between; /* Space characters evenly */
-}
-
-.character-row {
-  flex: 0 0 calc(20% - 10px); /* Each character takes 20% width with some spacing */
-  margin-right: 10px; /* Add some spacing between characters */
-}
-
-.character-grid .character-image {
-  max-width: 100%; /* Image size */
+.character-image {
+  max-width: 300px;  /* Limit the image width to the container width */
+  height: 300px;     /* Maintain the image's aspect ratio */
 }
 
 .character-info-box {
@@ -390,7 +379,6 @@ h1.notfoundheading {
   -webkit-text-stroke-width: 1px;
   -webkit-text-stroke-color: lightblue;
 }
-
 
 /* Random Fortnite Map page styles */
 #RandomFortniteMapContent {
