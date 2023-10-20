@@ -376,11 +376,8 @@ h1.notfoundheading {
 
 .exotic-rarity {
   color: Cyan;
-  text-shadow:
-    3px 3px 0 LightBlue,
-    -3px 3px 0 LightBlue,
-    -3px -3px 0 LightBlue,
-    3px -3px 0 LightBlue;
+  -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: lightblue;
 }
 
 /* Random Fortnite Map page styles */
