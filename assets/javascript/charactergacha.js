@@ -215,7 +215,7 @@ function generateCharacter() {
   characterInfoDiv.innerHTML = generateCharacterHTML(randomCharacter);
 }
 
-// Function to generate a batch of 10 characters
+// Function to generate a batch of 10 characters in two rows
 function generateCharacterBatch() {
     let characterBatch = [];
     for (let i = 0; i < 10; i++) {
@@ -225,8 +225,16 @@ function generateCharacterBatch() {
   
     // Display the randomly selected characters in two rows
     let characterBatchDiv = document.getElementById("CharacterBatch");
-    characterBatchDiv.innerHTML = generateCharacterBatchHTML(characterBatch);
+    characterBatchDiv.innerHTML = `
+      <div class="character-row">
+        ${generateCharacterBatchHTML(characterBatch.slice(0, 5))}
+      </div>
+      <div class="character-row">
+        ${generateCharacterBatchHTML(characterBatch.slice(5))}
+      </div>
+    `;
   }
+  
   
   // Function to generate HTML for displaying a character batch in two rows
   function generateCharacterBatchHTML(characterBatch) {
