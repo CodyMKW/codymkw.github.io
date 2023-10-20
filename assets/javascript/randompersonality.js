@@ -1,129 +1,119 @@
 // Personality Generator data
-var Personalitys = [
+var characters = [
     {
       name: "Mario (Nintendo)",
-      description: "Optimistic, energetic, and always willing to help others. Can be a bit reckless at times, but always bounces back.",
+      description: "The iconic plumber from the Mushroom Kingdom, known for his red cap and overalls.",
       image: "assets/images/personalitys/Mario.png"
     },
     {
       name: "Link (The Legend of Zelda)",
-      description: "Courageous, kind, and always willing to stand up for what he believes in. Can be a bit of a loner, but is always there for his friends.",
+      description: "The courageous hero of Hyrule, often seen wielding a sword and shield.",
       image: "assets/images/personalitys/Link.png"
     },
     {
       name: "Samus Aran (Metroid)",
-      description: "Independent, strong-willed, and always up for a challenge. Can be a bit cold and distant, but is fiercely loyal to those she cares about.",
+      description: "A skilled bounty hunter known for her power armor and her missions against space pirates.",
       image: "assets/images/personalitys/Samus.png"
     },
     {
         name: "Pikachu (Pokémon)",
-        description: "Friendly, cheerful, and always eager to make new friends. Can be a bit mischievous at times, but is always willing to help out.",
+        description: "The electric-type Pokémon and mascot of the Pokémon franchise.",
         image: "assets/images/personalitys/Pikachu.png"
     },
     {
         name: "Goku (Dragon Ball Z)",
-        description: "Determined, hardworking, and always striving to be the best. Can be a bit naive at times, but is always willing to fight for what he believes in.",
+        description: "A Saiyan warrior with immense power, known for his spiky hair and energy attacks.",
         image: "assets/images/personalitys/Goku.png"
     },
     {
         name: "Naruto Uzumaki (Naruto)",
-        description: "Optimistic, energetic, and never gives up on his dreams. Can be a bit of a klutz at times, but is always willing to help others.",
+        description: "A ninja with dreams of becoming Hokage, recognized by his headband and orange jumpsuit.",
         image: "assets/images/personalitys/Naruto.png"
     },
     {
         name: "Luffy (One Piece)",
-        description: "Adventurous, carefree, and always looking for the next big thing. Can be a bit reckless at times, but is always loyal to his crew.",
+        description: "The rubber-powered pirate captain from the Straw Hat Pirates.",
         image: "assets/images/personalitys/Luffy.png"
     },
     {
         name: "Edward Elric (Fullmetal Alchemist)",
-        description: "Intelligent, determined, and always willing to do whatever it takes to achieve his goals. Can be a bit arrogant at times, but is always willing to learn from his mistakes.",
+        description: "A talented alchemist with a metal arm and leg in search of the Philosopher's Stone.",
         image: "assets/images/personalitys/Edward.png"
     },
     {
         name: "Light Yagami (Death Note)",
-        description: "Intelligent, ambitious, and always willing to take risks. Can be a bit ruthless at times, but is always willing to do whatever it takes to achieve his goals.",
+        description: "A high school student who gains the power to control life and death with the Death Note.",
         image: "assets/images/personalitys/Light.png"
     },
     {
         name: "Hermione Granger (Harry Potter)",
-        description: "Intelligent, studious, and always willing to help others. Can be a bit of a know-it-all at times, but is always willing to learn new things.",
+        description: "A brilliant witch and one of Harry Potter's closest friends at Hogwarts.",
         image: "assets/images/personalitys/Hermione.png"
     },
     {
         name: "Captain America (Marvel Cinematic Universe)",
-        description: "Brave, honest, and always willing to stand up for what he believes in. Can be a bit of a stickler for the rules, but is always willing to fight for what is right.",
+        description: "The super-soldier and patriotic hero, wielding his iconic shield.",
         image: "assets/images/personalitys/CapAmerica.png"
     },
     {
         name: "Rey (Star Wars)",
-        description: "Determined, resourceful, and always willing to stand up for what she believes in. Can be a bit reckless at times, but is always willing to learn from her mistakes.",
+        description: "A scavenger turned Jedi, seeking her place in the Force.",
         image: "assets/images/personalitys/Rey.png"
     },
     {
         name: "Iron Man (Marvel Cinematic Universe)",
-        description: "Intelligent, witty, and always willing to take on a challenge. Can be a bit arrogant at times, but is always willing to do what it takes to save the day.",
+        description: "A genius billionaire, inventor, and philanthropist who becomes the armored hero, Iron Man.",
         image: "assets/images/personalitys/IronMan.png"
     },
     {
         name: "Black Panther (Marvel Cinematic Universe)",
-        description: "Wise, compassionate, and always willing to protect his people. Can be a bit reserved at times, but is always willing to listen to others.",
+        description: "The king of Wakanda, known for his advanced suit and enhanced abilities.",
         image: "assets/images/personalitys/Panther.png"
     },
     {
         name: "Wonder Woman (DC Extended Universe)",
-        description: "Strong, compassionate, and always willing to fight for justice. Can be a bit of a warrior at times, but is always willing to show mercy.",
+        description: "An Amazonian warrior princess with superhuman abilities.",
         image: "assets/images/personalitys/WonderWoman.png"
     },
     {
         name: "Harley Quinn (DC Extended Universe)",
-        description: "Chaotic, unpredictable, and always up for a good time. Can be a bit dangerous at times, but is always willing to be herself.",
+        description: "The Joker's partner-in-crime, known for her chaotic and unpredictable nature.",
         image: "assets/images/personalitys/Harley.png"
     },
     {
         name: "Totoro (My Neighbor Totoro)",
-        description: "Gentle, wise, and always willing to help those in need. Can be a bit mysterious at times, but is always there to offer comfort and support.",
+        description: "A friendly forest spirit from Studio Ghibli's 'My Neighbor Totoro'.",
         image: "assets/images/personalitys/Totoro.png"
     },
     {
         name: "WALL-E (WALL-E)",
-        description: "Optimistic, hardworking, and always willing to do the right thing. Can be a bit lonely at times, but is always willing to make new friends.",
+        description: "A lovable robot designed to clean up a polluted Earth.",
         image: "assets/images/personalitys/WALL-E.png"
     },
     {
         name: "Golden Mario (Nintendo)",
-        description: "A legendary figure who is said to embody the purest form of heroism and determination. Possesses an aura of invincibility and is said to be able to overcome any obstacle.",
+        description: "A special, golden version of the iconic plumber, Mario.",
         image: "assets/images/personalitys/GoldenMario.png"
     }
   ];
   
-  // Function to generate the HTML for the personality image
-  function generatePersonalityHTML(imageUrl, altText) {
-    return `<img src="${imageUrl}" alt="${altText}" class="personality-image">`;
-  }
-  
-  // Update Personality info
-  var PersonalityInfoDiv = document.getElementById("PersonalityInfo");
-  
-  function generatePersonality() {
-  // Generate a random number between 1 and 100
-  const randomChance = Math.floor(Math.random() * 100) + 1;
+// Function to generate the HTML for displaying a character
+function generateCharacterHTML(character) {
+  return `
+      <h2>${character.name}</h2>
+      <img src="${character.image}" alt="${character.name}" class="character-image">
+      <p>${character.description}</p>
+  `;
+}
 
-  let randomIndex;
-  if (randomChance === 3) {
-    // 3% chance for Golden Mario
-    randomIndex = Personalitys.findIndex(personality => personality.name === "Golden Mario");
-  } else {
-    // 97% chance for others
-    randomIndex = Math.floor(Math.random() * Personalitys.length);
-  }  
-    
-    const randomPersonality = Personalitys[randomIndex];
-  
-    PersonalityInfoDiv.innerHTML = `
-      <h2>${randomPersonality.name}</h2>
-      ${generatePersonalityHTML(randomPersonality.image, "Personality Image")}
-      <p>${randomPersonality.description}</p>
-    `;
-  }
-  
+// Update the Character Gacha info
+var characterInfoDiv = document.getElementById("PersonalityInfo");
+
+function generateCharacter() {
+  // Generate a random index to select a character
+  var randomIndex = Math.floor(Math.random() * characters.length);
+  var randomCharacter = characters[randomIndex];
+
+  // Display the randomly selected character
+  characterInfoDiv.innerHTML = generateCharacterHTML(randomCharacter);
+}
