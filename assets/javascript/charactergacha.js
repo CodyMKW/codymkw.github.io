@@ -181,17 +181,6 @@ var characters = [
         rarity: "Rare"
     }
   ];
-
-  // Define CSS classes based on rarity
-  const rarityClasses = {
-    "Common": "common-rarity",
-    "Uncommon": "uncommon-rarity",
-    "Rare": "rare-rarity",
-    "Epic": "epic-rarity",
-    "Legendary": "legendary-rarity",
-    "Mythic": "mythic-rarity",
-    "Exotic": "exotic-rarity", // For those Cody deems worthy
-};
   
 // Function to generate the HTML for displaying a character
 function generateCharacterHTML(character) {
@@ -203,14 +192,61 @@ function generateCharacterHTML(character) {
   `;
 }
 
+// Define CSS classes based on rarity
+const rarityClasses = {
+    "Common": "common-rarity",
+    "Uncommon": "uncommon-rarity",
+    "Rare": "rare-rarity",
+    "Epic": "epic-rarity",
+    "Legendary": "legendary-rarity",
+    "Mythic": "mythic-rarity",
+    "Exotic": "exotic-rarity", // For those Cody deems worthy
+};
+
+// Define the odds of each rarity
+const rarityOdds = {
+    "Common": 0.5,
+    "Uncommon": 0.3,
+    "Rare": 0.15,
+    "Epic": 0.04,
+    "Legendary": 0.005,
+    "Mythic": 0.001,
+    "Exotic": 0.001,
+};
+
+// Function to generate the HTML for displaying a character
+function generateCharacterHTML(character) {
+    return `
+        <h2>${character.name}</h2>
+        <img src="${character.image}" alt="${character.name}" class="character-image">
+        <div class="character-info-box">
+            <p>Rarity: <b class="${rarityClasses[character.rarity]}">${character.rarity}</b></p>
+            <p>${character.description}</p>
+        </div>
+    `;
+}
+
+// Function to display the odds of each rarity
+function displayRarityOdds() {
+    var oddsList = document.getElementById("RarityOdds");
+    oddsList.innerHTML = "<h3>Odds of Each Rarity:</h3>";
+
+    for (const rarity in rarityOdds) {
+        oddsList.innerHTML += `<p>${rarity}: ${rarityOdds[rarity] * 100}%</p>`;
+    }
+}
+
 // Update the Character Gacha info
 var characterInfoDiv = document.getElementById("CharacterInfo");
 
 function generateCharacter() {
-  // Generate a random index to select a character
-  var randomIndex = Math.floor(Math.random() * characters.length);
-  var randomCharacter = characters[randomIndex];
+    // Generate a random index to select a character
+    var randomIndex = Math.floor(Math.random() * characters.length);
+    var randomCharacter = characters[randomIndex];
 
-  // Display the randomly selected character
-  characterInfoDiv.innerHTML = generateCharacterHTML(randomCharacter);
+    // Display the selected character
+    characterInfoDiv.innerHTML = generateCharacterHTML(randomCharacter);
+    
+    // Display the odds
+    displayRarityOdds();
 }
