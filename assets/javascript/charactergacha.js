@@ -80,7 +80,7 @@ var characters = [
     },
     {
         name: "FalconXD (Thunderbirds Gaming)",
-        description: "An amazing Smash Bros player hosts tournaments and loves playing as R.O.B.",
+        description: "A skilled Smash Bros player who hosts tournaments and has a fondness for playing as R.O.B.",
         image: "assets/images/characters/Falcon.jpg",
         rarity: "Legendary"
     },
@@ -122,7 +122,7 @@ var characters = [
     },
     {
         name: "CodyMKW (Owner of this page your on)",
-        description: "A Nintendo gamer that loves Animal Crossing and anime.",
+        description: "A Nintendo gamer who adores Animal Crossing and anime.",
         image: "https://www.gravatar.com/avatar/5127de8a3a295a02ff3fc55bb6b2fabe?s=2048",
         rarity: "Mythic"
     }
