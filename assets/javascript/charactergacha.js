@@ -165,7 +165,7 @@ var characters = [
     {
         name: "SpongeBob SquarePants (SpongeBob SquarePants)",
         description: "The cheerful and spongey inhabitant of Bikini Bottom, known for his pineapple house.",
-        image: "assets/images/characters/SpongeBob.png",
+        image: "assets/images/characters/Sponge.png",
         rarity: "Common"
     },
     {
