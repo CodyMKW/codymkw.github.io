@@ -344,6 +344,30 @@ h1.notfoundheading {
   height: 400px;     /* Maintain the image's aspect ratio */
 }
 
+.common-rarity {
+  color: grey;
+}
+
+.uncommon-rarity {
+  color: green;
+}
+
+.rare-rarity {
+  color: blue;
+}
+
+.epic-rarity {
+  color: purple;
+}
+
+.legendary-rarity {
+  color: orange;
+}
+
+.mythic-rarity {
+  color: gold;
+}
+
 /* Random Fortnite Map page styles */
 #RandomFortniteMapContent {
   display: none;
