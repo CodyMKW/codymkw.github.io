@@ -344,6 +344,13 @@ h1.notfoundheading {
   height: 400px;     /* Maintain the image's aspect ratio */
 }
 
+.character-info-box {
+  background-color: #689fb9;
+  border: 2px solid #000;
+  border-radius: 8px;
+  color: #000;
+}
+
 .common-rarity {
   color: grey;
 }
