@@ -143,7 +143,7 @@ function generateCharacterHTML(character) {
   return `
       <h2>${character.name}</h2>
       <img src="${character.image}" alt="${character.name}" class="character-image">
-      <div class="character-info-box"><p class="${rarityClasses[character.rarity]}">${character.rarity}</p>
+      <div class="character-info-box"><p>Rarity: <b class="${rarityClasses[character.rarity]}">${character.rarity}</b></p>
       <p>${character.description}</p></div>
   `;
 }
