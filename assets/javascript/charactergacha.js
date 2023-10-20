@@ -214,3 +214,26 @@ function generateCharacter() {
   // Display the randomly selected character
   characterInfoDiv.innerHTML = generateCharacterHTML(randomCharacter);
 }
+
+// Function to generate HTML for displaying a character batch
+function generateCharacterBatchHTML(characterBatch) {
+    let characterBatchHTML = '';
+    for (let character of characterBatch) {
+      characterBatchHTML += generateCharacterHTML(character);
+    }
+    return characterBatchHTML;
+  }
+  
+  // Function to generate a batch of 10 characters
+  function generateCharacterBatch() {
+    let characterBatch = [];
+    for (let i = 0; i < 10; i++) {
+      let randomIndex = Math.floor(Math.random() * characters.length);
+      characterBatch.push(characters[randomIndex]);
+    }
+  
+    // Display the randomly selected characters
+    let characterBatchDiv = document.getElementById("CharacterBatch");
+    characterBatchDiv.innerHTML = generateCharacterBatchHTML(characterBatch);
+  }
+  
