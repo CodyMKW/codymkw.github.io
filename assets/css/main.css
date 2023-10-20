@@ -340,10 +340,14 @@ h1.notfoundheading {
 }
 
 .character-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr); /* 5 columns */
-  grid-gap: 10px; /* Gap between characters */
-  text-align: center;
+  display: flex; /* Use flexbox to create a horizontal row */
+  flex-wrap: wrap; /* Allow characters to wrap to the next line */
+  justify-content: space-between; /* Space characters evenly */
+}
+
+.character-row {
+  flex: 0 0 calc(20% - 10px); /* Each character takes 20% width with some spacing */
+  margin-right: 10px; /* Add some spacing between characters */
 }
 
 .character-grid .character-image {
