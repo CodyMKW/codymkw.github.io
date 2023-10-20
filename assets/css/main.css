@@ -345,10 +345,9 @@ h1.notfoundheading {
 }
 
 .character-info-box {
-  background-color: #689fb9;
+  background-color: #0d171c;
   border: 2px solid #000;
   border-radius: 8px;
-  color: #000;
 }
 
 .common-rarity {
