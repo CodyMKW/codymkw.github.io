@@ -79,6 +79,12 @@ var characters = [
         rarity: "Legendary"
     },
     {
+        name: "FalconXD (Thunderbirds Gaming)",
+        description: "An amazing Smash Bros player hosts tournaments and loves playing as R.O.B.",
+        image: "assets/images/characters/Falcon.jpg",
+        rarity: "Legendary"
+    },
+    {
         name: "Black Panther (Marvel Cinematic Universe)",
         description: "The king of Wakanda, known for his advanced suit and enhanced abilities.",
         image: "assets/images/characters/Panther.png",
@@ -112,6 +118,12 @@ var characters = [
         name: "Golden Mario (Nintendo)",
         description: "A special, golden version of the iconic plumber, Mario.",
         image: "assets/images/characters/GoldenMario.png",
+        rarity: "Mythic"
+    },
+    {
+        name: "CodyMKW (Owner of this page your on)",
+        description: "A Nintendo gamer that loves Animal Crossing and anime.",
+        image: "https://www.gravatar.com/avatar/5127de8a3a295a02ff3fc55bb6b2fabe?s=2048",
         rarity: "Mythic"
     }
   ];
