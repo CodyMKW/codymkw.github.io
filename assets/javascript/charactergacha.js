@@ -270,13 +270,20 @@ function displayRarityOdds() {
 var characterInfoDiv = document.getElementById("CharacterInfo");
 
 function generateCharacter() {
-    // Generate a random index to select a character
-    var randomIndex = Math.floor(Math.random() * characters.length);
-    var randomCharacter = characters[randomIndex];
+    // Generate a random number between 0 and 1
+    var randomValue = Math.random();
+    
+    // Initialize variables to track the selected character and its rarity
+    var selectedCharacter = null;
+
+    // Iterate through the characters and find the one that matches the random value
+    for (var i = 0; i < characters.length; i++) {
+        if (randomValue <= characters[i].odds) {
+            selectedCharacter = characters[i];
+            break;
+        }
+    }
 
     // Display the selected character
-    characterInfoDiv.innerHTML = generateCharacterHTML(randomCharacter);
-    
-    // Display the odds
-    displayRarityOdds();
+    characterInfoDiv.innerHTML = generateCharacterHTML(selectedCharacter);
 }
