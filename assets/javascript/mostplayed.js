@@ -3,13 +3,13 @@
  var gamesData = [
    {
      name: "Animal Crossing: New Horizons",
-     playtime: 6490,
+     playtime: 6575,
      link: "https://www.nintendo.com/store/products/animal-crossing-new-horizons-switch",
      cover: "https://static-cdn.jtvnw.net/ttv-boxart/509538_IGDB-144x192.jpg"
    },
    {
      name: "Splatoon 3",
-     playtime: 515,
+     playtime: 525,
      link: "https://www.nintendo.com/store/products/splatoon-3-switch",
      cover: "https://static-cdn.jtvnw.net/ttv-boxart/1158884259_IGDB-144x192.jpg"
    },
@@ -33,7 +33,7 @@
    },
    {
      name: "Fortnite",
-     playtime: 2875,
+     playtime: 2880,
      link: "https://www.nintendo.com/store/products/fortnite-switch",
      cover: "https://static-cdn.jtvnw.net/ttv-boxart/33214-144x192.jpg"
    },
@@ -45,13 +45,13 @@
    },
    {
      name: "Dragon Ball: Xenoverse 2",
-     playtime: 100,
+     playtime: 105,
      link: "https://www.nintendo.com/store/products/dragon-ball-xenoverse-2-for-nintendo-switch-switch",
      cover: "https://static-cdn.jtvnw.net/ttv-boxart/492731_IGDB-144x192.jpg"
    },
    {
      name: "My Hero Ultra Rumble",
-     playtime: 50,
+     playtime: 70,
      link: "https://www.nintendo.com/store/products/my-hero-ultra-rumble-switch",
      cover: "https://static-cdn.jtvnw.net/ttv-boxart/451007760_IGDB-144x192.jpg"
    }
