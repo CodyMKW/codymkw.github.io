@@ -312,7 +312,7 @@ h1.notfoundheading {
 
 #MyHeroUltraRumbleContent img {
   max-width: 100%;
-  max-height: auto;
+  max-height: 550px;
   margin-bottom: 20px;
   border-radius: 4px;
 }
@@ -320,7 +320,7 @@ h1.notfoundheading {
 @media (max-width: 480px) {
 #MyHeroUltraRumbleContent img {
   max-width: 100%;
-  max-height: auto;
+  max-height: 550px;
   margin-bottom: 20px;
   border-radius: 4px;
 }
