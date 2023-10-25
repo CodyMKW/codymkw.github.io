@@ -314,8 +314,8 @@ h1.notfoundheading {
 
 @media (max-width: 480px) {
 #MyHeroUltraRumbleContent img {
-  max-width: 350px;
-  max-height: 250px;
+  max-width: 230px;
+  max-height: 230px;
   margin-bottom: 20px;
   border-radius: 4px;
 }
