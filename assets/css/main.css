@@ -306,10 +306,19 @@ h1.notfoundheading {
 }
 
 #MyHeroUltraRumbleContent img {
+  max-width: 650px;
+  max-height: 550px;
+  margin-bottom: 20px;
+  border-radius: 4px;
+}
+
+@media (max-width: 480px) {
+#MyHeroUltraRumbleContent img {
   max-width: 350px;
   max-height: 250px;
   margin-bottom: 20px;
   border-radius: 4px;
+}
 }
 
 /* Social Media styles */
