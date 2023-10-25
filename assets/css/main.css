@@ -305,6 +305,11 @@ h1.notfoundheading {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
+#MyHeroUltraRumbleContent p, h2 {
+  color: #fff;
+  margin-bottom: 10px;
+}
+
 #MyHeroUltraRumbleContent img {
   max-width: 650px;
   max-height: 550px;
