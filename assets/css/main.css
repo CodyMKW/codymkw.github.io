@@ -283,7 +283,7 @@ h1.notfoundheading {
 }
 
 #friendCodeContent img {
-  max-width: 350px;
+  max-width: 100%;
   max-height: 250px;
   margin-bottom: 20px;
   border-radius: 4px;
