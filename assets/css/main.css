@@ -294,6 +294,38 @@ h1.notfoundheading {
   cursor: pointer;
 }
 
+/* My Hero Ultra Rumble styles */
+#MyHeroUltraRumbleContent {
+  display: none;
+  margin-top: 40px;
+  padding: 20px;
+  background-color: #111;
+  border: 2px solid #000;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+#MyHeroUltraRumbleContent p, h2 {
+  color: #fff;
+  margin-bottom: 10px;
+}
+
+#MyHeroUltraRumbleContent img {
+  max-width: 650px;
+  max-height: 550px;
+  margin-bottom: 20px;
+  border-radius: 4px;
+}
+
+@media (max-width: 480px) {
+#MyHeroUltraRumbleContent img {
+  max-width: 230px;
+  max-height: 230px;
+  margin-bottom: 20px;
+  border-radius: 4px;
+}
+}
+
 /* Social Media styles */
 #socialMediaContent {
   display: none;
@@ -452,17 +484,6 @@ h1.notfoundheading {
 
 #nintendoNewsContent a:hover {
   color: #008a00 !important;
-}
-
-/* Disqus styles */
-#DisqusContent {
-  display: none;
-  margin-top: 40px;
-  padding: 20px;
-  background-color: #111;
-  border: 2px solid #000;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 /* Most Played Games styles */
