@@ -86,7 +86,14 @@ const tracks = [
   "(GCN) Daisy Cruiser",
   "(GBA) Sunset Wilds",
   "(Tour) Vancouver Velocity",
-  "(Wii) Daisy Circuit"
+  "(Wii) Daisy Circuit",
+  "(Wii) Rainbow Road",
+  "(Tour) Madrid Drive",
+  "Piranha Plant Cove",
+  "(GCN) DK Mountain",
+  "(SNES) Bowser Castle 3",
+  "(Tour) Rome Avanti",
+  "(3DS) Rosalina's Ice World"
 ];
 
 const vehicles = [
