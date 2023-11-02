@@ -89,7 +89,7 @@ const tracks = [
   "(Wii) Daisy Circuit",
   "(Wii) Rainbow Road",
   "(Tour) Madrid Drive",
-  "Piranha Plant Cove",
+  "(Tour) Piranha Plant Cove",
   "(GCN) DK Mountain",
   "(SNES) Bowser Castle 3",
   "(Tour) Rome Avanti",
