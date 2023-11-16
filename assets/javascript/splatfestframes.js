@@ -84,6 +84,9 @@ function updateFrameOptions() {
           "Team_Zombie.png",
           "Team_Skeleton.png",
           "Team_Ghost.png",
+          "Team_Handshake.png",
+          "Team_Fistbump.png",
+          "Team_Hug.png",
           // Add more octopus frame options here
       ],
       squid: [
@@ -114,7 +117,10 @@ function updateFrameOptions() {
         "Team_Zombie.png",
         "Team_Skeleton.png",
         "Team_Ghost.png",
-          // Add more squid frame options here
+        "Team_Handshake.png",
+        "Team_Fistbump.png",
+        "Team_Hug.png",
+        // Add more squid frame options here
       ]
   };
 
