@@ -267,6 +267,28 @@ h1.notfoundheading {
   color: #fff;
 }
 
+/* Dream Address page styles */
+#DreamAddressContent {
+  display: none;
+  padding: 20px;
+  background-color: #111;
+  border: 2px solid #000;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+#DreamAddressContent p, h2 {
+  color: #fff;
+  margin-bottom: 10px;
+}
+
+#DreamAddressContent img {
+  max-width: 100%;
+  max-height: 250px;
+  margin-bottom: 20px;
+  border-radius: 4px;
+}
+
 /* Switch FC styles */
 #friendCodeContent {
   display: none;
