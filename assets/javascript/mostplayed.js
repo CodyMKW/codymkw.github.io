@@ -54,7 +54,7 @@
      playtime: 85,
      link: "https://www.nintendo.com/store/products/stardew-valley-switch",
      cover: "https://static-cdn.jtvnw.net/ttv-boxart/490744_IGDB-144x192.jpg"
-   }
+   },
    {
      name: "My Hero Ultra Rumble",
      playtime: 85,
