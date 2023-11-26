@@ -708,6 +708,10 @@ color: #066d06;
     font-size: 16px; /* Adjust font size for smaller screens */
     padding: 10px; /* Adjust padding for a more compact look */
   }
+  .sticky-header span {
+    display: block;
+    margin-top: 5px; /* Add some margin between the lines */
+  }
 }
 
 footer {
