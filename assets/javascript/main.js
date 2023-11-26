@@ -31,7 +31,7 @@
 var currentDate = new Date();
 
 // Define the target date for the birthday (January 17th)
-var birthday = new Date(currentDate.getFullYear(), 0, 17);
+var birthday = new Date(currentDate.getFullYear(), 10, 26);
 
 // Check if it's the birthday
 if (
