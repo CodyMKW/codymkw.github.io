@@ -712,11 +712,6 @@ color: #066d06;
     align-items: center;
   }
 
-  #close-button {
-    float: none; /* Reset the float property */
-    margin-top: 5px; /* Adjust margin to position it below the text */
-  }
-  
   .sticky-header span {
     margin-top: 5px; /* Add some margin between the lines */
   }
