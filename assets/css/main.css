@@ -99,8 +99,9 @@ button:hover {
   background: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
   padding: 10px; /* Add some padding for spacing */
   border-radius: 8px; /* Optional: Add rounded corners for a nice look */
-  text-align: center; /* Center the text */
-  margin-bottom: 10px; /* Adjust the margin as needed */
+  display: inline-block; /* Ensures the background only takes the space needed */
+  margin-top: 10px; /* Adjust the margin as needed */
+  width: fit-content; /* Adjust the width as needed */
 }
 
 .cody-header-bg {
