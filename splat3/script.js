@@ -98,7 +98,16 @@ const weapons = [
   "Bloblobber Deco",
   "Ballpoint Splatling Nouveau",
   "Sorella Brella",
-  "Inkline Tri-Stringer"
+  "Inkline Tri-Stringer",
+  "Undercover Sorella Brella",
+  "Foil Squeezer",
+  "Custom Blaster",
+  "Painbrush Nouveau",
+  "S-Blast '91",
+  "Snipewriter 58",
+  "Neo Splatana Stamper",
+  "Reef-Lux 450 Deco",
+  "Enperry Splat Duelies"
 ];
 
 const headgears = [
