@@ -287,7 +287,16 @@ const headgears = [
   "Bleak Beak",
   "Hohojiro Mask",
   "Onaga Mask",
-  "Manta Mask"
+  "Manta Mask",
+  "Vintage Biker Cap",
+  "Flounder Flap Cap",
+  "Clue-Detecting Cap",
+  "Anglerfish Knit",
+  "Meetcha Mask",
+  "Dapperdasher Hat",
+  "Coral Wreath",
+  "Golden Gala Masque",
+  "Octopearl Crown"
 ];
 
 
@@ -534,7 +543,16 @@ const shirts = [
   "Brinestone Jacket",
   "Chomp Top",
   "Eelneck Tank",
-  "Big Slick"
+  "Big Slick",
+  "Deepsea Tangle Top",
+  "Rugby Fleece",
+  "Barazushi Peacoat",
+  "Barazushi Liner Shell",
+  "Tenured Turtleneck",
+  "Annaki Tuff Duffel",
+  "Fuzzly Sweater",
+  "SplatJack 5000",
+  "Hacker Jacket"
 ];
 
 
@@ -691,7 +709,12 @@ const shoes = [
   "Brinestone Boots",
   "Faux Sharkskin Platfins",
   "Eel Heel Socks",
-  "Big Muds"
+  "Big Muds",
+  "E-JECT 30VV",
+  "Spiked Duck Boots",
+  "Buckle-Down Boots",
+  "Tricolor Boaties",
+  "Trevally Derby Rollers"
 ];
 
 
