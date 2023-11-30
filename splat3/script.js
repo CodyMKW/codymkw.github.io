@@ -98,7 +98,16 @@ const weapons = [
   "Bloblobber Deco",
   "Ballpoint Splatling Nouveau",
   "Sorella Brella",
-  "Inkline Tri-Stringer"
+  "Inkline Tri-Stringer",
+  "Undercover Sorella Brella",
+  "Foil Squeezer",
+  "Custom Blaster",
+  "Painbrush Nouveau",
+  "S-Blast '91",
+  "Snipewriter 58",
+  "Neo Splatana Stamper",
+  "Reef-Lux 450 Deco",
+  "Enperry Splat Duelies"
 ];
 
 const headgears = [
@@ -275,7 +284,19 @@ const headgears = [
   "Undead Head",
   "Swim Reaper",
   "The Plankton Walker",
-  "Bleak Beak"
+  "Bleak Beak",
+  "Hohojiro Mask",
+  "Onaga Mask",
+  "Manta Mask",
+  "Vintage Biker Cap",
+  "Flounder Flap Cap",
+  "Clue-Detecting Cap",
+  "Anglerfish Knit",
+  "Meetcha Mask",
+  "Dapperdasher Hat",
+  "Coral Wreath",
+  "Golden Gala Masque",
+  "Octopearl Crown"
 ];
 
 
@@ -519,7 +540,19 @@ const shirts = [
   "Dark Distressed Vest",
   "Garden Gear",
   "Crustwear XXL",
-  "Brinestone Jacket"
+  "Brinestone Jacket",
+  "Chomp Top",
+  "Eelneck Tank",
+  "Big Slick",
+  "Deepsea Tangle Top",
+  "Rugby Fleece",
+  "Barazushi Peacoat",
+  "Barazushi Liner Shell",
+  "Tenured Turtleneck",
+  "Annaki Tuff Duffel",
+  "Fuzzly Sweater",
+  "SplatJack 5000",
+  "Hacker Jacket"
 ];
 
 
@@ -673,7 +706,15 @@ const shoes = [
   "Red-Shift Moto Boots",
   "Nonslip Senseis",
   "Flipper Floppers",
-  "Brinestone Boots"
+  "Brinestone Boots",
+  "Faux Sharkskin Platfins",
+  "Eel Heel Socks",
+  "Big Muds",
+  "E-JECT 30VV",
+  "Spiked Duck Boots",
+  "Buckle-Down Boots",
+  "Tricolor Boaties",
+  "Trevally Derby Rollers"
 ];
 
 
@@ -753,7 +794,10 @@ function randomize() {
         "Steel Helm",
         "Sushi Sous-Chef Band",
         "Armor Helmet Replica",
-        "Hero Headset Replica"
+        "Hero Headset Replica",
+        "Hohojiro Mask",
+        "Onaga Mask",
+        "Manta Mask"
       ].includes(gear);
     });
     const filteredShirts = shirts.filter(gear => {
@@ -776,7 +820,10 @@ function randomize() {
         "Squinja Suit",
         "Steel Platemail",
         "Armor Jacket Replica",
-        "Hero Jacket Replica"
+        "Hero Jacket Replica",
+        "Chomp Top",
+        "Eelneck Tank",
+        "Big Slick"
       ].includes(gear);
     });
     const filteredShoes = shoes.filter(gear => {
@@ -798,7 +845,10 @@ function randomize() {
         "Squinja Boots",
         "Steel Greaves",
         "Armor Boot Replicas",
-        "Hero Runner Replicas"
+        "Hero Runner Replicas",
+        "Faux Sharkskin Platfins",
+        "Eel Heel Socks",
+        "Big Muds"
       ].includes(gear);
     });
     randomheadgear = filteredHeadgears[Math.floor(Math.random() * filteredHeadgears.length)];
