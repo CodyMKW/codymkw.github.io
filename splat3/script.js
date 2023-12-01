@@ -552,7 +552,8 @@ const shirts = [
   "Annaki Tuff Duffel",
   "Fuzzly Sweater",
   "SplatJack 5000",
-  "Hacker Jacket"
+  "Hacker Jacket",
+  "Frivolous Paw Suit"
 ];
 
 
