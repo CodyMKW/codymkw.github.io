@@ -27,7 +27,16 @@
             padding: 20px;
             box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
             max-width: 400px;
-            margin: 0 auto;
+            margin: 0 auto 15px; /* Added margin-bottom to create space */
+        }
+        
+        #onlineStatusContainer {
+            background-color: #363636;
+            border-radius: 10px;
+            padding: 5px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+            max-width: 400px;
+            margin: 15px auto 0; /* Added margin-top to create space */
         }
 
         img#gameImage {
@@ -60,63 +69,79 @@
         .offline {
             color: #ff4436; /* Red color for "Offline" */
         }
+        .inactive {
+            color: yellow; /* Yellow color for "Inactive" */
+        }
     </style>
 </head>
 <body>
     <h1><img id="avatarImage" alt="Avatar Image"></h1>
     <h1><span id="playerName"></span> is currently playing:</h1>
-
     <div id="gameInfo">
         <p><span id="gameName"></span></p>
         <p><img id="gameImage" alt="Game Image"></p>
-        <p><strong>Online Status:</strong> <span id="onlineStatus"></span></p>
         <p><strong>Title ID:</strong> <span id="gameID"></span></p>
         <p><strong>Time First Played:</strong> <span id="firstPlayedTime"></span></p>
         <p><strong>Buy the game:</strong> <a id="gameShopLink" href="#" target="_blank">Visit eShop Page</a></p>
     </div>
-
+    <div id="onlineStatusContainer">
+        <p><strong>Online Status:</strong> <span id="onlineStatus"></span></p>
+    </div>
     <script>
-        async function fetchData() {
-            try {
-                const response = await fetch('https://nxapi-presence.fancy.org.uk/api/presence/644cd5195d154bd5?include-splatoon3=1');
-                const data = await response.json();
+async function fetchData() {
+    try {
+        const response = await fetch('https://nxapi-presence.fancy.org.uk/api/presence/644cd5195d154bd5?include-splatoon3=1');
+        const data = await response.json();
 
-                // Update HTML with fetched data
-                document.getElementById('avatarImage').src = data.friend.imageUri;
-                document.getElementById('playerName').textContent = data.friend.name;
-                document.getElementById('gameName').textContent = data.title.name;
-                document.getElementById('gameImage').src = data.title.image_url;
-                document.getElementById('gameShopLink').href = data.title.url;
+        // Update HTML with fetched data
+        document.getElementById('avatarImage').src = data.friend.imageUri;
+        document.getElementById('playerName').textContent = data.friend.name;
 
-                const onlineStatusElement = document.getElementById('onlineStatus');
-                const onlineStatusText = data.friend.presence.state.toLowerCase();
-                onlineStatusElement.textContent = onlineStatusText.charAt(0).toUpperCase() + onlineStatusText.slice(1);
+        const onlineStatusElement = document.getElementById('onlineStatus');
+        const onlineStatusText = data.friend.presence.state.toLowerCase();
 
-                // Set class for styling based on online status
-                onlineStatusElement.className = data.friend.presence.state === 'ONLINE' ? 'online' : 'offline';
-                
-                document.getElementById('gameID').textContent = data.title.id;
-
-                const firstPlayedDate = new Date(data.friend.presence.game.firstPlayedAt * 1000);
-                document.getElementById('firstPlayedTime').textContent = firstPlayedDate.toLocaleString();
-
-                // Update favicon
-                document.getElementById('favicon').href = data.friend.imageUri;
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
+        // Set class for styling based on online status
+        if (onlineStatusText === 'offline') {
+            onlineStatusElement.textContent = 'Offline';
+            onlineStatusElement.className = 'offline';
+        } else if (onlineStatusText === 'inactive') {
+            onlineStatusElement.textContent = 'Inactive';
+            onlineStatusElement.className = 'inactive';
+        } else {
+            onlineStatusElement.textContent = onlineStatusText.charAt(0).toUpperCase() + onlineStatusText.slice(1);
+            onlineStatusElement.className = data.friend.presence.state === 'ONLINE' ? 'online' : 'offline';
         }
-        
-    // Function to refresh the page every 3 minutes
-    function refreshPage() {
-        location.reload();
-    }
 
-        // Fetch data when the page loads
-        fetchData();
-        
-    // Refresh the page every 3 minutes (180,000 milliseconds)
-    setInterval(refreshPage, 180000);
+        // Update favicon
+        document.getElementById('favicon').href = data.friend.imageUri;
+
+        // Update additional data when title is not null
+        if (data.title !== null) {
+            document.getElementById('gameInfo').style.display = 'block'; // Show gameInfo div
+            document.getElementById('gameName').textContent = data.title.name;
+            document.getElementById('gameImage').src = data.title.image_url;
+            document.getElementById('gameID').textContent = data.title.id;
+            const firstPlayedDate = new Date(data.friend.presence.game.firstPlayedAt * 1000);
+            document.getElementById('firstPlayedTime').textContent = firstPlayedDate.toLocaleString();
+            document.getElementById('gameShopLink').href = data.title.url;
+        } else {
+            document.getElementById('gameInfo').style.display = 'none'; // Hide gameInfo div
+        }
+    } catch (error) {
+        console.error('Error fetching data:', error);
+    }
+}
+
+// Function to refresh the page every 3 minutes
+function refreshPage() {
+    location.reload();
+}
+
+// Fetch data when the page loads
+fetchData();
+
+// Refresh the page every 3 minutes (180,000 milliseconds)
+setInterval(refreshPage, 180000);
     </script>
 
 </body>
