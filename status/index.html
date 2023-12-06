@@ -104,6 +104,7 @@
             <p><strong>Mode:</strong> <span id="splatoonMode"></span></p>
             <p><strong>Stages:</strong> <span id="splatoonStages"></span></p>
         </div>
+        <p><strong>Total Play Time:</strong> <span id="totalPlayTime"></span></p>
         <p><strong>Time First Played:</strong> <span id="firstPlayedTime"></span></p>
         <p><strong>Get the game:</strong> <a id="gameShopLink" href="#" target="_blank">Visit eShop Page</a></p>
     </div>
@@ -148,6 +149,11 @@ if (data.title !== null) {
     document.getElementById('firstPlayedTime').textContent = firstPlayedDate.toLocaleString();
     document.getElementById('gameShopLink').href = data.title.url;
 
+       // Display total play time
+        const totalPlayTimeHours = Math.floor(data.friend.presence.game.totalPlayTime / 60);
+        const totalPlayTimeMinutes = data.friend.presence.game.totalPlayTime % 60;
+        document.getElementById('totalPlayTime').textContent = `${totalPlayTimeHours} hours and ${totalPlayTimeMinutes} minutes`;
+    
         // Display additional Splatoon 3 info
         if (data.splatoon3) {
             const vsMode = data.splatoon3.vsMode;
