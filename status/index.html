@@ -131,7 +131,7 @@ async function fetchData() {
 if (onlineStatusText === 'offline') {
     onlineStatusElement.textContent = 'Offline';
     onlineStatusElement.className = 'offline';
-    playingStatusElement.textContent = `${data.friend.name} is currently offline.`;
+    playingStatusElement.textContent = `${data.friend.name} is not on the Nintendo Switch right now.`;
 } else if (onlineStatusText === 'inactive') {
     onlineStatusElement.textContent = 'Inactive';
     onlineStatusElement.className = 'inactive';
