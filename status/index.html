@@ -124,19 +124,23 @@ async function fetchData() {
 
         const onlineStatusElement = document.getElementById('onlineStatus');
         const onlineStatusText = data.friend.presence.state.toLowerCase();
+        const playerNameElement = document.getElementById('playerName');
+        const playingStatusElement = document.querySelector('h1 span#playerName');
 
-        // Set class for styling based on online status
-        if (onlineStatusText === 'offline') {
-            onlineStatusElement.textContent = 'Offline';
-            onlineStatusElement.className = 'offline';
-        } else if (onlineStatusText === 'inactive') {
-            onlineStatusElement.textContent = 'Inactive';
-            onlineStatusElement.className = 'inactive';
-        } else {
-            onlineStatusElement.textContent = onlineStatusText.charAt(0).toUpperCase() + onlineStatusText.slice(1);
-            onlineStatusElement.className = data.friend.presence.state === 'ONLINE' ? 'online' : 'offline';
-        }
-
+// Set class for styling based on online status
+if (onlineStatusText === 'offline') {
+    onlineStatusElement.textContent = 'Offline';
+    onlineStatusElement.className = 'offline';
+    playingStatusElement.textContent = `${data.friend.name} is currently offline.`;
+} else if (onlineStatusText === 'inactive') {
+    onlineStatusElement.textContent = 'Inactive';
+    onlineStatusElement.className = 'inactive';
+    playingStatusElement.textContent = `${data.friend.name} is chilling on the home menu.`;
+} else {
+    onlineStatusElement.textContent = onlineStatusText.charAt(0).toUpperCase() + onlineStatusText.slice(1);
+    onlineStatusElement.className = data.friend.presence.state === 'ONLINE' ? 'online' : 'offline';
+    playingStatusElement.textContent = `${data.friend.name} is currently playing:`;
+}
         // Update favicon
         document.getElementById('favicon').href = data.friend.imageUri;
 // Update additional data when title is not null
