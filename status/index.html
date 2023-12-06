@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Current Playing Status</title>
+    <title>Game Status</title>
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="" id="favicon">
@@ -83,8 +83,14 @@
     <h1><span id="playerName"></span> is currently playing:</h1>
     <div id="gameInfo">
         <p><span id="gameName"></span></p>
+        <p><small><span id="sysDescription"></span></small></p>
         <p><img id="gameImage" alt="Game Image"></p>
         <p><strong>Title ID:</strong> <span id="gameID"></span></p>
+        <!-- Display Splatoon 3 info only when playing Splatoon 3 -->
+        <div id="splatoonInfo" style="display: none;">
+            <p><strong>Mode:</strong> <span id="splatoonMode"></span></p>
+            <p><strong>Stages:</strong> <span id="splatoonStages"></span></p>
+        </div>
         <p><strong>Time First Played:</strong> <span id="firstPlayedTime"></span></p>
         <p><strong>Get the game:</strong> <a id="gameShopLink" href="#" target="_blank">Visit eShop Page</a></p>
     </div>
@@ -118,19 +124,36 @@ async function fetchData() {
 
         // Update favicon
         document.getElementById('favicon').href = data.friend.imageUri;
+// Update additional data when title is not null
+if (data.title !== null) {
+    document.getElementById('gameInfo').style.display = 'block'; // Show gameInfo div
+    document.getElementById('gameName').textContent = data.title.name;
+    document.getElementById('sysDescription').textContent = data.friend.presence.game.sysDescription;
+    document.getElementById('gameImage').src = data.title.image_url;
+    document.getElementById('gameID').textContent = data.title.id;
+    const firstPlayedDate = new Date(data.friend.presence.game.firstPlayedAt * 1000);
+    document.getElementById('firstPlayedTime').textContent = firstPlayedDate.toLocaleString();
+    document.getElementById('gameShopLink').href = data.title.url;
 
-        // Update additional data when title is not null
-        if (data.title !== null) {
-            document.getElementById('gameInfo').style.display = 'block'; // Show gameInfo div
-            document.getElementById('gameName').textContent = data.title.name;
-            document.getElementById('gameImage').src = data.title.image_url;
-            document.getElementById('gameID').textContent = data.title.id;
-            const firstPlayedDate = new Date(data.friend.presence.game.firstPlayedAt * 1000);
-            document.getElementById('firstPlayedTime').textContent = firstPlayedDate.toLocaleString();
-            document.getElementById('gameShopLink').href = data.title.url;
-        } else {
-            document.getElementById('gameInfo').style.display = 'none'; // Hide gameInfo div
+        // Display additional Splatoon 3 info
+        if (data.splatoon3) {
+            const vsMode = data.splatoon3.vsMode;
+            const vsSetting = data.splatoon3_vs_setting;
+
+            // Display mode name
+            const modeName = vsMode ? vsMode.name : 'N/A';
+            document.getElementById('splatoonMode').textContent = modeName;
+
+            // Display vs stages
+            if (vsSetting && vsSetting.vsStages) {
+                const stageNames = vsSetting.vsStages.map(stage => stage.name).join(' and ');
+                document.getElementById('splatoonStages').textContent = stageNames;
+                document.getElementById('splatoonInfo').style.display = 'block'; // Show Splatoon 3 info
+            }
         }
+} else {
+    document.getElementById('gameInfo').style.display = 'none'; // Hide gameInfo div
+}
     } catch (error) {
         console.error('Error fetching data:', error);
     }
