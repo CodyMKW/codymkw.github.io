@@ -11,15 +11,15 @@
     <meta name="description" content="See what I'm currently playing at the moment!">
     <meta name="author" content="CodyMKW">
     <link rel="canonical" href="https://codymkw.github.io/status/">
-    <meta property="og:title" content="Splatoon 3 Randomizer">
+    <meta property="og:title" content="Game Status">
     <meta property="og:description" content="See what I'm currently playing at the moment!">
     <meta property="og:image" content="" id="ogimage">
     <meta property="og:url" content="https://codymkw.github.io/status/">
     <meta property="og:type" content="website">
     <meta name="twitter:creator" content="@CodyMKW" />
-	<meta name="twitter:title" content="Splatoon 3 Randomizer" />
-	<meta name="twitter:description" content="See what I'm currently playing at the moment!" />
-  	<meta name="twitter:image:src" content="" id="twitterimage" />
+    <meta name="twitter:title" content="Game Status" />
+    <meta name="twitter:description" content="See what I'm currently playing at the moment!" />
+    <meta name="twitter:image:src" content="" id="twitterimage" />
 
     <style>
         body {
@@ -137,8 +137,8 @@ async function fetchData() {
 
         // Update favicon
         document.getElementById('favicon').href = data.friend.imageUri;
-        document.getElementById('ogimage').content = data.friend.imageUri;
-        document.getElementById('twitterimage').content = data.friend.imageUri;
+        document.getElementById('ogimage').setAttribute('content', data.friend.imageUri);
+        document.getElementById('twitterimage').setAttribute('content', data.friend.imageUri);
 // Update additional data when title is not null
 if (data.title !== null) {
     document.getElementById('gameInfo').style.display = 'block'; // Show gameInfo div
