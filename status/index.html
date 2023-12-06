@@ -104,6 +104,11 @@
             <p><strong>Mode:</strong> <span id="splatoonMode"></span></p>
             <p><strong>Stages:</strong> <span id="splatoonStages"></span></p>
         </div>
+        <!-- Display Salmon Run info -->
+        <div id="salmonRunInfo" style="display: none;">
+           <p><strong>Current Stage:</strong> <span id="salmonRunStage"></span></p>
+           <p><strong>Current Weapons:</strong> <span id="salmonRunWeapons"></span></p>
+        </div>
         <p><strong>Time Playing Now:</strong> <span id="timePlayingNow"></span></p>
         <p><strong>Total Play Time:</strong> <span id="totalPlayTime"></span></p>
         <p><strong>Time First Played:</strong> <span id="firstPlayedTime"></span></p>
@@ -179,8 +184,26 @@ if (data.title !== null) {
                 document.getElementById('splatoonInfo').style.display = 'block'; // Show Splatoon 3 info
             }
         }
+    // Display additional Salmon Run info
+    const salmonRunInfo = data.splatoon3_coop_setting;
+    if (salmonRunInfo) {
+        document.getElementById('splatoonInfo').style.display = 'block'; // Show Splatoon 3 info
+        document.getElementById('splatoonMode').textContent = 'Salmon Run';
+
+        // Update Salmon Run stage
+        const salmonRunStage = salmonRunInfo.coopStage.name;
+        document.getElementById('salmonRunStage').textContent = salmonRunStage;
+
+        // Update Salmon Run weapons
+        const salmonRunWeapons = salmonRunInfo.weapons.map(weapon => weapon.name).join(', ');
+        document.getElementById('salmonRunWeapons').textContent = salmonRunWeapons;
+
+        document.getElementById('salmonRunInfo').style.display = 'block'; // Show Salmon Run info
+    }
 } else {
     document.getElementById('gameInfo').style.display = 'none'; // Hide gameInfo div
+    document.getElementById('splatoonInfo').style.display = 'none'; // Hide Splatoon 3 info
+    document.getElementById('salmonRunInfo').style.display = 'none'; // Hide Salmon Run info
 }
     } catch (error) {
         console.error('Error fetching data:', error);
