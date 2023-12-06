@@ -102,7 +102,8 @@
         <!-- Display Splatoon 3 info only when playing Splatoon 3 -->
         <div id="splatoonInfo" style="display: none;">
             <p><strong>Mode:</strong> <span id="splatoonMode"></span></p>
-            <p><strong>Stages:</strong> <span id="splatoonStages"></span></p>
+            <!-- Display "Stages" only when not playing Salmon Run -->
+            <p id="splatoonStagesLabel" style="display: none;"><strong>Stages:</strong> <span id="splatoonStages"></span></p>
         </div>
         <!-- Display Salmon Run info -->
         <div id="salmonRunInfo" style="display: none;">
@@ -178,11 +179,13 @@ if (data.title !== null) {
             document.getElementById('splatoonMode').textContent = modeName;
 
             // Display vs stages
-            if (vsSetting && vsSetting.vsStages) {
-                const stageNames = vsSetting.vsStages.map(stage => stage.name).join(' and ');
-                document.getElementById('splatoonStages').textContent = stageNames;
-                document.getElementById('splatoonInfo').style.display = 'block'; // Show Splatoon 3 info
-            }
+        if (vsSetting && vsSetting.vsStages) {
+            // Show "Stages" label only when not playing Salmon Run
+            document.getElementById('splatoonStagesLabel').style.display = 'block';
+            const stageNames = vsSetting.vsStages.map(stage => stage.name).join(' and ');
+            document.getElementById('splatoonStages').textContent = stageNames;
+        }
+        document.getElementById('splatoonInfo').style.display = 'block'; // Show Splatoon 3 info
         }
     // Display additional Salmon Run info
     const salmonRunInfo = data.splatoon3_coop_setting;
