@@ -137,6 +137,7 @@ async function fetchData() {
 
         // Update favicon
         document.getElementById('favicon').href = data.friend.imageUri;
+        // Update og:image and twitter:image:src
         document.getElementById('ogimage').setAttribute('content', data.friend.imageUri);
         document.getElementById('twitterimage').setAttribute('content', data.friend.imageUri);
 // Update additional data when title is not null
