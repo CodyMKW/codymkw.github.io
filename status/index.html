@@ -135,6 +135,13 @@
         <p><strong>Online Status:</strong> <span id="onlineStatus"></span></p>
     </div>
     <script>
+// Add a function to format the weapons list
+function formatWeaponsList(weapons) {
+    const weaponsArray = weapons.split(', ');
+    const lastWeapon = weaponsArray.pop();
+    return weaponsArray.join(', ') + (weaponsArray.length > 0 ? ', and ' : '') + lastWeapon;
+}
+        
 async function fetchData() {
     try {
         const response = await fetch('https://nxapi-presence.fancy.org.uk/api/presence/644cd5195d154bd5?include-splatoon3=1');
@@ -225,13 +232,6 @@ if (data.title !== null) {
         const salmonRunWeapons = salmonRunInfo.weapons.map(weapon => weapon.name).join(', ');
         const formattedSalmonRunWeapons = formatWeaponsList(salmonRunWeapons);
         document.getElementById('salmonRunWeapons').textContent = formattedSalmonRunWeapons;
-
-    // Add a function to format the weapons list
-    function formatWeaponsList(weapons) {
-       const weaponsArray = weapons.split(', ');
-       const lastWeapon = weaponsArray.pop();
-       return weaponsArray.join(', ') + (weaponsArray.length > 0 ? ', and ' : '') + lastWeapon;
-
         document.getElementById('salmonRunInfo').style.display = 'block'; // Show Salmon Run info
     }
 } else {
