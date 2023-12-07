@@ -92,6 +92,19 @@
         span#gameName {
             font-weight: bold;
         }
+/* Add a special effect for Animal Crossing */
+#gameInfo.special-effect {
+    animation: pulse 1s infinite alternate;
+}
+
+@keyframes pulse {
+    from {
+        box-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+    }
+    to {
+        box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+    }
+}
     </style>
 </head>
 <body>
@@ -158,12 +171,12 @@ if (data.title !== null) {
     document.getElementById('gameName').textContent = data.title.name;
     // Check if playing Animal Crossing: New Horizons
     if (data.title.id === '01006f8002326000') {
-        // Apply your special effect here, for example, changing background color
-        document.body.style.backgroundColor = '#FFD700'; // This is a golden color, you can choose whatever you like
+        // Apply the special effect class
+        document.getElementById('gameInfo').classList.add('special-effect');
     } else {
-        // Reset the background color if not playing Animal Crossing
-        document.body.style.backgroundColor = '#2c2c2c';
-    }    
+        // Remove the special effect class if not playing Animal Crossing
+        document.getElementById('gameInfo').classList.remove('special-effect');
+    }
     document.getElementById('sysDescription').textContent = data.friend.presence.game.sysDescription;
     document.getElementById('gameImage').src = data.title.image_url;
     document.getElementById('gameID').textContent = data.title.id;
