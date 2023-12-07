@@ -156,6 +156,14 @@ if (onlineStatusText === 'offline') {
 if (data.title !== null) {
     document.getElementById('gameInfo').style.display = 'block'; // Show gameInfo div
     document.getElementById('gameName').textContent = data.title.name;
+    // Check if playing Animal Crossing: New Horizons
+    if (data.title.id === '01006f8002326000') {
+        // Apply your special effect here, for example, changing background color
+        document.body.style.backgroundColor = '#FFD700'; // This is a golden color, you can choose whatever you like
+    } else {
+        // Reset the background color if not playing Animal Crossing
+        document.body.style.backgroundColor = '#2c2c2c';
+    }    
     document.getElementById('sysDescription').textContent = data.friend.presence.game.sysDescription;
     document.getElementById('gameImage').src = data.title.image_url;
     document.getElementById('gameID').textContent = data.title.id;
