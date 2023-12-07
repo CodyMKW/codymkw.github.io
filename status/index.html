@@ -223,7 +223,14 @@ if (data.title !== null) {
 
         // Update Salmon Run weapons
         const salmonRunWeapons = salmonRunInfo.weapons.map(weapon => weapon.name).join(', ');
-        document.getElementById('salmonRunWeapons').textContent = salmonRunWeapons;
+        const formattedSalmonRunWeapons = formatWeaponsList(salmonRunWeapons);
+        document.getElementById('salmonRunWeapons').textContent = formattedSalmonRunWeapons;
+
+    // Add a function to format the weapons list
+    function formatWeaponsList(weapons) {
+       const weaponsArray = weapons.split(', ');
+       const lastWeapon = weaponsArray.pop();
+       return weaponsArray.join(', ') + (weaponsArray.length > 0 ? ', and ' : '') + lastWeapon;
 
         document.getElementById('salmonRunInfo').style.display = 'block'; // Show Salmon Run info
     }
