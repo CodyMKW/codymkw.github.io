@@ -204,11 +204,17 @@ if (data.title !== null) {
 if (data.splatoon3) {
     const vsMode = data.splatoon3.vsMode;
     const vsSetting = data.splatoon3_vs_setting;
+    const onlineState = data.splatoon3.onlineState;
 
     // Display mode name only when playing a mode
     if (vsMode && vsMode.name !== 'N/A') {
         document.getElementById('modeLabel').style.display = 'block'; // Show the "Mode:" label
         document.getElementById('splatoonMode').textContent = vsMode.name;
+        document.getElementById('splatoonInfo').style.display = 'block'; // Show Splatoon 3 info
+    } else if (onlineState === 'MINI_GAME_PLAYING') {
+        // Show "Tableturf Battle" when playing mini-game
+        document.getElementById('modeLabel').style.display = 'block'; // Show the "Mode:" label
+        document.getElementById('splatoonMode').textContent = 'Tableturf Battle';
         document.getElementById('splatoonInfo').style.display = 'block'; // Show Splatoon 3 info
     }
 
@@ -219,8 +225,6 @@ if (data.splatoon3) {
         const stageNames = vsSetting.vsStages.map(stage => stage.name).join(' and ');
         document.getElementById('splatoonStages').textContent = stageNames;
     }
-        document.getElementById('splatoonInfo').style.display = 'block'; // Show Splatoon 3 info
-        }
     // Display additional Salmon Run info
     const salmonRunInfo = data.splatoon3_coop_setting;
     if (salmonRunInfo) {
