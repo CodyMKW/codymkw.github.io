@@ -117,7 +117,7 @@
         <p><strong>Title ID:</strong> <span id="gameID"></span></p>
         <!-- Display Splatoon 3 info only when playing Splatoon 3 -->
         <div id="splatoonInfo" style="display: none;">
-            <p><strong>Mode:</strong> <span id="splatoonMode"></span></p>
+           <p><strong>Mode:</strong> <span id="splatoonMode"></span></p>
             <!-- Display "Stages" only when not playing Salmon Run -->
             <p id="splatoonStagesLabel" style="display: none;"><strong>Stages:</strong> <span id="splatoonStages"></span></p>
         </div>
@@ -200,22 +200,24 @@ if (data.title !== null) {
         const sinceTimestamp = new Date(data.title.since).getTime();
         updatePlayingTime(sinceTimestamp);
     
-        // Display additional Splatoon 3 info
-        if (data.splatoon3) {
-            const vsMode = data.splatoon3.vsMode;
-            const vsSetting = data.splatoon3_vs_setting;
+// Display additional Splatoon 3 info
+if (data.splatoon3) {
+    const vsMode = data.splatoon3.vsMode;
+    const vsSetting = data.splatoon3_vs_setting;
 
-            // Display mode name
-            const modeName = vsMode ? vsMode.name : 'N/A';
-            document.getElementById('splatoonMode').textContent = modeName;
+    // Display mode name only when playing a mode
+    if (vsMode && vsMode.name !== 'N/A') {
+        document.getElementById('splatoonMode').textContent = vsMode.name;
+        document.getElementById('splatoonInfo').style.display = 'block'; // Show Splatoon 3 info
+    }
 
-            // Display vs stages
-        if (vsSetting && vsSetting.vsStages) {
-            // Show "Stages" label only when not playing Salmon Run
-            document.getElementById('splatoonStagesLabel').style.display = 'block';
-            const stageNames = vsSetting.vsStages.map(stage => stage.name).join(' and ');
-            document.getElementById('splatoonStages').textContent = stageNames;
-        }
+    // Display vs stages
+    if (vsSetting && vsSetting.vsStages) {
+        // Show "Stages" label only when not playing Salmon Run
+        document.getElementById('splatoonStagesLabel').style.display = 'block';
+        const stageNames = vsSetting.vsStages.map(stage => stage.name).join(' and ');
+        document.getElementById('splatoonStages').textContent = stageNames;
+    }
         document.getElementById('splatoonInfo').style.display = 'block'; // Show Splatoon 3 info
         }
     // Display additional Salmon Run info
