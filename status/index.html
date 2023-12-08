@@ -117,7 +117,7 @@
         <p><strong>Title ID:</strong> <span id="gameID"></span></p>
         <!-- Display Splatoon 3 info only when playing Splatoon 3 -->
         <div id="splatoonInfo" style="display: none;">
-           <p><strong>Mode:</strong> <span id="splatoonMode"></span></p>
+            <p id="modeLabel" style="display: none;"><strong>Mode:</strong> <span id="splatoonMode"></span></p>
             <!-- Display "Stages" only when not playing Salmon Run -->
             <p id="splatoonStagesLabel" style="display: none;"><strong>Stages:</strong> <span id="splatoonStages"></span></p>
         </div>
@@ -207,6 +207,7 @@ if (data.splatoon3) {
 
     // Display mode name only when playing a mode
     if (vsMode && vsMode.name !== 'N/A') {
+        document.getElementById('modeLabel').style.display = 'block'; // Show the "Mode:" label
         document.getElementById('splatoonMode').textContent = vsMode.name;
         document.getElementById('splatoonInfo').style.display = 'block'; // Show Splatoon 3 info
     }
