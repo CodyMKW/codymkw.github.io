@@ -113,6 +113,7 @@
     <div id="gameInfo">
         <p><span id="gameName"></span></p>
         <p><small><span id="sysDescription"></span></small></p>
+        <p><small><span id="subText"></span></small></p>
         <p><img id="gameImage" alt="Game Image"></p>
         <p><strong>Title ID:</strong> <span id="gameID"></span></p>
         <!-- Display Splatoon 3 info only when playing Splatoon 3 -->
@@ -187,25 +188,27 @@ if (data.title !== null) {
         // Apply the special effect class
         document.getElementById('gameInfo').classList.add('special-effect');
         // Display subtext for Animal Crossing
-        const subtextContainer = document.getElementById('sysDescription');
+        const subtextContainer = document.getElementById('subText');
 
             // Choose subtext based on the value from the JSON file
             switch (acnhSubtext) {
                 case 1:
                     subtextContainer.textContent = 'Playing Online';
+                    document.getElementById('subText').style.display = 'block';
                     break;
                 case 2:
                     subtextContainer.textContent = 'Designing some Vacation Homes';
+                    document.getElementById('subText').style.display = 'block';
                     break;
                 default:
                     // If subtext is 0 or undefined, clear the subtext
-                    subtextContainer.textContent = '';
+                    document.getElementById('subText').style.display = 'none';
                     break;
             }
     } else {
         // Remove the special effect class if not playing Animal Crossing
         document.getElementById('gameInfo').classList.remove('special-effect');
-        document.getElementById('sysDescription').textContent = '';
+        document.getElementById('subText').style.display = 'none';
     }
     document.getElementById('sysDescription').textContent = data.friend.presence.game.sysDescription;
     document.getElementById('gameImage').src = data.title.image_url;
