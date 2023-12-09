@@ -21,91 +21,91 @@
     <meta name="twitter:description" content="See what I'm currently playing at the moment!" />
     <meta name="twitter:image:src" content="https://nxapi-presence.fancy.org.uk/api/presence/resources/baas/1/3be92e8430027be9.jpeg" />
 
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #2c2c2c;
-            color: #fff;
-            text-align: center;
-            margin: 20px;
-        }
-
-        h1 {
-            color: #00C900;
-        }
-
-        #gameInfo {
-            background-color: #363636;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
-            max-width: 400px;
-            margin: 0 auto 15px; /* Added margin-bottom to create space */
-        }
-        
-        #onlineStatusContainer {
-            background-color: #363636;
-            border-radius: 10px;
-            padding: 5px;
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
-            max-width: 400px;
-            margin: 15px auto 0; /* Added margin-top to create space */
-        }
-
-        img#gameImage {
-            max-width: 70%; /* Adjust the size as needed */
-            border-radius: 5px;
-            margin-top: 10px;
-        }
-        
-        img#avatarImage {
-            width: 150px;
-            height: 150px;
-            border-radius: 5px;
-            margin-top: 10px;
-        }
-
-        a {
-            color: #00C900;
-            text-decoration: none;
-        }
-
-        a:hover {
-           color: #008a00;
-        }
-
-        /* Add styles for online status */
-        span#onlineStatus {
-            font-weight: bold;
-        }
-
-        .online {
-            color: #4caf50; /* Green color for "Online" */
-        }
-
-        .offline {
-            color: #ff4436; /* Red color for "Offline" */
-        }
-        .inactive {
-            color: yellow; /* Yellow color for "Inactive" */
-        }
-        span#gameName {
-            font-weight: bold;
-        }
-/* Add a special effect for Animal Crossing */
-#gameInfo.special-effect {
-    animation: pulse 1s infinite alternate;
-}
-
-@keyframes pulse {
-    from {
-        box-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+<style>
+    body {
+        font-family: 'Comic Sans MS', cursive; /* Because why not be playful? */
+        background-color: #333; /* Dark background */
+        color: #fff; /* White text */
+        text-align: center;
+        margin: 20px;
     }
-    to {
-        box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+
+    h1 {
+        color: #FF4081; /* Pink heading */
     }
-}
-    </style>
+
+    #gameInfo {
+        background-color: #424242; /* Dark gray background */
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+        max-width: 400px;
+        margin: 0 auto 15px; /* Added margin-bottom to create space */
+    }
+
+    #onlineStatusContainer {
+        background-color: #616161; /* Gray background */
+        border-radius: 10px;
+        padding: 5px;
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+        max-width: 400px;
+        margin: 15px auto 0; /* Added margin-top to create space */
+    }
+
+    img#gameImage {
+        max-width: 70%; /* Adjust the size as needed */
+        border-radius: 5px;
+        margin-top: 10px;
+    }
+
+    img#avatarImage {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%; /* Circular avatar */
+        margin-top: 10px;
+    }
+
+    a {
+        color: #64B5F6; /* Blue link color */
+        text-decoration: none;
+    }
+
+    a:hover {
+        color: #42A5F5; /* Darker blue on hover */
+    }
+
+    /* Add styles for online status */
+    span#onlineStatus {
+        font-weight: bold;
+    }
+
+    .online {
+        color: #4caf50; /* Green color for "Online" */
+    }
+
+    .offline {
+        color: #ff4436; /* Red color for "Offline" */
+    }
+    .inactive {
+        color: #FFC107; /* Amber color for "Inactive" */
+    }
+    span#gameName {
+        font-weight: bold;
+    }
+    /* Add a subtle pulsating effect for fun */
+    #gameInfo.special-effect {
+        animation: pulse 1s infinite alternate;
+    }
+
+    @keyframes pulse {
+        from {
+            box-shadow: 0 0 10px rgba(255, 64, 129, 0.8);
+        }
+        to {
+            box-shadow: 0 0 20px rgba(255, 64, 129, 0.4);
+        }
+    }
+</style>
 </head>
 <body>
     <h1><img id="avatarImage" alt="Avatar Image"></h1>
@@ -199,6 +199,17 @@ if (data.title !== null) {
        // Display time playing now
         const sinceTimestamp = new Date(data.title.since).getTime();
         updatePlayingTime(sinceTimestamp);
+        
+    // Update metadata description with game name and total playtime (even when not playing a game)
+    const metaDescription = `Currently playing: ${data.title.name}. Total playtime: ${totalPlayTimeHours} hours and ${totalPlayTimeMinutes} minutes.`;
+    document.querySelector('meta[name="description"]').setAttribute('content', metaDescription);
+    // Update Twitter description
+    const twitterDescription = `Currently playing: ${data.title.name}. Total playtime: ${totalPlayTimeHours} hours and ${totalPlayTimeMinutes} minutes.`;
+    document.querySelector('meta[name="twitter:description"]').setAttribute('content', twitterDescription);
+    // Update OG description
+    const ogDescription = `Currently playing: ${data.title.name}. Total playtime: ${totalPlayTimeHours} hours and ${totalPlayTimeMinutes} minutes.`;
+    document.querySelector('meta[property="og:description"]').setAttribute('content', ogDescription);
+
     
 // Display additional Splatoon 3 info
 if (data.splatoon3) {
@@ -246,6 +257,18 @@ if (data.splatoon3) {
     document.getElementById('gameInfo').style.display = 'none'; // Hide gameInfo div
     document.getElementById('splatoonInfo').style.display = 'none'; // Hide Splatoon 3 info
     document.getElementById('salmonRunInfo').style.display = 'none'; // Hide Salmon Run info
+    
+    // Update metadata description when not playing a game
+    const metaDescription = "Not currently playing a game.";
+    document.querySelector('meta[name="description"]').setAttribute('content', metaDescription);
+    
+    // Update Twitter description when not playing a game
+    const twitterNoGameDescription = "Not currently playing a game.";
+    document.querySelector('meta[name="twitter:description"]').setAttribute('content', twitterNoGameDescription);
+
+    // Update OG description when not playing a game
+    const ogNoGameDescription = "Not currently playing a game.";
+    document.querySelector('meta[property="og:description"]').setAttribute('content', ogNoGameDescription);
 }
     } catch (error) {
         console.error('Error fetching data:', error);
