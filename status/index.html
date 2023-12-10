@@ -148,11 +148,11 @@ async function fetchData() {
         const response = await fetch('https://nxapi-presence.fancy.org.uk/api/presence/644cd5195d154bd5?include-splatoon3=1');
         const data = await response.json();
         // Fetch the additional JSON file
-        const subtextResponse = await fetch('https://api.npoint.io/f96cb06703bad4f850de');
+        const subtextResponse = await fetch('https://api.npoint.io/68df3743c41bd43390e7');
         const subtextData = await subtextResponse.json();
 
         // Update HTML with fetched subtext data
-        const acnhSubtext = subtextData.acnh.subtext;
+        const gamesSubtext = subtextData.acnh.subtext;
 
         // Update HTML with fetched data
         document.getElementById('avatarImage').src = data.friend.imageUri;
@@ -184,14 +184,14 @@ if (data.title !== null) {
     document.getElementById('gameInfo').style.display = 'block'; // Show gameInfo div
     document.getElementById('gameName').textContent = data.title.name;
     // Check if playing Animal Crossing: New Horizons
-    if (data.title.id === '01006f8002326000' && acnhSubtext !== undefined) {
+    if (data.title.id === '01006f8002326000' && gamesSubtext !== undefined) {
         // Apply the special effect class
         document.getElementById('gameInfo').classList.add('special-effect');
         // Display subtext for Animal Crossing
         const subtextContainer = document.getElementById('subText');
 
             // Choose subtext based on the value from the JSON file
-            switch (acnhSubtext) {
+            switch (gamesSubtext) {
                 case 1:
                     subtextContainer.textContent = 'Playing Online';
                     document.getElementById('subText').style.display = 'block';
