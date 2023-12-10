@@ -148,7 +148,7 @@ async function fetchData() {
         const response = await fetch('https://nxapi-presence.fancy.org.uk/api/presence/644cd5195d154bd5?include-splatoon3=1');
         const data = await response.json();
         // Fetch the additional JSON file
-        const subtextResponse = await fetch('/status/acnhsubtext.json');
+        const subtextResponse = await fetch('https://api.npoint.io/1b9a76ed5c352db07518');
         const subtextData = await subtextResponse.json();
 
         // Update HTML with fetched subtext data
