@@ -113,6 +113,7 @@
     <div id="gameInfo">
         <p><span id="gameName"></span></p>
         <p><small><span id="sysDescription"></span></small></p>
+        <p><small><span id="subText"></span></small></p>
         <p><img id="gameImage" alt="Game Image"></p>
         <p><strong>Title ID:</strong> <span id="gameID"></span></p>
         <!-- Display Splatoon 3 info only when playing Splatoon 3 -->
@@ -146,6 +147,12 @@ async function fetchData() {
     try {
         const response = await fetch('https://nxapi-presence.fancy.org.uk/api/presence/644cd5195d154bd5?include-splatoon3=1');
         const data = await response.json();
+        // Fetch the additional JSON file
+        const subtextResponse = await fetch('/status/acnhsubtext.json');
+        const subtextData = await subtextResponse.json();
+
+        // Update HTML with fetched subtext data
+        const acnhSubtext = subtextData.acnh.subtext;
 
         // Update HTML with fetched data
         document.getElementById('avatarImage').src = data.friend.imageUri;
@@ -177,12 +184,31 @@ if (data.title !== null) {
     document.getElementById('gameInfo').style.display = 'block'; // Show gameInfo div
     document.getElementById('gameName').textContent = data.title.name;
     // Check if playing Animal Crossing: New Horizons
-    if (data.title.id === '01006f8002326000') {
+    if (data.title.id === '01006f8002326000' && acnhSubtext !== undefined) {
         // Apply the special effect class
         document.getElementById('gameInfo').classList.add('special-effect');
+        // Display subtext for Animal Crossing
+        const subtextContainer = document.getElementById('subText');
+
+            // Choose subtext based on the value from the JSON file
+            switch (acnhSubtext) {
+                case 1:
+                    subtextContainer.textContent = 'Playing Online';
+                    document.getElementById('subText').style.display = 'block';
+                    break;
+                case 2:
+                    subtextContainer.textContent = 'Designing some Vacation Homes';
+                    document.getElementById('subText').style.display = 'block';
+                    break;
+                default:
+                    // If subtext is 0 or undefined, clear the subtext
+                    document.getElementById('subText').style.display = 'none';
+                    break;
+            }
     } else {
         // Remove the special effect class if not playing Animal Crossing
         document.getElementById('gameInfo').classList.remove('special-effect');
+        document.getElementById('subText').style.display = 'none';
     }
     document.getElementById('sysDescription').textContent = data.friend.presence.game.sysDescription;
     document.getElementById('gameImage').src = data.title.image_url;
