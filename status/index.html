@@ -152,7 +152,7 @@ async function fetchData() {
         const subtextData = await subtextResponse.json();
 
         // Update HTML with fetched subtext data
-        const gamesSubtext = subtextData.acnh.subtext;
+        const acnhSubtext = subtextData.games.acnh.subtext;
 
         // Update HTML with fetched data
         document.getElementById('avatarImage').src = data.friend.imageUri;
@@ -184,14 +184,14 @@ if (data.title !== null) {
     document.getElementById('gameInfo').style.display = 'block'; // Show gameInfo div
     document.getElementById('gameName').textContent = data.title.name;
     // Check if playing Animal Crossing: New Horizons
-    if (data.title.id === '01006f8002326000' && gamesSubtext !== undefined) {
+    if (data.title.id === '01006f8002326000' && acnhSubtext !== undefined) {
         // Apply the special effect class
         document.getElementById('gameInfo').classList.add('special-effect');
         // Display subtext for Animal Crossing
         const subtextContainer = document.getElementById('subText');
 
             // Choose subtext based on the value from the JSON file
-            switch (gamesSubtext) {
+            switch (acnhSubtext) {
                 case 1:
                     subtextContainer.textContent = 'Playing Online';
                     document.getElementById('subText').style.display = 'block';
