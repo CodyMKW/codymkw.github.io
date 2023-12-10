@@ -212,7 +212,7 @@ if (data.title !== null) {
         document.getElementById('subText').style.display = 'none';
     }
     // Check if playing Fortnite
-    else if (data.title.id === '010025400aece000' && fortSubtext !== undefined) {
+    if (data.title.id === '010025400aece000' && fortSubtext !== undefined) {
         // Apply the special effect class
         document.getElementById('gameInfo').classList.add('special-effect');
         // Display subtext for Fortnite
