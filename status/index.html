@@ -152,7 +152,8 @@ async function fetchData() {
         const subtextData = await subtextResponse.json();
 
         // Update HTML with fetched subtext data
-        const acnhSubtext = subtextData.acnh.subtext;
+        const acnhSubtext = subtextData.games.acnh.subtext;
+        const fortSubtext = subtextData.games.fort.subtext;
 
         // Update HTML with fetched data
         document.getElementById('avatarImage').src = data.friend.imageUri;
@@ -183,33 +184,61 @@ if (onlineStatusText === 'offline') {
 if (data.title !== null) {
     document.getElementById('gameInfo').style.display = 'block'; // Show gameInfo div
     document.getElementById('gameName').textContent = data.title.name;
-    // Check if playing Animal Crossing: New Horizons
-    if (data.title.id === '01006f8002326000' && acnhSubtext !== undefined) {
-        // Apply the special effect class
-        document.getElementById('gameInfo').classList.add('special-effect');
-        // Display subtext for Animal Crossing
-        const subtextContainer = document.getElementById('subText');
+// Check if playing Animal Crossing: New Horizons
+if (data.title.id === '01006f8002326000' && acnhSubtext !== undefined) {
+    // Apply the special effect class
+    document.getElementById('gameInfo').classList.add('special-effect');
+    // Display subtext for Animal Crossing
+    const subtextContainer = document.getElementById('subText');
 
-            // Choose subtext based on the value from the JSON file
-            switch (acnhSubtext) {
-                case 1:
-                    subtextContainer.textContent = 'Playing Online';
-                    document.getElementById('subText').style.display = 'block';
-                    break;
-                case 2:
-                    subtextContainer.textContent = 'Designing some Vacation Homes';
-                    document.getElementById('subText').style.display = 'block';
-                    break;
-                default:
-                    // If subtext is 0 or undefined, clear the subtext
-                    document.getElementById('subText').style.display = 'none';
-                    break;
-            }
-    } else {
-        // Remove the special effect class if not playing Animal Crossing
-        document.getElementById('gameInfo').classList.remove('special-effect');
-        document.getElementById('subText').style.display = 'none';
+    // Choose subtext based on the value from the JSON file
+    switch (acnhSubtext) {
+        case 1:
+            subtextContainer.textContent = 'Playing Online';
+            subtextContainer.style.display = 'block';
+            break;
+        case 2:
+            subtextContainer.textContent = 'Designing some Vacation Homes';
+            subtextContainer.style.display = 'block';
+            break;
+        default:
+            // If subtext is 0 or undefined, clear the subtext
+            subtextContainer.style.display = 'none';
+            break;
     }
+} else if (data.title.id === '010025400aece000' && fortSubtext !== undefined) {
+    // Check if playing Fortnite
+    // Display subtext for Fortnite
+    const subtextContainer = document.getElementById('subText');
+
+    // Choose subtext based on the value from the JSON file
+    switch (fortSubtext) {
+        case 1:
+            subtextContainer.textContent = 'Playing some Zero Build';
+            subtextContainer.style.display = 'block';
+            break;
+        case 2:
+            subtextContainer.textContent = 'Playing around in Creative';
+            subtextContainer.style.display = 'block';
+            break;
+        case 3:
+            subtextContainer.textContent = 'Tearing up the track in Rocket Racing';
+            subtextContainer.style.display = 'block';
+            break;
+        case 4:
+            subtextContainer.textContent = 'Playing with some legos in Lego Fortnite';
+            subtextContainer.style.display = 'block';
+            break;
+        default:
+            // If subtext is 0 or undefined, clear the subtext
+            subtextContainer.style.display = 'none';
+            break;
+    }
+} else {
+    // Remove the special effect class if not playing Animal Crossing or Fortnite
+    document.getElementById('gameInfo').classList.remove('special-effect');
+    document.getElementById('subText').style.display = 'none';
+}
     document.getElementById('sysDescription').textContent = data.friend.presence.game.sysDescription;
     document.getElementById('gameImage').src = data.title.image_url;
     document.getElementById('gameID').textContent = data.title.id;
