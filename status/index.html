@@ -153,6 +153,7 @@ async function fetchData() {
 
         // Update HTML with fetched subtext data
         const acnhSubtext = subtextData.games.acnh.subtext;
+        const fortSubtext = subtextData.games.fort.subtext;
 
         // Update HTML with fetched data
         document.getElementById('avatarImage').src = data.friend.imageUri;
@@ -198,6 +199,41 @@ if (data.title !== null) {
                     break;
                 case 2:
                     subtextContainer.textContent = 'Designing some Vacation Homes';
+                    document.getElementById('subText').style.display = 'block';
+                    break;
+                default:
+                    // If subtext is 0 or undefined, clear the subtext
+                    document.getElementById('subText').style.display = 'none';
+                    break;
+            }
+    } else {
+        // Remove the special effect class if not playing Animal Crossing
+        document.getElementById('gameInfo').classList.remove('special-effect');
+        document.getElementById('subText').style.display = 'none';
+    }
+    // Check if playing Fortnite
+    if (data.title.id === '010025400aece000' && fortSubtext !== undefined) {
+        // Apply the special effect class
+        document.getElementById('gameInfo').classList.add('special-effect');
+        // Display subtext for Fortnite
+        const subtextContainer = document.getElementById('subText');
+
+            // Choose subtext based on the value from the JSON file
+            switch (fortSubtext) {
+                case 1:
+                    subtextContainer.textContent = 'Playing some Zero Build';
+                    document.getElementById('subText').style.display = 'block';
+                    break;
+                case 2:
+                    subtextContainer.textContent = 'Playing around in Creative';
+                    document.getElementById('subText').style.display = 'block';
+                    break;
+                case 3:
+                    subtextContainer.textContent = 'Tearing up the track in Rocket Racing';
+                    document.getElementById('subText').style.display = 'block';
+                    break;
+                case 4:
+                    subtextContainer.textContent = 'Playing with some legos in Lego Fortnite';
                     document.getElementById('subText').style.display = 'block';
                     break;
                 default:
