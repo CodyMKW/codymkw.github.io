@@ -153,7 +153,7 @@ async function fetchData() {
 
         // Update HTML with fetched subtext data
         const acnhSubtext = subtextData.acnh.subtext;
-        const fortSubtext = subtextData.fort.subtext;
+        const fortSubtext = subtextData.fort ? subtextData.fort.subtext : undefined;
 
         // Update HTML with fetched data
         document.getElementById('avatarImage').src = data.friend.imageUri;
