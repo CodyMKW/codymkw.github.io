@@ -154,6 +154,7 @@ async function fetchData() {
         // Update HTML with fetched subtext data
         const acnhSubtext = subtextData.games.acnh.subtext;
         const fortSubtext = subtextData.games.fort.subtext;
+        const mhurSubtext = subtextData.games.mhur.subtext;
 
         // Update HTML with fetched data
         document.getElementById('avatarImage').src = data.friend.imageUri;
@@ -234,8 +235,36 @@ if (data.title.id === '01006f8002326000' && acnhSubtext !== undefined) {
             subtextContainer.style.display = 'none';
             break;
     }
+} else if (data.title.id === '0100ba6013f0e000' && mhurSubtext !== undefined) {
+    // Check if playing My Hero Ultra Rumble
+    // Display subtext for My Hero Ultra Rumble
+    const subtextContainer = document.getElementById('subText');
+
+    // Choose subtext based on the value from the JSON file
+    switch (mhurSubtext) {
+        case 1:
+            subtextContainer.textContent = 'Battling it out in Unranked Battle';
+            subtextContainer.style.display = 'block';
+            break;
+        case 2:
+            subtextContainer.textContent = 'Aiming for the top in Ranked Battle';
+            subtextContainer.style.display = 'block';
+            break;
+        case 3:
+            subtextContainer.textContent = 'Warming up in a CPU Battle';
+            subtextContainer.style.display = 'block';
+            break;
+        case 4:
+            subtextContainer.textContent = 'Learning the controls in the Tutorial';
+            subtextContainer.style.display = 'block';
+            break;
+        default:
+            // If subtext is 0 or undefined, clear the subtext
+            subtextContainer.style.display = 'none';
+            break;
+    }
 } else {
-    // Remove the special effect class if not playing Animal Crossing or Fortnite
+    // Remove the special effect class if not playing Animal Crossing, My Hero Ultra Rumble, or Fortnite
     document.getElementById('gameInfo').classList.remove('special-effect');
     document.getElementById('subText').style.display = 'none';
 }
