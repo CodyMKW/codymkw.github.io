@@ -153,7 +153,6 @@ async function fetchData() {
 
         // Update HTML with fetched subtext data
         const acnhSubtext = subtextData.acnh.subtext;
-        const fortSubtext = subtextData.fort ? subtextData.fort.subtext : undefined;
 
         // Update HTML with fetched data
         document.getElementById('avatarImage').src = data.friend.imageUri;
@@ -209,38 +208,6 @@ if (data.title !== null) {
     } else {
         // Remove the special effect class if not playing Animal Crossing
         document.getElementById('gameInfo').classList.remove('special-effect');
-        document.getElementById('subText').style.display = 'none';
-    }
-    // Check if playing Fortnite
-    if (data.title.id === '010025400aece000' && fortSubtext !== undefined) {
-        // Display subtext for Fortnite
-        const subtextContainer = document.getElementById('subText');
-
-            // Choose subtext based on the value from the JSON file
-            switch (fortSubtext) {
-                case 1:
-                    subtextContainer.textContent = 'Playing some Zero Build';
-                    document.getElementById('subText').style.display = 'block';
-                    break;
-                case 2:
-                    subtextContainer.textContent = 'Playing Creative';
-                    document.getElementById('subText').style.display = 'block';
-                    break;
-                case 3:
-                    subtextContainer.textContent = 'Playing Rocket Racing';
-                    document.getElementById('subText').style.display = 'block';
-                    break;
-                case 4:
-                    subtextContainer.textContent = 'Playing Lego Fortnite';
-                    document.getElementById('subText').style.display = 'block';
-                    break;
-                default:
-                    // If subtext is 0 or undefined, clear the subtext
-                    document.getElementById('subText').style.display = 'none';
-                    break;
-            }
-    } else {
-        // Remove subtext if not playing Fortnite
         document.getElementById('subText').style.display = 'none';
     }
     document.getElementById('sysDescription').textContent = data.friend.presence.game.sysDescription;
