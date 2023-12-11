@@ -108,7 +108,7 @@
 </style>
 </head>
 <body>
-    <h1><img id="avatarImage" alt="Cody's Nintendo Switch Profile Icon"></h1>
+    <h1><img id="avatarImage" alt="Nintendo Switch Profile Icon"></h1>
     <h1><span id="playerName"></span></h1>
     <div id="gameInfo">
         <p><span id="gameName"></span></p>
@@ -159,7 +159,6 @@ async function fetchData() {
         // Update HTML with fetched data
         document.getElementById('avatarImage').src = data.friend.imageUri;
         document.getElementById('playerName').textContent = data.friend.name;
-        document.getElementById('gameImage').src = data.title.image_url;
         document.getElementById('gameImage').alt = `Currently Playing: ${data.title.name}`; // Set alt text dynamically
 
         const onlineStatusElement = document.getElementById('onlineStatus');
