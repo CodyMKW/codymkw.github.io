@@ -23,11 +23,6 @@ fetch(' https://api.npoint.io/1c8c00be23c0d17cd8b5')
   })
   .catch(error => console.error('Error fetching JSON:', error));
  
- // Sort games based on playtime in descending order
- gamesData.sort(function (a, b) {
-   return b.playtime - a.playtime;
- });
- 
  // Function to generate the HTML for the cover art image
  function generateCoverArtHTML(imageUrl, altText) {
    return '<img src="' + imageUrl + '" alt="' + altText + '" class="game-cover">';
