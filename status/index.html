@@ -159,7 +159,6 @@ async function fetchData() {
         // Update HTML with fetched data
         document.getElementById('avatarImage').src = data.friend.imageUri;
         document.getElementById('playerName').textContent = data.friend.name;
-        document.getElementById('gameImage').alt = `Currently Playing: ${data.title.name}`; // Set alt text dynamically
 
         const onlineStatusElement = document.getElementById('onlineStatus');
         const onlineStatusText = data.friend.presence.state.toLowerCase();
