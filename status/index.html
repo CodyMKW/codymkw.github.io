@@ -154,6 +154,7 @@
     </div>
     <!-- Display Salmon Run info -->
     <div id="salmonRunInfo" style="display: none;">
+        <p id="SRmodeLabel" style="display: none;"><strong>Mode:</strong> <span id="splatoonSRMode"></span></p>
         <p><strong>Current Stage:</strong> <span id="salmonRunStage"></span></p>
         <p><strong>Current Weapons:</strong> <span id="salmonRunWeapons"></span></p>
     </div>
@@ -329,7 +330,7 @@ if (data.title.id === '01006f8002326000' && acnhSubtext !== undefined) {
 
     
 // Display additional Splatoon 3 info
-if (data.splatoon3 && data.splatoon3.onlineState !== 'MINI_GAME_PLAYING') {
+if (data.splatoon3) {
     const vsMode = data.splatoon3.vsMode;
     const vsSetting = data.splatoon3_vs_setting;
     const onlineState = data.splatoon3.onlineState;
@@ -357,8 +358,8 @@ if (data.splatoon3 && data.splatoon3.onlineState !== 'MINI_GAME_PLAYING') {
     // Display additional Salmon Run info
     const salmonRunInfo = data.splatoon3_coop_setting;
     if (salmonRunInfo) {
-        document.getElementById('splatoonInfo').style.display = 'block'; // Show Splatoon 3 info
-        document.getElementById('splatoonMode').textContent = 'Salmon Run';
+        document.getElementById('splatoonInfo').style.display = 'none'; // Hide Splatoon 3 info
+        document.getElementById('splatoonSRMode').textContent = 'Salmon Run';
 
         // Update Salmon Run stage
         const salmonRunStage = salmonRunInfo.coopStage.name;
