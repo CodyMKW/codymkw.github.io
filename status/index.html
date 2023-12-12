@@ -329,7 +329,7 @@ if (data.title.id === '01006f8002326000' && acnhSubtext !== undefined) {
 
     
 // Display additional Splatoon 3 info
-if (data.splatoon3) {
+if (data.splatoon3 && data.splatoon3.onlineState !== 'MINI_GAME_PLAYING') {
     const vsMode = data.splatoon3.vsMode;
     const vsSetting = data.splatoon3_vs_setting;
     const onlineState = data.splatoon3.onlineState;
