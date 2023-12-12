@@ -335,7 +335,7 @@ if (data.splatoon3) {
     const vsMode = data.splatoon3.vsMode;
     const vsSetting = data.splatoon3_vs_setting;
     const onlineState = data.splatoon3.onlineState;
-
+        
     // Display mode name only when playing a mode
     if (vsMode && vsMode.name !== 'N/A') {
         document.getElementById('modeLabel').style.display = 'block'; // Show the "Mode:" label
@@ -355,6 +355,17 @@ if (data.splatoon3) {
         const stageNames = vsSetting.vsStages.map(stage => stage.name).join(' and ');
         document.getElementById('splatoonStages').textContent = stageNames;
     }
+
+        // Mode name colors
+    if (vsMode.name !== 'Tableturf Battle') {
+        document.getElementById('splatoonMode').style.color = '#64B5F6';
+    } else if (vsMode.name !== 'Private Battle') {
+        document.getElementById('splatoonMode').style.color = '#9C27B0';
+    } else if (vsMode.name !== 'Regular Battle') {
+        document.getElementById('splatoonMode').style.color = '#4CAF50';
+    } else if (vsMode.name !== 'Anarchy Battle') {
+        document.getElementById('splatoonMode').style.color = '#FF9800';
+    } 
 }
     // Display additional Salmon Run info
     const salmonRunInfo = data.splatoon3_coop_setting;
@@ -366,6 +377,11 @@ if (data.splatoon3) {
         // Update Salmon Run stage
         const salmonRunStage = salmonRunInfo.coopStage.name;
         document.getElementById('salmonRunStage').textContent = salmonRunStage;
+
+        // SR Mode name color
+    if (salmonRunStage.name !== 'Salmon Run') {
+        document.getElementById('splatoonSRMode').style.color = '#FFCC80';
+    }
 
         // Update Salmon Run weapons
         const salmonRunWeapons = salmonRunInfo.weapons.map(weapon => weapon.name).join(', ');
