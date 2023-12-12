@@ -43,6 +43,31 @@
         margin: 0 auto 15px; /* Added margin-bottom to create space */
     }
 
+#splatoonInfo,
+#salmonRunInfo {
+    background-color: #424242; /* Dark gray background */
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+    max-width: 400px;
+    margin: 15px auto 0; /* Adjust margin as needed */
+    display: none; /* Hide by default */
+}
+
+/* Additional styling for Splatoon 3 info */
+#splatoonMode,
+#splatoonStagesLabel {
+    font-weight: bold;
+    color: #FF4081; /* Pink color for Splatoon info */
+}
+
+/* Additional styling for Salmon Run info */
+#salmonRunStage,
+#salmonRunWeapons {
+    font-weight: bold;
+    color: #64B5F6; /* Blue color for Salmon Run info */
+}
+
     #onlineStatusContainer {
         background-color: #4e4e4e; /* Gray background */
         border-radius: 10px;
@@ -116,17 +141,17 @@
         <p><small><span id="subText"></span></small></p>
         <p><img id="gameImage" alt="Game Image"></p>
         <p><strong>Title ID:</strong> <span id="gameID"></span></p>
-        <!-- Display Splatoon 3 info only when playing Splatoon 3 -->
-        <div id="splatoonInfo" style="display: none;">
-            <p id="modeLabel" style="display: none;"><strong>Mode:</strong> <span id="splatoonMode"></span></p>
-            <!-- Display "Stages" only when not playing Salmon Run -->
-            <p id="splatoonStagesLabel" style="display: none;"><strong>Stages:</strong> <span id="splatoonStages"></span></p>
-        </div>
-        <!-- Display Salmon Run info -->
-        <div id="salmonRunInfo" style="display: none;">
-           <p><strong>Current Stage:</strong> <span id="salmonRunStage"></span></p>
-           <p><strong>Current Weapons:</strong> <span id="salmonRunWeapons"></span></p>
-        </div>
+    <!-- Display additional Splatoon 3 info -->
+    <div id="splatoonInfo" style="display: none;">
+        <p id="modeLabel" style="display: none;"><strong>Mode:</strong> <span id="splatoonMode"></span></p>
+        <!-- Display "Stages" only when not playing Salmon Run -->
+        <p id="splatoonStagesLabel" style="display: none;"><strong>Stages:</strong> <span id="splatoonStages"></span></p>
+    </div>
+    <!-- Display Salmon Run info -->
+    <div id="salmonRunInfo" style="display: none;">
+        <p><strong>Current Stage:</strong> <span id="salmonRunStage"></span></p>
+        <p><strong>Current Weapons:</strong> <span id="salmonRunWeapons"></span></p>
+    </div>
         <p><strong>Time Playing Now:</strong> <span id="timePlayingNow"></span></p>
         <p><strong>Total Play Time:</strong> <span id="totalPlayTime"></span></p>
         <p><strong>Time First Played:</strong> <span id="firstPlayedTime"></span></p>
