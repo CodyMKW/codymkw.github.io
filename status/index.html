@@ -356,16 +356,26 @@ if (data.splatoon3) {
         document.getElementById('splatoonStages').textContent = stageNames;
     }
 
-        // Mode name colors
-    if (vsMode.name !== 'Tableturf Battle') {
-        document.getElementById('splatoonMode').style.color = '#64B5F6';
-    } else if (vsMode.name !== 'Private Battle') {
-        document.getElementById('splatoonMode').style.color = '#9C27B0';
-    } else if (vsMode.name !== 'Regular Battle') {
-        document.getElementById('splatoonMode').style.color = '#4CAF50';
-    } else if (vsMode.name !== 'Anarchy Battle') {
-        document.getElementById('splatoonMode').style.color = '#FF9800';
-    } 
+// Mode name colors for Splatoon 3
+const splatoonModeElement = document.getElementById('splatoonMode');
+switch (vsMode.name) {
+    case 'Tableturf Battle':
+        splatoonModeElement.style.color = '#64B5F6';
+        break;
+    case 'Private Battle':
+        splatoonModeElement.style.color = '#9C27B0';
+        break;
+    case 'Regular Battle':
+        splatoonModeElement.style.color = '#4CAF50';
+        break;
+    case 'Anarchy Battle':
+        splatoonModeElement.style.color = '#FF9800';
+        break;
+    default:
+        // Set a default color if the mode name doesn't match any case
+        splatoonModeElement.style.color = '#FFFFFF'; // Choose the desired default color
+        break;
+}
 }
     // Display additional Salmon Run info
     const salmonRunInfo = data.splatoon3_coop_setting;
@@ -378,10 +388,14 @@ if (data.splatoon3) {
         const salmonRunStage = salmonRunInfo.coopStage.name;
         document.getElementById('salmonRunStage').textContent = salmonRunStage;
 
-        // SR Mode name color
-    if (salmonRunStage.name !== 'Salmon Run') {
-        document.getElementById('splatoonSRMode').style.color = '#FFCC80';
-    }
+// SR Mode name color
+const splatoonSRModeElement = document.getElementById('splatoonSRMode');
+if (salmonRunStage.name !== 'Salmon Run') {
+    splatoonSRModeElement.style.color = '#FFCC80';
+} else {
+    // Set a default color if the mode name is 'Salmon Run'
+    splatoonSRModeElement.style.color = '#FFFFFF'; // Choose the desired default color
+}
 
         // Update Salmon Run weapons
         const salmonRunWeapons = salmonRunInfo.weapons.map(weapon => weapon.name).join(', ');
