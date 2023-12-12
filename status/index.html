@@ -43,6 +43,16 @@
         margin: 0 auto 15px; /* Added margin-bottom to create space */
     }
 
+#splatoonInfo,
+#salmonRunInfo {
+    background-color: #424242; /* Dark gray background */
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+    max-width: 400px;
+    margin: 15px auto 0; /* Adjust margin as needed */
+    display: none; /* Hide by default */
+}
     #onlineStatusContainer {
         background-color: #4e4e4e; /* Gray background */
         border-radius: 10px;
@@ -116,21 +126,23 @@
         <p><small><span id="subText"></span></small></p>
         <p><img id="gameImage" alt="Game Image"></p>
         <p><strong>Title ID:</strong> <span id="gameID"></span></p>
-        <!-- Display Splatoon 3 info only when playing Splatoon 3 -->
-        <div id="splatoonInfo" style="display: none;">
-            <p id="modeLabel" style="display: none;"><strong>Mode:</strong> <span id="splatoonMode"></span></p>
-            <!-- Display "Stages" only when not playing Salmon Run -->
-            <p id="splatoonStagesLabel" style="display: none;"><strong>Stages:</strong> <span id="splatoonStages"></span></p>
-        </div>
-        <!-- Display Salmon Run info -->
-        <div id="salmonRunInfo" style="display: none;">
-           <p><strong>Current Stage:</strong> <span id="salmonRunStage"></span></p>
-           <p><strong>Current Weapons:</strong> <span id="salmonRunWeapons"></span></p>
-        </div>
         <p><strong>Time Playing Now:</strong> <span id="timePlayingNow"></span></p>
         <p><strong>Total Play Time:</strong> <span id="totalPlayTime"></span></p>
         <p><strong>Time First Played:</strong> <span id="firstPlayedTime"></span></p>
         <p><strong>Get the game:</strong> <a id="gameShopLink" href="#" target="_blank">Visit eShop Page</a></p>
+    </div>
+    <!-- Display additional Splatoon 3 info -->
+    <div id="splatoonInfo" style="display: none;">
+        <p id="modeLabel" style="display: none;"><strong>Mode:</strong> <span id="splatoonMode"></span></p>
+        <!-- Display "Stages" only when not playing Salmon Run -->
+        <p id="splatoonStagesLabel" style="display: none;"><strong>Stages:</strong> <span id="splatoonStages"></span></p>
+    </div>
+    <!-- Display Salmon Run info -->
+    <div id="salmonRunInfo" style="display: none;">
+        <p id="SRmodeLabel" style="display: none;"><strong>Mode:</strong> <span id="splatoonSRMode"></span></p>
+        <p><strong>Current Stage:</strong> <span id="salmonRunStage"></span></p>
+        <p><strong>Current Boss:</strong> <span id="salmonRunBoss"></span></p>
+        <p><strong>Current Weapons:</strong> <span id="salmonRunWeapons"></span></p>
     </div>
     <div id="onlineStatusContainer">
         <p><strong>Online Status:</strong> <span id="onlineStatus"></span></p>
@@ -308,7 +320,7 @@ if (data.splatoon3) {
     const vsMode = data.splatoon3.vsMode;
     const vsSetting = data.splatoon3_vs_setting;
     const onlineState = data.splatoon3.onlineState;
-
+        
     // Display mode name only when playing a mode
     if (vsMode && vsMode.name !== 'N/A') {
         document.getElementById('modeLabel').style.display = 'block'; // Show the "Mode:" label
@@ -328,16 +340,54 @@ if (data.splatoon3) {
         const stageNames = vsSetting.vsStages.map(stage => stage.name).join(' and ');
         document.getElementById('splatoonStages').textContent = stageNames;
     }
+
+// Mode name colors for Splatoon 3
+const splatoonModeElement = document.getElementById('splatoonMode');
+if (vsMode && vsMode.name) {
+    switch (vsMode.name) {
+        case 'Tableturf Battle':
+            splatoonModeElement.style.color = '#0534a3';
+            break;
+        case 'Private Battle':
+            splatoonModeElement.style.color = '#c21786';
+            break;
+        case 'Regular Battle':
+            splatoonModeElement.style.color = '#20c927';
+            break;
+        case 'Anarchy Battle':
+            splatoonModeElement.style.color = '#d17d02';
+            break;
+        default:
+            // Set a default color if the mode name doesn't match any case
+            splatoonModeElement.style.color = '#FFFFFF'; // Choose the desired default color
+            break;
+    }
+} else {
+    // Handle the case when vsMode or vsMode.name is null
+    splatoonModeElement.style.color = '#FFFFFF'; // Choose the desired default color
+}
 }
     // Display additional Salmon Run info
     const salmonRunInfo = data.splatoon3_coop_setting;
     if (salmonRunInfo) {
-        document.getElementById('splatoonInfo').style.display = 'block'; // Show Splatoon 3 info
-        document.getElementById('splatoonMode').textContent = 'Salmon Run';
+        document.getElementById('splatoonInfo').style.display = 'none'; // Hide Splatoon 3 info
+        document.getElementById('SRmodeLabel').style.display = 'block'; // Show Salmon Run mode
+        document.getElementById('splatoonSRMode').textContent = 'Salmon Run';
 
         // Update Salmon Run stage
         const salmonRunStage = salmonRunInfo.coopStage.name;
+        const salmonRunBoss = salmonRunInfo.boss.name;
         document.getElementById('salmonRunStage').textContent = salmonRunStage;
+        document.getElementById('salmonRunBoss').textContent = salmonRunBoss;
+        
+// SR Mode name color
+const splatoonSRModeElement = document.getElementById('splatoonSRMode');
+if (salmonRunStage.name !== 'Salmon Run') {
+    splatoonSRModeElement.style.color = '#e05e0d';
+} else {
+    // Set a default color if the mode name is 'Salmon Run'
+    splatoonSRModeElement.style.color = '#FFFFFF'; // Choose the desired default color
+}
 
         // Update Salmon Run weapons
         const salmonRunWeapons = salmonRunInfo.weapons.map(weapon => weapon.name).join(', ');
@@ -349,6 +399,7 @@ if (data.splatoon3) {
     document.getElementById('gameInfo').style.display = 'none'; // Hide gameInfo div
     document.getElementById('splatoonInfo').style.display = 'none'; // Hide Splatoon 3 info
     document.getElementById('salmonRunInfo').style.display = 'none'; // Hide Salmon Run info
+    document.getElementById('SRmodeLabel').style.display = 'none'; // Hide Salmon Run mode
     
     // Update metadata description when not playing a game
     const metaDescription = "Not currently playing a game.";
