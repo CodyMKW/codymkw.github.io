@@ -357,23 +357,28 @@ if (data.splatoon3) {
 
 // Mode name colors for Splatoon 3
 const splatoonModeElement = document.getElementById('splatoonMode');
-switch (vsMode.name) {
-    case 'Tableturf Battle':
-        splatoonModeElement.style.color = '#0534a3';
-        break;
-    case 'Private Battle':
-        splatoonModeElement.style.color = '#c21786';
-        break;
-    case 'Regular Battle':
-        splatoonModeElement.style.color = '#20c927';
-        break;
-    case 'Anarchy Battle':
-        splatoonModeElement.style.color = '#d17d02';
-        break;
-    default:
-        // Set a default color if the mode name doesn't match any case
-        splatoonModeElement.style.color = '#FFFFFF'; // Choose the desired default color
-        break;
+if (vsMode && vsMode.name) {
+    switch (vsMode.name) {
+        case 'Tableturf Battle':
+            splatoonModeElement.style.color = '#0534a3';
+            break;
+        case 'Private Battle':
+            splatoonModeElement.style.color = '#c21786';
+            break;
+        case 'Regular Battle':
+            splatoonModeElement.style.color = '#20c927';
+            break;
+        case 'Anarchy Battle':
+            splatoonModeElement.style.color = '#d17d02';
+            break;
+        default:
+            // Set a default color if the mode name doesn't match any case
+            splatoonModeElement.style.color = '#FFFFFF'; // Choose the desired default color
+            break;
+    }
+} else {
+    // Handle the case when vsMode or vsMode.name is null
+    splatoonModeElement.style.color = '#FFFFFF'; // Choose the desired default color
 }
 }
     // Display additional Salmon Run info
@@ -385,10 +390,9 @@ switch (vsMode.name) {
 
         // Update Salmon Run stage
         const salmonRunStage = salmonRunInfo.coopStage.name;
+        const salmonRunBoss = salmonRunInfo.boss.name;
         document.getElementById('salmonRunStage').textContent = salmonRunStage;
-       // Update Salmon Run boss name (with null check)
-       const salmonRunBoss = salmonRunInfo.boss ? salmonRunInfo.boss.name : 'Unknown';
-       document.getElementById('salmonRunBoss').textContent = salmonRunBoss;
+        document.getElementById('salmonRunBoss').textContent = salmonRunBoss;
         
 // SR Mode name color
 const splatoonSRModeElement = document.getElementById('splatoonSRMode');
