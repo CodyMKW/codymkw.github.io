@@ -58,7 +58,6 @@
 #splatoonMode,
 #splatoonStages {
     font-weight: bold;
-    color: #FF4081; /* Pink color for Splatoon info */
 }
 
 /* Additional styling for Salmon Run info */
@@ -66,7 +65,6 @@
 #salmonRunStage,
 #salmonRunWeapons {
     font-weight: bold;
-    color: #64B5F6; /* Blue color for Salmon Run info */
 }
 
     #onlineStatusContainer {
@@ -156,6 +154,7 @@
     <!-- Display Salmon Run info -->
     <div id="salmonRunInfo" style="display: none;">
         <p id="SRmodeLabel" style="display: none;"><strong>Mode:</strong> <span id="splatoonSRMode"></span></p>
+        <p><strong>Current Boss:</strong> <span id="salmonRunBoss"></span></p>
         <p><strong>Current Stage:</strong> <span id="salmonRunStage"></span></p>
         <p><strong>Current Weapons:</strong> <span id="salmonRunWeapons"></span></p>
     </div>
@@ -360,16 +359,16 @@ if (data.splatoon3) {
 const splatoonModeElement = document.getElementById('splatoonMode');
 switch (vsMode.name) {
     case 'Tableturf Battle':
-        splatoonModeElement.style.color = '#64B5F6';
+        splatoonModeElement.style.color = '#0534a3';
         break;
     case 'Private Battle':
-        splatoonModeElement.style.color = '#9C27B0';
+        splatoonModeElement.style.color = '#c21786';
         break;
     case 'Regular Battle':
-        splatoonModeElement.style.color = '#4CAF50';
+        splatoonModeElement.style.color = '#20c927';
         break;
     case 'Anarchy Battle':
-        splatoonModeElement.style.color = '#FF9800';
+        splatoonModeElement.style.color = '#d17d02';
         break;
     default:
         // Set a default color if the mode name doesn't match any case
@@ -386,12 +385,14 @@ switch (vsMode.name) {
 
         // Update Salmon Run stage
         const salmonRunStage = salmonRunInfo.coopStage.name;
+        const salmonRunBoss = salmonRunInfo.boss.name;
         document.getElementById('salmonRunStage').textContent = salmonRunStage;
+        document.getElementById('salmonRunBoss').textContent = salmonRunBoss;
 
 // SR Mode name color
 const splatoonSRModeElement = document.getElementById('splatoonSRMode');
 if (salmonRunStage.name !== 'Salmon Run') {
-    splatoonSRModeElement.style.color = '#FFCC80';
+    splatoonSRModeElement.style.color = '#e05e0d';
 } else {
     // Set a default color if the mode name is 'Salmon Run'
     splatoonSRModeElement.style.color = '#FFFFFF'; // Choose the desired default color
