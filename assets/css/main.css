@@ -302,28 +302,6 @@ h1.notfoundheading {
   border-radius: 4px;
 }
 
-/* Happy Home Network page styles */
-#HappyHomeNetworkContent {
-  display: none;
-  padding: 20px;
-  background-color: #111;
-  border: 2px solid #000;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-#HappyHomeNetworkContent p, h2 {
-  color: #fff;
-  margin-bottom: 10px;
-}
-
-#HappyHomeNetworkContent img {
-  max-width: 100%;
-  max-height: 250px;
-  margin-bottom: 20px;
-  border-radius: 4px;
-}
-
 /* Switch FC styles */
 #friendCodeContent {
   display: none;
