@@ -148,7 +148,7 @@ button:hover {
 
 /* 404 Page styles */
 #notfound {
-  background-color: #111;
+  background-color: #111111c9;
   border: 2px solid #000;
   border-radius: 8px;
   text-align: center;
