@@ -170,7 +170,7 @@ h1.notfoundheading {
 #countdownContent {
   display: none;
   padding: 20px;
-  background-color: #111;
+  background-color: #111111c9;
   border: 2px solid #000;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
@@ -245,7 +245,7 @@ h1.notfoundheading {
 #creditsContent {
   display: none;
   padding: 20px;
-  background-color: #111;
+  background-color: #111111c9;
   border: 2px solid #000;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
@@ -265,7 +265,7 @@ h1.notfoundheading {
 #aboutContent {
   display: block;
   padding: 20px;
-  background-color: #111;
+  background-color: #111111c9;
   border: 2px solid #000;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
@@ -284,7 +284,7 @@ h1.notfoundheading {
 #DreamAddressContent {
   display: none;
   padding: 20px;
-  background-color: #111;
+  background-color: #111111c9;
   border: 2px solid #000;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
@@ -306,7 +306,7 @@ h1.notfoundheading {
 #friendCodeContent {
   display: none;
   padding: 20px;
-  background-color: #111;
+  background-color: #111111c9;
   border: 2px solid #000;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
@@ -333,7 +333,7 @@ h1.notfoundheading {
 #socialMediaContent {
   display: none;
   padding: 20px;
-  background-color: #111;
+  background-color: #111111c9;
   border: 2px solid #000;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
@@ -367,7 +367,7 @@ h1.notfoundheading {
 #SplatfestFramesContent {
   display: none;
   padding: 20px;
-  background-color: #111;
+  background-color: #111111c9;
   border: 2px solid #000;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
@@ -387,7 +387,7 @@ h1.notfoundheading {
 #nintendoNewsContent {
   display: none;
   padding: 20px;
-  background-color: #111;
+  background-color: #111111c9;
   border: 2px solid #000;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
@@ -426,7 +426,7 @@ h1.notfoundheading {
   display: none;
   margin-top: 40px;
   padding: 20px;
-  background-color: #111;
+  background-color: #111111c9;
   border: 2px solid #000;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
@@ -529,7 +529,7 @@ color: #066d06;
 #OtherStuffContent {
   display: none;
   padding: 20px;
-  background-color: #111;
+  background-color: #111111c9;
   border: 2px solid #000;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
