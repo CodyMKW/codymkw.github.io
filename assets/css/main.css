@@ -135,6 +135,10 @@ button:hover {
   border-radius: 50%;
 }
 
+.avatar-image {
+    border: solid 5px #00c900;
+}
+
 .avatar-frame .frame-image {
   position: absolute;
   top: 0;
