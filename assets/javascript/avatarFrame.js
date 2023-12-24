@@ -26,6 +26,31 @@ function updateAvatarFrame(avatarFrames) {
     frameImage.style.display = currentFrame.status === 0 ? 'none' : 'block';
 }
 
+// On page load, check and set the header visibility
+document.addEventListener('DOMContentLoaded', () => {
+    const header = document.getElementById('sticky-header');
+    const headerVisibility = localStorage.getItem('headerVisibility');
+
+    // Assuming you have the status property in your JSON data
+    const statusFromJSON = /* retrieve the status from your JSON data */;
+
+    // Check both local storage and JSON status to determine visibility
+    if (headerVisibility && statusFromJSON === 1) {
+        header.style.display = headerVisibility;
+    } else {
+        // If the status is 0 or not present in the JSON, hide the header
+        header.style.display = 'none';
+    }
+});
+
+function toggleHeader() {
+    const header = document.getElementById('sticky-header');
+    const newDisplay = header.style.display === 'none' || header.style.display === '' ? 'block' : 'none';
+
+    header.style.display = newDisplay;
+    localStorage.setItem('headerVisibility', newDisplay);
+}
+
 function updateStickyHeader(stickyHeaders) {
     const stickyHeaderContainer = document.getElementById('sticky-header');
     
