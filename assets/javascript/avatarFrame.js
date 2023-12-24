@@ -2,7 +2,10 @@
 document.addEventListener('DOMContentLoaded', function () {
     fetch('https://api.npoint.io/e48ee20c0a091f1b8963') // Update this path
         .then(response => response.json())
-        .then(data => updateAvatarFrame(data.avatarframe));
+        .then(data => {
+            updateAvatarFrame(data.avatarframe);
+            updateStickyHeader(data.stickyheader);
+        });
 });
 
 function updateAvatarFrame(avatarFrames) {
@@ -21,4 +24,14 @@ function updateAvatarFrame(avatarFrames) {
 
     // Update the visibility based on the status property
     frameImage.style.display = currentFrame.status === 0 ? 'none' : 'block';
+}
+
+function updateStickyHeader(stickyHeaders) {
+    const stickyHeaderContainer = document.getElementById('sticky-header');
+    
+    // Assuming you only have one sticky header for now
+    const currentStickyHeader = stickyHeaders[0];
+
+    // Update the text and link based on the JSON data
+    stickyHeaderContainer.innerHTML = `<span id="close-button" onclick="toggleHeader()">X</span><a href="${currentStickyHeader.link}" target="_blank" class="important">${currentStickyHeader.text}</a>`;
 }
