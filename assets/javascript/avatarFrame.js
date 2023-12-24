@@ -32,6 +32,13 @@ function updateStickyHeader(stickyHeaders) {
     // Assuming you only have one sticky header for now
     const currentStickyHeader = stickyHeaders[0];
 
-    // Update the text and link based on the JSON data
-    stickyHeaderContainer.innerHTML = `<span id="close-button" onclick="toggleHeader()">X</span><a href="${currentStickyHeader.link}" target="_blank" class="important">${currentStickyHeader.text}</a>`;
+    // Check the status property to determine visibility
+    if (currentStickyHeader.status === 0) {
+        stickyHeaderContainer.style.display = 'none';
+    } else {
+        stickyHeaderContainer.style.display = 'block';
+
+        // Update the text and link based on the JSON data
+        stickyHeaderContainer.innerHTML = `<span id="close-button" onclick="toggleHeader()">X</span><a href="${currentStickyHeader.link}" target="_blank" class="important">${currentStickyHeader.text}</a>`;
+    }
 }
