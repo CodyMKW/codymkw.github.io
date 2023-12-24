@@ -36,9 +36,54 @@ function updateStickyHeader(stickyHeaders) {
     if (currentStickyHeader.status === 0) {
         stickyHeaderContainer.style.display = 'none';
     } else {
-        stickyHeaderContainer.style.display = 'block';
+        // Check if a cookie exists to override the status
+        const cookieStatus = getCookie('stickyHeaderStatus');
+        if (cookieStatus === 'hidden') {
+            stickyHeaderContainer.style.display = 'none';
+        } else {
+            stickyHeaderContainer.style.display = 'block';
 
-        // Update the text and link based on the JSON data
-        stickyHeaderContainer.innerHTML = `<span id="close-button" onclick="toggleHeader()">X</span><a href="${currentStickyHeader.link}" target="_blank" class="important">${currentStickyHeader.text}</a>`;
+            // Update the text and link based on the JSON data
+            stickyHeaderContainer.innerHTML = `<span id="close-button" onclick="toggleHeader()">X</span><a href="${currentStickyHeader.link}" target="_blank" class="important">${currentStickyHeader.text}</a>`;
+        }
     }
 }
+
+function toggleHeader() {
+    const stickyHeaderContainer = document.getElementById('sticky-header');
+
+    // Toggle the visibility
+    if (stickyHeaderContainer.style.display === 'none') {
+        stickyHeaderContainer.style.display = 'block';
+        // Set a cookie to remember the visible state
+        setCookie('stickyHeaderStatus', 'visible', 365);
+    } else {
+        stickyHeaderContainer.style.display = 'none';
+        // Set a cookie to remember the hidden state
+        setCookie('stickyHeaderStatus', 'hidden', 365);
+    }
+}
+
+// Function to set a cookie
+function setCookie(name, value, days) {
+    const expires = new Date();
+    expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
+    document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/`;
+}
+
+// Function to get a cookie value
+function getCookie(name) {
+    const cookieName = `${name}=`;
+    const cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+        let cookie = cookies[i];
+        while (cookie.charAt(0) === ' ') {
+            cookie = cookie.substring(1);
+        }
+        if (cookie.indexOf(cookieName) === 0) {
+            return cookie.substring(cookieName.length, cookie.length);
+        }
+    }
+    return '';
+}
+
