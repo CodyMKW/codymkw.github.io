@@ -24,12 +24,12 @@
     <style>
         body {
             font-family: 'Nintendo Switch UI', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #fff;
-            color: #000;
+            background-color: #333;
+            color: #fff;
             text-align: center;
             margin: 20px;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-rows: auto 1fr 1fr;
         }
 
         h1 {
@@ -37,10 +37,19 @@
             font-size: 2em;
         }
 
+        #avatarImage {
+            max-width: 100%;
+            border-radius: 50%;
+            margin-top: 10px;
+        }
+
+        #playerName {
+            font-size: 1.5em;
+            margin-top: 10px;
+        }
+
         #gameInfo,
-        #splatoonInfo,
-        #salmonRunInfo,
-        #onlineStatusContainer {
+        #splatoonInfo {
             background-color: #f3f3f3;
             border-radius: 10px;
             padding: 20px;
@@ -48,8 +57,7 @@
             margin: 15px;
         }
 
-        img#gameImage,
-        img#avatarImage {
+        img#gameImage {
             max-width: 100%;
             border-radius: 5px;
             margin-top: 10px;
