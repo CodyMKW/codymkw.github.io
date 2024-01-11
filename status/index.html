@@ -21,102 +21,96 @@
     <meta name="twitter:description" content="Check out what CodyMKW is currently playing on Nintendo Switch! Explore game details and total playtime." />
     <meta name="twitter:image:src" content="https://nxapi-presence.fancy.org.uk/api/presence/resources/baas/1/3be92e8430027be9.jpeg" />
 
-<style>
-    body {
-        font-family: Roboto, sans-serif;
-        background-color: #333; /* Dark background */
-        color: #fff; /* White text */
-        text-align: center;
-        margin: 20px;
-    }
-
-    h1 {
-        color: #FF4081; /* Pink heading */
-    }
-
-    #gameInfo {
-        background-color: #424242; /* Dark gray background */
-        border-radius: 10px;
-        padding: 20px;
-        box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
-        max-width: 400px;
-        margin: 0 auto 15px; /* Added margin-bottom to create space */
-    }
-
-#splatoonInfo,
-#salmonRunInfo {
-    background-color: #424242; /* Dark gray background */
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
-    max-width: 400px;
-    margin: 15px auto 0; /* Adjust margin as needed */
-    display: none; /* Hide by default */
-}
-    #onlineStatusContainer {
-        background-color: #4e4e4e; /* Gray background */
-        border-radius: 10px;
-        padding: 5px;
-        box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
-        max-width: 400px;
-        margin: 15px auto 0; /* Added margin-top to create space */
-    }
-
-    img#gameImage {
-        max-width: 70%; /* Adjust the size as needed */
-        border-radius: 5px;
-        margin-top: 10px;
-        border: 2px solid #000;
-    }
-
-    img#avatarImage {
-        width: 150px;
-        height: 150px;
-        border-radius: 50%; /* Circular avatar */
-        margin-top: 10px;
-    }
-
-    a {
-        color: #64B5F6; /* Blue link color */
-        text-decoration: none;
-    }
-
-    a:hover {
-        color: #42A5F5; /* Darker blue on hover */
-    }
-
-    /* Add styles for online status */
-    span#onlineStatus {
-        font-weight: bold;
-    }
-
-    .online {
-        color: #4caf50; /* Green color for "Online" */
-    }
-
-    .offline {
-        color: #ff4436; /* Red color for "Offline" */
-    }
-    .inactive {
-        color: #FFC107; /* Amber color for "Inactive" */
-    }
-    span#gameName {
-        font-weight: bold;
-    }
-    /* Add a subtle pulsating effect for fun */
-    #gameInfo.special-effect {
-        animation: pulse 1s infinite alternate;
-    }
-
-    @keyframes pulse {
-        from {
-            box-shadow: 0 0 10px rgba(255, 64, 129, 0.8);
+    <style>
+        body {
+            font-family: Roboto, sans-serif;
+            background-color: #333; /* Dark background */
+            color: #fff; /* White text */
+            text-align: center;
+            margin: 20px;
         }
-        to {
-            box-shadow: 0 0 20px rgba(255, 64, 129, 0.4);
+
+        h1 {
+            color: #FF4081; /* Pink heading */
         }
-    }
-</style>
+
+        #gameInfo,
+        #splatoonInfo,
+        #salmonRunInfo,
+        #onlineStatusContainer {
+            background-color: #424242; /* Dark gray background */
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+            max-width: 400px;
+            margin: 15px auto; /* Adjust margin as needed */
+        }
+
+        img#gameImage,
+        img#avatarImage {
+            max-width: 100%; /* Adjust the size as needed */
+            border-radius: 5px;
+            margin-top: 10px;
+            border: 2px solid #000;
+        }
+
+        a {
+            color: #64B5F6; /* Blue link color */
+            text-decoration: none;
+        }
+
+        a:hover {
+            color: #42A5F5; /* Darker blue on hover */
+        }
+
+        span#onlineStatus,
+        span#gameName,
+        span#modeLabel,
+        span#splatoonMode,
+        span#splatoonStagesLabel,
+        span#splatoonStages,
+        span#SRmodeLabel,
+        span#splatoonSRMode,
+        span#salmonRunStage,
+        span#salmonRunBoss,
+        span#salmonRunWeapons {
+            font-weight: bold;
+            display: block; /* Ensure each element is on a new line */
+            margin-top: 10px; /* Add some spacing between elements */
+        }
+
+        /* Add a subtle pulsating effect for fun */
+        #gameInfo.special-effect {
+            animation: pulse 1s infinite alternate;
+        }
+
+        @keyframes pulse {
+            from {
+                box-shadow: 0 0 10px rgba(255, 64, 129, 0.8);
+            }
+            to {
+                box-shadow: 0 0 20px rgba(255, 64, 129, 0.4);
+            }
+        }
+
+        /* Add styles for online status */
+        .online {
+            color: #4caf50; /* Green color for "Online" */
+        }
+
+        .offline {
+            color: #ff4436; /* Red color for "Offline" */
+        }
+
+        .inactive {
+            color: #FFC107; /* Amber color for "Inactive" */
+        }
+
+        /* Add some spacing to the footer */
+        footer {
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
     <h1><img id="avatarImage" alt="Nintendo Switch Profile Icon"></h1>
