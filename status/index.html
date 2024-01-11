@@ -21,102 +21,89 @@
     <meta name="twitter:description" content="Check out what CodyMKW is currently playing on Nintendo Switch! Explore game details and total playtime." />
     <meta name="twitter:image:src" content="https://nxapi-presence.fancy.org.uk/api/presence/resources/baas/1/3be92e8430027be9.jpeg" />
 
-<style>
-    body {
-        font-family: Roboto, sans-serif;
-        background-color: #333; /* Dark background */
-        color: #fff; /* White text */
-        text-align: center;
-        margin: 20px;
-    }
-
-    h1 {
-        color: #FF4081; /* Pink heading */
-    }
-
-    #gameInfo {
-        background-color: #424242; /* Dark gray background */
-        border-radius: 10px;
-        padding: 20px;
-        box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
-        max-width: 400px;
-        margin: 0 auto 15px; /* Added margin-bottom to create space */
-    }
-
-#splatoonInfo,
-#salmonRunInfo {
-    background-color: #424242; /* Dark gray background */
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
-    max-width: 400px;
-    margin: 15px auto 0; /* Adjust margin as needed */
-    display: none; /* Hide by default */
-}
-    #onlineStatusContainer {
-        background-color: #4e4e4e; /* Gray background */
-        border-radius: 10px;
-        padding: 5px;
-        box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
-        max-width: 400px;
-        margin: 15px auto 0; /* Added margin-top to create space */
-    }
-
-    img#gameImage {
-        max-width: 70%; /* Adjust the size as needed */
-        border-radius: 5px;
-        margin-top: 10px;
-        border: 2px solid #000;
-    }
-
-    img#avatarImage {
-        width: 150px;
-        height: 150px;
-        border-radius: 50%; /* Circular avatar */
-        margin-top: 10px;
-    }
-
-    a {
-        color: #64B5F6; /* Blue link color */
-        text-decoration: none;
-    }
-
-    a:hover {
-        color: #42A5F5; /* Darker blue on hover */
-    }
-
-    /* Add styles for online status */
-    span#onlineStatus {
-        font-weight: bold;
-    }
-
-    .online {
-        color: #4caf50; /* Green color for "Online" */
-    }
-
-    .offline {
-        color: #ff4436; /* Red color for "Offline" */
-    }
-    .inactive {
-        color: #FFC107; /* Amber color for "Inactive" */
-    }
-    span#gameName {
-        font-weight: bold;
-    }
-    /* Add a subtle pulsating effect for fun */
-    #gameInfo.special-effect {
-        animation: pulse 1s infinite alternate;
-    }
-
-    @keyframes pulse {
-        from {
-            box-shadow: 0 0 10px rgba(255, 64, 129, 0.8);
+    <style>
+        body {
+            font-family: Roboto, sans-serif;
+            background-color: #333; /* Dark background */
+            color: #fff; /* White text */
+            text-align: center;
+            margin: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
         }
-        to {
-            box-shadow: 0 0 20px rgba(255, 64, 129, 0.4);
+
+        h1 {
+            color: #FF4081; /* Pink heading */
         }
-    }
-</style>
+
+        #gameInfo,
+        #splatoonInfo,
+        #salmonRunInfo,
+        #onlineStatusContainer {
+            background-color: #424242; /* Dark gray background */
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+            margin: 15px;
+        }
+
+        img#gameImage,
+        img#avatarImage {
+            max-width: 100%; /* Adjust the size as needed */
+            border-radius: 5px;
+            margin-top: 10px;
+            border: 2px solid #000;
+        }
+
+        a {
+            color: #64B5F6; /* Blue link color */
+            text-decoration: none;
+        }
+
+        a:hover {
+            color: #42A5F5; /* Darker blue on hover */
+        }
+
+        /* Add styles for online status */
+        span#onlineStatus {
+            font-weight: bold;
+        }
+
+        .online {
+            color: #4caf50; /* Green color for "Online" */
+        }
+
+        .offline {
+            color: #ff4436; /* Red color for "Offline" */
+        }
+
+        .inactive {
+            color: #FFC107; /* Amber color for "Inactive" */
+        }
+
+        span#gameName,
+        span#modeLabel,
+        span#splatoonSRMode {
+            font-weight: bold;
+            display: block;
+            margin-top: 10px;
+        }
+
+        /* Add a subtle pulsating effect for fun */
+        #gameInfo.special-effect {
+            animation: pulse 1s infinite alternate;
+        }
+
+        @keyframes pulse {
+            from {
+                box-shadow: 0 0 10px rgba(255, 64, 129, 0.8);
+            }
+
+            to {
+                box-shadow: 0 0 20px rgba(255, 64, 129, 0.4);
+            }
+        }
+    </style>
 </head>
 <body>
     <h1><img id="avatarImage" alt="Nintendo Switch Profile Icon"></h1>
@@ -145,11 +132,6 @@
         <p><strong>Current Boss:</strong> <span id="salmonRunBoss"></span></p>
         <p><strong>Current Weapons:</strong> <span id="salmonRunWeapons"></span></p>
     </div>
-<!-- Display Splatfest Team Info -->
-<div id="splatfestInfo" style="display: none;">
-  <p><strong>Splatfest Team Voted For:</strong> <span id="splatfestTeam"></span></p>
-  <img id="splatfestImage" alt="Splatfest Team Image">
-</div>
     <div id="onlineStatusContainer">
         <p><strong>Online Status:</strong> <span id="onlineStatus"></span></p>
     </div>
@@ -424,33 +406,6 @@ if (salmonRunStage.name !== 'Salmon Run') {
     }
 }
 
-
-// Fetch Splatfest data
-async function fetchSplatfestData() {
-  try {
-    const response = await fetch('https://nxapi-presence.fancy.org.uk/api/splatnet3/fest/644cd5195d154bd5');
-    const data = await response.json();
-
-    // Update HTML with fetched Splatfest data
-    const splatfestInfoContainer = document.getElementById('splatfestInfo');
-    const splatfestTeamElement = document.getElementById('splatfestTeam');
-    const splatfestImageElement = document.getElementById('splatfestImage');
-
-    if (data.splatoon3_fest_team) {
-      const splatfestTeam = data.splatoon3_fest_team.teamName;
-      const splatfestImageUrl = data.splatoon3_fest_team.image.url;
-
-      splatfestInfoContainer.style.display = 'block'; // Show Splatfest info
-      splatfestTeamElement.textContent = splatfestTeam;
-      splatfestImageElement.src = splatfestImageUrl;
-    }
-  } catch (error) {
-    console.error('Error fetching Splatfest data:', error);
-  }
-}
-
-// Fetch Splatfest data when the page loads
-fetchSplatfestData();
 function updatePlayingTime(sinceTimestamp) {
     const timePlayingNowElement = document.getElementById('timePlayingNow');
 
