@@ -145,6 +145,11 @@
         <p><strong>Current Boss:</strong> <span id="salmonRunBoss"></span></p>
         <p><strong>Current Weapons:</strong> <span id="salmonRunWeapons"></span></p>
     </div>
+<!-- Display Splatfest Team Info -->
+<div id="splatfestInfo" style="display: none;">
+  <p><strong>Splatfest Team Voted For:</strong> <span id="splatfestTeam"></span></p>
+  <img id="splatfestImage" alt="Splatfest Team Image">
+</div>
     <div id="onlineStatusContainer">
         <p><strong>Online Status:</strong> <span id="onlineStatus"></span></p>
     </div>
@@ -419,6 +424,33 @@ if (salmonRunStage.name !== 'Salmon Run') {
     }
 }
 
+
+// Fetch Splatfest data
+async function fetchSplatfestData() {
+  try {
+    const response = await fetch('https://nxapi-presence.fancy.org.uk/api/splatnet3/fest/644cd5195d154bd5');
+    const data = await response.json();
+
+    // Update HTML with fetched Splatfest data
+    const splatfestInfoContainer = document.getElementById('splatfestInfo');
+    const splatfestTeamElement = document.getElementById('splatfestTeam');
+    const splatfestImageElement = document.getElementById('splatfestImage');
+
+    if (data.splatoon3_fest_team) {
+      const splatfestTeam = data.splatoon3_fest_team.teamName;
+      const splatfestImageUrl = data.splatoon3_fest_team.image.url;
+
+      splatfestInfoContainer.style.display = 'block'; // Show Splatfest info
+      splatfestTeamElement.textContent = splatfestTeam;
+      splatfestImageElement.src = splatfestImageUrl;
+    }
+  } catch (error) {
+    console.error('Error fetching Splatfest data:', error);
+  }
+}
+
+// Fetch Splatfest data when the page loads
+fetchSplatfestData();
 function updatePlayingTime(sinceTimestamp) {
     const timePlayingNowElement = document.getElementById('timePlayingNow');
 
