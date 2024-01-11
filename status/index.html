@@ -23,9 +23,9 @@
 
     <style>
         body {
-            font-family: Roboto, sans-serif;
-            background-color: #333; /* Dark background */
-            color: #fff; /* White text */
+            font-family: 'Nintendo Switch UI', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #fff;
+            color: #000;
             text-align: center;
             margin: 20px;
             display: grid;
@@ -33,52 +33,36 @@
         }
 
         h1 {
-            color: #FF4081; /* Pink heading */
+            color: #e60012;
+            font-size: 2em;
         }
 
         #gameInfo,
         #splatoonInfo,
         #salmonRunInfo,
         #onlineStatusContainer {
-            background-color: #424242; /* Dark gray background */
+            background-color: #f3f3f3;
             border-radius: 10px;
             padding: 20px;
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             margin: 15px;
         }
 
         img#gameImage,
         img#avatarImage {
-            max-width: 100%; /* Adjust the size as needed */
+            max-width: 100%;
             border-radius: 5px;
             margin-top: 10px;
             border: 2px solid #000;
         }
 
         a {
-            color: #64B5F6; /* Blue link color */
+            color: #1e88e5;
             text-decoration: none;
         }
 
         a:hover {
-            color: #42A5F5; /* Darker blue on hover */
-        }
-
-        /* Add styles for online status */
-        span#onlineStatus {
-            font-weight: bold;
-        }
-
-        .online {
-            color: #4caf50; /* Green color for "Online" */
-        }
-
-        .offline {
-            color: #ff4436; /* Red color for "Offline" */
-        }
-
-        .inactive {
-            color: #FFC107; /* Amber color for "Inactive" */
+            color: #1565c0;
         }
 
         span#gameName,
@@ -96,12 +80,21 @@
 
         @keyframes pulse {
             from {
-                box-shadow: 0 0 10px rgba(255, 64, 129, 0.8);
+                box-shadow: 0 0 10px rgba(230, 0, 18, 0.8);
             }
 
             to {
-                box-shadow: 0 0 20px rgba(255, 64, 129, 0.4);
+                box-shadow: 0 0 20px rgba(230, 0, 18, 0.4);
             }
+        }
+
+        footer {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #e60012;
+            color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
     </style>
 </head>
