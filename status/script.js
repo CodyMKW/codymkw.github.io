@@ -294,13 +294,7 @@ fetchData();
 
 // Refresh the page every 3 minutes (180,000 milliseconds)
 setInterval(refreshPage, 180000);
-    </script>
-<footer>
-    <p><a href="/">Go back to the homepage</a></p>
-    <p>&copy; <span id="copyrightYear"></span> CodyMKW. All rights reserved.</p>
-</footer>
 
-<script>
     // Dynamically update the copyright year
     const currentYear = new Date().getFullYear();
     document.getElementById('copyrightYear').textContent = currentYear;
