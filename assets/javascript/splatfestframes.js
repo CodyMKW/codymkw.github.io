@@ -87,6 +87,9 @@ function updateFrameOptions() {
           "Team_Handshake.png",
           "Team_Fistbump.png",
           "Team_Hug.png",
+          "Team_Friends.png",
+          "Team_Family.png",
+          "Team_Solo.png",
           // Add more octopus frame options here
       ],
       squid: [
@@ -120,6 +123,9 @@ function updateFrameOptions() {
         "Team_Handshake.png",
         "Team_Fistbump.png",
         "Team_Hug.png",
+        "Team_Friends.png",
+        "Team_Family.png",
+        "Team_Solo.png",
         // Add more squid frame options here
       ]
   };
