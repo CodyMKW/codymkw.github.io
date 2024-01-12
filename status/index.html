@@ -21,102 +21,94 @@
     <meta name="twitter:description" content="Check out what CodyMKW is currently playing on Nintendo Switch! Explore game details and total playtime." />
     <meta name="twitter:image:src" content="https://nxapi-presence.fancy.org.uk/api/presence/resources/baas/1/3be92e8430027be9.jpeg" />
 
-<style>
-    body {
-        font-family: Roboto, sans-serif;
-        background-color: #333; /* Dark background */
-        color: #fff; /* White text */
-        text-align: center;
-        margin: 20px;
-    }
-
-    h1 {
-        color: #FF4081; /* Pink heading */
-    }
-
-    #gameInfo {
-        background-color: #424242; /* Dark gray background */
-        border-radius: 10px;
-        padding: 20px;
-        box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
-        max-width: 400px;
-        margin: 0 auto 15px; /* Added margin-bottom to create space */
-    }
-
-#splatoonInfo,
-#salmonRunInfo {
-    background-color: #424242; /* Dark gray background */
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
-    max-width: 400px;
-    margin: 15px auto 0; /* Adjust margin as needed */
-    display: none; /* Hide by default */
-}
-    #onlineStatusContainer {
-        background-color: #4e4e4e; /* Gray background */
-        border-radius: 10px;
-        padding: 5px;
-        box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
-        max-width: 400px;
-        margin: 15px auto 0; /* Added margin-top to create space */
-    }
-
-    img#gameImage {
-        max-width: 70%; /* Adjust the size as needed */
-        border-radius: 5px;
-        margin-top: 10px;
-        border: 2px solid #000;
-    }
-
-    img#avatarImage {
-        width: 150px;
-        height: 150px;
-        border-radius: 50%; /* Circular avatar */
-        margin-top: 10px;
-    }
-
-    a {
-        color: #64B5F6; /* Blue link color */
-        text-decoration: none;
-    }
-
-    a:hover {
-        color: #42A5F5; /* Darker blue on hover */
-    }
-
-    /* Add styles for online status */
-    span#onlineStatus {
-        font-weight: bold;
-    }
-
-    .online {
-        color: #4caf50; /* Green color for "Online" */
-    }
-
-    .offline {
-        color: #ff4436; /* Red color for "Offline" */
-    }
-    .inactive {
-        color: #FFC107; /* Amber color for "Inactive" */
-    }
-    span#gameName {
-        font-weight: bold;
-    }
-    /* Add a subtle pulsating effect for fun */
-    #gameInfo.special-effect {
-        animation: pulse 1s infinite alternate;
-    }
-
-    @keyframes pulse {
-        from {
-            box-shadow: 0 0 10px rgba(255, 64, 129, 0.8);
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1e1e1e; /* Dark background */
+            color: #ffffff; /* White text */
+            text-align: center;
+            margin: 20px;
         }
-        to {
-            box-shadow: 0 0 20px rgba(255, 64, 129, 0.4);
+
+        h1 {
+            color: #4caf50; /* Green heading */
         }
-    }
-</style>
+
+        #gameInfo {
+            background-color: #333; /* Dark gray background */
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+            max-width: 600px;
+            margin: 0 auto 15px; /* Added margin-bottom to create space */
+        }
+
+        #onlineStatusContainer {
+            background-color: #444; /* Gray background */
+            border-radius: 10px;
+            padding: 10px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+            max-width: 400px;
+            margin: 15px auto 0; /* Added margin-top to create space */
+        }
+
+        img#gameImage {
+            max-width: 50%; /* Adjust the size as needed */
+            border-radius: 10px;
+            margin-top: 10px;
+            border: 2px solid #000;
+        }
+
+        img#avatarImage {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%; /* Circular avatar */
+            margin-top: 10px;
+        }
+
+        a {
+            color: #2196F3; /* Blue link color */
+            text-decoration: none;
+        }
+
+        a:hover {
+            color: #1e87f0; /* Darker blue on hover */
+        }
+
+        /* Add styles for online status */
+        span#onlineStatus {
+            font-weight: bold;
+        }
+
+        .online {
+            color: #4caf50; /* Green color for "Online" */
+        }
+
+        .offline {
+            color: #ff4436; /* Red color for "Offline" */
+        }
+
+        .inactive {
+            color: #FFC107; /* Amber color for "Inactive" */
+        }
+        span#gameName {
+            font-weight: bold;
+        }
+
+        /* Add a subtle pulsating effect for fun */
+        #gameInfo.special-effect {
+            animation: pulse 1s infinite alternate;
+        }
+
+        @keyframes pulse {
+            from {
+                box-shadow: 0 0 10px rgba(76, 175, 80, 0.8);
+            }
+            to {
+                box-shadow: 0 0 20px rgba(76, 175, 80, 0.4);
+            }
+        }
+    </style>
 </head>
 <body>
     <h1><img id="avatarImage" alt="Nintendo Switch Profile Icon"></h1>
