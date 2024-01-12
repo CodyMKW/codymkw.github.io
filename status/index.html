@@ -43,6 +43,27 @@
             margin: 0 auto 15px; /* Added margin-bottom to create space */
         }
 
+#gameInfo,
+#splatoonInfo,
+#salmonRunInfo {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+#gameInfo,
+#splatoonInfo,
+#salmonRunInfo {
+    width: 100%; /* Set the width to 100% for responsiveness */
+}
+
+#gameInfo p,
+#splatoonInfo p,
+#salmonRunInfo p {
+    width: calc(33.33% - 20px); /* Adjust the width and margin as needed */
+    margin: 0 10px;
+}
+
         #onlineStatusContainer {
             background-color: #444; /* Gray background */
             border-radius: 10px;
