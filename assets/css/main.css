@@ -146,6 +146,27 @@ button:hover {
   width: 200px;
 }
 
+/* Game Status styles */
+#statusContent {
+  padding: 20px;
+  background-color: #111111c9;
+  border: 2px solid #000;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+#statusContent p, h2 {
+  color: #fff;
+  margin-bottom: 10px;
+}
+
+#statusContent img {
+  max-width: 100%;
+  max-height: 250px;
+  margin-bottom: 20px;
+  border-radius: 4px;
+}
+
 /* 404 Page styles */
 #notfound {
   background-color: #111111c9;
