@@ -4,6 +4,7 @@ function mergeImages() {
 
   const imageSelection = document.getElementById('imageSelection');
   const selectedImage = imageSelection.files[0];
+  console.log(selectedImage)
 
   if (selectedImage) {
     const canvas = document.createElement('canvas');
