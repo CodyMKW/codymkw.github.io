@@ -41,8 +41,6 @@ if (onlineStatusText === 'offline') {
     onlineStatusElement.className = data.friend.presence.state === 'ONLINE' ? 'online' : 'offline';
     playingStatusElement.textContent = `${data.friend.name} is currently playing:`;
 }
-        // Update favicon
-        document.getElementById('favicon').href = data.friend.imageUri;
 // Update additional data when title is not null
 if (data.title !== null) {
     document.getElementById('gameInfo').style.display = 'block'; // Show gameInfo div
