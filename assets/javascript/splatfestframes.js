@@ -150,23 +150,22 @@ function handleImageSelection() {
     const canvas = document.createElement('canvas');
     const context = canvas.getContext('2d');
 
-    const userImage = new Image();
-    userImage.src = URL.createObjectURL(selectedImage);
+    // Load the current frame preview
+    const frameImage = new Image();
+    frameImage.src = framePreview.src;
 
-    userImage.onload = () => {
+    frameImage.onload = () => {
       // Set canvas size to match frame and user image
-      canvas.width = userImage.width;
-      canvas.height = userImage.height;
+      canvas.width = frameImage.width;
+      canvas.height = frameImage.height;
 
       // Draw the user-selected image
-      context.drawImage(userImage, 0, 0, userImage.width, userImage.height);
+      const userImage = new Image();
+      userImage.src = URL.createObjectURL(selectedImage);
 
-      const frameImage = new Image();
-      frameImage.src = framePreview.src;
-
-      frameImage.onload = () => {
-        // Draw the frame preview on top of the user-selected image
-        context.drawImage(frameImage, 0, 0, userImage.width, userImage.height);
+      userImage.onload = () => {
+        context.drawImage(userImage, 0, 0, frameImage.width, frameImage.height);
+        context.drawImage(frameImage, 0, 0, frameImage.width, frameImage.height);
 
         // Update the frame preview with the overlaid image
         framePreview.src = canvas.toDataURL('image/png');
@@ -177,6 +176,12 @@ function handleImageSelection() {
 
 // Add an event listener for changes in the image selection
 document.getElementById('imageSelection').addEventListener('change', handleImageSelection);
+
+// Update the frame preview when the frame selection changes
+document.getElementById('frameSelection').addEventListener('change', () => {
+  displayFramePreview();
+  handleImageSelection(); // Call the updated function to keep the user-selected image loaded
+});
 
 // Initialize frame options and preview on page load
 document.addEventListener('DOMContentLoaded', () => {
