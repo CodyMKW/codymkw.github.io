@@ -330,7 +330,6 @@ h1.notfoundheading {
 
 /* Social Media styles */
 #socialMediaContent {
-  display: none;
   padding: 20px;
   background-color: #111111c9;
   border: 2px solid #000;
@@ -421,7 +420,6 @@ h1.notfoundheading {
 
 /* Most Played Games styles */
 #mostPlayedGamesContent {
-  display: none;
   margin-top: 40px;
   padding: 20px;
   background-color: #111111c9;
@@ -525,7 +523,6 @@ color: #066d06;
 
 /* Web Apps styles */
 #OtherStuffContent {
-  display: none;
   padding: 20px;
   background-color: #111111c9;
   border: 2px solid #000;
