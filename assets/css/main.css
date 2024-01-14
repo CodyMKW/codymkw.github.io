@@ -304,7 +304,6 @@ h1.notfoundheading {
 
 /* Switch FC styles */
 .content {
-  display: none;
   padding: 20px;
   background-color: #111111c9;
   border: 2px solid #000;
