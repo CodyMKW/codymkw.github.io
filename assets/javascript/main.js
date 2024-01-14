@@ -1,31 +1,3 @@
-function showContent(page) {
-    const contentTabs = document.querySelectorAll('.tabContent');
-    contentTabs.forEach(tab => {
-        tab.style.display = 'none';
-    });
-
-    if (page) {
-        const contentElement = document.getElementById(page + 'Content');
-        if (contentElement) {
-            contentElement.style.display = 'block';
-        } else {
-            // If the requested page doesn't exist, show a custom 404 message
-            const errorElement = document.getElementById('errorContent');
-            if (errorElement) {
-                errorElement.style.display = 'block';
-            }
-        }
-    } else {
-        // Default to the "About" tab if no specific page is provided
-        document.getElementById('aboutContent').style.display = 'block';
-    }
-}
-
-// Parse the URL to get the page parameter
-const path = window.location.pathname;
-const pageParam = path.slice(1); // Remove the leading slash
-showContent(pageParam);
-  
   // Birthday code
 // Get the current date
 var currentDate = new Date();
