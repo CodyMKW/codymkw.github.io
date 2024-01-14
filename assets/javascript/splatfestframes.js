@@ -4,42 +4,42 @@ function mergeImages() {
 
   const imageSelection = document.getElementById('imageSelection');
   const selectedImage = imageSelection.files[0];
-  console.log(selectedImage)
 
   if (selectedImage) {
-    const canvas = document.createElement('canvas');
-    const context = canvas.getContext('2d');
+      const canvas = document.createElement('canvas');
+      const context = canvas.getContext('2d');
 
-    const frameImage = new Image();
-    frameImage.src = selectedFrame;
+      const frameImage = new Image();
+      frameImage.src = selectedFrame;
 
-    const userImage = new Image();
-    userImage.src = URL.createObjectURL(selectedImage);
+      frameImage.onload = () => {
+          // Set the canvas size to 400x400
+          canvas.width = 400;
+          canvas.height = 400;
 
-    Promise.all([loadImage(frameImage), loadImage(userImage)])
-      .then(images => {
-        canvas.width = 400;
-        canvas.height = 400;
+          const userImage = new Image();
+          userImage.src = URL.createObjectURL(selectedImage);
 
-        context.drawImage(images[1], 0, 0, 400, 400); // Draw user-selected image
-        context.drawImage(images[0], 0, 0, 400, 400); // Draw frame on top
+          userImage.onload = () => {
+              // Draw the user-selected image
+              context.drawImage(userImage, 0, 0, 400, 400);
 
-        const mergedImageURL = canvas.toDataURL('image/png');
+              // Draw the frame on top of the user-uploaded image
+              context.drawImage(frameImage, 0, 0, 400, 400);
 
-        const downloadLink = document.getElementById('downloadLink');
-        downloadLink.href = mergedImageURL;
-        downloadLink.style.display = 'block';
+              // Convert the merged image to a data URL
+              const mergedImageURL = canvas.toDataURL('image/png');
 
-        downloadLink.click();
-      });
+              // Display the download link
+              const downloadLink = document.getElementById('downloadLink');
+              downloadLink.href = mergedImageURL;
+              downloadLink.style.display = 'block';
+
+              // Trigger the download
+              downloadLink.click();
+          };
+      };
   }
-}
-
-function loadImage(img) {
-  return new Promise((resolve, reject) => {
-    img.onload = () => resolve(img);
-    img.onerror = reject;
-  });
 }
 
 function displayFramePreview() {
