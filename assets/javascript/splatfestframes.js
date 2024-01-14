@@ -150,23 +150,23 @@ function handleImageSelection() {
     const canvas = document.createElement('canvas');
     const context = canvas.getContext('2d');
 
-    const frameImage = new Image();
-    frameImage.src = framePreview.src;
+    const userImage = new Image();
+    userImage.src = URL.createObjectURL(selectedImage);
 
-    frameImage.onload = () => {
+    userImage.onload = () => {
       // Set canvas size to match frame and user image
-      canvas.width = frameImage.width;
-      canvas.height = frameImage.height;
+      canvas.width = userImage.width;
+      canvas.height = userImage.height;
 
       // Draw the user-selected image
-      context.drawImage(frameImage, 0, 0, frameImage.width, frameImage.height);
+      context.drawImage(userImage, 0, 0, userImage.width, userImage.height);
 
-      const userImage = new Image();
-      userImage.src = URL.createObjectURL(selectedImage);
+      const frameImage = new Image();
+      frameImage.src = framePreview.src;
 
-      userImage.onload = () => {
-        // Draw the user-selected image on top of the frame
-        context.drawImage(userImage, 0, 0, frameImage.width, frameImage.height);
+      frameImage.onload = () => {
+        // Draw the frame preview on top of the user-selected image
+        context.drawImage(frameImage, 0, 0, userImage.width, userImage.height);
 
         // Update the frame preview with the overlaid image
         framePreview.src = canvas.toDataURL('image/png');
