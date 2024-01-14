@@ -141,6 +141,43 @@ function updateFrameOptions() {
   displayFramePreview();
 }
 
+function handleImageSelection() {
+  const imageSelection = document.getElementById('imageSelection');
+  const selectedImage = imageSelection.files[0];
+
+  if (selectedImage) {
+    const framePreview = document.getElementById('framePreview');
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+
+    const frameImage = new Image();
+    frameImage.src = framePreview.src;
+
+    frameImage.onload = () => {
+      // Set canvas size to match frame and user image
+      canvas.width = frameImage.width;
+      canvas.height = frameImage.height;
+
+      // Draw the user-selected image
+      context.drawImage(frameImage, 0, 0, frameImage.width, frameImage.height);
+
+      const userImage = new Image();
+      userImage.src = URL.createObjectURL(selectedImage);
+
+      userImage.onload = () => {
+        // Draw the user-selected image on top of the frame
+        context.drawImage(userImage, 0, 0, frameImage.width, frameImage.height);
+
+        // Update the frame preview with the overlaid image
+        framePreview.src = canvas.toDataURL('image/png');
+      };
+    };
+  }
+}
+
+// Add an event listener for changes in the image selection
+document.getElementById('imageSelection').addEventListener('change', handleImageSelection);
+
 // Initialize frame options and preview on page load
 document.addEventListener('DOMContentLoaded', () => {
   updateFrameOptions();
