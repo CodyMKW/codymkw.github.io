@@ -168,7 +168,6 @@ h1.notfoundheading {
 
 /* Countdown styles */
 #countdownContent {
-  display: none;
   padding: 20px;
   background-color: #111111c9;
   border: 2px solid #000;
@@ -243,7 +242,6 @@ h1.notfoundheading {
 
 /* Credits styles */
 #creditsContent {
-  display: none;
   padding: 20px;
   background-color: #111111c9;
   border: 2px solid #000;
@@ -282,7 +280,6 @@ h1.notfoundheading {
 
 /* Dream Address page styles */
 #DreamAddressContent {
-  display: none;
   padding: 20px;
   background-color: #111111c9;
   border: 2px solid #000;
@@ -363,7 +360,6 @@ h1.notfoundheading {
 
 /* Splatfest Frames page styles */
 #SplatfestFramesContent {
-  display: none;
   padding: 20px;
   background-color: #111111c9;
   border: 2px solid #000;
