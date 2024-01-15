@@ -269,7 +269,7 @@ body {
   color: #969696;
   font-size: 12px;
 }
-#footer-inner #backhomelink {
+p#backhomelink {
   display: block;
   color: #00C900;
   font-size: 12px;
