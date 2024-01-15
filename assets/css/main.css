@@ -658,11 +658,11 @@ color: #066d06;
 }
 
 footer {
-  background-color: #111;
-  padding: 10px;
+  background-color: #111111c9; /* Semi-transparent black background */
+  padding: 20px; /* Added padding for a bit more space */
   font-size: medium;
   text-align: center;
-  color: #888;
+  color: #fff; /* Set text color to white */
 }
 
 /* Birthday shimmer */
