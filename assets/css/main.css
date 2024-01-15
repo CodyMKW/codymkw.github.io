@@ -73,18 +73,6 @@ button:hover {
   color: #fff;
 }
 
-.tabContent {
-  display: none;
-}
-
-.tabContent h2 {
-  margin-top: 0;
-}
-
-.tabContent p {
-  margin-bottom: 20px;
-}
-
 .header {
   text-align: center;
   margin-bottom: 20px;
@@ -146,6 +134,89 @@ button:hover {
   width: 200px;
 }
 
+/* Game Status styles */
+#statusContent {
+  padding: 20px;
+  background-color: #111111c9;
+  border: 2px solid #000;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+        #gameInfo {
+            background-color: #111111c9;
+            border-radius: 10px;
+            padding: 10px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+            max-width: 400px;
+            margin: 0 auto 15px; /* Added margin-bottom to create space */
+        }
+
+        #splatoonInfo, #salmonRunInfo {
+            background-color: #111111c9;
+            border-radius: 10px;
+            padding: 10px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+            max-width: 400px;
+            margin: 0 auto 15px; /* Added margin-bottom to create space */
+        }
+
+        #onlineStatusContainer {
+            background-color: #111111c9;
+            border-radius: 10px;
+            padding: 10px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+            max-width: 400px;
+            margin: 15px auto 0; /* Added margin-top to create space */
+        }
+
+        img#gameImage {
+            max-width: 50%; /* Adjust the size as needed */
+            border-radius: 10px;
+            margin-top: 10px;
+            border: 2px solid #000;
+        }
+
+        img#avatarImage {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%; /* Circular avatar */
+            margin-top: 10px;
+        }
+        /* Add styles for online status */
+        span#onlineStatus {
+            font-weight: bold;
+        }
+
+        .online {
+            color: #4caf50; /* Green color for "Online" */
+        }
+
+        .offline {
+            color: #ff4436; /* Red color for "Offline" */
+        }
+
+        .inactive {
+            color: #FFC107; /* Amber color for "Inactive" */
+        }
+        span#gameName {
+            font-weight: bold;
+        }
+
+        /* Add a subtle pulsating effect for fun */
+        #gameInfo.special-effect {
+            animation: pulse 1s infinite alternate;
+        }
+
+        @keyframes pulse {
+            from {
+                box-shadow: 0 0 10px rgba(76, 175, 80, 0.8);
+            }
+            to {
+                box-shadow: 0 0 20px rgba(76, 175, 80, 0.4);
+            }
+        }
+
 /* 404 Page styles */
 #notfound {
   background-color: #111111c9;
@@ -168,7 +239,6 @@ h1.notfoundheading {
 
 /* Countdown styles */
 #countdownContent {
-  display: none;
   padding: 20px;
   background-color: #111111c9;
   border: 2px solid #000;
@@ -243,7 +313,6 @@ h1.notfoundheading {
 
 /* Credits styles */
 #creditsContent {
-  display: none;
   padding: 20px;
   background-color: #111111c9;
   border: 2px solid #000;
@@ -282,7 +351,6 @@ h1.notfoundheading {
 
 /* Dream Address page styles */
 #DreamAddressContent {
-  display: none;
   padding: 20px;
   background-color: #111111c9;
   border: 2px solid #000;
@@ -304,7 +372,6 @@ h1.notfoundheading {
 
 /* Switch FC styles */
 #friendCodeContent {
-  display: none;
   padding: 20px;
   background-color: #111111c9;
   border: 2px solid #000;
@@ -331,7 +398,6 @@ h1.notfoundheading {
 
 /* Social Media styles */
 #socialMediaContent {
-  display: none;
   padding: 20px;
   background-color: #111111c9;
   border: 2px solid #000;
@@ -365,7 +431,6 @@ h1.notfoundheading {
 
 /* Splatfest Frames page styles */
 #SplatfestFramesContent {
-  display: none;
   padding: 20px;
   background-color: #111111c9;
   border: 2px solid #000;
@@ -385,7 +450,6 @@ h1.notfoundheading {
 
 /* Nintendo News styles */
 #nintendoNewsContent {
-  display: none;
   padding: 20px;
   background-color: #111111c9;
   border: 2px solid #000;
@@ -423,7 +487,6 @@ h1.notfoundheading {
 
 /* Most Played Games styles */
 #mostPlayedGamesContent {
-  display: none;
   margin-top: 40px;
   padding: 20px;
   background-color: #111111c9;
@@ -527,7 +590,6 @@ color: #066d06;
 
 /* Web Apps styles */
 #OtherStuffContent {
-  display: none;
   padding: 20px;
   background-color: #111111c9;
   border: 2px solid #000;

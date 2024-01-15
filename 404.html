@@ -1,47 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>404 Page Not Found</title>
-  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-  <link rel="manifest" href="/site.webmanifest">
-  <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#00c900">
-  <meta name="msapplication-TileColor" content="#00c900">
-  <meta name="theme-color" content="#00c900">
-  <meta name="description" content="Oops! Page Not Found">
-  <meta name="keywords" content="404, Page Not Found">
-  <meta name="author" content="CodyMKW">
-  <meta property="og:title" content="404 Page Not Found">
-  <meta property="og:description" content="Oops! Page Not Found">
-  <meta property="og:image" content="https://codymkw.github.io/assets/images/mario_oops.png">
-  <meta property="og:url" content="https://codymkw.github.io">
-  <meta property="og:type" content="website">
-  <meta name="twitter:creator" content="@CodyMKW" />
-  <meta name="twitter:title" content="404 Page Not Found" />
-  <meta name="twitter:description" content="Oops! Page Not Found" />
-  <meta name="twitter:image:src" content="https://codymkw.github.io/assets/images/mario_oops.pngg" />
-  <link rel="stylesheet" href="assets/css/main.css">
-  <script defer src="assets/javascript/main.js"></script>
-  <script defer src="assets/javascript/backgrounds.js"></script>
-</head>
-<body>
-  <div id="background-image"></div>
-  <div class="container">
-    <div id="notfound">
-    <h1 class="notfoundheading">Oops! Page Not Found</h1>
-    <img src="https://codymkw.github.io/assets/images/mario_oops.png" alt="Mario Oops" style="max-width: 300px; max-height: 200px; margin-bottom: 20px; border-radius: 0%;" class="notfoundimg">
-      <p>Looks like you've stumbled upon a mushroom kingdom mystery!</p>
-      <p>It seems that the page you are looking for does not exist in this universe.</p>
-      <p>Don't worry, Mario will keep searching for it!</p>
-      <p><a href="https://codymkw.github.io">Go back to the homepage</a></p>
-    </div>
-  </div>
 
-  <footer>
-    <p>&copy; 2023 CodyMKW. All rights reserved.</p>
-  </footer>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#00c900">
+    <meta name="msapplication-TileColor" content="#00c900">
+    <meta name="theme-color" content="#00c900">
+    <link href="https://social.vivaldi.net/@codymkw" rel="me">
+    <meta name="description" content="It seems that the page you are looking for does not exist in this universe.">
+    <meta name="keywords" content="CodyMKW, Nintendo fan, Animal Crossing, Nintendo Switch, Mario Kart, Pokémon, gaming enthusiast, peaceful gaming, relaxing atmosphere, gaming community, Nintendo Switch gaming, gaming adventures, video games, Nintendo games, gaming journey, social media, gaming community, anime, Clannad, future of Nintendo, QR code, Nintendo news, web apps, social links, gaming fun, Friend Code, gaming enthusiast, gaming community.">
+    <meta name="author" content="CodyMKW">
+    <meta property="og:title" content="Page Not Found - CodyMKW">
+    <meta property="og:description" content="It seems that the page you are looking for does not exist in this universe.">
+    <meta property="og:image" content="https://www.gravatar.com/avatar/5127de8a3a295a02ff3fc55bb6b2fabe?s=2048">
+    <meta property="og:url" content="https://codymkw.github.io">
+    <meta property="og:type" content="website">
+    <meta name="twitter:creator" content="@CodyMKW" />
+    <meta name="twitter:title" content="Page Not Found - CodyMKW" />
+    <meta name="twitter:description" content="It seems that the page you are looking for does not exist in this universe." />
+    <meta name="twitter:image:src" content="https://www.gravatar.com/avatar/5127de8a3a295a02ff3fc55bb6b2fabe?s=2048" />
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/emoji.css">
+    <script defer src="assets/javascript/main.js"></script>
+    <script defer src="assets/javascript/backgrounds.js"></script>
+    <script defer src="assets/javascript/avatarFramestickyheader.js"></script>
+    <title>Page Not Found - CodyMKW</title>
+</head>
+
+<body>
+  <div id="sticky-header" class="sticky-header" style="display: none;">
+    <span id="close-button" onclick="toggleHeader()">X</span>
+    <a href="https://www.nintendo.com/us/store/products/splatoon-3-expansion-pass-70070000016787-switch/" target="_blank" class="important">Check out the inkmazing Splatoon 3 Expansion Pass!</a>
+  </div>  
+    <div id="background-image"></div>
+    <div class="container">
+        <div class="header">
+            <p>
+            <div class="cody-header-bg">
+              <h1 id="cody-heading2"></h1>
+              <h1 id="cody-heading">CodyMKW</h1>
+            </div>
+            </p>
+            <div class="avatar-frame" id="avatar-frame" onclick="selectAvatarFrame()">
+               <img src="" alt="Avatar Frame" class="frame-image" style="display: none;">
+               <img src="https://www.gravatar.com/avatar/5127de8a3a295a02ff3fc55bb6b2fabe?s=2048" alt="Cody's Avatar" class="avatar-image">
+            </div>
+            <div class="header-text">
+                <p>🍃 Animal Crossing enthusiast | 🏁 Mario Kart racer | 🦑 Splatoon veteran | 🍥 Anime lover</p>
+            </div>
+        </div>
+        <div class="tabs">
+            <button onclick="window.location.href='/'">About</button>
+            <button onclick="window.location.href='friend-code'">Switch Friend Code</button>
+            <button onclick="window.location.href='nintendo-news'">Nintendo News</button>
+            <button onclick="window.location.href='most-played-games'">Most Played Games</button>
+            <button onclick="window.location.href='other-stuff'">Other Stuff</button>
+            <button onclick="window.location.href='social-media'">Social Media</button>
+        </div>
+        <div class="content" id="notfound">    
+              <h1 class="notfoundheading">Oops! Page Not Found</h1>
+              <img src="assets/images/mario_oops.png" alt="Mario Oops" style="max-width: 300px; max-height: 200px; margin-bottom: 20px; border-radius: 0%;" class="notfoundimg">
+                <p>Looks like you've stumbled upon a mushroom kingdom mystery!</p>
+                <p>It seems that the page you are looking for does not exist in this universe.</p>
+                <p>Don't worry, Mario will keep searching for it!</p>
+        </div>
+    </div>
+    <footer></footer>
 </body>
 </html>
+

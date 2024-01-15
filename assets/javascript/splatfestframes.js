@@ -141,6 +141,48 @@ function updateFrameOptions() {
   displayFramePreview();
 }
 
+function handleImageSelection() {
+  const imageSelection = document.getElementById('imageSelection');
+  const selectedImage = imageSelection.files[0];
+
+  if (selectedImage) {
+    const framePreview = document.getElementById('framePreview');
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+
+    // Load the current frame preview
+    const frameImage = new Image();
+    frameImage.src = framePreview.src;
+
+    frameImage.onload = () => {
+      // Set canvas size to match frame and user image
+      canvas.width = frameImage.width;
+      canvas.height = frameImage.height;
+
+      // Draw the user-selected image
+      const userImage = new Image();
+      userImage.src = URL.createObjectURL(selectedImage);
+
+      userImage.onload = () => {
+        context.drawImage(userImage, 0, 0, frameImage.width, frameImage.height);
+        context.drawImage(frameImage, 0, 0, frameImage.width, frameImage.height);
+
+        // Update the frame preview with the overlaid image
+        framePreview.src = canvas.toDataURL('image/png');
+      };
+    };
+  }
+}
+
+// Add an event listener for changes in the image selection
+document.getElementById('imageSelection').addEventListener('change', handleImageSelection);
+
+// Update the frame preview when the frame selection changes
+document.getElementById('frameSelection').addEventListener('change', () => {
+  displayFramePreview();
+  handleImageSelection(); // Call the updated function to keep the user-selected image loaded
+});
+
 // Initialize frame options and preview on page load
 document.addEventListener('DOMContentLoaded', () => {
   updateFrameOptions();
