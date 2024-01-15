@@ -269,6 +269,11 @@ body {
   color: #969696;
   font-size: 12px;
 }
+#footer-inner #backhomelink {
+  display: block;
+  color: #00C900;
+  font-size: 12px;
+}
 .main-column #footer-selector {
   float: none;
   text-align: center;
