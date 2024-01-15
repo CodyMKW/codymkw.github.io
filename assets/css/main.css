@@ -73,18 +73,6 @@ button:hover {
   color: #fff;
 }
 
-.tabContent {
-  display: none;
-}
-
-.tabContent h2 {
-  margin-top: 0;
-}
-
-.tabContent p {
-  margin-bottom: 20px;
-}
-
 .header {
   text-align: center;
   margin-bottom: 20px;
