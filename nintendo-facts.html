@@ -28,7 +28,7 @@
     <link rel="stylesheet" href="assets/css/emoji.css">
     <script defer src="assets/javascript/main.js"></script>
     <script defer src="assets/javascript/backgrounds.js"></script>
-    <script defer src="assets/javascript/splatfestframes.js"></script>
+    <script defer src="assets/javascript/ninfacts.js"></script>
     <script defer src="assets/javascript/avatarFramestickyheader.js"></script>
     <title>Splatfest Frames - CodyMKW</title>
 </head>
@@ -63,34 +63,9 @@
             <button onclick="window.location.href='other-stuff'">Other Stuff</button>
             <button onclick="window.location.href='social-media'">Social Media</button>
         </div>
-        <div class="content" id="SplatfestFramesContent">
-              <h2><i class="emoji ninSplat"></i></h2>
-              <h2>Splatfest Frames</h2><small>by <a href="https://twitter.com/GabsJpeg" target="_blank">GabsJpeg</a></small>
-              <div id="framePreviewContainer">
-                <p><label for="framePreview">Frame Preview:</label></p>
-                <img id="framePreview" src="/assets/images/splatfest/octopus/Team_Aliens.png" alt="Frame Preview" class="preview-image" />
-              </div>
-              <div id="frameTypeSelection">
-                <label for="frameTypeSelection">Which do you prefer:</label>
-                <label>
-                    <input type="radio" name="frameType" value="octopus" checked="checked" onchange="updateFrameOptions()"> Octopus
-                </label>
-                <label>
-                    <input type="radio" name="frameType" value="squid" onchange="updateFrameOptions()"> Squid
-                </label>
-             </div>
-                      <div>
-                          <label for="frameSelection">Select a frame:</label>
-                          <select id="frameSelection" onchange="displayFramePreview()">
-                              <!-- See Splatfestframes.js for options -->
-                          </select>
-                      </div>
-                      <div>
-                          <label for="imageSelection">Your avatar image:</label>
-                          <input type="file" id="imageSelection" accept="image/*">
-                      </div>
-                      <p><button onclick="mergeImages()">Download</button></p>
-                      <a id="downloadLink" style="display: none" download="splatfest_avatar.png">Download Splatfest Avatar</a>
+        <div class="content" id="NintendoFactsContent">
+           <p id="fact"></p>
+           <button onclick="generateFact()">Generate Fact</button>
         </div>
     </div>
     <footer></footer>
