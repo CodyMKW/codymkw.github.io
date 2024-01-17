@@ -396,6 +396,19 @@ h1.notfoundheading {
   cursor: pointer;
 }
 
+/* Nintendo Facts styles */
+#NintendoFactsContent {
+  padding: 20px;
+  background-color: #111111c9;
+  border: 2px solid #000;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+#NintendoFactsContent p, h2 {
+  color: #fff;
+}
+
 /* Social Media styles */
 #socialMediaContent {
   padding: 20px;
