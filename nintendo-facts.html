@@ -12,24 +12,25 @@
     <meta name="msapplication-TileColor" content="#00c900">
     <meta name="theme-color" content="#00c900">
     <link href="https://social.vivaldi.net/@codymkw" rel="me">
-    <meta name="description" content="Explore CodyMKW's realm of randomness and fun! Dive into pointless but entertaining stuff like the Mario Kart 8 Deluxe Randomizer, Splatoon 3 Randomizer, and more. Embrace the chaos and discover what tickles your fancy!">
+    <meta name="description" content="Discover the secrets of Nintendo's legacy! From classic consoles to iconic characters, delve into a world of fascinating trivia. Elevate your Nintendo knowledge with every click.">
     <meta name="keywords" content="CodyMKW, Nintendo fan, Animal Crossing, Nintendo Switch, Mario Kart, Pokémon, gaming enthusiast, peaceful gaming, relaxing atmosphere, gaming community, Nintendo Switch gaming, gaming adventures, video games, Nintendo games, gaming journey, social media, gaming community, anime, Clannad, future of Nintendo, QR code, Nintendo news, web apps, social links, gaming fun, Friend Code, gaming enthusiast, gaming community.">
     <meta name="author" content="CodyMKW">
-    <meta property="og:title" content="Other Stuff - CodyMKW">
-    <meta property="og:description" content="Explore CodyMKW's realm of randomness and fun! Dive into pointless but entertaining stuff like the Mario Kart 8 Deluxe Randomizer, Splatoon 3 Randomizer, and more. Embrace the chaos and discover what tickles your fancy!">
+    <meta property="og:title" content="Random Nintendo Facts - CodyMKW">
+    <meta property="og:description" content="Discover the secrets of Nintendo's legacy! From classic consoles to iconic characters, delve into a world of fascinating trivia. Elevate your Nintendo knowledge with every click.">
     <meta property="og:image" content="https://www.gravatar.com/avatar/5127de8a3a295a02ff3fc55bb6b2fabe?s=2048">
     <meta property="og:url" content="https://codymkw.github.io">
     <meta property="og:type" content="website">
     <meta name="twitter:creator" content="@CodyMKW" />
-    <meta name="twitter:title" content="Other Stuff - CodyMKW" />
-    <meta name="twitter:description" content="Explore CodyMKW's realm of randomness and fun! Dive into pointless but entertaining stuff like the Mario Kart 8 Deluxe Randomizer, Splatoon 3 Randomizer, and more. Embrace the chaos and discover what tickles your fancy!" />
+    <meta name="twitter:title" content="Random Nintendo Facts - CodyMKW" />
+    <meta name="twitter:description" content="Discover the secrets of Nintendo's legacy! From classic consoles to iconic characters, delve into a world of fascinating trivia. Elevate your Nintendo knowledge with every click." />
     <meta name="twitter:image:src" content="https://www.gravatar.com/avatar/5127de8a3a295a02ff3fc55bb6b2fabe?s=2048" />
     <link rel="stylesheet" href="assets/css/main.css">
     <link rel="stylesheet" href="assets/css/emoji.css">
     <script defer src="assets/javascript/main.js"></script>
     <script defer src="assets/javascript/backgrounds.js"></script>
+    <script defer src="assets/javascript/ninfacts.js"></script>
     <script defer src="assets/javascript/avatarFramestickyheader.js"></script>
-    <title>Other Stuff - CodyMKW</title>
+    <title>Random Nintendo Facts- CodyMKW</title>
 </head>
 
 <body>
@@ -62,24 +63,11 @@
             <button onclick="window.location.href='other-stuff'">Other Stuff</button>
             <button onclick="window.location.href='social-media'">Social Media</button>
         </div>
-        <div class="content" id="OtherStuffContent">
-                <h2><i class="emoji peepoNerd"></i></h2>
-                <h2>Other Stuff</h2>
-                <p>
-                    Below is just a few pointless stuff you can check out if you want!
-                  </p>
-                  <p>
-                   <ul>
-                     <li align="left"><a href="/mk8">Mario Kart 8 Deluxe Randomizer</a> - Generate a random character, track, vehicle, wheel, and glider combination for Mario Kart 8 Deluxe.</li>
-                     <li align="left"><a href="/splat3">Splatoon 3 Randomizer</a> - Generate a randomized loadout for Splatoon 3.</li>
-                     <li align="left"><a href="/miiverse">Miiverse Archive</a> - An archive of my Miiverse before it shut down.</li>
-                     <li align="left"><a href="/status">Game Status</a> - See what game I'm currently playing.</li>
-                     <li align="left"><a href="countdown" onclick="showContent('countdownContent')">Countdown Timer</a> - A countdown timer so you can know how long until something is!</li>
-                     <li align="left"><a href="splatfest-frames" onclick="showContent('SplatfestFramesContent')">Splatfest Frames</a> - Add a splatfest frame to your own avatar.</li>
-                     <li align="left"><a href="dream-address" onclick="showContent('DreamAddressContent')">Dream Address</a> - The dream address for my Animal Crossing: New Horizons island!</li>
-                     <li align="left"><a href="nintendo-facts" onclick="showContent('NintendoFactsContent')">Random Nintendo Facts</a> - Generate random facts about Nintendo!</li>
-                   </ul>
-                </p>
+        <div class="content" id="NintendoFactsContent">
+           <h2><i class="emoji superMushroom"></i></h2>
+           <h2>Random Nintendo Facts</h2>
+           <p id="fact"></p>
+           <button onclick="generateFact()">Generate Nintendo Fact</button>
         </div>
     </div>
     <footer></footer>
