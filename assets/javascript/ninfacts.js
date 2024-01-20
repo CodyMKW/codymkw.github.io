@@ -67,8 +67,28 @@
             "Animal Crossing's 'Mr. Resetti,' known for scolding players who reset the game, was designed to discourage cheating.",
         ];
 
-        function generateFact() {
-            const factContainer = document.getElementById('fact');
-            const randomFact = nintendoFacts[Math.floor(Math.random() * nintendoFacts.length)];
-            factContainer.innerText = randomFact;
-        }
+        // Array to keep track of used facts
+        let usedFacts = [];
+
+
+function generateFact() {
+    const factContainer = document.getElementById('fact');
+
+    // Check if all facts have been used
+    if (usedFacts.length === nintendoFacts.length) {
+        // If all facts have been used, reset the usedFacts array
+        usedFacts = [];
+    }
+
+    // Get a random fact that hasn't been used recently
+    let randomFact;
+    do {
+        randomFact = nintendoFacts[Math.floor(Math.random() * nintendoFacts.length)];
+    } while (usedFacts.includes(randomFact));
+
+    // Display the fact
+    factContainer.innerText = randomFact;
+
+    // Add the fact to the usedFacts array
+    usedFacts.push(randomFact);
+}
