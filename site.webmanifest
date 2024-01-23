@@ -2,6 +2,8 @@
     "name": "CodyMKW",
     "short_name": "CodyMKW",
     "description": "Dive into Cody\u2019s world of gaming and anime. Experience the joy, thrill, and depth that have provided countless hours of joy and relaxation.",
+    "categories": ["CodyMKW", "Nintendo", "gaming", "Animal Crossing", "Splatoon", "Mario Kart", "The Legend of Zelda", "Pokemon", "Nintendo Switch", "Wii U", "bio", "quick facts"],
+    "lang": "en-US",
     "id": "?pwa=1",
     "orientation": "any",
     "icons": [
