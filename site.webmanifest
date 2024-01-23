@@ -2,8 +2,8 @@
     "name": "CodyMKW",
     "short_name": "CodyMKW",
     "description": "Dive into Cody\u2019s world of gaming and anime. Experience the joy, thrill, and depth that have provided countless hours of joy and relaxation.",
-    "id": "?pwa=1"
-    "orientation": "any"
+    "id": "?pwa=1",
+    "orientation": "any",
     "icons": [
         {
             "src": "/android-chrome-192x192.png",
