@@ -41,6 +41,9 @@ function updatePresence() {
 
       // Add event listener to the link to open modal
       document.getElementById('check-switch-game-status').addEventListener('click', openModal);
+      
+      // Update the modal content
+      updateModalContent(onlineStatus, gameName);
     })
     .catch(error => {
       console.error('Error fetching data:', error);
@@ -49,9 +52,6 @@ function updatePresence() {
 
 // Function to open modal
 function openModal() {
-  // Update presence information before opening the modal
-  updatePresence();
-
   // Create modal container
   const modalContainer = document.createElement('div');
   modalContainer.classList.add('modal-container');
@@ -101,6 +101,35 @@ function closeModal() {
   
   // Remove class to body to undim the screen
   document.body.classList.remove('modal-open');
+}
+
+// Function to update modal content
+function updateModalContent(onlineStatus, gameName) {
+  const modalContent = document.querySelector('.modal-content');
+  const pictureElement = modalContent.querySelector('picture');
+
+  // Update modal content based on whether a game is being played or not
+  if (gameName) {
+    const sourceElement = pictureElement.querySelector('source');
+    const imgElement = pictureElement.querySelector('img');
+    
+    sourceElement.setAttribute('srcset', 'https://nxapi-presence.fancy.org.uk/api/presence/644cd5195d154bd5/embed?include-splatoon3=1&theme=dark&scale=2&friend-code=2549-4631-6600&transparent=1&width=630&show-splatoon3-fest-team=1');
+    imgElement.setAttribute('src', 'https://nxapi-presence.fancy.org.uk/api/presence/644cd5195d154bd5/embed?include-splatoon3=1&theme=dark&scale=2&friend-code=2549-4631-6600&transparent=1&width=630&show-splatoon3-fest-team=1');
+    
+    modalContent.innerHTML = '';
+    modalContent.appendChild(closeButton);
+    modalContent.appendChild(pictureElement);
+  } else {
+    const sourceElement = pictureElement.querySelector('source');
+    const imgElement = pictureElement.querySelector('img');
+    
+    sourceElement.setAttribute('srcset', 'https://nxapi-presence.fancy.org.uk/api/presence/644cd5195d154bd5/embed?include-splatoon3=1&theme=dark&scale=2&friend-code=2549-4631-6600&transparent=1&width=630&show-splatoon3-fest-team=1');
+    imgElement.setAttribute('src', 'https://nxapi-presence.fancy.org.uk/api/presence/644cd5195d154bd5/embed?include-splatoon3=1&theme=dark&scale=2&friend-code=2549-4631-6600&transparent=1&width=630&show-splatoon3-fest-team=1');
+    
+    modalContent.innerHTML = '';
+    modalContent.appendChild(closeButton);
+    modalContent.appendChild(pictureElement);
+  }
 }
 
 // Call the function initially to update the content
