@@ -103,6 +103,9 @@ function closeModal() {
 // Call the function initially to update the content
 updatePresence();
 
+// Update presence every 5 seconds
+setInterval(updatePresence, 5000);
+
 // Birthday code
 // Get the current date
 var currentDate = new Date();
