@@ -34,9 +34,9 @@ function updatePresence() {
 
       // Update HTML content based on whether a game is being played or not
       if (gameName) {
-        statusContainer.innerHTML = `<p style="color: ${color};">Currently ${onlineStatus.charAt(0)}${onlineStatus.slice(1).toLowerCase()} playing ${gameName} <a href="#" id="check-switch-game-status" >🔎</a></p>`;
+        statusContainer.innerHTML = `<p style="color: ${color};">Currently ${onlineStatus.charAt(0)}${onlineStatus.slice(1).toLowerCase()} playing ${gameName}`;
       } else {
-        statusContainer.innerHTML = `<p style="color: ${color};">Currently ${onlineStatus.charAt(0)}${onlineStatus.slice(1).toLowerCase()} <a href="#" id="check-switch-game-status" >🔎</a></p>`;
+        statusContainer.innerHTML = `<p style="color: ${color};">Currently ${onlineStatus.charAt(0)}${onlineStatus.slice(1).toLowerCase()}`;
       }
     })
     .catch(error => {
