@@ -83,6 +83,12 @@ function openModal() {
   modalContent.appendChild(pictureElement);
   modalContainer.appendChild(modalContent);
   
+  // Clear any existing modal content
+  const existingModalContainer = document.querySelector('.modal-container');
+  if (existingModalContainer) {
+    existingModalContainer.parentNode.removeChild(existingModalContainer);
+  }
+
   // Append modal container to body
   document.body.appendChild(modalContainer);
   
