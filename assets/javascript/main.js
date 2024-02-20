@@ -1,3 +1,53 @@
+// Function to capitalize the first letter of a string
+function capitalizeFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+// Function to fetch data from the API and update HTML content
+function updatePresence() {
+  // Fetch JSON data from the API
+  fetch('https://nxapi-presence.fancy.org.uk/api/presence/644cd5195d154bd5?include-splatoon3=1')
+    .then(response => response.json())
+    .then(data => {
+      // Extract online status and game name from the JSON data
+      const onlineStatus = capitalizeFirstLetter(data.friend.presence.state.toLowerCase());
+      const gameName = data.friend.presence.game.name || null;
+
+      // Select the element where the content will be updated
+      const statusContainer = document.getElementById('status-container');
+
+      // Define colors based on the online status
+      let statusColor = '';
+      switch (onlineStatus.toLowerCase()) {
+        case 'online':
+          statusColor = '#00C900';
+          break;
+        case 'offline':
+          statusColor = 'red';
+          break;
+        case 'inactive':
+          statusColor = 'yellow';
+          break;
+        default:
+          statusColor = 'white';
+      }
+
+      // Update HTML content based on whether a game is being played or not
+      if (gameName) {
+        statusContainer.innerHTML = `<p>Currently <span style="color: ${statusColor};">${onlineStatus.charAt(0)}${onlineStatus.slice(1).toLowerCase()}</span> playing ${gameName} <a href="#" id="check-switch-game-status">🔎</a></p>`;
+      } else {
+        statusContainer.innerHTML = `<p>Currently <span style="color: ${statusColor};">${onlineStatus.charAt(0)}${onlineStatus.slice(1).toLowerCase()}</span> <a href="#" id="check-switch-game-status">🔎</a></p>`;
+      }
+
+      // Add event listener to the link to open modal
+      document.getElementById('check-switch-game-status').addEventListener('click', openModal);
+    })
+    .catch(error => {
+      console.error('Error fetching data:', error);
+    });
+}
+
+// Function to open modal
 function openModal() {
   // Create modal container
   const modalContainer = document.createElement('div');
@@ -40,6 +90,7 @@ function openModal() {
   document.body.classList.add('modal-open');
 }
 
+// Function to close modal
 function closeModal() {
   // Remove modal container
   const modalContainer = document.querySelector('.modal-container');
@@ -49,8 +100,8 @@ function closeModal() {
   document.body.classList.remove('modal-open');
 }
 
-// Function to execute when certain link is clicked
-document.getElementById('check-switch-game-status').addEventListener('click', openModal);
+// Call the function initially to update the content
+updatePresence();
 
 // Birthday code
 // Get the current date
