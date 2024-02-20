@@ -17,26 +17,26 @@ function updatePresence() {
       const statusContainer = document.getElementById('status-container');
 
       // Define colors based on the online status
-      let color = '';
+      let statusColor = '';
       switch (onlineStatus.toLowerCase()) {
         case 'online':
-          color = 'green';
+          statusColor = 'green';
           break;
         case 'offline':
-          color = 'red';
+          statusColor = 'red';
           break;
         case 'inactive':
-          color = 'yellow';
+          statusColor = 'yellow';
           break;
         default:
-          color = 'white';
+          statusColor = 'black';
       }
 
       // Update HTML content based on whether a game is being played or not
       if (gameName) {
-        statusContainer.innerHTML = `<p style="color: ${color};">Currently ${onlineStatus.charAt(0)}${onlineStatus.slice(1).toLowerCase()} playing ${gameName}`;
+        statusContainer.innerHTML = `<p>Currently <span style="color: ${statusColor};">${onlineStatus.charAt(0)}${onlineStatus.slice(1).toLowerCase()}</span> playing ${gameName}</p>`;
       } else {
-        statusContainer.innerHTML = `<p style="color: ${color};">Currently ${onlineStatus.charAt(0)}${onlineStatus.slice(1).toLowerCase()}`;
+        statusContainer.innerHTML = `<p>Currently <span style="color: ${statusColor};">${onlineStatus.charAt(0)}${onlineStatus.slice(1).toLowerCase()}</span></p>`;
       }
     })
     .catch(error => {
