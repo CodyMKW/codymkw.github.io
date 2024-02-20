@@ -42,23 +42,8 @@
             "sizes": "512x512",
             "type": "image/png",
             "purpose": "any"
-        },
-        {
-            "src": "/maskable_icon.png",
-            "sizes": "512x512",
-            "type": "image/png",
-            "purpose": "maskable"
         }
     ],
-    "screenshots" : [
-       {
-          "src": "/screenshot.png",
-          "sizes": "1280x1273",
-          "type": "image/png",
-          "form_factor": "wide",
-          "label": "Homescreen of Cody's webpage!"
-      }
-   ],
     "theme_color": "#00c900",
     "background_color": "#00c900",
     "display": "standalone",
