@@ -1,4 +1,58 @@
-  // Birthday code
+function openModal() {
+  // Create modal container
+  const modalContainer = document.createElement('div');
+  modalContainer.classList.add('modal-container');
+
+  // Create modal content
+  const modalContent = document.createElement('div');
+  modalContent.classList.add('modal-content');
+  
+  // Create close button
+  const closeButton = document.createElement('span');
+  closeButton.classList.add('close-button');
+  closeButton.innerHTML = 'X';
+  closeButton.onclick = closeModal;
+  
+  // Create picture element
+  const pictureElement = document.createElement('picture');
+  
+  // Create source element
+  const sourceElement = document.createElement('source');
+  sourceElement.setAttribute('srcset', 'https://nxapi-presence.fancy.org.uk/api/presence/644cd5195d154bd5/embed?include-splatoon3=1&theme=dark&scale=2&friend-code=2549-4631-6600&transparent=1&width=630&show-splatoon3-fest-team=1');
+  sourceElement.setAttribute('media', '(prefers-color-scheme: dark)');
+  
+  // Create img element
+  const imgElement = document.createElement('img');
+  imgElement.setAttribute('src', 'https://nxapi-presence.fancy.org.uk/api/presence/644cd5195d154bd5/embed?include-splatoon3=1&theme=dark&scale=2&friend-code=2549-4631-6600&transparent=1&width=630&show-splatoon3-fest-team=1');
+  imgElement.setAttribute('alt', 'Nintendo Switch presence');
+  
+  // Append elements
+  pictureElement.appendChild(sourceElement);
+  pictureElement.appendChild(imgElement);
+  modalContent.appendChild(closeButton);
+  modalContent.appendChild(pictureElement);
+  modalContainer.appendChild(modalContent);
+  
+  // Append modal container to body
+  document.body.appendChild(modalContainer);
+  
+  // Add class to body to dim the screen
+  document.body.classList.add('modal-open');
+}
+
+function closeModal() {
+  // Remove modal container
+  const modalContainer = document.querySelector('.modal-container');
+  modalContainer.parentNode.removeChild(modalContainer);
+  
+  // Remove class to body to undim the screen
+  document.body.classList.remove('modal-open');
+}
+
+// Function to execute when certain link is clicked
+document.getElementById('check-switch-game-status').addEventListener('click', openModal);
+
+// Birthday code
 // Get the current date
 var currentDate = new Date();
 
