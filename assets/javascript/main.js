@@ -1,3 +1,8 @@
+// Function to capitalize the first letter of a string
+function capitalizeFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
 // Function to fetch data from the API and update HTML content
 function updatePresence() {
   // Fetch JSON data from the API
@@ -5,17 +10,33 @@ function updatePresence() {
     .then(response => response.json())
     .then(data => {
       // Extract online status and game name from the JSON data
-      const onlineStatus = data.friend.presence.state;
+      const onlineStatus = capitalizeFirstLetter(data.friend.presence.state.toLowerCase());
       const gameName = data.friend.presence.game.name || null;
 
       // Select the element where the content will be updated
       const statusContainer = document.getElementById('status-container');
 
+      // Define colors based on the online status
+      let color = '';
+      switch (onlineStatus.toLowerCase()) {
+        case 'online':
+          color = 'green';
+          break;
+        case 'offline':
+          color = 'red';
+          break;
+        case 'inactive':
+          color = 'yellow';
+          break;
+        default:
+          color = 'white';
+      }
+
       // Update HTML content based on whether a game is being played or not
       if (gameName) {
-        statusContainer.innerHTML = `<p>Currently ${onlineStatus} playing ${gameName}</p>`;
+        statusContainer.innerHTML = `<p style="color: ${color};">Currently ${onlineStatus.charAt(0)}${onlineStatus.slice(1).toLowerCase()} playing ${gameName} <a href="#" id="check-switch-game-status" >🔎</a></p>`;
       } else {
-        statusContainer.innerHTML = `<p>Currently ${onlineStatus}</p>`;
+        statusContainer.innerHTML = `<p style="color: ${color};">Currently ${onlineStatus.charAt(0)}${onlineStatus.slice(1).toLowerCase()} <a href="#" id="check-switch-game-status" >🔎</a></p>`;
       }
     })
     .catch(error => {
