@@ -41,8 +41,8 @@ function updatePresence() {
 
       // Add event listener to the link to open modal
       document.getElementById('check-switch-game-status').addEventListener('click', openModal);
-      
-      // Update the modal content
+
+      // Update modal content
       updateModalContent(onlineStatus, gameName);
     })
     .catch(error => {
@@ -50,63 +50,16 @@ function updatePresence() {
     });
 }
 
-// Function to open modal
-function openModal() {
-  // Create modal container
-  const modalContainer = document.createElement('div');
-  modalContainer.classList.add('modal-container');
+// Function to update modal content
+function updateModalContent(onlineStatus, gameName) {
+  const modalContent = document.querySelector('.modal-content');
+  const pictureElement = modalContent.querySelector('picture');
 
-  // Create modal content
-  const modalContent = document.createElement('div');
-  modalContent.classList.add('modal-content');
-  
   // Create close button
   const closeButton = document.createElement('span');
   closeButton.classList.add('close-button');
   closeButton.innerHTML = 'X';
   closeButton.onclick = closeModal;
-  
-  // Create picture element
-  const pictureElement = document.createElement('picture');
-  
-  // Create source element
-  const sourceElement = document.createElement('source');
-  sourceElement.setAttribute('srcset', 'https://nxapi-presence.fancy.org.uk/api/presence/644cd5195d154bd5/embed?include-splatoon3=1&theme=dark&scale=2&friend-code=2549-4631-6600&transparent=1&width=630&show-splatoon3-fest-team=1');
-  sourceElement.setAttribute('media', '(prefers-color-scheme: dark)');
-  
-  // Create img element
-  const imgElement = document.createElement('img');
-  imgElement.setAttribute('src', 'https://nxapi-presence.fancy.org.uk/api/presence/644cd5195d154bd5/embed?include-splatoon3=1&theme=dark&scale=2&friend-code=2549-4631-6600&transparent=1&width=630&show-splatoon3-fest-team=1');
-  imgElement.setAttribute('alt', 'Nintendo Switch presence');
-  
-  // Append elements
-  pictureElement.appendChild(sourceElement);
-  pictureElement.appendChild(imgElement);
-  modalContent.appendChild(closeButton);
-  modalContent.appendChild(pictureElement);
-  modalContainer.appendChild(modalContent);
-  
-  // Append modal container to body
-  document.body.appendChild(modalContainer);
-  
-  // Add class to body to dim the screen
-  document.body.classList.add('modal-open');
-}
-
-// Function to close modal
-function closeModal() {
-  // Remove modal container
-  const modalContainer = document.querySelector('.modal-container');
-  modalContainer.parentNode.removeChild(modalContainer);
-  
-  // Remove class to body to undim the screen
-  document.body.classList.remove('modal-open');
-}
-
-// Function to update modal content
-function updateModalContent(onlineStatus, gameName) {
-  const modalContent = document.querySelector('.modal-content');
-  const pictureElement = modalContent.querySelector('picture');
 
   // Update modal content based on whether a game is being played or not
   if (gameName) {
@@ -135,7 +88,7 @@ function updateModalContent(onlineStatus, gameName) {
 // Call the function initially to update the content
 updatePresence();
 
-// Update presence and modal content every 5 seconds
+// Update presence every 5 seconds
 setInterval(updatePresence, 5000);
 
 // Birthday code
