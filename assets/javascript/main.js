@@ -1,3 +1,31 @@
+// Function to fetch data from the API and update HTML content
+function updatePresence() {
+  // Fetch JSON data from the API
+  fetch('https://nxapi-presence.fancy.org.uk/api/presence/644cd5195d154bd5?include-splatoon3=1')
+    .then(response => response.json())
+    .then(data => {
+      // Extract online status and game name from the JSON data
+      const onlineStatus = data.friend.presence.state;
+      const gameName = data.friend.presence.game.name || null;
+
+      // Select the element where the content will be updated
+      const statusContainer = document.getElementById('status-container');
+
+      // Update HTML content based on whether a game is being played or not
+      if (gameName) {
+        statusContainer.innerHTML = `<p>Currently ${onlineStatus} playing ${gameName}</p>`;
+      } else {
+        statusContainer.innerHTML = `<p>Currently ${onlineStatus}</p>`;
+      }
+    })
+    .catch(error => {
+      console.error('Error fetching data:', error);
+    });
+}
+
+// Call the function initially to update the content
+updatePresence();
+
 function openModal() {
   // Create modal container
   const modalContainer = document.createElement('div');
