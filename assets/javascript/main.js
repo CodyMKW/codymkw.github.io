@@ -42,6 +42,46 @@ function updatePresence() {
       // Add event listener to the link to open modal
       document.getElementById('check-switch-game-status').addEventListener('click', openModal);
 
+// Function to update modal content
+function updateModalContent(onlineStatus, gameName) {
+  // Select the modal content container
+  const modalContent = document.querySelector('.modal-content');
+
+  // Clear the existing content
+  modalContent.innerHTML = '';
+
+  // Create close button
+  const closeButton = document.createElement('span');
+  closeButton.classList.add('close-button');
+  closeButton.innerHTML = 'X';
+  closeButton.onclick = closeModal;
+
+  // Create picture element
+  const pictureElement = document.createElement('picture');
+
+  // Create source element
+  const sourceElement = document.createElement('source');
+  sourceElement.setAttribute('srcset', 'https://nxapi-presence.fancy.org.uk/api/presence/644cd5195d154bd5/embed?include-splatoon3=1&theme=dark&scale=2&friend-code=2549-4631-6600&transparent=1&width=630&show-splatoon3-fest-team=1');
+  sourceElement.setAttribute('media', '(prefers-color-scheme: dark)');
+
+  // Create img element
+  const imgElement = document.createElement('img');
+  imgElement.setAttribute('src', 'https://nxapi-presence.fancy.org.uk/api/presence/644cd5195d154bd5/embed?include-splatoon3=1&theme=dark&scale=2&friend-code=2549-4631-6600&transparent=1&width=630&show-splatoon3-fest-team=1');
+  imgElement.setAttribute('alt', 'Nintendo Switch presence');
+
+  // Append elements to modal content
+  pictureElement.appendChild(sourceElement);
+  pictureElement.appendChild(imgElement);
+  modalContent.appendChild(closeButton);
+  modalContent.appendChild(pictureElement);
+
+  // Append modal content container to body
+  document.body.appendChild(modalContent);
+
+  // Add class to body to dim the screen
+  document.body.classList.add('modal-open');
+}
+
       // Update modal content
       updateModalContent(onlineStatus, gameName);
     })
