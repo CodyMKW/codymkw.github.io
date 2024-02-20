@@ -49,6 +49,9 @@ function updatePresence() {
 
 // Function to open modal
 function openModal() {
+  // Update presence information before opening the modal
+  updatePresence();
+
   // Create modal container
   const modalContainer = document.createElement('div');
   modalContainer.classList.add('modal-container');
@@ -83,12 +86,6 @@ function openModal() {
   modalContent.appendChild(pictureElement);
   modalContainer.appendChild(modalContent);
   
-  // Clear any existing modal content
-  const existingModalContainer = document.querySelector('.modal-container');
-  if (existingModalContainer) {
-    existingModalContainer.parentNode.removeChild(existingModalContainer);
-  }
-
   // Append modal container to body
   document.body.appendChild(modalContainer);
   
@@ -109,7 +106,7 @@ function closeModal() {
 // Call the function initially to update the content
 updatePresence();
 
-// Update presence every 5 seconds
+// Update presence and modal content every 5 seconds
 setInterval(updatePresence, 5000);
 
 // Birthday code
