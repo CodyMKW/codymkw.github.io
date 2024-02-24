@@ -107,7 +107,19 @@ const weapons = [
   "Snipewriter 58",
   "Neo Splatana Stamper",
   "Reef-Lux 450 Deco",
-  "Enperry Splat Duelies"
+  "Enperry Splat Duelies",
+  "Order Shot Replica",
+  "Order Blaster Replica",
+  "Order Roller Replica",
+  "Orderbrush Replica",
+  "Order Charger Replica",
+  "Order Slosher Replica",
+  "Order Splatling Replica",
+  "Order Dualie Replica",
+  "Order Brella Replica",
+  "Order Stringer Replica",
+  "Order Splatana Replica",
+  "Octo Shot Replica"
 ];
 
 const headgears = [
@@ -296,7 +308,19 @@ const headgears = [
   "Dapperdasher Hat",
   "Coral Wreath",
   "Golden Gala Masque",
-  "Octopearl Crown"
+  "Octopearl Crown",
+  "Order Earring Replica",
+  "Order Regulator Replica",
+  "Controller VM",
+  "Parallel Mask",
+  "Pearl Plushie",
+  "Octoleet Goggles",
+  "Worker's Head Towel",
+  "El Rey Calamar",
+  "Teal Pinhole Shades",
+  "Green Pinhole Shades",
+  "Pink Pinhole Shades",
+  "Yellow Pinhole Shades"
 ];
 
 
@@ -553,7 +577,12 @@ const shirts = [
   "Fuzzly Sweater",
   "SplatJack 5000",
   "Hacker Jacket",
-  "Frivolous Paw Suit"
+  "Frivolous Paw Suit",
+  "Order Suit Replica",
+  "North-Country Parka",
+  "Octoleet Armor",
+  "Dev Uniform",
+  "Cooler Jacket"
 ];
 
 
@@ -715,7 +744,20 @@ const shoes = [
   "Spiked Duck Boots",
   "Buckle-Down Boots",
   "Tricolor Boaties",
-  "Trevally Derby Rollers"
+  "Trevally Derby Rollers",
+  "Order Boot Replicas",
+  "Octoleet Boots",
+  "Knockout Boots",
+  "Burden of Floof",
+  "Shivery Squidkid III",
+  "Fried Squidkid III",
+  "Big Squidkid III",
+  "Chained DC Toejamz",
+  "Jeweled DC Toejamz",
+  "Swirled DC Toejamz",
+  "Trifecta Duck Boots",
+  "Trifecta Hi-Tops",
+  "Trifecta Sandals"
 ];
 
 
