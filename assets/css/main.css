@@ -384,6 +384,10 @@ h1.notfoundheading {
   margin-bottom: 10px;
 }
 
+#friendCodeContent b {
+    font-size: 35px;
+}
+
 #friendCodeContent img {
   max-width: 100%;
   max-height: 250px;
