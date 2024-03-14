@@ -135,6 +135,10 @@ button:hover {
 }
 
 /* Game Status styles */
+.modal-container img {
+  max-width: 100%;
+}
+
 #statusContent {
   padding: 20px;
   background-color: #111111c9;
