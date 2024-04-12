@@ -93,6 +93,9 @@ function updateFrameOptions() {
           "Team_Drums.png",
           "Team_Guitar.png",
           "Team_Keyboard.png",
+          "Team_Chicks.png",
+          "Team_Li'l_Bunnies.png",
+          "Team_Bear_Cubs.png",
           // Add more octopus frame options here
       ],
       squid: [
@@ -132,6 +135,9 @@ function updateFrameOptions() {
         "Team_Drums.png",
         "Team_Guitar.png",
         "Team_Keyboard.png",
+        "Team_Chicks.png",
+        "Team_Li'l_Bunnies.png",
+        "Team_Bear_Cubs.png",
         // Add more squid frame options here
       ]
   };
