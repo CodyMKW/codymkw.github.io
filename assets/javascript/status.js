@@ -205,6 +205,9 @@ if (vsMode && vsMode.name) {
         case 'Anarchy Battle':
             splatoonModeElement.style.color = '#d17d02';
             break;
+        case 'Challenge':
+            splatoonModeElement.style.color = '#d10263';
+            break;
         default:
             // Set a default color if the mode name doesn't match any case
             splatoonModeElement.style.color = '#FFFFFF'; // Choose the desired default color
