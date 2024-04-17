@@ -175,3 +175,27 @@ function getOrdinalSuffix(number) {
      
      // Update the footer text
      footer.innerHTML = footerText;
+
+// Function to check if the URL matches a specific domain
+function isSpecificDomain(url, domain) {
+  return url.indexOf(domain) !== -1;
+}
+
+// Function to change the title and favicon based on the URL
+function updateTitleAndFavicon() {
+  // Get the current URL
+  var currentUrl = window.location.href;
+
+  // Check if the URL matches the desired domain
+  if (isSpecificDomain(currentUrl, 'codymkw.netlify.app')) {
+    // Change the title to include [BETA]
+    document.title = '[BETA] CodyMKW';
+
+    // Change the favicon
+    var favicon = document.querySelector("link[rel='icon']");
+    favicon.href = 'https://i.imgur.com/1Tttgz6.png';
+  }
+}
+
+// Call the function to update title and favicon
+updateTitleAndFavicon();
