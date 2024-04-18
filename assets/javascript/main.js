@@ -183,8 +183,8 @@ function updateTitleAndFavicon() {
 
   // Check if the URL matches the desired domain
   if (isSpecificDomain(currentUrl, 'codymkw.netlify.app')) {
-    // Add [BETA] before the existing title
-    document.title = '[BETA] ' + document.title;
+    // Add [PREVIEW] before the existing title
+    document.title = '[PREVIEW] ' + document.title;
 
     // Change the favicon
     var favicon = document.querySelector("link[rel='icon']");
@@ -217,14 +217,14 @@ function openBetaModal() {
     closeButton.innerHTML = 'X';
     closeButton.onclick = closeModal;
 
-    // Add text indicating beta version and link to the public version
+    // Add text indicating preview version and link to the main version
     const betaText = document.createElement('p');
-    betaText.textContent = 'This is a beta version of the webpage. Click ';
+    betaText.textContent = 'This is a preview version of the webpage. Click ';
     const betaLink = document.createElement('a');
     betaLink.href = 'https://codymkw.github.io';
     betaLink.textContent = 'here';
     betaText.appendChild(betaLink);
-    betaText.innerHTML += ' to visit the public version.';
+    betaText.innerHTML += ' to visit the main version.';
 
     modalContent.appendChild(closeButton);
     modalContent.appendChild(betaText);
