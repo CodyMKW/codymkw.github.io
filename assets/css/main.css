@@ -541,11 +541,14 @@ footer {
   overflow: hidden;
 }
 
-.beta-icon {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  z-index: 9999;
+#beta-icon {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 50px; /* Adjust size as needed */
+    height: auto;
+    cursor: pointer;
+    z-index: 9999; /* Ensure it's above other content */
 }
 
 .beta-icon img {
