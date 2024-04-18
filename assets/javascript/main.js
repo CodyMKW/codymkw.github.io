@@ -219,7 +219,7 @@ function openBetaModal() {
 
     // Add text indicating preview version and link to the main version
     const betaText = document.createElement('p');
-    betaText.innerHTML = '<b><u>Preview Webpage</u></b><br>This is a preview version of the webpage. Click ';
+    betaText.innerHTML = '<h1><b><u>Preview Webpage</u></b></h1><br>This is a preview version of the webpage. Click ';
     const betaLink = document.createElement('a');
     betaLink.href = 'https://codymkw.github.io';
     betaLink.textContent = 'here';
