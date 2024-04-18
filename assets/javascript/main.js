@@ -188,8 +188,8 @@ function updateTitleAndFavicon() {
 
   // Check if the URL matches the desired domain
   if (isSpecificDomain(currentUrl, 'codymkw.netlify.app')) {
-    // Change the title to include [BETA]
-    document.title = '[BETA] CodyMKW';
+    // Add [BETA] before the existing title
+    document.title = '[BETA] ' + document.title;
 
     // Change the favicon
     var favicon = document.querySelector("link[rel='icon']");
