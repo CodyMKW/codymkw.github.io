@@ -541,6 +541,18 @@ footer {
   overflow: hidden;
 }
 
+.beta-icon {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 9999;
+}
+
+.beta-icon img {
+  width: 50px;
+  height: auto;
+}
+
 /* Birthday shimmer */
 .shimmer {
   color: rgba(13, 129, 0, 0.7);
