@@ -176,11 +176,6 @@ function getOrdinalSuffix(number) {
      // Update the footer text
      footer.innerHTML = footerText;
 
-// Function to check if the URL matches a specific domain
-function isSpecificDomain(url, domain) {
-  return url.indexOf(domain) !== -1;
-}
-
 // Function to change the title and favicon based on the URL
 function updateTitleAndFavicon() {
   // Get the current URL
@@ -194,7 +189,21 @@ function updateTitleAndFavicon() {
     // Change the favicon
     var favicon = document.querySelector("link[rel='icon']");
     favicon.href = 'https://i.imgur.com/1Tttgz6.png';
+
+    // Add the beta icon to the page
+    var betaIcon = document.createElement('div');
+    betaIcon.className = 'beta-icon';
+    var img = document.createElement('img');
+    img.src = 'https://i.imgur.com/1Tttgz6.png';
+    img.alt = 'Beta Icon';
+    betaIcon.appendChild(img);
+    document.body.appendChild(betaIcon);
   }
+}
+
+// Function to check if the URL matches a specific domain
+function isSpecificDomain(url, domain) {
+  return url.includes(domain);
 }
 
 // Call the function to update title and favicon
