@@ -241,6 +241,11 @@ h1.notfoundheading {
   text-align: center;
 }
 
+}
+h1.betamessagetitle {
+    text-align: center;
+}
+
 /* Credits styles */
 #creditsContent {
   padding: 20px;
