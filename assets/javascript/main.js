@@ -199,6 +199,9 @@ function updateTitleAndFavicon() {
     img.alt = 'Beta Icon';
     betaIcon.appendChild(img);
     document.body.appendChild(betaIcon);
+
+    // Add event listener to the link to beta modal
+    document.getElementById('beta-icon').addEventListener('click', openBetaModal);
   }
 }
 
@@ -230,8 +233,6 @@ function openBetaModal() {
     document.body.appendChild(modalContainer);
     document.body.classList.add('modal-open');
 }
-// Add event listener to the link to beta modal
-document.getElementById('beta-icon').addEventListener('click', openBetaModal);
 
 // Function to check if the URL matches a specific domain
 function isSpecificDomain(url, domain) {
