@@ -193,6 +193,7 @@ function updateTitleAndFavicon() {
     // Add the beta icon to the page
     var betaIcon = document.createElement('div');
     betaIcon.className = 'beta-icon';
+    betaIcon.id = 'beta-icon';
     var img = document.createElement('img');
     img.src = 'https://i.imgur.com/1Tttgz6.png';
     img.alt = 'Beta Icon';
@@ -200,6 +201,37 @@ function updateTitleAndFavicon() {
     document.body.appendChild(betaIcon);
   }
 }
+
+function openBetaModal() {
+    const modalContainer = document.createElement('div');
+    modalContainer.classList.add('modal-container');
+
+    const modalContent = document.createElement('div');
+    modalContent.classList.add('modal-content');
+
+    const closeButton = document.createElement('span');
+    closeButton.classList.add('close-button');
+    closeButton.innerHTML = 'X';
+    closeButton.onclick = closeModal;
+
+    // Add text indicating beta version and link to the public version
+    const betaText = document.createElement('p');
+    betaText.textContent = 'This is a beta version of the webpage. Click ';
+    const betaLink = document.createElement('a');
+    betaLink.href = 'https://codymkw.github.io';
+    betaLink.textContent = 'here';
+    betaText.appendChild(betaLink);
+    betaText.innerHTML += ' to visit the public version.';
+
+    modalContent.appendChild(closeButton);
+    modalContent.appendChild(betaText);
+    modalContainer.appendChild(modalContent);
+
+    document.body.appendChild(modalContainer);
+    document.body.classList.add('modal-open');
+}
+// Add event listener to the link to beta modal
+document.getElementById('beta-icon').addEventListener('click', openBetaModal);
 
 // Function to check if the URL matches a specific domain
 function isSpecificDomain(url, domain) {
