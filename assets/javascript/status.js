@@ -200,6 +200,8 @@ if (vsMode && vsMode.name) {
     switch (vsMode.name) {
         case 'Splatfest Battle':
             splatoonModeElement.style.background = `linear-gradient(to right, ${splatfestColors[0]}, ${splatfestColors[1]}, ${splatfestColors[2]})`;
+            splatoonModeElement.style.webkitBackgroundClip = 'text';
+            splatoonModeElement.style.webkitTextFillColor = 'transparent';
             break;
         case 'Tableturf Battle':
             splatoonModeElement.style.color = '#0534a3';
