@@ -219,12 +219,20 @@ function openBetaModal() {
 
     // Add text indicating preview version and link to the main version
     const betaText = document.createElement('p');
-    betaText.innerHTML = '<h1 style="text-align: center;"><b><u>Preview Webpage</u></b></h1><br>This is a preview version of the webpage. It gets updates for testing before being pushed to the main version.<br><div style="text-align: center;">Click ';
+    betaText.innerHTML = '<h1 style="text-align: center;"><b><u>Preview Webpage</u></b></h1><br>This is a preview version of the webpage. It gets updates for testing before being pushed to the main version. <br>';
+
+    // Create a container for the link and center it
+    const linkContainer = document.createElement('div');
+    linkContainer.style.textAlign = 'center';
+
+    // Create the link
     const betaLink = document.createElement('a');
     betaLink.href = 'https://codymkw.github.io';
-    betaLink.textContent = 'here';
-    betaText.appendChild(betaLink);
-    betaText.innerHTML += ' to visit the main version.</div>';
+    betaLink.textContent = 'Click here to visit the main version.';
+    linkContainer.appendChild(betaLink);
+
+    // Append the link container to the beta text
+    betaText.appendChild(linkContainer);
 
     modalContent.appendChild(closeButton);
     modalContent.appendChild(betaText);
