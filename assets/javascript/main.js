@@ -175,3 +175,77 @@ function getOrdinalSuffix(number) {
      
      // Update the footer text
      footer.innerHTML = footerText;
+
+// Function to change the title and favicon based on the URL
+function updateTitleAndFavicon() {
+  // Get the current URL
+  var currentUrl = window.location.href;
+
+  // Check if the URL matches the desired domain
+  if (isSpecificDomain(currentUrl, 'codymkw.netlify.app')) {
+    // Add [PREVIEW] before the existing title
+    document.title = '[PREVIEW] ' + document.title;
+
+    // Change the favicon
+    var favicon = document.querySelector("link[rel='icon']");
+    favicon.href = 'https://i.imgur.com/1Tttgz6.png';
+
+    // Add the beta icon to the page
+    var betaIcon = document.createElement('div');
+    betaIcon.className = 'beta-icon';
+    betaIcon.id = 'beta-icon';
+    var img = document.createElement('img');
+    img.src = 'https://i.imgur.com/1Tttgz6.png';
+    img.alt = 'Beta Icon';
+    betaIcon.appendChild(img);
+    document.body.appendChild(betaIcon);
+
+    // Add event listener to the link to beta modal
+    document.getElementById('beta-icon').addEventListener('click', openBetaModal);
+  }
+}
+
+function openBetaModal() {
+    const modalContainer = document.createElement('div');
+    modalContainer.classList.add('modal-container');
+
+    const modalContent = document.createElement('div');
+    modalContent.classList.add('modal-content');
+
+    const closeButton = document.createElement('span');
+    closeButton.classList.add('close-button');
+    closeButton.innerHTML = 'X';
+    closeButton.onclick = closeModal;
+
+    // Add text indicating preview version and link to the main version
+    const betaText = document.createElement('p');
+    betaText.innerHTML = '<h1 style="text-align: center;"><b><u>Preview Webpage</u></b></h1><br>This is a preview version of the webpage. It gets updates for testing before being pushed to the main version. <br>';
+
+    // Create a container for the link and center it
+    const linkContainer = document.createElement('div');
+    linkContainer.style.textAlign = 'center';
+
+    // Create the link
+    const betaLink = document.createElement('a');
+    betaLink.href = 'https://codymkw.github.io';
+    betaLink.textContent = 'Click here to visit the main version.';
+    linkContainer.appendChild(betaLink);
+
+    // Append the link container to the beta text
+    betaText.appendChild(linkContainer);
+
+    modalContent.appendChild(closeButton);
+    modalContent.appendChild(betaText);
+    modalContainer.appendChild(modalContent);
+
+    document.body.appendChild(modalContainer);
+    document.body.classList.add('modal-open');
+}
+
+// Function to check if the URL matches a specific domain
+function isSpecificDomain(url, domain) {
+  return url.includes(domain);
+}
+
+// Call the function to update title and favicon
+updateTitleAndFavicon();

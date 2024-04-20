@@ -12,11 +12,16 @@ async function fetchData() {
         // Fetch the additional JSON file
         const subtextResponse = await fetch('https://api.npoint.io/f96cb06703bad4f850de');
         const subtextData = await subtextResponse.json();
+        const splatfestColorsResponse = await fetch('https://api.npoint.io/f96cb06703bad4f850de');
+        const splatfestColorsData = await splatfestColorsResponse.json();
 
         // Update HTML with fetched subtext data
         const acnhSubtext = subtextData.games.acnh.subtext;
         const fortSubtext = subtextData.games.fort.subtext;
         const mhurSubtext = subtextData.games.mhur.subtext;
+
+        // Update HTML with fetched splatfestColors data
+        const splatfestColors = splatfestColorsData.splatfestColors;
 
         // Update HTML with fetched data
         document.getElementById('avatarImage').src = data.friend.imageUri;
@@ -193,6 +198,11 @@ if (data.splatoon3) {
 const splatoonModeElement = document.getElementById('splatoonMode');
 if (vsMode && vsMode.name) {
     switch (vsMode.name) {
+        case 'Splatfest Battle':
+            splatoonModeElement.style.background = `linear-gradient(to right, ${splatfestColors[0]}, ${splatfestColors[1]}, ${splatfestColors[2]})`;
+            splatoonModeElement.style.webkitBackgroundClip = 'text';
+            splatoonModeElement.style.webkitTextFillColor = 'transparent';
+            break;
         case 'Tableturf Battle':
             splatoonModeElement.style.color = '#0534a3';
             break;
