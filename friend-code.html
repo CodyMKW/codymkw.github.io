@@ -72,7 +72,7 @@
         fetch('https://api.npoint.io/5c5e1c0c97da80d538b4')
             .then(response => response.json())
             .then(data => {
-                const friendcodeinfo = data.friendcodeinfo[0]; // Assuming there's only one item in the array
+                const friendcodeInfo = data.friendcodeinfo[0]; // Assuming there's only one item in the array
 
                 document.getElementById('friendCodeContent').innerHTML = `
                         <h2><i class="emoji ninSwitch"></i></h2>
