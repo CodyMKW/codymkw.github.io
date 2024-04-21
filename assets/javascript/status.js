@@ -192,13 +192,18 @@ if (data.splatoon3) {
         document.getElementById('splatoonStagesLabel').style.display = 'block';
         const stageNames = vsSetting.vsStages.map(stage => stage.name).join(' and ');
         document.getElementById('splatoonStages').textContent = stageNames;
-    }
+    } 
 
 // Mode name colors for Splatoon 3
 const splatoonModeElement = document.getElementById('splatoonMode');
 if (vsMode && vsMode.name) {
     switch (vsMode.name) {
         case 'Splatfest Battle':
+            splatoonModeElement.style.background = `linear-gradient(to right, ${splatfestColors[0]}, ${splatfestColors[1]}, ${splatfestColors[2]})`;
+            splatoonModeElement.style.webkitBackgroundClip = 'text';
+            splatoonModeElement.style.webkitTextFillColor = 'transparent';
+            break;
+        case 'Tricolor Battle':
             splatoonModeElement.style.background = `linear-gradient(to right, ${splatfestColors[0]}, ${splatfestColors[1]}, ${splatfestColors[2]})`;
             splatoonModeElement.style.webkitBackgroundClip = 'text';
             splatoonModeElement.style.webkitTextFillColor = 'transparent';
