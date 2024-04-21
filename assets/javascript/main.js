@@ -249,20 +249,3 @@ function isSpecificDomain(url, domain) {
 
 // Call the function to update title and favicon
 updateTitleAndFavicon();
-
-fetch('https://api.npoint.io/5c5e1c0c97da80d538b4')
-            .then(response => response.json())
-            .then(data => {
-                const dreamInfo = data.dreaminfo[0]; // Assuming there's only one item in the array
-
-                document.getElementById('DreamAddressContent').innerHTML = `
-                    <h2><i class="emoji acLuna"></i></h2>
-                    <h2>${dreamInfo.islandname}</h2>
-                    <h2>${dreamInfo.dreamaddress}</h2>
-                    <small>Dream Address was last updated on ${dreamInfo.lastupdated}</small>
-                    <p><img src="${dreamInfo.screenshot}" alt="ACNH Screenshot"></p>
-                    <p><b>Number of Visitors:</b> ${dreamInfo.numberofvisitors} <small>(as of ${dreamInfo.lastupdated2})</small></p>
-                    <p align="left">${dreamInfo.description}</p>
-                `;
-            })
-            .catch(error => console.error('Error fetching JSON:', error));
