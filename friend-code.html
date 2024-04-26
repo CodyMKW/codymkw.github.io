@@ -81,6 +81,12 @@
                         <p><button onclick="window.open('${friendcodeInfo.friendcodelink}', '_blank')">Open in the Nintendo Switch Online app or nxapi</button></p>
                         <p>Or, scan the QR code below to open the Nintendo Switch Online mobile app for <a href="https://play.google.com/store/apps/details?id=com.nintendo.znca&hl=en_US&gl=US" target="_blank">Android</a>/<a href="https://apps.apple.com/app/id1234806557" target="_blank">iOS</a> and send me a friend request! 😊</p>
                         <p><img src="${friendcodeInfo.friendcodeqr}" alt="Switch QR Code"></p>
+                        <hr>
+                        <h2><i class="emoji pretendo"></i></h2>
+                        <h2>Pretendo 3DS Friend Code</h2>
+                        <p><b>${friendcodeInfo['3dsfriendcode']}</b></p>
+                        <h2>Pretendo Wii U ID</h2>
+                        <p><b>${friendcodeInfo.pretendoid}</b></p>
                 `;
             })
             .catch(error => console.error('Error fetching JSON:', error));
