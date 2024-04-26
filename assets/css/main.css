@@ -146,7 +146,9 @@ button:hover {
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
-
+#statusContent h3 {
+  margin-bottom: -23px;
+}
         #gameInfo {
             background-color: #111111c9;
             border-radius: 10px;
