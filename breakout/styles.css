@@ -35,6 +35,16 @@ button:hover {
     background-color: #005f99;
 }
 
+#customization {
+    margin: 20px auto;
+    padding: 10px;
+    max-width: 600px;
+    text-align: left;
+    background-color: #444;
+    border: 1px solid #555;
+    border-radius: 5px;
+}
+
 #patch-notes {
     margin: 20px auto;
     padding: 10px;
