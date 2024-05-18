@@ -17,6 +17,13 @@ let score = 0;
 let ballRadius = 10, x, y;
 let gameWon = false;
 
+// Sound effects
+const brickHitSound = new Audio('brickHit.mp3');
+const paddleHitSound = new Audio('paddleHit.mp3');
+const wallHitSound = new Audio('wallHit.mp3');
+const gameOverSound = new Audio('gameOver.mp3');
+const winSound = new Audio('win.mp3');
+
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
 
@@ -83,8 +90,10 @@ function collisionDetection() {
                     dy = -dy;
                     b.status = 0;
                     score++;
+                    brickHitSound.play();
                     if (score === brickRowCount * brickColumnCount) {
                         gameWon = true;
+                        winSound.play();
                         gameOverMessage.innerText = "You Win!";
                         finalScore.innerText = "Score: " + score;
                         gameOverScreen.style.display = 'block';
@@ -145,11 +154,19 @@ function draw() {
     drawScore();
     collisionDetection();
 
-    if (x + dx > canvas.width - ballRadius || x - ballRadius + dx < 0) dx = -dx;
-    if (y + dy < ballRadius) dy = -dy;
-    else if (y + dy > canvas.height - ballRadius) {
-        if (x > paddleX && x < paddleX + paddleWidth) dy = -dy;
-        else {
+    if (x + dx > canvas.width - ballRadius || x - ballRadius + dx < 0) {
+        dx = -dx;
+        wallHitSound.play();
+    }
+    if (y + dy < ballRadius) {
+        dy = -dy;
+        wallHitSound.play();
+    } else if (y + dy > canvas.height - ballRadius) {
+        if (x > paddleX && x < paddleX + paddleWidth) {
+            dy = -dy;
+            paddleHitSound.play();
+        } else {
+            gameOverSound.play();
             gameOverMessage.innerText = "Game Over";
             finalScore.innerText = "Score: " + score;
             gameOverScreen.style.display = 'block';
