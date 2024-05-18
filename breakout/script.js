@@ -5,6 +5,8 @@ const gameOverScreen = document.getElementById("game-over-screen");
 const gameOverMessage = document.getElementById("game-over-message");
 const finalScore = document.getElementById("final-score");
 const scoreDisplay = document.getElementById("score-display");
+const paddleColorInput = document.getElementById("paddle-color");
+const ballColorInput = document.getElementById("ball-color");
 
 let ballSpeed;
 let dx, dy;
@@ -18,6 +20,8 @@ let score = 0;
 let ballRadius = 10, x, y;
 let gameWon = false;
 let paddleSpeed = 7;
+let paddleColor = "#0095DD";
+let ballColor = "#0095DD";
 
 // Sound effects
 const brickHitSound = new Audio('brickHit.mp3');
@@ -96,18 +100,24 @@ function startGame(difficulty) {
         }
     }
 
+    score = 0;
+    gameWon = false;
+
     startScreen.style.display = 'none';
     canvas.style.display = 'block';
-    gameOverScreen.style.display = 'none';
     scoreDisplay.style.display = 'block';
-    score = 0;
+    gameOverScreen.style.display = 'none';
+
+    loadCustomizations();
     updateScore();
-    gameWon = false;
     draw();
 }
 
 function restartGame() {
-    document.location.reload();
+    startScreen.style.display = 'block';
+    canvas.style.display = 'none';
+    gameOverScreen.style.display = 'none';
+    scoreDisplay.style.display = 'none';
 }
 
 function collisionDetection() {
@@ -119,17 +129,15 @@ function collisionDetection() {
                     dy = -dy;
                     b.status = 0;
                     score++;
-                    updateScore();
                     brickHitSound.play();
                     if (score === brickRowCount * brickColumnCount) {
-                        gameWon = true;
                         winSound.play();
+                        gameWon = true;
                         gameOverMessage.innerText = "You Win!";
                         finalScore.innerText = "Score: " + score;
                         gameOverScreen.style.display = 'block';
                         canvas.style.display = 'none';
                         scoreDisplay.style.display = 'none';
-                        return;
                     }
                 }
             }
@@ -144,7 +152,7 @@ function updateScore() {
 function drawBall() {
     ctx.beginPath();
     ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
-    ctx.fillStyle = "#0095DD";
+    ctx.fillStyle = ballColor;
     ctx.fill();
     ctx.closePath();
 }
@@ -152,7 +160,7 @@ function drawBall() {
 function drawPaddle() {
     ctx.beginPath();
     ctx.rect(paddleX, canvas.height - paddleHeight, paddleWidth, paddleHeight);
-    ctx.fillStyle = "#0095DD";
+    ctx.fillStyle = paddleColor;
     ctx.fill();
     ctx.closePath();
 }
@@ -228,3 +236,23 @@ function resizeCanvas() {
 }
 
 resizeCanvas();
+
+function saveCustomizations() {
+    paddleColor = paddleColorInput.value;
+    ballColor = ballColorInput.value;
+    localStorage.setItem('paddleColor', paddleColor);
+    localStorage.setItem('ballColor', ballColor);
+}
+
+function loadCustomizations() {
+    const savedPaddleColor = localStorage.getItem('paddleColor');
+    const savedBallColor = localStorage.getItem('ballColor');
+    if (savedPaddleColor) {
+        paddleColor = savedPaddleColor;
+        paddleColorInput.value = savedPaddleColor;
+    }
+    if (savedBallColor) {
+        ballColor = savedBallColor;
+        ballColorInput.value = savedBallColor;
+    }
+}
