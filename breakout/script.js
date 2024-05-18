@@ -11,7 +11,7 @@ const saveMessage = document.getElementById("save-message");
 
 let ballSpeed;
 let dx, dy;
-let paddleHeight = 10, paddleWidth = 100, paddleX = (canvas.width - paddleWidth) / 2;
+let paddleHeight = 10, paddleWidth = 100, paddleX;
 let rightPressed = false, leftPressed = false;
 let brickRowCount, brickColumnCount;
 let brickWidth, brickHeight = 20, brickPadding = 10, brickOffsetTop = 30, brickOffsetLeft = 30;
@@ -103,6 +103,7 @@ function startGame(difficulty) {
 
     score = 0;
     gameWon = false;
+    paddleX = (canvas.width - paddleWidth) / 2;  // Ensure paddle starts in the middle
 
     startScreen.style.display = 'none';
     canvas.style.display = 'block';
@@ -131,6 +132,7 @@ function collisionDetection() {
                     b.status = 0;
                     score++;
                     brickHitSound.play();
+                    updateScore();
                     if (score === brickRowCount * brickColumnCount) {
                         winSound.play();
                         gameWon = true;
@@ -246,6 +248,21 @@ function saveCustomizations() {
     saveMessage.style.display = 'block';
     setTimeout(() => {
         saveMessage.style.display = 'none';
+    }, 2000);  // Hide the message after 2 seconds
+}
+
+function resetCustomizations() {
+    paddleColor = "#0095DD";
+    ballColor = "#0095DD";
+    paddleColorInput.value = "#0095DD";
+    ballColorInput.value = "#0095DD";
+    localStorage.removeItem('paddleColor');
+    localStorage.removeItem('ballColor');
+    saveMessage.style.display = 'block';
+    saveMessage.innerText = "Customizations Reset!";
+    setTimeout(() => {
+        saveMessage.style.display = 'none';
+        saveMessage.innerText = "Customizations Saved!";
     }, 2000);  // Hide the message after 2 seconds
 }
 

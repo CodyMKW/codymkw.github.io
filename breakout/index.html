@@ -13,32 +13,40 @@
         <button onclick="startGame('medium')">Medium</button>
         <button onclick="startGame('hard')">Hard</button>
         <button onclick="startGame('insane')">Insane</button>
-        <div id="customization">
-            <h2>Customize</h2>
-            <label for="paddle-color">Paddle Color:</label>
-            <input type="color" id="paddle-color" name="paddle-color" value="#0095DD">
-            <br>
-            <label for="ball-color">Ball Color:</label>
-            <input type="color" id="ball-color" name="ball-color" value="#0095DD">
-            <br>
-            <button onclick="saveCustomizations()">Save Customizations</button>
-            <p id="save-message" style="display:none; color: green;">Customizations Saved!</p>
-        </div>
-        <div id="patch-notes">
-            <h2>Patch Notes</h2>
-            <ul>
-                <li>Enhanced support for mobile devices with touch controls.</li>
-                <li>Added user customization options for paddle and ball colors, which are saved across sessions.</li>
-            </ul>
+
+        <div class="customization-container">
+            <div class="customization-box">
+                <h2>Customizations</h2>
+                <label for="paddle-color">Paddle Color:</label>
+                <input type="color" id="paddle-color" value="#0095DD">
+                <br>
+                <label for="ball-color">Ball Color:</label>
+                <input type="color" id="ball-color" value="#0095DD">
+                <br>
+                <button onclick="saveCustomizations()">Save Customizations</button>
+                <button onclick="resetCustomizations()">Reset to Default</button>
+                <div id="save-message" style="display: none;">Customizations Saved!</div>
+            </div>
+
+            <div class="patch-notes-box">
+                <h2>Patch Notes</h2>
+                <ul>
+                    <li>Added user customization options for paddle and ball colors.</li>
+                    <li>Added mobile support and touch controls.</li>
+                    <li>Fixed score update issue during gameplay.</li>
+                    <li>Added reset button for customizations.</li>
+                    <li>Ensured paddle starts in the middle when starting a new game.</li>
+                </ul>
+            </div>
         </div>
     </div>
-    <canvas id="gameCanvas" width="800" height="600" style="display:none;"></canvas>
-    <div id="game-over-screen" style="display:none;">
-        <h2 id="game-over-message"></h2>
+    <div id="game-over-screen" style="display: none;">
+        <h1 id="game-over-message"></h1>
         <p id="final-score"></p>
         <button onclick="restartGame()">Restart</button>
     </div>
-    <div id="score-display" style="display:none;">Score: 0</div>
+    <canvas id="gameCanvas" style="display: none;"></canvas>
+    <div id="score-display" style="display: none;">Score: 0</div>
     <script src="script.js"></script>
 </body>
 </html>
