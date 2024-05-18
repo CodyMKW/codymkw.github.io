@@ -13,6 +13,17 @@
         <button onclick="startGame('medium')">Medium</button>
         <button onclick="startGame('hard')">Hard</button>
         <button onclick="startGame('insane')">Insane</button>
+        <div id="patch-notes">
+            <h2>Patch Notes</h2>
+            <ul>
+                <li>Added sound effects for brick hit, paddle hit, and wall hit.</li>
+                <li>Introduced "Insane" difficulty with increased ball speed, more bricks, and smaller paddle.</li>
+                <li>Adjusted paddle speed for "Insane" difficulty to make it slightly faster.</li>
+                <li>Fixed brick alignment issues for different difficulty levels.</li>
+                <li>Updated UI for a more professional look.</li>
+                <li>Score display added to game over screen.</li>
+            </ul>
+        </div>
     </div>
     <canvas id="gameCanvas" width="800" height="600" style="display:none;"></canvas>
     <div id="game-over-screen" style="display:none;">
@@ -20,6 +31,7 @@
         <p id="final-score"></p>
         <button onclick="restartGame()">Restart</button>
     </div>
+    <div id="score-display" style="display:none;">Score: 0</div>
     <script src="script.js"></script>
 </body>
 </html>
