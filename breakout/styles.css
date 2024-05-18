@@ -1,47 +1,71 @@
 body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-    background: #222;
-    color: white;
     font-family: Arial, sans-serif;
     text-align: center;
+    background-color: #333;
+    color: #f4f4f4;
+    margin: 0;
+    padding: 0;
 }
 
 #start-screen, #game-over-screen {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-#start-screen h1, #game-over-screen h1 {
-    margin-bottom: 20px;
-}
-
-.difficulty-buttons {
-    display: flex;
-    gap: 10px;
-}
-
-#start-screen button, #game-over-screen button {
-    margin: 10px;
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
-    background: #0095DD;
-    border: none;
-    color: white;
-    border-radius: 5px;
-    transition: background 0.3s;
-}
-
-#start-screen button:hover, #game-over-screen button:hover {
-    background: #007bb5;
+    margin-top: 50px;
 }
 
 #gameCanvas {
-    display: none;
-    background: #000;
+    border: 1px solid #0095DD;
+    margin: 20px auto;
+    display: block;
+    background-color: #222;
+}
+
+button {
+    padding: 10px 20px;
+    margin: 10px;
+    background-color: #0095DD;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+button:hover {
+    background-color: #005f99;
+}
+
+#patch-notes {
+    margin: 20px auto;
+    padding: 10px;
+    max-width: 600px;
+    text-align: left;
+    background-color: #444;
+    border: 1px solid #555;
+    border-radius: 5px;
+}
+
+#patch-notes h2 {
+    color: #0095DD;
+}
+
+#patch-notes ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+#patch-notes ul li {
+    margin: 5px 0;
+    padding: 5px;
+    background-color: #555;
+    border: 1px solid #666;
+    border-radius: 3px;
+}
+
+#score-display {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    font-size: 20px;
+    color: #fff;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 10px;
+    border-radius: 5px;
 }
