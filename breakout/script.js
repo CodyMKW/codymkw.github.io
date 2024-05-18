@@ -28,6 +28,8 @@ const winSound = new Audio('win.mp3');
 
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
+canvas.addEventListener("touchstart", touchStartHandler, false);
+canvas.addEventListener("touchmove", touchMoveHandler, false);
 
 function keyDownHandler(e) {
     if (e.key === "Right" || e.key === "ArrowRight") rightPressed = true;
@@ -37,6 +39,23 @@ function keyDownHandler(e) {
 function keyUpHandler(e) {
     if (e.key === "Right" || e.key === "ArrowRight") rightPressed = false;
     else if (e.key === "Left" || e.key === "ArrowLeft") leftPressed = false;
+}
+
+function touchStartHandler(e) {
+    const touchX = e.touches[0].clientX;
+    if (touchX > window.innerWidth / 2) rightPressed = true;
+    else leftPressed = true;
+}
+
+function touchMoveHandler(e) {
+    const touchX = e.touches[0].clientX;
+    if (touchX > window.innerWidth / 2) {
+        rightPressed = true;
+        leftPressed = false;
+    } else {
+        leftPressed = true;
+        rightPressed = false;
+    }
 }
 
 function startGame(difficulty) {
@@ -198,3 +217,14 @@ function draw() {
         requestAnimationFrame(draw);
     }
 }
+
+window.addEventListener('resize', resizeCanvas, false);
+
+function resizeCanvas() {
+    canvas.width = window.innerWidth > 800 ? 800 : window.innerWidth;
+    canvas.height = window.innerHeight > 600 ? 600 : window.innerHeight;
+    brickWidth = (canvas.width - brickOffsetLeft * 2 - brickPadding * (brickColumnCount - 1)) / brickColumnCount;
+    paddleX = (canvas.width - paddleWidth) / 2;
+}
+
+resizeCanvas();
