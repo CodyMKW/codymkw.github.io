@@ -50,6 +50,11 @@ function startGame(difficulty) {
         ballSpeed = 6;
         brickRowCount = 7;
         brickColumnCount = 9;
+    } else if (difficulty === 'insane') {
+        ballSpeed = 8;
+        brickRowCount = 10;
+        brickColumnCount = 12;
+        paddleWidth = 70;
     }
 
     dx = ballSpeed;
