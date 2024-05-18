@@ -16,6 +16,9 @@ body {
     margin: 20px auto;
     display: block;
     background-color: #222;
+    width: 100%;
+    max-width: 800px;
+    height: auto;
 }
 
 button {
