@@ -4,6 +4,7 @@ const startScreen = document.getElementById("start-screen");
 const gameOverScreen = document.getElementById("game-over-screen");
 const gameOverMessage = document.getElementById("game-over-message");
 const finalScore = document.getElementById("final-score");
+const scoreDisplay = document.getElementById("score-display");
 
 let ballSpeed;
 let dx, dy;
@@ -16,6 +17,7 @@ let colors = ["#FF5733", "#33FF57", "#3357FF", "#FF33A1", "#A133FF"];
 let score = 0;
 let ballRadius = 10, x, y;
 let gameWon = false;
+let paddleSpeed = 7;
 
 // Sound effects
 const brickHitSound = new Audio('brickHit.mp3');
@@ -55,6 +57,7 @@ function startGame(difficulty) {
         brickRowCount = 10;
         brickColumnCount = 12;
         paddleWidth = 70;
+        paddleSpeed = 8;  // Slightly increase paddle speed
     }
 
     dx = ballSpeed;
@@ -77,7 +80,9 @@ function startGame(difficulty) {
     startScreen.style.display = 'none';
     canvas.style.display = 'block';
     gameOverScreen.style.display = 'none';
+    scoreDisplay.style.display = 'block';
     score = 0;
+    updateScore();
     gameWon = false;
     draw();
 }
@@ -95,6 +100,7 @@ function collisionDetection() {
                     dy = -dy;
                     b.status = 0;
                     score++;
+                    updateScore();
                     brickHitSound.play();
                     if (score === brickRowCount * brickColumnCount) {
                         gameWon = true;
@@ -103,12 +109,17 @@ function collisionDetection() {
                         finalScore.innerText = "Score: " + score;
                         gameOverScreen.style.display = 'block';
                         canvas.style.display = 'none';
+                        scoreDisplay.style.display = 'none';
                         return;
                     }
                 }
             }
         }
     }
+}
+
+function updateScore() {
+    scoreDisplay.innerText = "Score: " + score;
 }
 
 function drawBall() {
@@ -145,21 +156,14 @@ function drawBricks() {
     }
 }
 
-function drawScore() {
-    ctx.font = "16px Arial";
-    ctx.fillStyle = "#0095DD";
-    ctx.fillText("Score: " + score, 8, 20);
-}
-
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawBricks();
     drawBall();
     drawPaddle();
-    drawScore();
     collisionDetection();
 
-    if (x + dx > canvas.width - ballRadius || x - ballRadius + dx < 0) {
+    if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
         dx = -dx;
         wallHitSound.play();
     }
@@ -176,6 +180,7 @@ function draw() {
             finalScore.innerText = "Score: " + score;
             gameOverScreen.style.display = 'block';
             canvas.style.display = 'none';
+            scoreDisplay.style.display = 'none';
             return;
         }
     }
@@ -183,8 +188,13 @@ function draw() {
     x += dx;
     y += dy;
 
-    if (rightPressed && paddleX < canvas.width - paddleWidth) paddleX += 7;
-    else if (leftPressed && paddleX > 0) paddleX -= 7;
+    if (rightPressed && paddleX < canvas.width - paddleWidth) {
+        paddleX += paddleSpeed;
+    } else if (leftPressed && paddleX > 0) {
+        paddleX -= paddleSpeed;
+    }
 
-    if (!gameWon) requestAnimationFrame(draw);
+    if (!gameWon) {
+        requestAnimationFrame(draw);
+    }
 }
