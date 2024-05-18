@@ -13,15 +13,21 @@
         <button onclick="startGame('medium')">Medium</button>
         <button onclick="startGame('hard')">Hard</button>
         <button onclick="startGame('insane')">Insane</button>
+        <div id="customization">
+            <h2>Customize</h2>
+            <label for="paddle-color">Paddle Color:</label>
+            <input type="color" id="paddle-color" name="paddle-color" value="#0095DD">
+            <br>
+            <label for="ball-color">Ball Color:</label>
+            <input type="color" id="ball-color" name="ball-color" value="#0095DD">
+            <br>
+            <button onclick="saveCustomizations()">Save Customizations</button>
+        </div>
         <div id="patch-notes">
             <h2>Patch Notes</h2>
             <ul>
-                <li>Improved UI for a more professional look.</li>
-                <li>Fixed brick alignment issues for different difficulty levels.</li>
-                <li>Score display added to game over screen and during gameplay.</li>
-                <li>Added "Insane" difficulty with increased ball speed, more bricks, and smaller paddle.</li>
-                <li>Added sound effects for brick hit, paddle hit, and wall hit.</li>
                 <li>Enhanced support for mobile devices with touch controls.</li>
+                <li>Added user customization options for paddle and ball colors, which are saved across sessions.</li>
             </ul>
         </div>
     </div>
