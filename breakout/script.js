@@ -7,6 +7,7 @@ const finalScore = document.getElementById("final-score");
 const scoreDisplay = document.getElementById("score-display");
 const paddleColorInput = document.getElementById("paddle-color");
 const ballColorInput = document.getElementById("ball-color");
+const saveMessage = document.getElementById("save-message");
 
 let ballSpeed;
 let dx, dy;
@@ -242,6 +243,10 @@ function saveCustomizations() {
     ballColor = ballColorInput.value;
     localStorage.setItem('paddleColor', paddleColor);
     localStorage.setItem('ballColor', ballColor);
+    saveMessage.style.display = 'block';
+    setTimeout(() => {
+        saveMessage.style.display = 'none';
+    }, 2000);  // Hide the message after 2 seconds
 }
 
 function loadCustomizations() {
