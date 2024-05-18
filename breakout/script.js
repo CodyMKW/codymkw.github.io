@@ -261,3 +261,6 @@ function loadCustomizations() {
         ballColorInput.value = savedBallColor;
     }
 }
+
+// Load customizations on page load
+loadCustomizations();
