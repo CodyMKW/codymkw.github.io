@@ -25,6 +25,10 @@ button {
     border-radius: 5px;
 }
 
+button:hover {
+    background-color: #c74c36;
+}
+
 #start-screen {
     margin-top: 50px;
 }
