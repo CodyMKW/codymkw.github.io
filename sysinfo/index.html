@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Information</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>System Information</h1>
+            <button id="darkModeToggle">Toggle Dark Mode</button>
+        </header>
+        <div class="tabs">
+            <button class="tab-button active" onclick="openTab('browserSpecs')">Browser Specs</button>
+            <button class="tab-button" onclick="openTab('pcSpecs')">PC Specs</button>
+        </div>
+        <div id="browserSpecs" class="tab-content active">
+            <h2>Browser Specifications</h2>
+            <p id="browserInfo"></p>
+        </div>
+        <div id="pcSpecs" class="tab-content">
+            <h2>PC Specifications</h2>
+            <p id="pcInfo"></p>
+        </div>
+    </div>
+    <footer>
+        <p>&copy; 2023 - 2024 CodyMKW. All rights reserved.</p>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>
