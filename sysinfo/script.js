@@ -31,10 +31,29 @@ function getBrowserName() {
     }
 }
 
+function getBrowserVersion() {
+    const userAgent = navigator.userAgent;
+    let match;
+    if (userAgent.includes("Firefox")) {
+        match = userAgent.match(/Firefox\/(\d+\.\d+)/);
+    } else if (userAgent.includes("Opera") || userAgent.includes("OPR")) {
+        match = userAgent.match(/OPR\/(\d+\.\d+)/);
+    } else if (userAgent.includes("Chrome")) {
+        match = userAgent.match(/Chrome\/(\d+\.\d+)/);
+    } else if (userAgent.includes("Safari")) {
+        match = userAgent.match(/Version\/(\d+\.\d+)/);
+    } else if (userAgent.includes("MSIE")) {
+        match = userAgent.match(/MSIE (\d+\.\d+)/);
+    } else if (userAgent.includes("Trident")) {
+        match = userAgent.match(/rv:(\d+\.\d+)/);
+    }
+    return match ? match[1] : "Unknown Version";
+}
+
 function getBrowserSpecs() {
     const browserInfo = `
         Browser Name: ${getBrowserName()}<br>
-        Browser Version: ${navigator.appVersion}<br>
+        Browser Version: ${getBrowserVersion()}<br>
         User Agent: ${navigator.userAgent}<br>
         Platform: ${navigator.platform}<br>
         Language: ${navigator.language}
