@@ -14,9 +14,26 @@ function openTab(tabName) {
     document.querySelector(`button[onclick="openTab('${tabName}')"]`).classList.add('active');
 }
 
+function getBrowserName() {
+    const userAgent = navigator.userAgent;
+    if (userAgent.includes("Firefox")) {
+        return "Mozilla Firefox";
+    } else if (userAgent.includes("Opera") || userAgent.includes("OPR")) {
+        return "Opera";
+    } else if (userAgent.includes("Chrome")) {
+        return "Google Chrome";
+    } else if (userAgent.includes("Safari")) {
+        return "Apple Safari";
+    } else if (userAgent.includes("MSIE") || userAgent.includes("Trident")) {
+        return "Microsoft Internet Explorer";
+    } else {
+        return "Unknown Browser";
+    }
+}
+
 function getBrowserSpecs() {
     const browserInfo = `
-        Browser Name: ${navigator.appName}<br>
+        Browser Name: ${getBrowserName()}<br>
         Browser Version: ${navigator.appVersion}<br>
         User Agent: ${navigator.userAgent}<br>
         Platform: ${navigator.platform}<br>
