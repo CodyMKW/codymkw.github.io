@@ -25,11 +25,11 @@ let paddleColor = "#0095DD";
 let ballColor = "#0095DD";
 
 // Sound effects
-const brickHitSound = new Audio('brickHit.mp3');
-const paddleHitSound = new Audio('paddleHit.mp3');
-const wallHitSound = new Audio('wallHit.mp3');
-const gameOverSound = new Audio('gameOver.mp3');
-const winSound = new Audio('win.mp3');
+const brickHitSound = new Audio('assets/sounds/brickHit.mp3');
+const paddleHitSound = new Audio('assets/sounds/paddleHit.mp3');
+const wallHitSound = new Audio('assets/sounds/wallHit.mp3');
+const gameOverSound = new Audio('assets/sounds/gameOver.mp3');
+const winSound = new Audio('assets/sounds/win.mp3');
 
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
