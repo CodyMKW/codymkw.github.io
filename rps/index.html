@@ -19,18 +19,28 @@
 <body>
     <div class="container">
         <h1>Rock Paper Scissors</h1>
-        <div class="modes">
+        <div class="modes" id="modes">
             <button onclick="setMode('regular')">Regular Mode</button>
             <button onclick="setMode('reverse')">Reverse Mode</button>
             <button onclick="setMode('double')">Double Trouble Mode</button>
         </div>
-        <div class="game">
+        <div class="game" id="game" style="display: none;">
             <div class="choices">
                 <img src="assets/images/rock.png" alt="Rock" onclick="playerChoice('rock')">
                 <img src="assets/images/paper.png" alt="Paper" onclick="playerChoice('paper')">
                 <img src="assets/images/scissors.png" alt="Scissors" onclick="playerChoice('scissors')">
             </div>
             <div class="results">
+                <div class="choices-display">
+                    <div class="choice">
+                        <h3>Player</h3>
+                        <img id="player-choice" src="" alt="Player Choice">
+                    </div>
+                    <div class="choice">
+                        <h3>CPU</h3>
+                        <img id="cpu-choice" src="" alt="CPU Choice">
+                    </div>
+                </div>
                 <p id="result-message">Make your choice!</p>
                 <p>Player Wins: <span id="player-wins">0</span></p>
                 <p>CPU Wins: <span id="cpu-wins">0</span></p>

@@ -6,28 +6,36 @@ const choices = ['rock', 'paper', 'scissors'];
 
 function setMode(mode) {
     currentMode = mode;
+    document.getElementById('modes').style.display = 'none';
+    document.getElementById('game').style.display = 'block';
     document.getElementById('result-message').innerText = `Mode set to ${mode.charAt(0).toUpperCase() + mode.slice(1)} Mode. Make your choice!`;
 }
 
 function playerChoice(playerChoice) {
     const cpuChoice = choices[Math.floor(Math.random() * choices.length)];
     let result;
+
     if (currentMode === 'regular') {
         result = determineWinner(playerChoice, cpuChoice);
     } else if (currentMode === 'reverse') {
         result = determineWinner(cpuChoice, playerChoice);
     } else if (currentMode === 'double') {
         const secondCpuChoice = choices[Math.floor(Math.random() * choices.length)];
-        result = determineWinner(playerChoice, cpuChoice) + ' & ' + determineWinner(playerChoice, secondCpuChoice);
+        const firstResult = determineWinner(playerChoice, cpuChoice);
+        const secondResult = determineWinner(playerChoice, secondCpuChoice);
+        result = `${firstResult} & ${secondResult}`;
     }
-    updateResults(result, cpuChoice);
+
+    updateResults(result, playerChoice, cpuChoice);
 }
 
 function determineWinner(player, cpu) {
-    if (player === cpu) return 'It\'s a draw!';
-    if ((player === 'rock' && cpu === 'scissors') || 
+    if (player === cpu) return "It's a draw!";
+    if (
+        (player === 'rock' && cpu === 'scissors') || 
         (player === 'paper' && cpu === 'rock') || 
-        (player === 'scissors' && cpu === 'paper')) {
+        (player === 'scissors' && cpu === 'paper')
+    ) {
         playerWins++;
         return 'You win!';
     } else {
@@ -36,8 +44,10 @@ function determineWinner(player, cpu) {
     }
 }
 
-function updateResults(result, cpuChoice) {
+function updateResults(result, playerChoice, cpuChoice) {
     document.getElementById('result-message').innerText = `CPU chose ${cpuChoice}. ${result}`;
     document.getElementById('player-wins').innerText = playerWins;
     document.getElementById('cpu-wins').innerText = cpuWins;
+    document.getElementById('player-choice').src = `assets/images/${playerChoice}.png`;
+    document.getElementById('cpu-choice').src = `assets/images/${cpuChoice}.png`;
 }

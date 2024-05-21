@@ -31,6 +31,10 @@ h1 {
     color: #1f1f1f;
 }
 
+.game {
+    margin-top: 20px;
+}
+
 .choices img {
     width: 100px;
     margin: 10px;
@@ -43,4 +47,19 @@ h1 {
 
 .results p {
     margin: 5px 0;
+}
+
+.choices-display {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.choice {
+    margin: 0 20px;
+}
+
+.choice img {
+    width: 100px;
+    height: 100px;
 }
