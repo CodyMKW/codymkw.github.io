@@ -3,29 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Multiverse Adventure RPG</title>
-    <meta name="description" content="Embark on a journey through dynamic multiverses featuring worlds from Splatoon, Super Mario, Fortnite, My Hero Academia, Animal Crossing, Zelda, Minecraft, Kirby, Fall Guys, Megaman Battle Network, and Pokémon. Meet beloved characters, engage in thrilling battles, and make choices that lead to unique adventures.">
-    <meta property="og:title" content="Multiverse Adventure RPG">
-    <meta property="og:description" content="Embark on a journey through dynamic multiverses featuring worlds from Splatoon, Super Mario, Fortnite, My Hero Academia, Animal Crossing, Zelda, Minecraft, Kirby, Fall Guys, Megaman Battle Network, and Pokémon. Meet beloved characters, engage in thrilling battles, and make choices that lead to unique adventures.">
-    <meta name="twitter:title" content="Multiverse Adventure RPG">
-    <meta name="twitter:description" content="Embark on a journey through dynamic multiverses featuring worlds from Splatoon, Super Mario, Fortnite, My Hero Academia, Animal Crossing, Zelda, Minecraft, Kirby, Fall Guys, Megaman Battle Network, and Pokémon. Meet beloved characters, engage in thrilling battles, and make choices that lead to unique adventures.">
+    <meta name="description" content="Play Rock Paper Scissors with multiple modes against a CPU. Track your wins and enjoy special gimmicks in different modes.">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Rock Paper Scissors Game">
+    <meta name="twitter:description" content="Play Rock Paper Scissors with multiple modes and special gimmicks.">
+    <meta name="twitter:image" content="assets/images/rock.png">
+    <meta property="og:title" content="Rock Paper Scissors Game">
+    <meta property="og:description" content="Play Rock Paper Scissors with multiple modes and special gimmicks.">
+    <meta property="og:image" content="assets/images/rock.png">
+    <meta property="og:url" content="https://yourwebsite.com/rock-paper-scissors">
+    <meta property="og:type" content="website">
+    <title>Rock Paper Scissors Game</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
-        <h1>Welcome to the Multiverse Adventure RPG</h1>
-        <div id="game">
-            <div id="intro">
-                <label for="name">Enter your name:</label>
-                <input type="text" id="name">
-                <button onclick="startGame()">Start Game</button>
+        <h1>Rock Paper Scissors</h1>
+        <div class="modes">
+            <button onclick="setMode('regular')">Regular Mode</button>
+            <button onclick="setMode('reverse')">Reverse Mode</button>
+            <button onclick="setMode('double')">Double Trouble Mode</button>
+        </div>
+        <div class="game">
+            <div class="choices">
+                <img src="assets/images/rock.png" alt="Rock" onclick="playerChoice('rock')">
+                <img src="assets/images/paper.png" alt="Paper" onclick="playerChoice('paper')">
+                <img src="assets/images/scissors.png" alt="Scissors" onclick="playerChoice('scissors')">
             </div>
-            <div id="story" style="display:none;">
-                <p id="text"></p>
-                <div id="choices"></div>
+            <div class="results">
+                <p id="result-message">Make your choice!</p>
+                <p>Player Wins: <span id="player-wins">0</span></p>
+                <p>CPU Wins: <span id="cpu-wins">0</span></p>
             </div>
         </div>
     </div>
-    <script src="game.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
