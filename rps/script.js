@@ -30,6 +30,8 @@ function playerChoice(playerChoice) {
         const firstResult = determineWinner(playerChoice, cpuChoice);
         const secondResult = determineWinner(playerChoice, secondCpuChoice);
         result = `${firstResult} & ${secondResult}`;
+        updateResults(result, playerChoice, cpuChoice, secondCpuChoice);
+        return;
     }
 
     updateResults(result, playerChoice, cpuChoice);
@@ -50,8 +52,12 @@ function determineWinner(player, cpu) {
     }
 }
 
-function updateResults(result, playerChoice, cpuChoice) {
-    document.getElementById('result-message').innerText = `CPU chose ${cpuChoice}. ${result}`;
+function updateResults(result, playerChoice, cpuChoice, secondCpuChoice = null) {
+    if (secondCpuChoice) {
+        document.getElementById('result-message').innerText = `CPU chose ${cpuChoice} and ${secondCpuChoice}. ${result}`;
+    } else {
+        document.getElementById('result-message').innerText = `CPU chose ${cpuChoice}. ${result}`;
+    }
     document.getElementById('player-wins').innerText = playerWins;
     document.getElementById('cpu-wins').innerText = cpuWins;
     document.getElementById('player-choice').src = `assets/images/${playerChoice}.png`;

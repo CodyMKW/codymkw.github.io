@@ -11,10 +11,37 @@ body {
 
 .container {
     text-align: center;
+    padding: 20px;
+    border: 1px solid #444;
+    border-radius: 10px;
+    background-color: #1c1c1c;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
 h1 {
     margin-bottom: 20px;
+}
+
+h2 {
+    margin-bottom: 15px;
+}
+
+.rules ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.rules li {
+    background-color: #2c2c2c;
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #444;
+}
+
+.rules li strong {
+    color: #00ff00;
 }
 
 .modes button {
@@ -24,6 +51,7 @@ h1 {
     padding: 10px 20px;
     margin: 5px;
     cursor: pointer;
+    border-radius: 5px;
 }
 
 .modes button:hover {
@@ -62,4 +90,6 @@ h1 {
 .choice img {
     width: 100px;
     height: 100px;
+    display: block;
+    margin: 0 auto;
 }
