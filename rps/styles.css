@@ -1,0 +1,46 @@
+body {
+    background-color: #121212;
+    color: #ffffff;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.container {
+    text-align: center;
+}
+
+h1 {
+    margin-bottom: 20px;
+}
+
+.modes button {
+    background-color: #1f1f1f;
+    color: #ffffff;
+    border: 2px solid #ffffff;
+    padding: 10px 20px;
+    margin: 5px;
+    cursor: pointer;
+}
+
+.modes button:hover {
+    background-color: #ffffff;
+    color: #1f1f1f;
+}
+
+.choices img {
+    width: 100px;
+    margin: 10px;
+    cursor: pointer;
+}
+
+.results {
+    margin-top: 20px;
+}
+
+.results p {
+    margin: 5px 0;
+}
