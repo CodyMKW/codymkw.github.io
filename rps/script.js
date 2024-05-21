@@ -7,8 +7,12 @@ const choices = ['rock', 'paper', 'scissors'];
 function setMode(mode) {
     currentMode = mode;
     document.getElementById('modes').style.display = 'none';
+    document.getElementById('rules').style.display = 'none';
     document.getElementById('game').style.display = 'block';
     document.getElementById('result-message').innerText = `Mode set to ${mode.charAt(0).toUpperCase() + mode.slice(1)} Mode. Make your choice!`;
+    if (mode !== 'double') {
+        document.getElementById('cpu-choice-2').style.display = 'none';
+    }
 }
 
 function playerChoice(playerChoice) {
@@ -21,6 +25,8 @@ function playerChoice(playerChoice) {
         result = determineWinner(cpuChoice, playerChoice);
     } else if (currentMode === 'double') {
         const secondCpuChoice = choices[Math.floor(Math.random() * choices.length)];
+        document.getElementById('cpu-choice-2').src = `assets/images/${secondCpuChoice}.png`;
+        document.getElementById('cpu-choice-2').style.display = 'block';
         const firstResult = determineWinner(playerChoice, cpuChoice);
         const secondResult = determineWinner(playerChoice, secondCpuChoice);
         result = `${firstResult} & ${secondResult}`;

@@ -19,6 +19,14 @@
 <body>
     <div class="container">
         <h1>Rock Paper Scissors</h1>
+        <div id="rules">
+            <h2>Choose a Mode:</h2>
+            <ul>
+                <li><strong>Regular Mode:</strong> Standard rules of Rock Paper Scissors.</li>
+                <li><strong>Reverse Mode:</strong> Rules are reversed. For example, Rock loses to Scissors, Scissors loses to Paper, Paper loses to Rock.</li>
+                <li><strong>Double Trouble Mode:</strong> The CPU makes two choices. You need to win against both choices to claim victory. If you win against one and lose against the other, it's a draw.</li>
+            </ul>
+        </div>
         <div class="modes" id="modes">
             <button onclick="setMode('regular')">Regular Mode</button>
             <button onclick="setMode('reverse')">Reverse Mode</button>
@@ -39,6 +47,7 @@
                     <div class="choice">
                         <h3>CPU</h3>
                         <img id="cpu-choice" src="" alt="CPU Choice">
+                        <img id="cpu-choice-2" src="" alt="CPU Choice 2" style="display: none;">
                     </div>
                 </div>
                 <p id="result-message">Make your choice!</p>
