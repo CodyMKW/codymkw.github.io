@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Play Tic Tac Toe against a CPU.">
+    <meta name="twitter:card" content="https://codymkw.github.io/tictactoe/assets/images/icon.png">
+    <meta name="twitter:title" content="Tic Tac Toe Game">
+    <meta name="twitter:description" content="Play Tic Tac Toe against a CPU.">
+    <meta name="twitter:image" content="https://codymkw.github.io/tictactoe/assets/images/icon.png">
+    <meta property="og:title" content="Tic Tac Toe Game">
+    <meta property="og:description" content="Play Tic Tac Toe against a CPU.">
+    <meta property="og:image" content="https://codymkw.github.io/tictactoe/assets/images/icon.png">
+    <meta property="og:url" content="https://codymkw.github.io/tictactoe">
+    <meta property="og:type" content="website">
+    <title>Tic Tac Toe Game</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Tic Tac Toe</h1>
+        <div id="player-choice" class="player-choice">
+            <h2>Choose Your Symbol:</h2>
+            <button onclick="setPlayerSymbol('x')">X</button>
+            <button onclick="setPlayerSymbol('o')">O</button>
+        </div>
+        <div class="game" id="game" style="display: none;">
+            <div class="board">
+                <div class="cell" onclick="playerMove(this, 0)"></div>
+                <div class="cell" onclick="playerMove(this, 1)"></div>
+                <div class="cell" onclick="playerMove(this, 2)"></div>
+                <div class="cell" onclick="playerMove(this, 3)"></div>
+                <div class="cell" onclick="playerMove(this, 4)"></div>
+                <div class="cell" onclick="playerMove(this, 5)"></div>
+                <div class="cell" onclick="playerMove(this, 6)"></div>
+                <div class="cell" onclick="playerMove(this, 7)"></div>
+                <div class="cell" onclick="playerMove(this, 8)"></div>
+            </div>
+            <div class="results">
+                <p id="result-message">Make your move!</p>
+                <p>Player Wins: <span id="player-wins">0</span></p>
+                <p>CPU Wins: <span id="cpu-wins">0</span></p>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
