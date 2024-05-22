@@ -28,16 +28,26 @@ function playerMove(cell, index) {
             resetBoard();
         } else {
             currentPlayer = 'cpu';
-            cpuMove();
+            setTimeout(cpuMove, 500); // Adding a slight delay for realism
         }
     }
 }
 
 function cpuMove() {
-    let emptyCells = board.map((cell, index) => cell === '' ? index : null).filter(index => index !== null);
-    let randomIndex = emptyCells[Math.floor(Math.random() * emptyCells.length)];
-    board[randomIndex] = 'o';
-    document.querySelectorAll('.cell')[randomIndex].innerHTML = '<img src="assets/images/o.png" alt="O">';
+    // Check for winning move
+    let move = findBestMove('o');
+    if (move === null) {
+        // Block player's winning move
+        move = findBestMove('x');
+    }
+    if (move === null) {
+        // Choose random move if no winning or blocking move found
+        let emptyCells = board.map((cell, index) => cell === '' ? index : null).filter(index => index !== null);
+        move = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+    }
+
+    board[move] = 'o';
+    document.querySelectorAll('.cell')[move].innerHTML = '<img src="assets/images/o.png" alt="O">';
     if (checkWinner('o')) {
         cpuWins++;
         document.getElementById('result-message').innerText = 'CPU wins!';
@@ -49,6 +59,15 @@ function cpuMove() {
     } else {
         currentPlayer = 'player';
     }
+}
+
+function findBestMove(player) {
+    for (let [a, b, c] of winningCombinations) {
+        if (board[a] === player && board[b] === player && board[c] === '') return c;
+        if (board[a] === player && board[b] === '' && board[c] === player) return b;
+        if (board[a] === '' && board[b] === player && board[c] === player) return a;
+    }
+    return null;
 }
 
 function checkWinner(player) {
