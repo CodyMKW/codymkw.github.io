@@ -2,6 +2,8 @@ let playerWins = 0;
 let cpuWins = 0;
 let board = ['', '', '', '', '', '', '', '', ''];
 let currentPlayer = 'player';
+let playerSymbol = 'x';
+let cpuSymbol = 'o';
 
 const winningCombinations = [
     [0, 1, 2],
@@ -14,11 +16,21 @@ const winningCombinations = [
     [2, 4, 6]
 ];
 
+function setPlayerSymbol(symbol) {
+    playerSymbol = symbol;
+    cpuSymbol = symbol === 'x' ? 'o' : 'x';
+    document.getElementById('player-choice').style.display = 'none';
+    document.getElementById('game').style.display = 'block';
+    if (cpuSymbol === 'x') {
+        setTimeout(cpuMove, 500); // CPU starts if player is 'O'
+    }
+}
+
 function playerMove(cell, index) {
     if (board[index] === '' && currentPlayer === 'player') {
-        board[index] = 'x';
-        cell.innerHTML = '<img src="assets/images/x.png" alt="X">';
-        if (checkWinner('x')) {
+        board[index] = playerSymbol;
+        cell.innerHTML = `<img src="assets/images/${playerSymbol}.png" alt="${playerSymbol.toUpperCase()}">`;
+        if (checkWinner(playerSymbol)) {
             playerWins++;
             document.getElementById('result-message').innerText = 'You win!';
             document.getElementById('player-wins').innerText = playerWins;
@@ -35,20 +47,19 @@ function playerMove(cell, index) {
 
 function cpuMove() {
     // Check for winning move
-    let move = findBestMove('o');
+    let move = findBestMove(cpuSymbol);
     if (move === null) {
         // Block player's winning move
-        move = findBestMove('x');
+        move = findBestMove(playerSymbol);
     }
     if (move === null) {
-        // Choose random move if no winning or blocking move found
-        let emptyCells = board.map((cell, index) => cell === '' ? index : null).filter(index => index !== null);
-        move = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+        // Choose strategic move if no winning or blocking move found
+        move = chooseStrategicMove();
     }
 
-    board[move] = 'o';
-    document.querySelectorAll('.cell')[move].innerHTML = '<img src="assets/images/o.png" alt="O">';
-    if (checkWinner('o')) {
+    board[move] = cpuSymbol;
+    document.querySelectorAll('.cell')[move].innerHTML = `<img src="assets/images/${cpuSymbol}.png" alt="${cpuSymbol.toUpperCase()}">`;
+    if (checkWinner(cpuSymbol)) {
         cpuWins++;
         document.getElementById('result-message').innerText = 'CPU wins!';
         document.getElementById('cpu-wins').innerText = cpuWins;
@@ -70,6 +81,27 @@ function findBestMove(player) {
     return null;
 }
 
+function chooseStrategicMove() {
+    // Prioritize center, then corners, then edges
+    const center = 4;
+    const corners = [0, 2, 6, 8];
+    const edges = [1, 3, 5, 7];
+
+    if (board[center] === '') return center;
+
+    let availableCorners = corners.filter(index => board[index] === '');
+    if (availableCorners.length > 0) {
+        return availableCorners[Math.floor(Math.random() * availableCorners.length)];
+    }
+
+    let availableEdges = edges.filter(index => board[index] === '');
+    if (availableEdges.length > 0) {
+        return availableEdges[Math.floor(Math.random() * availableEdges.length)];
+    }
+
+    return null;
+}
+
 function checkWinner(player) {
     return winningCombinations.some(combination => 
         combination.every(index => board[index] === player)
@@ -82,5 +114,8 @@ function resetBoard() {
     setTimeout(() => {
         document.querySelectorAll('.cell').forEach(cell => cell.innerHTML = '');
         document.getElementById('result-message').innerText = 'Make your move!';
+        if (cpuSymbol === 'x') {
+            setTimeout(cpuMove, 500); // CPU starts if player is 'O'
+        }
     }, 2000);
 }

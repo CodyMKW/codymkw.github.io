@@ -19,7 +19,12 @@
 <body>
     <div class="container">
         <h1>Tic Tac Toe</h1>
-        <div class="game" id="game">
+        <div id="player-choice" class="player-choice">
+            <h2>Choose Your Symbol:</h2>
+            <button onclick="setPlayerSymbol('x')">X</button>
+            <button onclick="setPlayerSymbol('o')">O</button>
+        </div>
+        <div class="game" id="game" style="display: none;">
             <div class="board">
                 <div class="cell" onclick="playerMove(this, 0)"></div>
                 <div class="cell" onclick="playerMove(this, 1)"></div>
