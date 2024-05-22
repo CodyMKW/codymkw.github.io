@@ -46,17 +46,7 @@ function playerMove(cell, index) {
 }
 
 function cpuMove() {
-    // Check for winning move
-    let move = findBestMove(cpuSymbol);
-    if (move === null) {
-        // Block player's winning move
-        move = findBestMove(playerSymbol);
-    }
-    if (move === null) {
-        // Choose strategic move if no winning or blocking move found
-        move = chooseStrategicMove();
-    }
-
+    const move = minimax(board, cpuSymbol).index;
     board[move] = cpuSymbol;
     document.querySelectorAll('.cell')[move].innerHTML = `<img src="assets/images/${cpuSymbol}.png" alt="${cpuSymbol.toUpperCase()}">`;
     if (checkWinner(cpuSymbol)) {
@@ -72,39 +62,62 @@ function cpuMove() {
     }
 }
 
-function findBestMove(player) {
-    for (let [a, b, c] of winningCombinations) {
-        if (board[a] === player && board[b] === player && board[c] === '') return c;
-        if (board[a] === player && board[b] === '' && board[c] === player) return b;
-        if (board[a] === '' && board[b] === player && board[c] === player) return a;
+function minimax(newBoard, player) {
+    const availSpots = newBoard.map((cell, index) => cell === '' ? index : null).filter(index => index !== null);
+
+    if (checkWinner(cpuSymbol, newBoard)) {
+        return { score: 10 };
+    } else if (checkWinner(playerSymbol, newBoard)) {
+        return { score: -10 };
+    } else if (availSpots.length === 0) {
+        return { score: 0 };
     }
-    return null;
+
+    const moves = [];
+
+    for (let i = 0; i < availSpots.length; i++) {
+        const move = {};
+        move.index = availSpots[i];
+        newBoard[availSpots[i]] = player;
+
+        if (player === cpuSymbol) {
+            const result = minimax(newBoard, playerSymbol);
+            move.score = result.score;
+        } else {
+            const result = minimax(newBoard, cpuSymbol);
+            move.score = result.score;
+        }
+
+        newBoard[availSpots[i]] = '';
+
+        moves.push(move);
+    }
+
+    let bestMove;
+    if (player === cpuSymbol) {
+        let bestScore = -Infinity;
+        for (let i = 0; i < moves.length; i++) {
+            if (moves[i].score > bestScore) {
+                bestScore = moves[i].score;
+                bestMove = i;
+            }
+        }
+    } else {
+        let bestScore = Infinity;
+        for (let i = 0; i < moves.length; i++) {
+            if (moves[i].score < bestScore) {
+                bestScore = moves[i].score;
+                bestMove = i;
+            }
+        }
+    }
+
+    return moves[bestMove];
 }
 
-function chooseStrategicMove() {
-    // Prioritize center, then corners, then edges
-    const center = 4;
-    const corners = [0, 2, 6, 8];
-    const edges = [1, 3, 5, 7];
-
-    if (board[center] === '') return center;
-
-    let availableCorners = corners.filter(index => board[index] === '');
-    if (availableCorners.length > 0) {
-        return availableCorners[Math.floor(Math.random() * availableCorners.length)];
-    }
-
-    let availableEdges = edges.filter(index => board[index] === '');
-    if (availableEdges.length > 0) {
-        return availableEdges[Math.floor(Math.random() * availableEdges.length)];
-    }
-
-    return null;
-}
-
-function checkWinner(player) {
+function checkWinner(player, boardToCheck = board) {
     return winningCombinations.some(combination => 
-        combination.every(index => board[index] === player)
+        combination.every(index => boardToCheck[index] === player)
     );
 }
 
