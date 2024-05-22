@@ -4,6 +4,7 @@ let board = ['', '', '', '', '', '', '', '', ''];
 let currentPlayer = 'player';
 let playerSymbol = 'x';
 let cpuSymbol = 'o';
+let cpuThinkingTimeout;
 
 const winningCombinations = [
     [0, 1, 2],
@@ -23,9 +24,11 @@ function setPlayerSymbol(symbol) {
     document.getElementById('game').style.display = 'block';
     // Randomly decide who goes first
     currentPlayer = Math.random() < 0.5 ? 'player' : 'cpu';
-    document.getElementById('result-message').innerText = currentPlayer === 'player' ? 'Make your move!' : 'CPU is thinking...';
-    if (currentPlayer === 'cpu') {
-        setTimeout(cpuMove, 1000); // Slight delay for realism
+    if (currentPlayer === 'player') {
+        document.getElementById('result-message').innerText = 'Make your move!';
+    } else {
+        document.getElementById('result-message').innerText = 'CPU is thinking...';
+        cpuThinkingTimeout = setTimeout(cpuMove, 1500); // Slight delay for realism
     }
 }
 
@@ -44,12 +47,13 @@ function playerMove(cell, index) {
         } else {
             currentPlayer = 'cpu';
             document.getElementById('result-message').innerText = 'CPU is thinking...';
-            setTimeout(cpuMove, 1000); // Adding a slight delay for realism
+            cpuThinkingTimeout = setTimeout(cpuMove, 1500); // Adding a slight delay for realism
         }
     }
 }
 
 function cpuMove() {
+    if (currentPlayer !== 'cpu') return; // Ensure CPU moves only on its turn
     const move = minimax(board, cpuSymbol).index;
     board[move] = cpuSymbol;
     document.querySelectorAll('.cell')[move].innerHTML = `<img src="assets/images/${cpuSymbol}.png" alt="${cpuSymbol.toUpperCase()}">`;
@@ -127,13 +131,15 @@ function checkWinner(player, boardToCheck = board) {
 }
 
 function resetBoard() {
-    board = ['', '', '', '', '', '', '', '', ''];
+    board.fill('');
     currentPlayer = 'player';
     setTimeout(() => {
         document.querySelectorAll('.cell').forEach(cell => cell.innerHTML = '');
         document.getElementById('result-message').innerText = 'Make your move!';
         if (cpuSymbol === 'x') {
-            setTimeout(cpuMove, 1000); // CPU starts if player is 'O'
+            currentPlayer = 'cpu';
+            document.getElementById('result-message').innerText = 'CPU is thinking...';
+            cpuThinkingTimeout = setTimeout(cpuMove, 1500); // CPU starts if player is 'O'
         }
     }, 2000);
 }
