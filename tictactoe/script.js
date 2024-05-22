@@ -21,8 +21,11 @@ function setPlayerSymbol(symbol) {
     cpuSymbol = symbol === 'x' ? 'o' : 'x';
     document.getElementById('player-choice').style.display = 'none';
     document.getElementById('game').style.display = 'block';
-    if (cpuSymbol === 'x') {
-        setTimeout(cpuMove, 500); // CPU starts if player is 'O'
+    // Randomly decide who goes first
+    currentPlayer = Math.random() < 0.5 ? 'player' : 'cpu';
+    document.getElementById('result-message').innerText = currentPlayer === 'player' ? 'Make your move!' : 'CPU is thinking...';
+    if (currentPlayer === 'cpu') {
+        setTimeout(cpuMove, 1000); // Slight delay for realism
     }
 }
 
@@ -40,7 +43,8 @@ function playerMove(cell, index) {
             resetBoard();
         } else {
             currentPlayer = 'cpu';
-            setTimeout(cpuMove, 500); // Adding a slight delay for realism
+            document.getElementById('result-message').innerText = 'CPU is thinking...';
+            setTimeout(cpuMove, 1000); // Adding a slight delay for realism
         }
     }
 }
@@ -59,6 +63,7 @@ function cpuMove() {
         resetBoard();
     } else {
         currentPlayer = 'player';
+        document.getElementById('result-message').innerText = 'Make your move!';
     }
 }
 
@@ -128,7 +133,7 @@ function resetBoard() {
         document.querySelectorAll('.cell').forEach(cell => cell.innerHTML = '');
         document.getElementById('result-message').innerText = 'Make your move!';
         if (cpuSymbol === 'x') {
-            setTimeout(cpuMove, 500); // CPU starts if player is 'O'
+            setTimeout(cpuMove, 1000); // CPU starts if player is 'O'
         }
     }, 2000);
 }
