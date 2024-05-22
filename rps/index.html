@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Play Rock Paper Scissors with multiple modes against a CPU. Track your wins and enjoy special gimmicks in different modes.">
+    <meta name="description" content="Play Rock Paper Scissors against a CPU.">
     <meta name="twitter:card" content="https://codymkw.github.io/rps/assets/images/icon.png">
     <meta name="twitter:title" content="Rock Paper Scissors Game">
-    <meta name="twitter:description" content="Play Rock Paper Scissors with multiple modes and special gimmicks.">
+    <meta name="twitter:description" content="Play Rock Paper Scissors against a CPU.">
     <meta name="twitter:image" content="https://codymkw.github.io/rps/assets/images/icon.png">
     <meta property="og:title" content="Rock Paper Scissors Game">
-    <meta property="og:description" content="Play Rock Paper Scissors with multiple modes and special gimmicks.">
+    <meta property="og:description" content="Play Rock Paper Scissors against a CPU.">
     <meta property="og:image" content="https://codymkw.github.io/rps/assets/images/icon.png">
     <meta property="og:url" content="https://codymkw.github.io/rps">
     <meta property="og:type" content="website">
@@ -19,20 +19,7 @@
 <body>
     <div class="container">
         <h1>Rock Paper Scissors</h1>
-        <div id="rules" class="rules">
-            <h2>Choose a Mode:</h2>
-            <ul>
-                <li><strong>Regular Mode:</strong> Standard rules of Rock Paper Scissors.</li>
-                <li><strong>Reverse Mode:</strong> Rules are reversed. For example, Rock loses to Scissors, Scissors loses to Paper, Paper loses to Rock.</li>
-                <li><strong>Double Trouble Mode:</strong> The CPU makes two choices. You need to win against both choices to claim victory. If you win against one and lose against the other, it's a draw.</li>
-            </ul>
-        </div>
-        <div class="modes" id="modes">
-            <button onclick="setMode('regular')">Regular Mode</button>
-            <button onclick="setMode('reverse')">Reverse Mode</button>
-            <button onclick="setMode('double')">Double Trouble Mode</button>
-        </div>
-        <div class="game" id="game" style="display: none;">
+        <div class="game" id="game">
             <div class="choices">
                 <img src="assets/images/rock.png" alt="Rock" onclick="playerChoice('rock')">
                 <img src="assets/images/paper.png" alt="Paper" onclick="playerChoice('paper')">
@@ -47,7 +34,6 @@
                     <div class="choice">
                         <h3>CPU</h3>
                         <img id="cpu-choice" src="assets/images/question-mark.png" alt="CPU Choice">
-                        <img id="cpu-choice-2" src="assets/images/question-mark.png" alt="CPU Choice 2" style="display: none;">
                     </div>
                 </div>
                 <p id="result-message">Make your choice!</p>
