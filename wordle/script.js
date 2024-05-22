@@ -1,4 +1,19 @@
-const words = ["apple", "grape", "mango", "peach", "berry", "mario", "zelda", "kirby", "samus", "luigi", "peach", "daisy", "yoshi", "ganon", "tommy", "timmy", "shoto", "bulma", "gohan"];
+const words = [
+  "apple", "grape", "mango", "peach", "berry", 
+  "mario", "zelda", "kirby", "samus", "luigi", 
+  "peach", "daisy", "yoshi", "ganon", "tommy", 
+  "timmy", "shoto", "bulma", "gohan", "linky", 
+  "epona", "mipha", "minda", "shulk", "falco", 
+  "ridly", "saria", "midna", "joker", "terry", 
+  "luffy", "natsu", "anime", "apart", "antic",
+  "apron", "award", "badge", "badly", "bacon",
+  "basic", "beach", "bible", "blade", "black",
+  "bobby", "brawl", "smash", "chess", "click",
+  "cloud", "coach", "cream", "oddly", "owner",
+  "paper", "parry", "photo", "phone", "space",
+  "spoil", "sport", "spout", "spray", "yield",
+  "yacht", "write", "wreck", "witch", "woody"
+];
 let secretWord = words[Math.floor(Math.random() * words.length)];
 let currentRow = 0;
 let currentGuess = "";
