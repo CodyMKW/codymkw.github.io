@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Play Wordle and guess the word!">
+    <meta name="twitter:card" content="https://codymkw.github.io/wordle/assets/images/icon.png">
+    <meta name="twitter:title" content="Wordle Game">
+    <meta name="twitter:description" content="Play Wordle and guess the word!">
+    <meta name="twitter:image" content="https://codymkw.github.io/wordle/assets/images/icon.png">
+    <meta property="og:title" content="Wordle Game">
+    <meta property="og:description" content="Play Wordle and guess the word!">
+    <meta property="og:image" content="https://codymkw.github.io/wordle/assets/images/icon.png">
+    <meta property="og:url" content="https://codymkw.github.io/wordle">
+    <meta property="og:type" content="website">
+    <title>Wordle Game</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Wordle</h1>
+        <div id="game-board"></div>
+        <div id="keyboard"></div>
+        <div id="result-message"></div>
+        <button id="restart-button" style="display: none;" onclick="restartGame()">Restart Game</button>
+        <button id="instructions-button" onclick="showInstructions()">Instructions</button>
+        <div id="instructions" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close" onclick="closeInstructions()">&times;</span>
+                <h2>How to Play Wordle</h2>
+                <div class="instructions-content">
+                    <p>Wordle is a simple word-guessing game. Here's how to play:</p>
+                    <p>You have six attempts to guess the secret five-letter word.</p>
+                    <p>Each guess must be a valid five-letter word.</p>
+                    <p>After each guess, the color of the tiles will change to show how close your guess was to the word:</p>
+                    <p><strong class="green">Green:</strong> The letter is in the word and in the correct spot.</p>
+                    <p><strong class="yellow">Yellow:</strong> The letter is in the word but in the wrong spot.</p>
+                    <p><strong class="grey">Gray:</strong> The letter is not in the word in any spot.</p>
+                    <p>Use the keyboard to input your guesses and the "Enter" button to submit each guess.</p>
+                    <p>Good luck and have fun!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
