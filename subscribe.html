@@ -6,92 +6,103 @@
     <meta name="description" content="Subscribe to Cody AI Gaming Plus for exclusive access to games and perks.">
     <title>Cody AI Gaming Plus</title>
     <style>
-body {
-  background-color: #121212;
-  color: #fff;
-  font-family: Arial, sans-serif;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  margin: 0;
-  flex-direction: column;
-  text-align: center;
-}
-h1 {
-  margin-bottom: 20px;
-  font-size: 36px;
-  color: #00ffff;
-}
-p {
-  font-size: 18px;
-  margin-bottom: 40px;
-  color: #ddd;
-}
-.pricing-table {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-around;
-  width: 100%;
-}
-.pricing-plan {
-  background-color: #2c2c2c;
-  border: 1px solid #444;
-  border-radius: 10px;
-  width: 250px;
-  padding: 20px;
-  margin: 10px;
-  text-align: center;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-  color: #fff;
-}
-.pricing-plan h2 {
-  margin-bottom: 10px;
-}
-.price {
-  font-size: 24px;
-  color: #00ff00;
-  margin-bottom: 20px;
-}
-ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-ul li {
-  background-color: #3c3c3c;
-  margin: 10px 0;
-  padding: 10px;
-  border-radius: 5px;
-}
-button {
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-top: 20px;
-}
-button:hover {
-  background-color: #45a049;
-}
+        body {
+            background-color: #121212;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            flex-direction: column;
+            text-align: center;
+            padding-top: 25px; /* Updated padding */
+        }
+        h1 {
+            margin-bottom: 20px;
+            font-size: 36px;
+            color: #00ffff;
+        }
+        p {
+            font-size: 18px;
+            margin-bottom: 40px;
+            color: #ddd;
+        }
+        .pricing-table {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            width: 100%;
+        }
+        .pricing-plan {
+            background-color: #2c2c2c;
+            border: 1px solid #444;
+            border-radius: 10px;
+            width: 250px;
+            padding: 20px;
+            margin: 10px;
+            text-align: center;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            color: #fff;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .pricing-plan:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+        .pricing-plan h2 {
+            margin-bottom: 10px;
+        }
+        .price {
+            font-size: 24px;
+            color: #00ff00;
+            margin-bottom: 20px;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        ul li {
+            background-color: #3c3c3c;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
     </style>
 </head>
 <body>
-    <h1>Cody AI Gaming Plus</h1>
-    <p>Join Cody AI Gaming Plus to access exclusive games and perks. Choose a plan that fits your needs:</p>
-    <div class="pricing-table">
-        <div class="pricing-plan">
+    <header>
+        <h1>Cody AI Gaming Plus</h1>
+        <p>Join Cody AI Gaming Plus to access exclusive games and perks. Choose a plan that fits your needs:</p>
+    </header>
+    <main class="pricing-table">
+        <section class="pricing-plan">
             <h2>Basic</h2>
             <p class="price">$19.99/month</p>
             <ul>
                 <li>Access to Breakout</li>
                 <li>Access to Rock Paper Scissors</li>
                 <li>Weekly high-five GIFs</li>
+                <li>Monthly gaming newsletter</li>
             </ul>
             <button id="sub-button">Subscribe</button>
-        </div>
-        <div class="pricing-plan">
+        </section>
+        <section class="pricing-plan">
             <h2>Pro</h2>
             <p class="price">$49.99/month</p>
             <ul>
@@ -99,10 +110,11 @@ button:hover {
                 <li>Access to Tic Tac Toe</li>
                 <li>Daily high-five GIFs</li>
                 <li>Monthly motivational quotes</li>
+                <li>Early access to new games</li>
             </ul>
             <button id="sub-button2">Subscribe</button>
-        </div>
-        <div class="pricing-plan">
+        </section>
+        <section class="pricing-plan">
             <h2>Elite</h2>
             <p class="price">$99.99/month</p>
             <ul>
@@ -110,10 +122,11 @@ button:hover {
                 <li>Hourly high-five GIFs</li>
                 <li>Weekly motivational quotes</li>
                 <li>Personalized game tips</li>
+                <li>Exclusive game tutorials</li>
             </ul>
             <button id="sub-button3">Subscribe</button>
-        </div>
-        <div class="pricing-plan">
+        </section>
+        <section class="pricing-plan">
             <h2>Ultimate</h2>
             <p class="price">$199.99/month</p>
             <ul>
@@ -122,10 +135,11 @@ button:hover {
                 <li>Daily motivational quotes</li>
                 <li>Personalized game tips</li>
                 <li>Exclusive Cody AI Gaming merchandise</li>
+                <li>VIP support and game requests</li>
             </ul>
             <button id="sub-button4">Subscribe</button>
-        </div>
-    </div>
+        </section>
+    </main>
 
     <script>
         document.getElementById('sub-button').onclick = function() {
