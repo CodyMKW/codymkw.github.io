@@ -23,20 +23,20 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
             margin: 0;
             flex-direction: column;
             text-align: center;
-            padding-top: 25px; /* Base padding */
+            padding-top: 0; /* Remove base padding */
         }
         h1 {
-            margin-bottom: 20px;
+            margin-bottom: 10px;
             font-size: 36px;
             color: #00ffff;
         }
         p {
             font-size: 18px;
-            margin-bottom: 40px;
+            margin-bottom: 20px;
             color: #ddd;
         }
         .pricing-table {
@@ -95,13 +95,16 @@
         }
         @media (max-width: 600px) {
             body {
-                padding-top: 50px; /* Increased padding for smaller screens */
+                padding-top: 20px; /* Increased padding for smaller screens */
             }
             h1 {
                 font-size: 30px; /* Smaller font size for smaller screens */
             }
             p {
                 font-size: 16px; /* Smaller font size for smaller screens */
+            }
+            .pricing-plan {
+                width: 80%; /* Adjust width for smaller screens */
             }
         }
     </style>
