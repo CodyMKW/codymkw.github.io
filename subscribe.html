@@ -27,7 +27,7 @@
             margin: 0;
             flex-direction: column;
             text-align: center;
-            padding-top: 25px; /* Updated padding */
+            padding-top: 25px; /* Base padding */
         }
         h1 {
             margin-bottom: 20px;
@@ -92,6 +92,17 @@
         }
         button:hover {
             background-color: #45a049;
+        }
+        @media (max-width: 600px) {
+            body {
+                padding-top: 50px; /* Increased padding for smaller screens */
+            }
+            h1 {
+                font-size: 30px; /* Smaller font size for smaller screens */
+            }
+            p {
+                font-size: 16px; /* Smaller font size for smaller screens */
+            }
         }
     </style>
 </head>
