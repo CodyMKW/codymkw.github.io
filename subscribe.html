@@ -93,6 +93,35 @@
         button:hover {
             background-color: #45a049;
         }
+        .reviews-section {
+            width: 100%;
+            padding: 40px 0;
+            background-color: #1e1e1e;
+            text-align: center;
+        }
+        .reviews-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .review {
+            background-color: #2c2c2c;
+            border: 1px solid #444;
+            border-radius: 10px;
+            width: 250px;
+            padding: 20px;
+            margin: 10px;
+            text-align: left;
+            color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+        .review h3 {
+            margin-bottom: 5px;
+        }
+        .stars {
+            color: #ffdf00;
+            margin-bottom: 10px;
+        }
         @media (max-width: 600px) {
             body {
                 padding-top: 20px; /* Increased padding for smaller screens */
@@ -103,7 +132,7 @@
             p {
                 font-size: 16px; /* Smaller font size for smaller screens */
             }
-            .pricing-plan {
+            .pricing-plan, .review {
                 width: 80%; /* Adjust width for smaller screens */
             }
         }
@@ -164,6 +193,51 @@
             <button id="sub-button4">Subscribe</button>
         </section>
     </main>
+    <section class="reviews-section">
+        <h2>Reviews</h2>
+        <div class="reviews-container">
+            <div class="review">
+                <h3>Joseph Sisto</h3>
+                <p class="stars">★★★★★</p>
+                <p>"Amazing service! The games are super fun and the perks are great. Highly recommend!"</p>
+            </div>
+            <div class="review">
+                <h3>FalconXD</h3>
+                <p class="stars">★★★★☆</p>
+                <p>"Love the variety of games available. The motivational quotes are a nice touch too!"</p>
+            </div>
+            <div class="review">
+                <h3>Mr. Beast</h3>
+                <p class="stars">★★★★★</p>
+                <p>"Great value for the price. The exclusive tutorials have really helped me improve my gaming skills."</p>
+            </div>
+            <div class="review">
+                <h3>Reggie</h3>
+                <p class="stars">★★★★☆</p>
+                <p>"I enjoy the daily high-five GIFs, they always brighten my day. The support team is also very responsive."</p>
+            </div>
+            <div class="review">
+                <h3>MrBean35000vr</h3>
+                <p class="stars">★★★★★</p>
+                <p>"The personalized game tips are fantastic. I've become a better gamer thanks to Cody AI Gaming Plus."</p>
+            </div>
+            <div class="review">
+                <h3>ThatSrb2DUDE</h3>
+                <p class="stars">★★☆☆☆</p>
+                <p>"Not impressed with the game selection. The perks are not worth the price."</p>
+            </div>
+            <div class="review">
+                <h3>Peter Griffin</h3>
+                <p class="stars">★★★☆☆</p>
+                <p>"It's okay, but I expected more variety in games. The support team is decent, though."</p>
+            </div>
+            <div class="review">
+                <h3>Donald Mustard</h3>
+                <p class="stars">★☆☆☆☆</p>
+                <p>"Very disappointed. The service is overpriced and the games are not engaging."</p>
+            </div>
+        </div>
+    </section>
 
     <script>
         document.getElementById('sub-button').onclick = function() {
