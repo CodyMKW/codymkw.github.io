@@ -344,16 +344,14 @@ function handleEnter() {
     if (currentGuess.length === 5) {
         if (currentGuess === secretWord) {
             showMessage("You win!");
-            revealWord();
-            document.getElementById("restart-button").style.display = "block";
+            showRestartButton();
         } else {
             giveFeedback();
             currentRow++;
             currentGuess = "";
             if (currentRow === maxGuesses) {
-                showMessage("You lose!");
-                revealWord();
-                document.getElementById("restart-button").style.display = "block";
+                showMessage("You lose! The word was: " + secretWord);
+                showRestartButton();
             }
         }
     }
@@ -391,12 +389,9 @@ function showMessage(message) {
     resultMessage.innerText = message;
 }
 
-function revealWord() {
-    for (let i = 0; i < 5; i++) {
-        const tile = document.getElementById(`tile-${currentRow}-${i}`);
-        tile.innerText = secretWord[i];
-        tile.classList.add("correct");
-    }
+function showRestartButton() {
+    console.log("Displaying restart button");
+    document.getElementById("restart-button").style.display = "block";
 }
 
 function restartGame() {
