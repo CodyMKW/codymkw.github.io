@@ -344,7 +344,7 @@ function handleEnter() {
     if (currentGuess.length === 5) {
         if (currentGuess === secretWord) {
             showMessage("You win!");
-            revealWord();
+            revealWord(currentRow);
             showRestartButton();
         } else {
             giveFeedback();
@@ -352,7 +352,7 @@ function handleEnter() {
             currentGuess = "";
             if (currentRow === maxGuesses) {
                 showMessage("You lose! The word was: " + secretWord);
-                revealWord();
+                revealWord(currentRow - 1); // Reveal the word in the last attempted row
                 showRestartButton();
             }
         }
@@ -391,13 +391,12 @@ function showMessage(message) {
     resultMessage.innerText = message;
 }
 
-function revealWord() {
-    for (let row = 0; row < maxGuesses; row++) {
-        for (let i = 0; i < 5; i++) {
-            const tile = document.getElementById(`tile-${row}-${i}`);
-            tile.innerText = secretWord[i];
-            tile.classList.add("correct");
-        }
+function revealWord(row) {
+    const secretArray = secretWord.split("");
+    for (let i = 0; i < 5; i++) {
+        const tile = document.getElementById(`tile-${row}-${i}`);
+        tile.innerText = secretArray[i];
+        tile.classList.add("correct");
     }
 }
 
