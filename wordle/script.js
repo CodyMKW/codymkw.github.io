@@ -345,15 +345,15 @@ function handleEnter() {
         if (currentGuess === secretWord) {
             showMessage("You win!");
             revealWord();
-            document.getElementById("restart-button").style.display = "block";
+            showRestartButton();
         } else {
             giveFeedback();
             currentRow++;
             currentGuess = "";
             if (currentRow === maxGuesses) {
-                showMessage("You lose!");
+                showMessage("You lose! The word was: " + secretWord);
                 revealWord();
-                document.getElementById("restart-button").style.display = "block";
+                showRestartButton();
             }
         }
     }
@@ -399,6 +399,10 @@ function revealWord() {
     }
 }
 
+function showRestartButton() {
+    document.getElementById("restart-button").style.display = "block";
+}
+
 function restartGame() {
     secretWord = words[Math.floor(Math.random() * words.length)];
     currentRow = 0;
@@ -409,10 +413,6 @@ function restartGame() {
     const resultMessage = document.getElementById("result-message");
     resultMessage.innerText = "";
     document.getElementById("restart-button").style.display = "none";
-    const tiles = document.querySelectorAll(".tile");
-    tiles.forEach(tile => {
-        tile.classList.remove("correct", "present", "absent");
-    });
 }
 
 function showInstructions() {
