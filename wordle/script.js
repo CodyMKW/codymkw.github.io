@@ -392,10 +392,12 @@ function showMessage(message) {
 }
 
 function revealWord() {
-    for (let i = 0; i < 5; i++) {
-        const tile = document.getElementById(`tile-${currentRow}-${i}`);
-        tile.innerText = secretWord[i];
-        tile.classList.add("correct");
+    for (let row = 0; row < maxGuesses; row++) {
+        for (let i = 0; i < 5; i++) {
+            const tile = document.getElementById(`tile-${row}-${i}`);
+            tile.innerText = secretWord[i];
+            tile.classList.add("correct");
+        }
     }
 }
 
