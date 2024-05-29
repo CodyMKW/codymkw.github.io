@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hire Cody - Your Fortnite Buddy</title>
-    <meta name="description" content="Hire Cody to be your Fortnite buddy for just 1 cent per minute. Embrace the madness and survive the game together!">
+    <meta name="description" content="Hire Cody to be your Fortnite buddy. Choose from different plans and enjoy gaming together!">
     <meta name="keywords" content="Fortnite, hire Fortnite companion, Fortnite buddy, play Fortnite together, Fortnite for hire">
     <meta name="author" content="Cody">
     <meta property="og:title" content="Hire Cody - Your Fortnite Buddy">
-    <meta property="og:description" content="Hire Cody to be your Fortnite buddy for just 1 cent per minute. Embrace the madness and survive the game together!">
+    <meta property="og:description" content="Hire Cody to be your Fortnite buddy. Choose from different plans and enjoy gaming together!">
     <meta property="og:image" content="https://i.imgur.com/J7m3tMu.jpg">
-    <meta property="og:url" content="https://codymkw.github.io/hire">
-    <meta name="twitter:card" content="https://i.imgur.com/J7m3tMu.jpg">
+    <meta property="og:url" content="https://codymkw.github.io">
+    <meta name="twitter:card" content="summary_large_image">
     <style>
         body {
             background-color: #121212;
@@ -27,6 +27,31 @@
         p {
             font-size: 1.2em;
         }
+        .plans {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        .plan {
+            background-color: #1e1e1e;
+            border: 1px solid #333333;
+            border-radius: 10px;
+            padding: 20px;
+            width: 300px;
+            text-align: left;
+        }
+        .plan h2 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        .plan p {
+            margin: 10px 0;
+        }
+        .price {
+            font-size: 1.5em;
+            color: #ff007f;
+        }
         .hire-me {
             background-color: #ff007f;
             color: #ffffff;
@@ -35,13 +60,11 @@
             font-size: 1.5em;
             cursor: pointer;
             text-decoration: none;
+            display: inline-block;
+            margin-top: 20px;
         }
         .hire-me:hover {
             background-color: #e60073;
-        }
-        .dark-magic {
-            margin: 30px 0;
-            font-size: 1.5em;
         }
         footer {
             margin-top: 50px;
@@ -53,14 +76,47 @@
 <body>
     <h1>Summon Cody</h1>
     <p>Struggling with Fortnite's never-ending updates? Need a buddy to share the chaos?</p>
-    <p>For just <strong>1 cent per minute</strong>, you can hire Cody, your friendly (but not-so-great) Fortnite companion.</p>
-    <div class="dark-magic">
-        <p>Embrace the madness. Survive the game.</p>
-        <p>Summon Cody now.</p>
+    <p>Choose your plan and summon Cody, your friendly (but not-so-great) Fortnite companion.</p>
+    
+    <div class="plans">
+        <div class="plan">
+            <h2>Bronze Plan</h2>
+            <p>Perfect for casual gamers looking for some company.</p>
+            <ul>
+                <li>1 hour of gameplay</li>
+                <li>Casual chatting</li>
+                <li>Basic strategy tips</li>
+            </ul>
+            <p class="price">$0.60 per hour</p>
+            <a href="mailto:hirecody@example.com" class="hire-me">Choose Bronze</a>
+        </div>
+        <div class="plan">
+            <h2>Silver Plan</h2>
+            <p>Great for players who need a bit more guidance.</p>
+            <ul>
+                <li>2 hours of gameplay</li>
+                <li>Voice chat support</li>
+                <li>Intermediate strategy tips</li>
+            </ul>
+            <p class="price">$1.00 per hour</p>
+            <a href="mailto:hirecody@example.com" class="hire-me">Choose Silver</a>
+        </div>
+        <div class="plan">
+            <h2>Gold Plan</h2>
+            <p>Best for those who want an immersive experience.</p>
+            <ul>
+                <li>3 hours of gameplay</li>
+                <li>Voice chat support</li>
+                <li>Advanced strategy tips</li>
+                <li>Custom game modes</li>
+            </ul>
+            <p class="price">$1.50 per hour</p>
+            <a href="mailto:hirecody@example.com" class="hire-me">Choose Gold</a>
+        </div>
     </div>
-    <a href="mailto:codybbrown1991@gmail.com" class="hire-me">Hire Cody</a>
+    
     <footer>
-        <p>&copy; 2024 CodyMKW. All rights reserved.</p>
+        <p>&copy; 2024 Summon Cody Inc. All rights reserved.</p>
     </footer>
 </body>
 </html>
