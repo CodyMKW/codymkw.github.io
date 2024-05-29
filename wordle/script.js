@@ -400,6 +400,7 @@ function revealWord() {
 }
 
 function showRestartButton() {
+    console.log("Displaying restart button");
     document.getElementById("restart-button").style.display = "block";
 }
 
