@@ -344,7 +344,6 @@ function handleEnter() {
     if (currentGuess.length === 5) {
         if (currentGuess === secretWord) {
             showMessage("You win!");
-            revealWord(currentRow);
             showRestartButton();
         } else {
             giveFeedback();
@@ -352,7 +351,6 @@ function handleEnter() {
             currentGuess = "";
             if (currentRow === maxGuesses) {
                 showMessage("You lose! The word was: " + secretWord);
-                revealWord(currentRow - 1); // Reveal the word in the last attempted row
                 showRestartButton();
             }
         }
@@ -391,15 +389,6 @@ function showMessage(message) {
     resultMessage.innerText = message;
 }
 
-function revealWord(row) {
-    const secretArray = secretWord.split("");
-    for (let i = 0; i < 5; i++) {
-        const tile = document.getElementById(`tile-${row}-${i}`);
-        tile.innerText = secretArray[i];
-        tile.classList.add("correct");
-    }
-}
-
 function showRestartButton() {
     console.log("Displaying restart button");
     document.getElementById("restart-button").style.display = "block";
@@ -415,6 +404,10 @@ function restartGame() {
     const resultMessage = document.getElementById("result-message");
     resultMessage.innerText = "";
     document.getElementById("restart-button").style.display = "none";
+    const tiles = document.querySelectorAll(".tile");
+    tiles.forEach(tile => {
+        tile.classList.remove("correct", "present", "absent");
+    });
 }
 
 function showInstructions() {
