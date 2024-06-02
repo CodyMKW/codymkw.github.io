@@ -24,7 +24,57 @@ let filteredAmiiboGear = {
   shoes: []
 };
 
-// Fetch data from the JSON file
+function getRandomItem(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function filterAmiiboGear() {
+  filteredAmiiboGear.headgears = headgears.filter(item => !item.isAmiibo);
+  filteredAmiiboGear.shirts = shirts.filter(item => !item.isAmiibo);
+  filteredAmiiboGear.shoes = shoes.filter(item => !item.isAmiibo);
+}
+
+function getSelectedWeaponType() {
+  for (let filter of weaponFilters) {
+    if (filter.checked) {
+      return filter.value;
+    }
+  }
+  return "All";
+}
+
+function filterWeaponsByType() {
+  const selectedWeaponType = getSelectedWeaponType();
+  if (selectedWeaponType === "All") {
+    return weapons;
+  }
+  return weapons.filter(weapon => weapon.class === selectedWeaponType);
+}
+
+function randomize() {
+  const filteredWeapons = filterWeaponsByType();
+  const randomWeapon = getRandomItem(filteredWeapons);
+  const randomHeadgear = getRandomItem(hideAmiiboGearCheckbox.checked ? filteredAmiiboGear.headgears : headgears);
+  const randomShirt = getRandomItem(hideAmiiboGearCheckbox.checked ? filteredAmiiboGear.shirts : shirts);
+  const randomShoe = getRandomItem(hideAmiiboGearCheckbox.checked ? filteredAmiiboGear.shoes : shoes);
+
+  const weaponLink = `https://splatoonwiki.org/wiki/${randomWeapon.name.replace(/ /g, "_")}`;
+  const headgearLink = `https://splatoonwiki.org/wiki/${randomHeadgear.name.replace(/ /g, "_")}`;
+  const shirtLink = `https://splatoonwiki.org/wiki/${randomShirt.name.replace(/ /g, "_")}`;
+  const shoeLink = `https://splatoonwiki.org/wiki/${randomShoe.name.replace(/ /g, "_")}`;
+
+  weaponElement.innerHTML = `<a href="${weaponLink}" target="_blank">${randomWeapon.name}</a>`;
+  headgearElement.innerHTML = `<a href="${headgearLink}" target="_blank">${randomHeadgear.name}</a>`;
+  shirtElement.innerHTML = `<a href="${shirtLink}" target="_blank">${randomShirt.name}</a>`;
+  shoeElement.innerHTML = `<a href="${shoeLink}" target="_blank">${randomShoe.name}</a>`;
+}
+
+randomizeButton.addEventListener("click", randomize);
+closeButton.addEventListener("click", () => optionsCard.style.display = 'none');
+optionsButton.addEventListener("click", () => optionsCard.style.display = 'block');
+patchnotescloseButton.addEventListener("click", () => patchnotesCard.style.display = 'none');
+patchnotesButton.addEventListener("click", () => patchnotesCard.style.display = 'block');
+
 fetch(apiUrl)
   .then(response => response.json())
   .then(data => {
@@ -32,97 +82,12 @@ fetch(apiUrl)
     headgears = data.headgears;
     shirts = data.shirts;
     shoes = data.shoes;
-    filteredAmiiboGear = data.filteredAmiiboGear;
+
+    filterAmiiboGear();
+
+    randomize();
   })
-  .catch(error => console.error('Error fetching data:', error));
-
-// Load the option value from localStorage if it exists
-const hideAmiiboGearOption = localStorage.getItem("hideAmiiboGearOption");
-if (hideAmiiboGearOption !== null) {
-  hideAmiiboGearCheckbox.checked = JSON.parse(hideAmiiboGearOption);
-}
-
-// Listen for changes to the checkbox and save the value to localStorage
-hideAmiiboGearCheckbox.addEventListener("change", () => {
-  localStorage.setItem("hideAmiiboGearOption", hideAmiiboGearCheckbox.checked);
-});
-
-patchnotesButton.addEventListener("click", function() {
-  // Toggle the display property of the patch notes card
-  if (patchnotesCard.style.display === "none") {
-    patchnotesCard.style.display = "block";
-  } else {
-    patchnotesCard.style.display = "none";
-  }
-});
-
-optionsButton.addEventListener("click", function() {
-  // Toggle the display property of the options card
-  if (optionsCard.style.display === "none") {
-    optionsCard.style.display = "block";
-  } else {
-    optionsCard.style.display = "none";
-  }
-});
-
-patchnotescloseButton.addEventListener('click', function() {
-  patchnotesCard.style.display = "none";
-});
-
-closeButton.addEventListener('click', function() {
-  optionsCard.style.display = "none";
-});
-
-function randomize() {
-  let randomweapon, randomheadgear, randomshirt, randomshoe;
-  const selectedFilter = Array.from(weaponFilters).find(filter => filter.checked)?.value || "All";
-  
-  const filteredWeapons = selectedFilter === "All" ? weapons : weapons.filter(weapon => weapon.type === selectedFilter);
-
-  if (filteredWeapons.length === 0) {
-    weaponElement.textContent = "No weapons found";
-    randomweapon = null;
-  } else {
-    randomweapon = filteredWeapons[Math.floor(Math.random() * filteredWeapons.length)].name;
-  }
-
-  // Check if "Hide amiibo gear" is checked and filter out unwanted gear
-  if (hideAmiiboGearCheckbox.checked) {
-    const filteredHeadgears = headgears.filter(gear => !filteredAmiiboGear.headgears.includes(gear));
-    const filteredShirts = shirts.filter(gear => !filteredAmiiboGear.shirts.includes(gear));
-    const filteredShoes = shoes.filter(gear => !filteredAmiiboGear.shoes.includes(gear));
-    randomheadgear = filteredHeadgears[Math.floor(Math.random() * filteredHeadgears.length)];
-    randomshirt = filteredShirts[Math.floor(Math.random() * filteredShirts.length)];
-    randomshoe = filteredShoes[Math.floor(Math.random() * filteredShoes.length)];
-  } else {
-    randomheadgear = headgears[Math.floor(Math.random() * headgears.length)];
-    randomshirt = shirts[Math.floor(Math.random() * shirts.length)];
-    randomshoe = shoes[Math.floor(Math.random() * shoes.length)];
-  }
-  
-  weaponElement.textContent = randomweapon;
-  headgearElement.textContent = randomheadgear;
-  shirtElement.textContent = randomshirt;
-  shoeElement.textContent = randomshoe;
-}
-
-const tweetButton = document.getElementById("tweet-button");
-tweetButton.addEventListener("click", function() {
-  const weapon = document.getElementById("weapon").textContent;
-  const headgear = document.getElementById("headgear").textContent;
-  const shirt = document.getElementById("shirt").textContent;
-  const shoe = document.getElementById("shoe").textContent;
-  const tweetMessage = `I just generated a random weapon & outfit using the #Splatoon3 Randomizer!\n\nResults:\nWeapon - ${weapon}\nHeadgear - ${headgear}\nShirt - ${shirt}\nShoes - ${shoe}\nhttps://codymkw.github.io/splat3`;
-  
-  navigator.clipboard.writeText(tweetMessage);
-  alert("The message was copied to clipboard now you can go to twitter and post it or you can post it somewhere else it's up to you! :D");
-});
-
-randomizeButton.addEventListener('click', () => {
-  tweetButton.removeAttribute('disabled');
-});
-
-randomizeButton.addEventListener("click", randomize);
+  .catch(error => console.error("Error fetching data:", error));
 
 // Get the footer element
 var footer = document.querySelector('footer');
