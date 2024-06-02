@@ -12,6 +12,7 @@ const patchnotesButton = document.getElementById('patch-notes-button');
 const optionsCard = document.querySelector('.options-card');
 const optionsButton = document.getElementById('options-button');
 const hideAmiiboGearCheckbox = document.getElementById("hide-amiibo-gear");
+const weaponFilters = document.getElementsByName("weapon-type");
 
 let weapons = [];
 let headgears = [];
@@ -73,8 +74,17 @@ closeButton.addEventListener('click', function() {
 });
 
 function randomize() {
-  const randomweapon = weapons[Math.floor(Math.random() * weapons.length)];
-  let randomheadgear, randomshirt, randomshoe;
+  let randomweapon, randomheadgear, randomshirt, randomshoe;
+  const selectedFilter = Array.from(weaponFilters).find(filter => filter.checked)?.value || "All";
+  
+  const filteredWeapons = selectedFilter === "All" ? weapons : weapons.filter(weapon => weapon.type === selectedFilter);
+
+  if (filteredWeapons.length === 0) {
+    weaponElement.textContent = "No weapons found";
+    randomweapon = null;
+  } else {
+    randomweapon = filteredWeapons[Math.floor(Math.random() * filteredWeapons.length)].name;
+  }
 
   // Check if "Hide amiibo gear" is checked and filter out unwanted gear
   if (hideAmiiboGearCheckbox.checked) {
@@ -89,7 +99,7 @@ function randomize() {
     randomshirt = shirts[Math.floor(Math.random() * shirts.length)];
     randomshoe = shoes[Math.floor(Math.random() * shoes.length)];
   }
-
+  
   weaponElement.textContent = randomweapon;
   headgearElement.textContent = randomheadgear;
   shirtElement.textContent = randomshirt;
