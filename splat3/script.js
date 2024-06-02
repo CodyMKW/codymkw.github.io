@@ -83,7 +83,7 @@ function randomize() {
     weaponElement.textContent = "No weapons found";
     randomweapon = null;
   } else {
-    randomweapon = filteredWeapons[Math.floor(Math.random() * filteredWeapons.length)].name;
+    randomweapon = filteredWeapons[Math.floor(Math.random() * filteredWeapons.length)];
   }
 
   // Check if "Hide amiibo gear" is checked and filter out unwanted gear
@@ -99,11 +99,24 @@ function randomize() {
     randomshirt = shirts[Math.floor(Math.random() * shirts.length)];
     randomshoe = shoes[Math.floor(Math.random() * shoes.length)];
   }
-  
-  weaponElement.textContent = randomweapon;
-  headgearElement.textContent = randomheadgear;
-  shirtElement.textContent = randomshirt;
-  shoeElement.textContent = randomshoe;
+
+  // Logging to see what's selected
+  console.log('Random Weapon:', randomweapon);
+  console.log('Random Headgear:', randomheadgear);
+  console.log('Random Shirt:', randomshirt);
+  console.log('Random Shoe:', randomshoe);
+
+  // Ensure the gear items are defined before creating links
+  const weaponLink = randomweapon ? `https://splatoonwiki.org/wiki/${randomweapon.name.replace(/ /g, "_")}` : '#';
+  const headgearLink = randomheadgear ? `https://splatoonwiki.org/wiki/${randomheadgear.replace(/ /g, "_")}` : '#';
+  const shirtLink = randomshirt ? `https://splatoonwiki.org/wiki/${randomshirt.replace(/ /g, "_")}` : '#';
+  const shoeLink = randomshoe ? `https://splatoonwiki.org/wiki/${randomshoe.replace(/ /g, "_")}` : '#';
+
+  // Display the selected gear
+  weaponElement.innerHTML = randomweapon ? `<a href="${weaponLink}" target="_blank">${randomweapon.name}</a>` : 'No weapons found';
+  headgearElement.innerHTML = randomheadgear ? `<a href="${headgearLink}" target="_blank">${randomheadgear}</a>` : 'No headgear found';
+  shirtElement.innerHTML = randomshirt ? `<a href="${shirtLink}" target="_blank">${randomshirt}</a>` : 'No shirt found';
+  shoeElement.innerHTML = randomshoe ? `<a href="${shoeLink}" target="_blank">${randomshoe}</a>` : 'No shoes found';
 }
 
 const tweetButton = document.getElementById("tweet-button");
