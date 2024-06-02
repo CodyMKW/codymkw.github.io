@@ -100,15 +100,16 @@ function randomize() {
     randomshoe = shoes[Math.floor(Math.random() * shoes.length)];
   }
 
+  // Ensure the gear items are defined before creating links
   const weaponLink = randomweapon ? `https://splatoonwiki.org/wiki/${randomweapon.name.replace(/ /g, "_")}` : '#';
-  const headgearLink = `https://splatoonwiki.org/wiki/${randomheadgear.name.replace(/ /g, "_")}`;
-  const shirtLink = `https://splatoonwiki.org/wiki/${randomshirt.name.replace(/ /g, "_")}`;
-  const shoeLink = `https://splatoonwiki.org/wiki/${randomshoe.name.replace(/ /g, "_")}`;
+  const headgearLink = randomheadgear ? `https://splatoonwiki.org/wiki/${randomheadgear.name.replace(/ /g, "_")}` : '#';
+  const shirtLink = randomshirt ? `https://splatoonwiki.org/wiki/${randomshirt.name.replace(/ /g, "_")}` : '#';
+  const shoeLink = randomshoe ? `https://splatoonwiki.org/wiki/${randomshoe.name.replace(/ /g, "_")}` : '#';
 
   weaponElement.innerHTML = randomweapon ? `<a href="${weaponLink}" target="_blank">${randomweapon.name}</a>` : 'No weapons found';
-  headgearElement.innerHTML = `<a href="${headgearLink}" target="_blank">${randomheadgear.name}</a>`;
-  shirtElement.innerHTML = `<a href="${shirtLink}" target="_blank">${randomshirt.name}</a>`;
-  shoeElement.innerHTML = `<a href="${shoeLink}" target="_blank">${randomshoe.name}</a>`;
+  headgearElement.innerHTML = randomheadgear ? `<a href="${headgearLink}" target="_blank">${randomheadgear.name}</a>` : 'No headgear found';
+  shirtElement.innerHTML = randomshirt ? `<a href="${shirtLink}" target="_blank">${randomshirt.name}</a>` : 'No shirt found';
+  shoeElement.innerHTML = randomshoe ? `<a href="${shoeLink}" target="_blank">${randomshoe.name}</a>` : 'No shoes found';
 }
 
 const tweetButton = document.getElementById("tweet-button");
