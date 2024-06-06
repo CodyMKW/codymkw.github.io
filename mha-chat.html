@@ -376,19 +376,62 @@ function hideCharacterTypingIndicator(character) {
                 });
             });
         }
+
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
+        function autoConnect() {
+            const peerId = getQueryParam('peer_id');
+            if (peerId) {
+                document.getElementById('peer-id-input').value = peerId;
+                connectToPeer();
+            }
+        }
+
+        // Call autoConnect when the page loads
+        window.onload = autoConnect;
         
-function connectToPeer() {
-    const peerIdInput = document.getElementById('peer-id-input').value.trim();
-    if (peerIdInput) {
-        peerConnection = peer.connect(peerIdInput);
-        peerConnection.on('open', () => {
-            peerConnection.on('data', data => {
-                const message = JSON.parse(data);
-                displayMessage(message);
-            });
-        });
-    }
-}
+        const peer = new Peer();
+
+        peer.on('open', (id) => {
+            console.log(`My peer ID is: ${id}`);
+        });        
+        function connectToPeer() {
+            const peerId = document.getElementById('peer-id-input').value;
+            if (peerId) {
+                const conn = peer.connect(peerId);
+                conn.on('open', () => {
+                    console.log('Connected to: ' + peerId);
+                    // Handle incoming messages
+                    conn.on('data', (data) => {
+                        displayMessage({ name: 'Peer', img: '', content: data });
+                    });
+                    // Send messages
+                    document.getElementById('send-button').onclick = () => {
+                        const message = document.getElementById('user-input').value;
+                        conn.send(message);
+                        displayMessage({ name: 'Me', img: '', content: message });
+                    };
+                });
+            }
+        }
+
+        function displayMessage(message) {
+            const chatContainer = document.getElementById('chat-container');
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('message');
+            messageElement.innerHTML = `
+                <img src="${message.img}" alt="${message.name}">
+                <div class="text">
+                    <div class="name">${message.name}</div>
+                    <div class="content">${message.content}</div>
+                </div>
+            `;
+            chatContainer.appendChild(messageElement);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
 
         simulateChat();
     </script>
