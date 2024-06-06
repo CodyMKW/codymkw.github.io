@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Hero Academia Chatroom</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
+    <style>
+        body {
+            background-color: #121212;
+            color: #ffffff;
+            font-family: 'Roboto', sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        h1 {
+            font-size: 3em;
+            margin-bottom: 0.5em;
+        }
+        .chat-container {
+            width: 80%;
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #1e1e1e;
+            border: 1px solid #333333;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: left;
+            overflow-y: auto;
+            height: 500px;
+            margin-bottom: 20px;
+        }
+        .message {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .message img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 15px;
+        }
+        .message .text {
+            background-color: #333333;
+            border-radius: 10px;
+            padding: 10px 15px;
+            max-width: 70%;
+            word-wrap: break-word;
+        }
+        .message .name {
+            font-weight: 500;
+            margin-bottom: 5px;
+            color: #ff007f;
+        }
+        .message .content {
+            font-size: 1.2em;
+        }
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            margin-top: 15px;
+        }
+        .typing-indicator img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 15px;
+        }
+        .typing-indicator .dots {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background-color: #ff007f;
+            border-radius: 50%;
+            animation: blink 1s infinite;
+        }
+        .typing-indicator .dots:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        .typing-indicator .dots:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        @keyframes blink {
+            0%, 100% {
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+        .input-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .input-container input {
+            width: 60%;
+            padding: 10px;
+            font-size: 1em;
+            border: none;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+        .input-container button {
+            padding: 10px 20px;
+            font-size: 1em;
+            background-color: #ff007f;
+            border: none;
+            border-radius: 5px;
+            color: #ffffff;
+            cursor: pointer;
+        }
+        .name-container {
+            margin-bottom: 10px;
+        }
+        .name-container input {
+            width: 30%;
+            padding: 10px;
+            font-size: 1em;
+            border: none;
+            border-radius: 5px;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/peerjs@1.3.1/dist/peerjs.min.js"></script>
+</head>
+<body>
+    <h1>My Hero Academia Chatroom</h1>
+    <div class="name-container">
+        <input type="text" id="user-name" placeholder="Enter your name">
+    </div>
+    <div class="peer-id-container">
+        <input type="text" id="peer-id-input" placeholder="Enter other person's Peer ID">
+        <button onclick="connectToPeer()">Connect</button>
+    </div>
+    <div class="chat-container" id="chat-container">
+        <!-- Messages will be appended here by JavaScript -->
+    </div>
+    <div class="input-container">
+        <input type="text" id="user-input" placeholder="Type your message here...">
+        <button onclick="sendMessage()">Send</button>
+    </div>
+
+    <script>
+const messages = [
+    { name: "All Might", img: "https://i.ibb.co/qn4TSKR/All-Might.jpg", content: "Don't worry, young Midoriya! You'll get the hang of it soon." },
+    { name: "Izuku Midoriya", img: "https://i.ibb.co/hs0JzDS/Izuku-Midoriya.jpg", content: "Thanks, All Might! I'll keep practicing." },
+    { name: "Ochaco Uraraka", img: "https://i.ibb.co/dj7N2Rp/Ochaco-Uraraka.jpg", content: "Hey guys, did you see the latest hero rankings?" },
+    { name: "Katsuki Bakugo", img: "https://i.ibb.co/TcTPrpr/Katsuki-Bakugo.jpg", content: "Tch. Those rankings don't mean anything. I'll be number one soon enough." },
+    { name: "Shoto Todoroki", img: "https://i.ibb.co/GWkDY4P/Shoto-Todoroki.jpg", content: "I'm more focused on improving my skills than the rankings." },
+    { name: "Tsuyu Asui", img: "https://i.ibb.co/h2zjDw0/Tsuyu-Asui.jpg", content: "Ribbit. I think the rankings can be motivating, but we shouldn't obsess over them." },
+    { name: "Himiko Toga", img: "https://i.ibb.co/W5hfgSs/Himiko-Toga.jpg", content: "Rankings? I just care about having fun!" },
+    { name: "Tomura Shigaraki", img: "https://i.ibb.co/NZ914zc/Tomura-Shigaraki.jpg", content: "This chat is boring. Let's talk about something more destructive." },
+    { name: "Endeavor", img: "https://i.ibb.co/gzvNVZT/Endeavor.jpg", content: "Focus on your training, Shigaraki. Destruction won't get you far." },
+    { name: "Dabi", img: "https://i.ibb.co/G7Rgx0S/Dabi.jpg", content: "Destruction is my kind of thing. What do you have in mind, Shigaraki?" },
+    { name: "Kurogiri", img: "https://i.ibb.co/kGWyGfx/Kurogiri.jpg", content: "Let's keep it civil. We have different goals here." },
+    { name: "One For All", img: "https://i.ibb.co/rfYwJT6/One-For-All.jpg", content: "Always plotting, aren't you, Shigaraki?" },
+    { name: "Izuku Midoriya", img: "https://i.ibb.co/hs0JzDS/Izuku-Midoriya.jpg", content: "Let's keep it friendly, guys. We're all here to improve." },
+    { name: "Ochaco Uraraka", img: "https://i.ibb.co/dj7N2Rp/Ochaco-Uraraka.jpg", content: "I agree with Deku. Let's focus on positive things." },
+    { name: "All Might", img: "https://i.ibb.co/qn4TSKR/All-Might.jpg", content: "That's the spirit, young heroes! Stay positive and keep pushing forward." },
+    { name: "Tsuyu Asui", img: "https://i.ibb.co/h2zjDw0/Tsuyu-Asui.jpg", content: "Ribbit. So, anyone watched the latest episode of our show?" },
+    { name: "Katsuki Bakugo", img: "https://i.ibb.co/TcTPrpr/Katsuki-Bakugo.jpg", content: "Who cares about that? Let's talk about training!" },
+    { name: "Shoto Todoroki", img: "https://i.ibb.co/GWkDY4P/Shoto-Todoroki.jpg", content: "Training is important, but we should also take time to relax." },
+    { name: "Endeavor", img: "https://i.ibb.co/gzvNVZT/Endeavor.jpg", content: "Balance is key. Focus on your goals, but don't forget to unwind." },
+    { name: "Tomura Shigaraki", img: "https://i.ibb.co/NZ914zc/Tomura-Shigaraki.jpg", content: "Enough with the hero talk. Let's discuss tactics." },
+    { name: "Dabi", img: "https://i.ibb.co/G7Rgx0S/Dabi.jpg", content: "Tactics? I've got a few ideas..." },
+    { name: "Kurogiri", img: "https://i.ibb.co/kGWyGfx/Kurogiri.jpg", content: "Always the strategist, Dabi. Let's hear them." },
+    { name: "Himiko Toga", img: "https://i.ibb.co/W5hfgSs/Himiko-Toga.jpg", content: "Can we mix in some fun with those tactics?" },
+    { name: "All Might", img: "https://i.ibb.co/qn4TSKR/All-Might.jpg", content: "Remember, Plus Ultra!" },
+    { name: "Izuku Midoriya", img: "https://i.ibb.co/hs0JzDS/Izuku-Midoriya.jpg", content: "Plus Ultra! Always pushing beyond my limits." },
+    { name: "Ochaco Uraraka", img: "https://i.ibb.co/dj7N2Rp/Ochaco-Uraraka.jpg", content: "I need to work on my new move. Any suggestions?" },
+    { name: "Katsuki Bakugo", img: "https://i.ibb.co/TcTPrpr/Katsuki-Bakugo.jpg", content: "Just explode everything. Works for me." },
+    { name: "Shoto Todoroki", img: "https://i.ibb.co/GWkDY4P/Shoto-Todoroki.jpg", content: "Try combining your float with combat techniques." },
+    { name: "Tsuyu Asui", img: "https://i.ibb.co/h2zjDw0/Tsuyu-Asui.jpg", content: "Ribbit. Maybe you can use your Zero Gravity in unexpected ways." },
+    { name: "Himiko Toga", img: "https://i.ibb.co/W5hfgSs/Himiko-Toga.jpg", content: "I prefer a more personal touch." },
+    { name: "Tomura Shigaraki", img: "https://i.ibb.co/NZ914zc/Tomura-Shigaraki.jpg", content: "Personal touch? You mean chaos." },
+    { name: "Endeavor", img: "https://i.ibb.co/gzvNVZT/Endeavor.jpg", content: "Shigaraki, you have much to learn about true power." },
+    { name: "Dabi", img: "https://i.ibb.co/G7Rgx0S/Dabi.jpg", content: "Power is only as good as the will to use it." },
+    { name: "Kurogiri", img: "https://i.ibb.co/kGWyGfx/Kurogiri.jpg", content: "Indeed, focus and purpose are key." },
+    { name: "One For All", img: "https://i.ibb.co/rfYwJT6/One-For-All.jpg", content: "Purpose drives strength. Never forget that." },
+    { name: "Izuku Midoriya", img: "https://i.ibb.co/hs0JzDS/Izuku-Midoriya.jpg", content: "I'm always learning. Thank you, everyone." },
+    { name: "Ochaco Uraraka", img: "https://i.ibb.co/dj7N2Rp/Ochaco-Uraraka.jpg", content: "Let's all improve together. We're a team!" },
+    { name: "All Might", img: "https://i.ibb.co/qn4TSKR/All-Might.jpg", content: "Teamwork makes us stronger. United we stand." },
+    { name: "Tsuyu Asui", img: "https://i.ibb.co/h2zjDw0/Tsuyu-Asui.jpg", content: "Ribbit. Together we can achieve anything." },
+    { name: "Katsuki Bakugo", img: "https://i.ibb.co/TcTPrpr/Katsuki-Bakugo.jpg", content: "I'll surpass you all. Watch me." },
+    { name: "Shoto Todoroki", img: "https://i.ibb.co/GWkDY4P/Shoto-Todoroki.jpg", content: "We'll all reach our potential in our own ways." },
+    { name: "Endeavor", img: "https://i.ibb.co/gzvNVZT/Endeavor.jpg", content: "Never stop striving for excellence." },
+    { name: "Tomura Shigaraki", img: "https://i.ibb.co/NZ914zc/Tomura-Shigaraki.jpg", content: "Excellence is overrated. Chaos is more fun." },
+    { name: "Dabi", img: "https://i.ibb.co/G7Rgx0S/Dabi.jpg", content: "Chaos is where real power shines." },
+    { name: "Kurogiri", img: "https://i.ibb.co/kGWyGfx/Kurogiri.jpg", content: "Focus on your goals. Everything else will follow." },
+    { name: "Himiko Toga", img: "https://i.ibb.co/W5hfgSs/Himiko-Toga.jpg", content: "Goals, fun, chaos. It's all the same to me!" },
+    { name: "Izuku Midoriya", img: "https://i.ibb.co/hs0JzDS/Izuku-Midoriya.jpg", content: "I really miss my mom. It's hard being away for so long." },
+    { name: "Ochaco Uraraka", img: "https://i.ibb.co/dj7N2Rp/Ochaco-Uraraka.jpg", content: "Don't worry, Deku. We'll visit your mom together soon." },
+    { name: "Katsuki Bakugo", img: "https://i.ibb.co/TcTPrpr/Katsuki-Bakugo.jpg", content: "Stop whining, Deku. Focus on your training." },
+    { name: "Shoto Todoroki", img: "https://i.ibb.co/GWkDY4P/Shoto-Todoroki.jpg", content: "It's okay to feel homesick. We're here for you." },
+    { name: "Tsuyu Asui", img: "https://i.ibb.co/h2zjDw0/Tsuyu-Asui.jpg", content: "Ribbit. Sometimes we need to let our emotions out. It's healthy." },
+    { name: "Himiko Toga", img: "https://i.ibb.co/W5hfgSs/Himiko-Toga.jpg", content: "Emotions make us human. Embrace them!" },
+    { name: "Tomura Shigaraki", img: "https://i.ibb.co/NZ914zc/Tomura-Shigaraki.jpg", content: "Emotions are a weakness. Use them against your enemies." },
+    { name: "Dabi", img: "https://i.ibb.co/G7Rgx0S/Dabi.jpg", content: "Or use them to fuel your inner fire." },
+    { name: "Kurogiri", img: "https://i.ibb.co/kGWyGfx/Kurogiri.jpg", content: "Channel your emotions into your goals." },
+    { name: "Endeavor", img: "https://i.ibb.co/gzvNVZT/Endeavor.jpg", content: "Emotions are powerful. They can drive you to greatness." },
+    { name: "One For All", img: "https://i.ibb.co/rfYwJT6/One-For-All.jpg", content: "Always keep your loved ones close in your heart." },
+    { name: "Izuku Midoriya", img: "https://i.ibb.co/hs0JzDS/Izuku-Midoriya.jpg", content: "Thank you, everyone. I feel a bit better now." },
+    { name: "Ochaco Uraraka", img: "https://i.ibb.co/dj7N2Rp/Ochaco-Uraraka.jpg", content: "We're all here for you, Deku. Always." },
+    { name: "Katsuki Bakugo", img: "https://i.ibb.co/TcTPrpr/Katsuki-Bakugo.jpg", content: "Don't get too comfortable. We've got work to do." },
+    { name: "Shoto Todoroki", img: "https://i.ibb.co/GWkDY4P/Shoto-Todoroki.jpg", content: "Bakugo is right, but let's support each other." },
+    { name: "Tsuyu Asui", img: "https://i.ibb.co/h2zjDw0/Tsuyu-Asui.jpg", content: "Ribbit. A balanced approach is best." },
+    { name: "Himiko Toga", img: "https://i.ibb.co/W5hfgSs/Himiko-Toga.jpg", content: "Let's have some fun while we're at it!" },
+    { name: "Tomura Shigaraki", img: "https://i.ibb.co/NZ914zc/Tomura-Shigaraki.jpg", content: "Fun? You heroes are so naive." },
+    { name: "Dabi", img: "https://i.ibb.co/G7Rgx0S/Dabi.jpg", content: "Naive or not, they have spirit." },
+    { name: "Kurogiri", img: "https://i.ibb.co/kGWyGfx/Kurogiri.jpg", content: "Let's see how far that spirit takes them." },
+    { name: "Endeavor", img: "https://i.ibb.co/gzvNVZT/Endeavor.jpg", content: "Spirit and determination can move mountains." },
+    { name: "One For All", img: "https://i.ibb.co/rfYwJT6/One-For-All.jpg", content: "Together, we can achieve the impossible." },
+    { name: "Izuku Midoriya", img: "https://i.ibb.co/hs0JzDS/Izuku-Midoriya.jpg", content: "I'll keep striving to be the best hero I can be." },
+    { name: "Ochaco Uraraka", img: "https://i.ibb.co/dj7N2Rp/Ochaco-Uraraka.jpg", content: "And I'll be right there with you, Deku." },
+    { name: "Katsuki Bakugo", img: "https://i.ibb.co/TcTPrpr/Katsuki-Bakugo.jpg", content: "I'll surpass all of you. Just watch." },
+    { name: "Shoto Todoroki", img: "https://i.ibb.co/GWkDY4P/Shoto-Todoroki.jpg", content: "We'll all grow stronger together." },
+    { name: "Tsuyu Asui", img: "https://i.ibb.co/h2zjDw0/Tsuyu-Asui.jpg", content: "Ribbit. Let's do our best, everyone." },
+    { name: "Himiko Toga", img: "https://i.ibb.co/W5hfgSs/Himiko-Toga.jpg", content: "And have some fun along the way!" },
+    { name: "Tomura Shigaraki", img: "https://i.ibb.co/NZ914zc/Tomura-Shigaraki.jpg", content: "Fun or not, we'll see who comes out on top." },
+    { name: "Dabi", img: "https://i.ibb.co/G7Rgx0S/Dabi.jpg", content: "The battle never ends." },
+    { name: "Kurogiri", img: "https://i.ibb.co/kGWyGfx/Kurogiri.jpg", content: "Stay focused on your path." },
+    { name: "Endeavor", img: "https://i.ibb.co/gzvNVZT/Endeavor.jpg", content: "Perseverance is the key to success." },
+    { name: "One For All", img: "https://i.ibb.co/rfYwJT6/One-For-All.jpg", content: "We'll face any challenge together." },
+    { name: "Izuku Midoriya", img: "https://i.ibb.co/hs0JzDS/Izuku-Midoriya.jpg", content: "I'm ready for whatever comes next." },
+    { name: "Ochaco Uraraka", img: "https://i.ibb.co/dj7N2Rp/Ochaco-Uraraka.jpg", content: "Let's give it our all!" },
+    { name: "Katsuki Bakugo", img: "https://i.ibb.co/TcTPrpr/Katsuki-Bakugo.jpg", content: "I'll crush you all!" },
+    { name: "Shoto Todoroki", img: "https://i.ibb.co/GWkDY4P/Shoto-Todoroki.jpg", content: "Together, we're unstoppable." },
+    { name: "Tsuyu Asui", img: "https://i.ibb.co/h2zjDw0/Tsuyu-Asui.jpg", content: "Ribbit. Let's make our dreams a reality." }
+];
+
+        const chatContainer = document.getElementById('chat-container');
+        const userInput = document.getElementById('user-input');
+        const userNameInput = document.getElementById('user-name');
+
+        function displayMessage(message) {
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('message');
+            messageElement.innerHTML = `
+                <img src="${message.img}" alt="${message.name}">
+                <div class="text">
+                    <div class="name">${message.name}</div>
+                    <div class="content">${message.content}</div>
+                </div>
+            `;
+            chatContainer.appendChild(messageElement);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+function simulateChat() {
+    let index = 0;
+    const interval = setInterval(() => {
+        if (index < messages.length) {
+            const character = messages[index];
+            showCharacterTypingIndicator(character);
+            setTimeout(() => {
+                hideCharacterTypingIndicator(character);
+                displayMessage(character);
+                index++;
+                if (index === messages.length) {
+                    clearInterval(interval);
+                    showTypingIndicator();
+                }
+            }, 6000);
+        }
+    }, 9000);
+}
+        
+function showCharacterTypingIndicator(character) {
+    const typingIndicator = document.createElement('div');
+    typingIndicator.classList.add('typing-indicator');
+    typingIndicator.innerHTML = `
+        <img src="${character.img}" alt="${character.name}">
+        <div class="dots"></div>
+        <div class="dots"></div>
+        <div class="dots"></div>
+    `;
+    typingIndicator.setAttribute('id', `typing-${character.name}`);
+    chatContainer.appendChild(typingIndicator);
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+}
+
+function hideCharacterTypingIndicator(character) {
+    const typingIndicator = document.getElementById(`typing-${character.name}`);
+    if (typingIndicator) {
+        chatContainer.removeChild(typingIndicator);
+    }
+}
+
+        function showTypingIndicator() {
+            const typingIndicator = document.createElement('div');
+            typingIndicator.classList.add('typing-indicator');
+            typingIndicator.innerHTML = `
+                <img src="https://i.ibb.co/W5hfgSs/Himiko-Toga.jpg" alt="Himiko Toga">
+                <div class="dots"></div>
+                <div class="dots"></div>
+                <div class="dots"></div>
+            `;
+            chatContainer.appendChild(typingIndicator);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        function sendMessage() {
+            const userName = userNameInput.value.trim() || 'You';
+            const userMessage = userInput.value.trim();
+            if (userMessage) {
+                const userElement = {
+                    name: userName,
+                    img: "https://i.ibb.co/gynZfsZ/user.webp",
+                    content: userMessage
+                };
+                displayMessage(userElement);
+                userInput.value = '';
+                peerConnection.send(JSON.stringify(userElement));
+            }
+        }
+
+        function simulateCharacterResponse() {
+            const responses = [
+                "Interesting point!",
+                "I never thought about it that way.",
+                "Can you elaborate on that?",
+                "That's a great idea!",
+                "I agree with you.",
+                "Hmm, I'm not sure about that.",
+                "Let's discuss this further.",
+                "That's a bit off-topic, but okay.",
+                "I'm not convinced, but let's see.",
+                "Can we focus on the main topic?",
+                "That's an unusual perspective.",
+                "I'm intrigued by your point."
+            ];
+            const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+            const randomCharacter = messages[Math.floor(Math.random() * messages.length)];
+            const characterResponse = {
+                name: randomCharacter.name,
+                img: randomCharacter.img,
+                content: randomResponse
+            };
+            setTimeout(() => displayMessage(characterResponse), 3000);
+        }
+
+        // PeerJS integration
+        const peer = new Peer();
+        let peerConnection;
+
+        peer.on('open', id => {
+            const url = new URL(window.location.href);
+            url.searchParams.set('id', id);
+            window.history.replaceState({}, document.title, url);
+
+            const peerIdInput = document.createElement('input');
+            peerIdInput.type = 'text';
+            peerIdInput.value = id;
+            peerIdInput.readOnly = true;
+            document.body.insertBefore(peerIdInput, chatContainer);
+        });
+
+        peer.on('connection', conn => {
+            peerConnection = conn;
+            conn.on('data', data => {
+                const message = JSON.parse(data);
+                displayMessage(message);
+            });
+        });
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const peerId = urlParams.get('id');
+
+        if (peerId) {
+            peerConnection = peer.connect(peerId);
+            peerConnection.on('open', () => {
+                peerConnection.on('data', data => {
+                    const message = JSON.parse(data);
+                    displayMessage(message);
+                });
+            });
+        }
+        
+function connectToPeer() {
+    const peerIdInput = document.getElementById('peer-id-input').value.trim();
+    if (peerIdInput) {
+        peerConnection = peer.connect(peerIdInput);
+        peerConnection.on('open', () => {
+            peerConnection.on('data', data => {
+                const message = JSON.parse(data);
+                displayMessage(message);
+            });
+        });
+    }
+}
+
+        simulateChat();
+    </script>
+</body>
+</html>
