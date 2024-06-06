@@ -228,102 +228,169 @@ const messages = [
     { name: "Shoto Todoroki", img: "https://i.ibb.co/GWkDY4P/Shoto-Todoroki.jpg", content: "Together, we're unstoppable." },
     { name: "Tsuyu Asui", img: "https://i.ibb.co/h2zjDw0/Tsuyu-Asui.jpg", content: "Ribbit. Let's make our dreams a reality." }
 ];
+
+        const chatContainer = document.getElementById('chat-container');
+        const userInput = document.getElementById('user-input');
+        const userNameInput = document.getElementById('user-name');
+
+        function displayMessage(message) {
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('message');
+            messageElement.innerHTML = `
+                <img src="${message.img}" alt="${message.name}">
+                <div class="text">
+                    <div class="name">${message.name}</div>
+                    <div class="content">${message.content}</div>
+                </div>
+            `;
+            chatContainer.appendChild(messageElement);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+function simulateChat() {
+    let index = 0;
+    const interval = setInterval(() => {
+        if (index < messages.length) {
+            const character = messages[index];
+            showCharacterTypingIndicator(character);
+            setTimeout(() => {
+                hideCharacterTypingIndicator(character);
+                displayMessage(character);
+                index++;
+                if (index === messages.length) {
+                    clearInterval(interval);
+                    showTypingIndicator();
+                }
+            }, 6000);
+        }
+    }, 9000);
+}
         
-        function createMessageElement(message) {
-            const messageDiv = document.createElement('div');
-            messageDiv.classList.add('message');
+function showCharacterTypingIndicator(character) {
+    const typingIndicator = document.createElement('div');
+    typingIndicator.classList.add('typing-indicator');
+    typingIndicator.innerHTML = `
+        <img src="${character.img}" alt="${character.name}">
+        <div class="dots"></div>
+        <div class="dots"></div>
+        <div class="dots"></div>
+    `;
+    typingIndicator.setAttribute('id', `typing-${character.name}`);
+    chatContainer.appendChild(typingIndicator);
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+}
 
-            const img = document.createElement('img');
-            img.src = message.img;
-            messageDiv.appendChild(img);
+function hideCharacterTypingIndicator(character) {
+    const typingIndicator = document.getElementById(`typing-${character.name}`);
+    if (typingIndicator) {
+        chatContainer.removeChild(typingIndicator);
+    }
+}
 
-            const textDiv = document.createElement('div');
-            textDiv.classList.add('text');
-
-            const nameDiv = document.createElement('div');
-            nameDiv.classList.add('name');
-            nameDiv.textContent = message.name;
-            textDiv.appendChild(nameDiv);
-
-            const contentDiv = document.createElement('div');
-            contentDiv.classList.add('content');
-            contentDiv.textContent = message.content;
-            textDiv.appendChild(contentDiv);
-
-            messageDiv.appendChild(textDiv);
-
-            return messageDiv;
-        }
-
-        function renderMessages() {
-            const chatContainer = document.getElementById('chat-container');
-            chatContainer.innerHTML = '';
-            messages.forEach(message => {
-                const messageElement = createMessageElement(message);
-                chatContainer.appendChild(messageElement);
-            });
-        }
-
-        window.onload = () => {
-            renderMessages();
-        };
-
-        // PeerJS Code
-        let peer;
-        let conn;
-
-        function connectToPeer() {
-            const peerId = document.getElementById('peer-id-input').value;
-            conn = peer.connect(peerId);
-            conn.on('open', () => {
-                console.log('Connected to peer:', peerId);
-                conn.on('data', handleMessage);
-            });
-        }
-
-        function initializePeer() {
-            peer = new Peer();
-            peer.on('open', (id) => {
-                document.getElementById('peer-id-input').value = id;
-                console.log('My peer ID is:', id);
-            });
-            peer.on('connection', (connection) => {
-                conn = connection;
-                conn.on('data', handleMessage);
-            });
-        }
-
-        function handleMessage(data) {
-            const message = {
-                name: 'Peer',
-                img: 'https://i.ibb.co/YW1HkJ6/default-avatar.png', // Default avatar for the peer
-                content: data
-            };
-            messages.push(message);
-            renderMessages();
+        function showTypingIndicator() {
+            const typingIndicator = document.createElement('div');
+            typingIndicator.classList.add('typing-indicator');
+            typingIndicator.innerHTML = `
+                <img src="https://i.ibb.co/W5hfgSs/Himiko-Toga.jpg" alt="Himiko Toga">
+                <div class="dots"></div>
+                <div class="dots"></div>
+                <div class="dots"></div>
+            `;
+            chatContainer.appendChild(typingIndicator);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
         }
 
         function sendMessage() {
-            const userInput = document.getElementById('user-input').value;
-            const userName = document.getElementById('user-name').value || 'Anonymous';
-            if (userInput.trim() === '') return;
-
-            const message = {
-                name: userName,
-                img: 'https://i.ibb.co/YW1HkJ6/default-avatar.png', // Default avatar for the user
-                content: userInput
-            };
-            messages.push(message);
-            renderMessages();
-
-            if (conn && conn.open) {
-                conn.send(userInput);
+            const userName = userNameInput.value.trim() || 'You';
+            const userMessage = userInput.value.trim();
+            if (userMessage) {
+                const userElement = {
+                    name: userName,
+                    img: "https://i.ibb.co/gynZfsZ/user.webp",
+                    content: userMessage
+                };
+                displayMessage(userElement);
+                userInput.value = '';
+                peerConnection.send(JSON.stringify(userElement));
             }
-
-            document.getElementById('user-input').value = '';
         }
 
-        initializePeer();
+        function simulateCharacterResponse() {
+            const responses = [
+                "Interesting point!",
+                "I never thought about it that way.",
+                "Can you elaborate on that?",
+                "That's a great idea!",
+                "I agree with you.",
+                "Hmm, I'm not sure about that.",
+                "Let's discuss this further.",
+                "That's a bit off-topic, but okay.",
+                "I'm not convinced, but let's see.",
+                "Can we focus on the main topic?",
+                "That's an unusual perspective.",
+                "I'm intrigued by your point."
+            ];
+            const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+            const randomCharacter = messages[Math.floor(Math.random() * messages.length)];
+            const characterResponse = {
+                name: randomCharacter.name,
+                img: randomCharacter.img,
+                content: randomResponse
+            };
+            setTimeout(() => displayMessage(characterResponse), 3000);
+        }
+
+        // PeerJS integration
+        const peer = new Peer();
+        let peerConnection;
+
+        peer.on('open', id => {
+            const url = new URL(window.location.href);
+            url.searchParams.set('id', id);
+            window.history.replaceState({}, document.title, url);
+
+            const peerIdInput = document.createElement('input');
+            peerIdInput.type = 'text';
+            peerIdInput.value = id;
+            peerIdInput.readOnly = true;
+            document.body.insertBefore(peerIdInput, chatContainer);
+        });
+
+        peer.on('connection', conn => {
+            peerConnection = conn;
+            conn.on('data', data => {
+                const message = JSON.parse(data);
+                displayMessage(message);
+            });
+        });
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const peerId = urlParams.get('id');
+
+        if (peerId) {
+            peerConnection = peer.connect(peerId);
+            peerConnection.on('open', () => {
+                peerConnection.on('data', data => {
+                    const message = JSON.parse(data);
+                    displayMessage(message);
+                });
+            });
+        }
+        
+function connectToPeer() {
+    const peerIdInput = document.getElementById('peer-id-input').value.trim();
+    if (peerIdInput) {
+        peerConnection = peer.connect(peerIdInput);
+        peerConnection.on('open', () => {
+            peerConnection.on('data', data => {
+                const message = JSON.parse(data);
+                displayMessage(message);
+            });
+        });
+    }
+}
+
+        simulateChat();
     </script>
 </body>
 </html>
