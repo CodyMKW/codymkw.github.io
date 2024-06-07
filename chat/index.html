@@ -17,9 +17,15 @@
         <div class="connection">
             <input type="text" id="peerIdInput" placeholder="Enter Peer ID to connect">
             <button id="connectButton">Connect</button>
+            <button id="disconnectButton">Disconnect</button>
             <p>Your Peer ID: <span id="peerIdDisplay"></span></p>
         </div>
-        <div class="chat" id="chat">
+        <div class="content">
+            <div class="chat" id="chat"></div>
+            <div class="userList">
+                <h2>Users</h2>
+                <ul id="userList"></ul>
+            </div>
         </div>
         <div class="messageBox">
             <input type="text" id="messageInput" placeholder="Type your message here...">
