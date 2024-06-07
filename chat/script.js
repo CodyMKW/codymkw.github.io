@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const newAvatar = avatarInput.value || "https://i.ibb.co/gynZfsZ/user.webp";
 
         if (newUsername !== currentUsername) {
-            broadcastSystemMessage(`${currentUsername} changed name to ${newUsername}`);
+            broadcastSystemMessage(`${currentUsername} changed name to ${newUsername}`, true);
             currentUsername = newUsername;
         }
 
@@ -68,21 +68,11 @@ document.addEventListener("DOMContentLoaded", () => {
             broadcastSystemMessage(`${currentUsername} joined chat`);
 
             conn.on("data", (data) => {
-                if (data.type === "message") {
-                    addMessage(data.username, data.avatar, data.message, data.timestamp);
-                } else if (data.type === "system") {
-                    addSystemMessage(data.message);
-                } else if (data.type === "userInfo") {
-                    userMap.set(id, data.username || "Anonymous");
-                    updateUserList();
-                }
+                handleIncomingData(id, data);
             });
 
             conn.on("close", () => {
-                broadcastSystemMessage(`${userMap.get(id) || 'Anonymous'} left chat`);
-                delete connections[id];
-                userMap.delete(id);
-                updateUserList();
+                handlePeerDisconnect(id);
             });
 
             conn.on("error", (err) => {
@@ -131,24 +121,24 @@ document.addEventListener("DOMContentLoaded", () => {
         messageInput.value = "";
     };
 
-const addMessage = (username, avatar, message, timestamp) => {
-    const messageElement = document.createElement("div");
-    messageElement.classList.add("message");
+    const addMessage = (username, avatar, message, timestamp) => {
+        const messageElement = document.createElement("div");
+        messageElement.classList.add("message");
 
-    messageElement.innerHTML = `
-        <img src="${avatar}" alt="Avatar">
-        <div class="content">
-            <div class="header">
-                <div class="username">${username}</div>
-                <div class="timestamp">${timestamp}</div>
+        messageElement.innerHTML = `
+            <img src="${avatar}" alt="Avatar">
+            <div class="content">
+                <div class="header">
+                    <div class="username">${username}</div>
+                    <div class="timestamp">${timestamp}</div>
+                </div>
+                <div class="text">${message}</div>
             </div>
-            <div class="text">${message}</div>
-        </div>
-    `;
+        `;
 
-    chatBox.appendChild(messageElement);
-    chatBox.scrollTop = chatBox.scrollHeight;
-};
+        chatBox.appendChild(messageElement);
+        chatBox.scrollTop = chatBox.scrollHeight;
+    };
 
     const addSystemMessage = (message) => {
         const messageElement = document.createElement("div");
@@ -159,21 +149,54 @@ const addMessage = (username, avatar, message, timestamp) => {
         chatBox.scrollTop = chatBox.scrollHeight;
     };
 
-    const broadcastSystemMessage = (message) => {
+    const broadcastSystemMessage = (message, usernameUpdate = false) => {
         addSystemMessage(message);
         // Send system message to all connected peers
         Object.values(connections).forEach(conn => {
             conn.send({ type: "system", message });
+            if (usernameUpdate) {
+                conn.send({ type: "updateUsername", newUsername: currentUsername });
+            }
         });
     };
 
     const updateUserList = () => {
         userListElement.innerHTML = '';
+        const selfLi = document.createElement('li');
+        selfLi.textContent = currentUsername;
+        userListElement.appendChild(selfLi);
         userMap.forEach((username, id) => {
             const li = document.createElement('li');
             li.textContent = username || "Anonymous";
             userListElement.appendChild(li);
         });
+    };
+
+    const handleIncomingData = (id, data) => {
+        if (data.type === "message") {
+            addMessage(data.username, data.avatar, data.message, data.timestamp);
+        } else if (data.type === "system") {
+            addSystemMessage(data.message);
+        } else if (data.type === "userInfo") {
+            userMap.set(id, data.username || "Anonymous");
+            updateUserList();
+        } else if (data.type === "updateUsername") {
+            userMap.set(id, data.newUsername || "Anonymous");
+            updateUserList();
+            // Re-broadcast the username update to all other peers
+            Object.values(connections).forEach(conn => {
+                if (conn.peer !== id) {
+                    conn.send({ type: "updateUsername", newUsername: data.newUsername });
+                }
+            });
+        }
+    };
+
+    const handlePeerDisconnect = (id) => {
+        broadcastSystemMessage(`${userMap.get(id) || 'Anonymous'} left chat`);
+        delete connections[id];
+        userMap.delete(id);
+        updateUserList();
     };
 
     // Handle incoming connections
@@ -185,21 +208,11 @@ const addMessage = (username, avatar, message, timestamp) => {
             broadcastSystemMessage(`${currentUsername} joined chat`);
 
             conn.on("data", (data) => {
-                if (data.type === "message") {
-                    addMessage(data.username, data.avatar, data.message, data.timestamp);
-                } else if (data.type === "system") {
-                    addSystemMessage(data.message);
-                } else if (data.type === "userInfo") {
-                    userMap.set(id, data.username || "Anonymous");
-                    updateUserList();
-                }
+                handleIncomingData(id, data);
             });
 
             conn.on("close", () => {
-                broadcastSystemMessage(`${userMap.get(id) || 'Anonymous'} left chat`);
-                delete connections[id];
-                userMap.delete(id);
-                updateUserList();
+                handlePeerDisconnect(id);
             });
 
             conn.on("error", (err) => {
