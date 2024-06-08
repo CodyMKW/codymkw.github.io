@@ -24,9 +24,24 @@ document.addEventListener("DOMContentLoaded", () => {
     usernameInput.value = currentUsername;
     avatarInput.value = currentAvatar;
 
-    const saveSettings = () => {
+    const isValidImageUrl = (url) => {
+        return new Promise((resolve) => {
+            const img = new Image();
+            img.onload = () => resolve(true);
+            img.onerror = () => resolve(false);
+            img.src = url;
+        });
+    };
+
+    const saveSettings = async () => {
         const newUsername = usernameInput.value || "Anonymous";
         const newAvatar = avatarInput.value || "https://i.ibb.co/gynZfsZ/user.webp";
+        const isAvatarValid = await isValidImageUrl(newAvatar);
+
+        if (!isAvatarValid) {
+            alert("Invalid avatar URL. Please provide a valid image URL.");
+            return;
+        }
 
         if (newUsername !== currentUsername) {
             broadcastSystemMessage(`${currentUsername} changed name to ${newUsername}`, true);
@@ -48,7 +63,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     peer.on("open", (id) => {
         peerIdDisplay.textContent = id;
-        // Update URL with Peer ID
         const newUrl = `${window.location.protocol}//${window.location.host}${window.location.pathname}?id=${id}`;
         window.history.pushState({ path: newUrl }, "", newUrl);
         if (connectPeerId) {
@@ -59,7 +73,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const connections = {};
 
     const connectToPeer = (id) => {
-        if (connections[id]) return; // Avoid duplicate connections
+        if (connections[id]) return;
         const conn = peer.connect(id);
         connections[id] = conn;
 
@@ -84,7 +98,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (e.key === "Enter") sendMessage(conn);
             });
 
-            // Send user info to the connected peer
             conn.send({
                 type: "userInfo",
                 username: currentUsername,
@@ -126,7 +139,7 @@ document.addEventListener("DOMContentLoaded", () => {
         messageElement.classList.add("message");
 
         messageElement.innerHTML = `
-            <img src="${avatar}" alt="Avatar">
+            <img src="${avatar}" alt="Avatar" onerror="this.onerror=null;this.src='https://i.ibb.co/gynZfsZ/user.webp';">
             <div class="content">
                 <div class="header">
                     <div class="username">${username}</div>
@@ -151,7 +164,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const broadcastSystemMessage = (message, usernameUpdate = false) => {
         addSystemMessage(message);
-        // Send system message to all connected peers
         Object.values(connections).forEach(conn => {
             conn.send({ type: "system", message });
             if (usernameUpdate) {
@@ -183,7 +195,6 @@ document.addEventListener("DOMContentLoaded", () => {
         } else if (data.type === "updateUsername") {
             userMap.set(id, data.newUsername || "Anonymous");
             updateUserList();
-            // Re-broadcast the username update to all other peers
             Object.values(connections).forEach(conn => {
                 if (conn.peer !== id) {
                     conn.send({ type: "updateUsername", newUsername: data.newUsername });
@@ -199,7 +210,6 @@ document.addEventListener("DOMContentLoaded", () => {
         updateUserList();
     };
 
-    // Handle incoming connections
     peer.on("connection", (conn) => {
         const id = conn.peer;
         connections[id] = conn;
@@ -224,7 +234,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (e.key === "Enter") sendMessage(conn);
             });
 
-            // Send user info to the connected peer
             conn.send({
                 type: "userInfo",
                 username: currentUsername,
