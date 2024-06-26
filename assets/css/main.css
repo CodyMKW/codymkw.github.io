@@ -510,13 +510,6 @@ footer {
   color: #fff; /* Set text color to white */
 }
 
-.mario-image {
-	display: block;
-	height: 250px;
-	margin: 20px auto -30px;
-	filter: drop-shadow(2px 4px 6px #000);
-}
-
 .modal-container {
   position: fixed;
   top: 0;
