@@ -125,7 +125,7 @@ if (
   // Add cake emojis and sparkle effect to the heading
   var codyHeading = document.getElementById("cody-heading");
   var codyHeading2 = document.getElementById("cody-heading2");
-  codyHeading.innerHTML = "🎂 CodyMKW 🎂";
+  codyHeading.innerHTML = "🎂 Cody 🎂";
   codyHeading2.innerHTML = "Happy " + age + getOrdinalSuffix(age) + " Birthday!! 🥳";
 
   // Add shimmer effect
