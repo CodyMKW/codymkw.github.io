@@ -1,0 +1,137 @@
+<html><head><base href="https://codymkw.github.io/subscribe/expansion">
+<title>Subscribe to Pretendo Network Online - Expansion Pack Plan</title>
+<style>
+    body {
+        font-family: 'Segoe UI', 'Roboto', sans-serif;
+        background-color: #1a1a1a;
+        color: #ffffff;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+    }
+    .container {
+        max-width: 600px;
+        padding: 40px;
+        background: linear-gradient(145deg, #2a2a2a, #333333);
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+    }
+    h1 {
+        font-size: 2.5em;
+        text-align: center;
+        margin-bottom: 30px;
+        color: #ff9d00;
+        text-shadow: 0 0 10px rgba(0, 255, 157, 0.5);
+    }
+    form {
+        display: flex;
+        flex-direction: column;
+    }
+    label {
+        margin-bottom: 10px;
+        font-size: 1.1em;
+    }
+    input, select {
+        margin-bottom: 20px;
+        padding: 10px;
+        border-radius: 5px;
+        border: none;
+        background-color: #444;
+        color: #fff;
+        font-size: 1em;
+    }
+    button {
+        padding: 15px 25px;
+        font-size: 1.1em;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        background: linear-gradient(to right, #ff9d00, #ff9d00);
+        border: none;
+        border-radius: 50px;
+        color: #1a1a1a;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    button:hover {
+        background: linear-gradient(to right, #ff9d00, #ff9d00);
+        box-shadow: 0 8px 20px rgba(255, 157, 0, 0.6);
+        transform: translateY(-3px);
+    }
+    .summary {
+        margin-top: 30px;
+        padding: 20px;
+        background-color: #2a2a2a;
+        border-radius: 10px;
+    }
+    .summary h2 {
+        color: #ff9d00;
+        margin-bottom: 15px;
+    }
+</style>
+</head>
+<body>
+    <div class="container">
+        <h1>Subscribe to Expansion Pack Plan</h1>
+        <form id="subscriptionForm">
+            <label for="name">Full Name:</label>
+            <input type="text" id="name" name="name" required>
+            
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+            
+            <label for="paymentMethod">Payment Method:</label>
+            <select id="paymentMethod" name="paymentMethod" required>
+                <option value="">Select a payment method</option>
+                <option value="credit">Credit Card</option>
+                <option value="paypal">PayPal</option>
+                <option value="pretendoCoin">PretendoCoin</option>
+            </select>
+            
+            <button type="submit">Subscribe Now</button>
+        </form>
+        
+        <div class="summary">
+            <h2>Expansion Pack Plan Summary</h2>
+            <p>Price: $49.99/year</p>
+            <ul>
+                <li>All Basic features</li>
+                <li>Access to Pretendo 64 games</li>
+                <li>Access to Pretendo GameCube games</li>
+                <li>Pretendo Kart 8 Deluxe DLC</li>
+                <li>Pretendo Animal Crossing: New Horizons DLC</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('subscriptionForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const paymentMethod = document.getElementById('paymentMethod').value;
+            
+            // In a real application, you would send this data to a server
+            // Here, we'll just show an alert
+            alert(`Thank you, ${name}! Your subscription to the Basic Plan has been processed.\nWe've sent a confirmation email to ${email}.\nPayment method: ${paymentMethod}\n\nEnjoy your Pretendo Network Online experience!`);
+        });
+
+    // Easter egg: Konami code to reveal a secret message
+    let konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+    let konamiIndex = 0;
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === konamiCode[konamiIndex]) {
+        konamiIndex++;
+        if (konamiIndex === konamiCode.length) {
+          alert("Congratulations! You've unlocked a secret 50% discount on your first year of Pretendo Network Online!");
+          konamiIndex = 0;
+        }
+      } else {
+        konamiIndex = 0;
+      }
+    });
+    </script>
+</body></html>
