@@ -217,3 +217,38 @@ document.getElementById('frameSelection').addEventListener('change', () => {
 document.addEventListener('DOMContentLoaded', () => {
   updateFrameOptions();
 });
+
+function toggleGrandfestMode() {
+    const grandfestToggle = document.getElementById('grandfestToggle').checked;
+    const frameTypeSelection = document.getElementById('frameTypeSelection');
+    const frameSelection = document.getElementById('frameSelection');
+    
+    if (grandfestToggle) {
+        // Disable "Which do you prefer" and hide it
+        frameTypeSelection.style.display = 'none';
+
+        // Change frame options to Team Past, Team Present, and Team Future
+        frameSelection.innerHTML = ''; // Clear existing options
+        const grandfestOptions = [
+            { value: "Team_Past.png", text: "Team Past" },
+            { value: "Team_Present.png", text: "Team Present" },
+            { value: "Team_Future.png", text: "Team Future" }
+        ];
+
+        grandfestOptions.forEach(option => {
+            const optionElement = document.createElement('option');
+            optionElement.value = `/assets/images/splatfest/grandfest/${option.value}`;
+            optionElement.textContent = option.text;
+            frameSelection.appendChild(optionElement);
+        });
+
+        // Display the preview of the first frame
+        displayFramePreview();
+    } else {
+        // Enable "Which do you prefer" and show it
+        frameTypeSelection.style.display = 'block';
+
+        // Reset frame options based on the selected type (Squid or Octopus)
+        updateFrameOptions();
+    }
+}
