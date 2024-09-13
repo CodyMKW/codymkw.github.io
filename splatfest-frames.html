@@ -70,6 +70,10 @@
                 <p><label for="framePreview">Frame Preview:</label></p>
                 <img id="framePreview" src="/assets/images/splatfest/octopus/Team_Aliens.png" alt="Frame Preview" class="preview-image" />
               </div>
+              <div>
+                <label for="grandfestToggle">Enable Grandfest Mode:</label>
+                <input type="checkbox" id="grandfestToggle" onchange="toggleGrandfestMode()">
+              </div>
               <div id="frameTypeSelection">
                 <label for="frameTypeSelection">Which do you prefer:</label>
                 <label>
@@ -79,10 +83,6 @@
                     <input type="radio" name="frameType" value="squid" onchange="updateFrameOptions()"> Squid
                 </label>
              </div>
-<div>
-    <label for="grandfestToggle">Enable Grandfest Mode:</label>
-    <input type="checkbox" id="grandfestToggle" onchange="toggleGrandfestMode()">
-</div>
                       <div>
                           <label for="frameSelection">Select a frame:</label>
                           <select id="frameSelection" onchange="displayFramePreview()">
