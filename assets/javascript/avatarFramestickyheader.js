@@ -15,8 +15,13 @@ function updateAvatarFrame(avatarFrames) {
     // Assuming you only have one avatar frame for now
     const currentFrame = avatarFrames[0];
 
-    // Construct the URL based on the JSON data
-    const frameURL = assets/images/splatfest/${currentFrame.species}/Team_${currentFrame.team}.png;
+    // Determine the frame URL based on grandfestmode
+    let frameURL;
+    if (currentFrame.grandfestmode) {
+        frameURL = `assets/images/splatfest/grandfest/Team_${currentFrame.team}.png`;
+    } else {
+        frameURL = `assets/images/splatfest/${currentFrame.species}/Team_${currentFrame.team}.png`;
+    }
 
     // Update the frame image source
     const frameImage = frameContainer.querySelector('.frame-image');
@@ -44,7 +49,7 @@ function updateStickyHeader(stickyHeaders) {
             stickyHeaderContainer.style.display = 'block';
 
             // Update the text and link based on the JSON data
-            stickyHeaderContainer.innerHTML = <span id="close-button" onclick="toggleHeader()">X</span><a href="${currentStickyHeader.link}" target="_blank" class="important">${currentStickyHeader.text}</a>;
+            stickyHeaderContainer.innerHTML = `<span id="close-button" onclick="toggleHeader()">X</span><a href="${currentStickyHeader.link}" target="_blank" class="important">${currentStickyHeader.text}</a>`;
         }
     }
 }
@@ -68,12 +73,12 @@ function toggleHeader() {
 function setCookie(name, value, days) {
     const expires = new Date();
     expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
-    document.cookie = ${name}=${value};expires=${expires.toUTCString()};path=/;
+    document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/`;
 }
 
 // Function to get a cookie value
 function getCookie(name) {
-    const cookieName = ${name}=;
+    const cookieName = `${name}=`;
     const cookies = document.cookie.split(';');
     for (let i = 0; i < cookies.length; i++) {
         let cookie = cookies[i];
