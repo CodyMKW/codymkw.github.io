@@ -63,32 +63,20 @@
             <button onclick="window.location.href='social-media'">Social Media</button>
         </div>
         <div class="content" id="socialMediaContent">
-            <!-- Content will be added dynamically -->
+            <h2><i class="emoji coolDoge"></i></h2>
+            <h2>Social Media</h2>
+            <p>Follow me on social media to stay updated with my latest gaming adventures! You can also find additional social links on my <a href="https://codymkw.carrd.co" target="_blank">Carrd</a> page.</p>
+            <div class="social-icons">
+                <a href="https://www.facebook.com/CodyMKW" target="_blank"><img src="assets/images/facebook.png" alt="Facebook Icon"></a>
+                <a href="https://www.youtube.com/CodyMKW" target="_blank"><img src="assets/images/youtube.png" alt="Youtube Icon"></a>
+                <a href="https://twitter.com/CodyMKW" target="_blank"><img src="assets/images/twitter.png" alt="Twitter Icon"></a>
+                <a href="https://threads.net/@CodyMKW" target="_blank"><img src="assets/images/threads.png" alt="Threads Icon"></a>
+                <a href="https://www.instagram.com/CodyMKW" target="_blank"><img src="assets/images/instagram.png" alt="Instagram Icon"></a>
+                <a href="https://social.vivaldi.net/@CodyMKW" target="_blank"><img src="assets/images/mastodon.png" alt="Mastodon Icon"></a>
+                <a href="https://bsky.app/profile/codymkw.nekoweb.org" target="_blank"><img src="assets/images/Bluesky.png" alt="BlueSky Icon"></a>
+            </div>
         </div>
     </div>
     <footer></footer>
-    <script>
-fetch('https://api.npoint.io/5c5e1c0c97da80d538b4')
-    .then(response => response.json())
-    .then(data => {
-        const socialmediaInfo = data.socialmediainfo[0]; // Assuming there's only one item in the array
-
-        document.getElementById('socialMediaContent').innerHTML = `
-            <h2><i class="emoji coolDoge"></i></h2>
-            <h2>Social Media</h2>
-            <p>Follow me on social media to stay updated with my latest gaming adventures! You can also find additional social links on my <a href="${socialmediaInfo.carrd}" target="_blank">Carrd</a> page.</p>
-            <div class="social-icons">
-                <a href="https://www.facebook.com/${socialmediaInfo.facebook}" target="_blank"><img src="assets/images/facebook.png" alt="Facebook Icon"></a>
-                <a href="https://www.youtube.com/${socialmediaInfo.youtube}" target="_blank"><img src="assets/images/youtube.png" alt="Youtube Icon"></a>
-                <a href="https://twitter.com/${socialmediaInfo.twitter}" target="_blank"><img src="assets/images/twitter.png" alt="Twitter Icon"></a>
-                <a href="https://threads.net/@${socialmediaInfo.threads}" target="_blank"><img src="assets/images/threads.png" alt="Threads Icon"></a>
-                <a href="https://www.instagram.com/${socialmediaInfo.instagram}" target="_blank"><img src="assets/images/instagram.png" alt="Instagram Icon"></a>
-                <a href="https://social.vivaldi.net/@${socialmediaInfo.mastodon}" target="_blank"><img src="assets/images/mastodon.png" alt="Mastodon Icon"></a>
-                <a href="https://bsky.app/profile/${socialmediaInfo.bluesky}" target="_blank"><img src="assets/images/Bluesky.png" alt="BlueSky Icon"></a>
-            </div>
-        `;
-    })
-    .catch(error => console.error('Error fetching JSON:', error));
-    </script>
 </body>
 </html>
