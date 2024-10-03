@@ -6,6 +6,10 @@ body {
   padding: 20px;
 }
 
+.whatpretendo {
+  display: none;
+}
+
 select {
   background-color: #222;
   color: #fff;
