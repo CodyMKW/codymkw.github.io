@@ -34,7 +34,7 @@
 <body>
   <div id="sticky-header" class="sticky-header" style="display: none;">
     <span id="close-button" onclick="toggleHeader()">X</span>
-    <a href="https://www.nintendo.com/us/store/products/splatoon-3-expansion-pass-70070000016787-switch/" target="_blank" class="important">Check out the inkmazing Splatoon 3 Expansion Pass!</a>
+    <a href="" target="_blank" class="important"></a>
   </div>  
     <div id="background-image"></div>
     <div class="container">
@@ -75,9 +75,29 @@
                         <p><b>3189-0001-4178</b></p>
                         <h2>Pretendo Wii U ID</h2>
                         <p><b>CodyAC</b></p>
+        <button type="button" class="collapsible">What is Pretendo?</button>
+        <div class="whatpretendo">
+           <p>Pretendo is an open source Nintendo Network replacement that aims to build custom servers for the Wii U and 3DS family of consoles. Our goal is to preserve the online functionality of these consoles, to allow players to continue to play their favorite Wii U and 3DS games to their fullest capacity.</p>
+        </div>
         </div>
         </div>
     </div>
     <footer></footer>
+<script>
+var coll = document.getElementsByClassName("collapsible");
+var i;
+
+for (i = 0; i < coll.length; i++) {
+  coll[i].addEventListener("click", function() {
+    this.classList.toggle("active");
+    var whatpretendo = this.nextElementSibling;
+    if (whatpretendo.style.display === "block") {
+      whatpretendo.style.display = "none";
+    } else {
+      whatpretendo.style.display = "block";
+    }
+  });
+}
+</script>
 </body>
 </html>
