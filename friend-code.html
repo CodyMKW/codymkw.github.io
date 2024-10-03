@@ -75,10 +75,10 @@
                         <p><b>3189-0001-4178</b></p>
                         <h2>Pretendo Wii U ID</h2>
                         <p><b>CodyAC</b></p>
-        </div>
         <button type="button" class="collapsible">What is Pretendo?</button>
-        <div class="content">
+        <div class="whatpretendo">
            <p>Pretendo is an open source Nintendo Network replacement that aims to build custom servers for the Wii U and 3DS family of consoles. Our goal is to preserve the online functionality of these consoles, to allow players to continue to play their favorite Wii U and 3DS games to their fullest capacity.</p>
+        </div>
         </div>
         </div>
     </div>
@@ -91,10 +91,10 @@ for (i = 0; i < coll.length; i++) {
   coll[i].addEventListener("click", function() {
     this.classList.toggle("active");
     var content = this.nextElementSibling;
-    if (content.style.display === "block") {
-      content.style.display = "none";
+    if (whatpretendo.style.display === "block") {
+      whatpretendo.style.display = "none";
     } else {
-      content.style.display = "block";
+      whatpretendo.style.display = "block";
     }
   });
 }
