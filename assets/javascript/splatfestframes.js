@@ -105,6 +105,9 @@ function updateFrameOptions() {
           "Team_Pasta.png",
           "Team_Rice.png",
           "Team_Bread.png",
+          "Team_Wizard.png",
+          "Team_Ninja.png",
+          "Team_Knight.png",
           // Add more octopus frame options here
       ],
       squid: [
@@ -156,6 +159,9 @@ function updateFrameOptions() {
         "Team_Pasta.png",
         "Team_Rice.png",
         "Team_Bread.png",
+        "Team_Wizard.png",
+        "Team_Ninja.png",
+        "Team_Knight.png",
         // Add more squid frame options here
       ]
   };
