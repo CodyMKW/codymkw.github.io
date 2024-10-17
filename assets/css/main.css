@@ -27,14 +27,14 @@ body {
 
 #latest-changes ul {
   list-style-type: disc;
-  padding-left: 20px; /* Adjust padding to move the bullets closer */
+  padding-left: 10px; /* Reduced padding to bring bullets closer */
   margin-left: 0; /* Remove any default margin */
 }
 
 #latest-changes ul li {
   color: #fff;
-  margin-bottom: 10px;
-  padding-left: 0; /* Remove any padding on the list items */
+  margin-bottom: 5px; /* Reduced margin between list items */
+  padding-left: 0; /* Ensure no padding is added to list items */
 }
 
 select {
