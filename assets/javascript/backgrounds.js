@@ -1,14 +1,14 @@
 var backgrounds = [
-    'assets/images/backgrounds/bg.gif',
-    'assets/images/backgrounds/bg2.gif',
-    'assets/images/backgrounds/bg3.gif',
-    'assets/images/backgrounds/bg4.gif',
-    'assets/images/backgrounds/bg5.gif',
-    'assets/images/backgrounds/bg6.gif',
-    'assets/images/backgrounds/bg7.gif',
-    'assets/images/backgrounds/bg8.gif',
-    'assets/images/backgrounds/bg9.gif',
-    'assets/images/backgrounds/bg10.gif'
+    'assets/images/backgrounds/bg.webp',
+    'assets/images/backgrounds/bg2.webp',
+    'assets/images/backgrounds/bg3.webp',
+    'assets/images/backgrounds/bg4.webp',
+    'assets/images/backgrounds/bg5.webp',
+    'assets/images/backgrounds/bg6.webp',
+    'assets/images/backgrounds/bg7.webp',
+    'assets/images/backgrounds/bg8.webp',
+    'assets/images/backgrounds/bg9.webp',
+    'assets/images/backgrounds/bg10.webp'
   ];
   
   var randomIndex = Math.floor(Math.random() * backgrounds.length);
