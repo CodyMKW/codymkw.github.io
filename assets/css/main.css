@@ -10,6 +10,31 @@ body {
   display: none;
 }
 
+#latest-changes {
+  background-color: #111111c9;
+  border: 2px solid #000;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  margin: 20px 0;
+}
+
+#latest-changes h2 {
+  color: #00C900;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+#latest-changes ul {
+  list-style-type: disc;
+  padding-left: 20px;
+}
+
+#latest-changes ul li {
+  color: #fff;
+  margin-bottom: 10px;
+}
+
 select {
   background-color: #222;
   color: #fff;
