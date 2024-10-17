@@ -17,6 +17,7 @@ body {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   padding: 20px;
   margin: 20px 0;
+  text-align: left;
 }
 
 #latest-changes h2 {
@@ -27,14 +28,14 @@ body {
 
 #latest-changes ul {
   list-style-type: disc;
-  padding-left: 10px; /* Reduced padding to bring bullets closer */
-  margin-left: 0; /* Remove any default margin */
+  padding-left: 25%;
+  margin-left: 0;
 }
 
 #latest-changes ul li {
   color: #fff;
-  margin-bottom: 5px; /* Reduced margin between list items */
-  padding-left: 0; /* Ensure no padding is added to list items */
+  margin-bottom: 5px;
+  padding-left: 0;
 }
 
 select {
