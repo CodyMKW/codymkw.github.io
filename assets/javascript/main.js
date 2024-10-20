@@ -10,7 +10,7 @@ function updatePresence() {
     .then(response => response.json())
     .then(data => {
       // Extract online status and game name from the JSON data
-      const onlineStatus = capitalizeFirstLetter(data.friend.presence.state.toLowerCase());
+      const onlineStatus = (data.friend.presence.state.toLowerCase() === 'playing') ? 'Online' : capitalizeFirstLetter(data.friend.presence.state.toLowerCase());
       const gameName = data.friend.presence.game.name || null;
 
       // Select the element where the content will be updated
@@ -34,9 +34,7 @@ function updatePresence() {
 
       // Update HTML content based on whether a game is being played or not
       if (gameName) {
-        // Only append "playing" if the status is not already "Playing"
-        const displayStatus = (onlineStatus.toLowerCase() === 'playing') ? 'Online' : onlineStatus;
-        statusContainer.innerHTML = `<p>Currently <span style="color: ${statusColor};">${displayStatus}</span> playing ${gameName} <a id="check-switch-game-status">🔎</a></p>`;
+        statusContainer.innerHTML = `<p>Currently <span style="color: ${statusColor};">${onlineStatus}</span> playing ${gameName} <a id="check-switch-game-status">🔎</a></p>`;
       } else {
         statusContainer.innerHTML = `<p>Currently <span style="color: ${statusColor};">${onlineStatus.charAt(0)}${onlineStatus.slice(1).toLowerCase()}</span> <a id="check-switch-game-status">🔎</a></p>`;
       }
@@ -47,6 +45,59 @@ function updatePresence() {
     .catch(error => {
       console.error('Error fetching data:', error);
     });
+}
+
+// Function to open modal
+function openModal() {
+  // Create modal container
+  const modalContainer = document.createElement('div');
+  modalContainer.classList.add('modal-container');
+
+  // Create modal content
+  const modalContent = document.createElement('div');
+  modalContent.classList.add('modal-content');
+  
+  // Create close button
+  const closeButton = document.createElement('span');
+  closeButton.classList.add('close-button');
+  closeButton.innerHTML = 'X';
+  closeButton.onclick = closeModal;
+  
+  // Create picture element
+  const pictureElement = document.createElement('picture');
+  
+  // Create source element
+  const sourceElement = document.createElement('source');
+  sourceElement.setAttribute('srcset', 'https://nxapi-presence.fancy.org.uk/api/presence/644cd5195d154bd5/embed?include-splatoon3=1&theme=dark&scale=2&friend-code=2549-4631-6600&transparent=1&width=630&show-splatoon3-fest-team=1');
+  sourceElement.setAttribute('media', '(prefers-color-scheme: dark)');
+  
+  // Create img element
+  const imgElement = document.createElement('img');
+  imgElement.setAttribute('src', 'https://nxapi-presence.fancy.org.uk/api/presence/644cd5195d154bd5/embed?include-splatoon3=1&theme=dark&scale=2&friend-code=2549-4631-6600&transparent=1&width=630&show-splatoon3-fest-team=1');
+  imgElement.setAttribute('alt', 'Nintendo Switch presence');
+  
+  // Append elements
+  pictureElement.appendChild(sourceElement);
+  pictureElement.appendChild(imgElement);
+  modalContent.appendChild(closeButton);
+  modalContent.appendChild(pictureElement);
+  modalContainer.appendChild(modalContent);
+  
+  // Append modal container to body
+  document.body.appendChild(modalContainer);
+  
+  // Add class to body to dim the screen
+  document.body.classList.add('modal-open');
+}
+
+// Function to close modal
+function closeModal() {
+  // Remove modal container
+  const modalContainer = document.querySelector('.modal-container');
+  modalContainer.parentNode.removeChild(modalContainer);
+  
+  // Remove class to body to undim the screen
+  document.body.classList.remove('modal-open');
 }
 
 // Call the function initially to update the content
