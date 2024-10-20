@@ -41,7 +41,7 @@ if (onlineStatusText === 'offline') {
     onlineStatusElement.textContent = 'Inactive';
     onlineStatusElement.className = 'inactive';
     playingStatusElement.textContent = `${data.friend.name} is chilling on the home menu.`;
-} else {
+} else if (onlineStatusText === 'playing') {
     onlineStatusElement.textContent = onlineStatusText.charAt(0).toUpperCase() + onlineStatusText.slice(1);
     onlineStatusElement.className = data.friend.presence.state === 'ONLINE' ? 'online' : 'offline';
     playingStatusElement.textContent = `${data.friend.name} is currently playing:`;
