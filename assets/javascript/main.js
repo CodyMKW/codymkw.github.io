@@ -19,7 +19,8 @@ function updatePresence() {
       // Define colors based on the online status
       let statusColor = '';
       switch (onlineStatus.toLowerCase()) {
-        case 'online':
+        case 'playing':
+          onlineStatus.textContent = 'Online';
           statusColor = '#00C900';
           break;
         case 'offline':
