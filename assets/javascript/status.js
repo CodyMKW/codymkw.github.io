@@ -120,14 +120,18 @@ if (data.title.id === '01006f8002326000' && acnhSubtext !== undefined) {
             subtextContainer.style.display = 'block';
             break;
         case 3:
-            subtextContainer.textContent = 'Warming up in a CPU Battle';
+            subtextContainer.textContent = 'Tired of dumb teammates so fighting in Solo Battle';
             subtextContainer.style.display = 'block';
             break;
         case 4:
-            subtextContainer.textContent = 'Messing around in Training mode';
+            subtextContainer.textContent = 'Warming up in a CPU Battle';
             subtextContainer.style.display = 'block';
             break;
         case 5:
+            subtextContainer.textContent = 'Messing around in Training mode';
+            subtextContainer.style.display = 'block';
+            break;
+        case 6:
             subtextContainer.textContent = 'Learning the controls in the Tutorial';
             subtextContainer.style.display = 'block';
             break;
