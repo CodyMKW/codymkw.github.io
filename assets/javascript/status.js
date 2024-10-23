@@ -120,7 +120,7 @@ if (data.title.id === '01006f8002326000' && acnhSubtext !== undefined) {
             subtextContainer.style.display = 'block';
             break;
         case 3:
-            subtextContainer.textContent = 'Tired of dumb teammates so fighting in Solo Battle';
+            subtextContainer.textContent = 'Taking a break from dumb teammates so fighting in Solo Battle';
             subtextContainer.style.display = 'block';
             break;
         case 4:
