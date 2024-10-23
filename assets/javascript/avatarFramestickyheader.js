@@ -18,9 +18,9 @@ function updateAvatarFrame(avatarFrames) {
     // Determine the frame URL based on grandfestmode
     let frameURL;
     if (currentFrame.grandfestmode) {
-        frameURL = `assets/images/splatfest/grandfest/Team_${currentFrame.team}.png`;
+        frameURL = `assets/images/splatfest/grandfest/Team_${currentFrame.team}.avif`;
     } else {
-        frameURL = `assets/images/splatfest/${currentFrame.species}/Team_${currentFrame.team}.png`;
+        frameURL = `assets/images/splatfest/${currentFrame.species}/Team_${currentFrame.team}.avif`;
     }
 
     // Update the frame image source
