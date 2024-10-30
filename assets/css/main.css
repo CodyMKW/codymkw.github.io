@@ -429,6 +429,43 @@ h1.notfoundheading {
   padding-bottom: 10px;
 }
 
+/* Chatroom styles */
+#chatroomContent {
+  padding: 20px;
+  background-color: #111111c9;
+  border: 2px solid #000;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  text-align: left;
+}
+
+#chatroomContent h2 {
+  text-align: center;
+}
+
+#chatroomContent h3 {
+  display: none;
+}
+
+#chatroomContent h4 {
+  color: #00C900;
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+#chatroomContent p {
+  margin-bottom: 10px;
+  color: #fff;
+}
+
+#chatroomContent a {
+  color: #00C900 !important;
+}
+
+#chatroomContent a:hover {
+  color: #008a00 !important;
+}
+
 /* Nintendo News styles */
 #nintendoNewsContent {
   padding: 20px;
