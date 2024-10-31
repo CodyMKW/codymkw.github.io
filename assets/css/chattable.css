@@ -102,7 +102,6 @@ blockquote {
 }
 
 .senderInfo:has(.mod), .senderInfo:has(.owner), .senderInfo:has(.beta) {
-    text-decoration: underline;
     text-decoration-color: #c7f0c7;
 }
 
