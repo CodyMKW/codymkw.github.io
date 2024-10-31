@@ -1,94 +1,110 @@
+/* General Background and Text */
 body {
-    color: #FFBF00;
-  }
-  .allMessages {
-     border-radius: 10px;
-     font-family: Tahoma, Arial, sans-serif;
-     font-size: 10pt;
-     width: calc(95% - 20px);
-     padding: 10px;
-     margin: auto;
-     margin-top: 5px;
-     position: relative;
-     border: solid 1px #000;
-  }
-   .allMessages:hover {
-     border: solid 1px #00ff00;
-  }
-   .sent {
-     border-radius: 5px 5px 0 5px;
-     background-color: #333;
-     color: #AAA;
-  }
-   .sent:after {
-     content: " ";
-     background-color: inherit;
-     height: 10px;
-     width: 10px;
-     position: absolute;
-     right: -5px;
-     bottom: 5px;
-     transform: rotateZ(45deg);
-     border-radius: 0 2px 0 0;
-  }
-   .sent:hover:after {
-     content: " ";
-     right: -6px;
-     bottom: 6px;
-     border-right: solid 1px #00ff00;
-     border-top: solid 1px #00ff00;
-  }
-   .recieved:before {
-     content: " ";
-     background-color: inherit;
-     height: 10px;
-     width: 10px;
-     position: absolute;
-     left: -5px;
-     bottom: 5px;
-     transform: rotateZ(45deg);
-     border-radius: 0 0 0 2px;
-  }
-   .recieved:hover:before {
-     content: " ";
-     left: -6px;
-     bottom: 6px;
-     border-left: solid 1px #00ff00;
-     border-bottom: solid 1px #00ff00;
-  }
-   .recieved {
-     border-radius: 5px 5px 5px 0;
-     background-color: #555;
-     color: #e9e9e9;
-  }
-   blockquote {
-     background-color: #777;
-     color: #111;
-     border-color: #000;
-  }
-   #background {
-     scrollbar-color: #00ff00 #111;
-     scrollbar-width: thin;
-  }
-   #input {
-     color: #AAA;
-     background: #333;
-     border: none;
-     outline: none;
-  }
-   #input:empty::before {
-     content: "Send Message [Enter to send]";
-     color: #777;
-  }
-  #emojiTray {
-     background-color: #333;
-  }
-  #emojiTray h3 {
-     color: #00ff00;
-  }
-  .badge {
+    color: #5ac800;
+}
+
+#background {
+    background-color: #111111;
+    scrollbar-color: #5ac800 #111;
+    scrollbar-width: thin;
+}
+
+/* Message Styles */
+.allMessages {
+    border-radius: 10px;
+    font-family: Tahoma, Arial, sans-serif;
+    font-size: 10pt;
+    width: calc(95% - 20px);
+    padding: 10px;
+    margin: auto;
+    margin-top: 5px;
+    position: relative;
+    border: solid 1px #000;
+}
+
+.allMessages:hover {
+    border: solid 1px #5ac800;
+}
+
+.sent {
+    border-radius: 5px 5px 0 5px;
+    background-color: #333;
+    color: #c7f0c7;
+}
+
+.sent:after {
+    content: " ";
+    background-color: inherit;
+    height: 10px;
+    width: 10px;
+    position: absolute;
+    right: -5px;
+    bottom: 5px;
+    transform: rotateZ(45deg);
+    border-radius: 0 2px 0 0;
+}
+
+.sent:hover:after {
+    right: -6px;
+    bottom: 6px;
+    border-right: solid 1px #5ac800;
+    border-top: solid 1px #5ac800;
+}
+
+.received:before {
+    content: " ";
+    background-color: inherit;
+    height: 10px;
+    width: 10px;
+    position: absolute;
+    left: -5px;
+    bottom: 5px;
+    transform: rotateZ(45deg);
+    border-radius: 0 0 0 2px;
+}
+
+.received:hover:before {
+    left: -6px;
+    bottom: 6px;
+    border-left: solid 1px #5ac800;
+    border-bottom: solid 1px #5ac800;
+}
+
+.received {
+    border-radius: 5px 5px 5px 0;
+    background-color: #555;
+    color: #000;
+}
+
+/* Blockquote Styling */
+blockquote {
+    background-color: #777;
+    color: #111;
+    border-color: #000;
+}
+
+/* Input Field Styling */
+#input {
+    color: #c7f0c7;
+    background-color: #333;
+    border: none;
+    outline: none;
+}
+
+#input:empty::before {
+    content: "Send Message [Enter to send]";
+    color: #777;
+}
+
+/* Badges and Sender Info */
+.badge {
     display: none;
-  }
+}
+
+.senderInfo:has(.mod), .senderInfo:has(.owner), .senderInfo:has(.beta) {
+    text-decoration-color: #c7f0c7;
+}
+
   .senderInfo:has(.owner):after {
      content: "[Owner]";
      color: red;
@@ -99,44 +115,97 @@ body {
      color: #00ff00;
      padding-left: 7px;
   }
-   .senderInfo * {
-     text-decoration: none;
-  }
-   .senderInfo {
-     font-style: italic;
-  }
-   #timestamp {
-     color: #9c9c9c;
-     font-size: 9pt;
-     font-style: italic;
-  }
-   #textInput {
-     background-color: #111;
-  }
-   #top_banner {
-     background-color: #1f1f1f;
-     color: #00ff00 !important;
-  }
-  #settings, #emojiTrayToggle {
-   filter: invert(42%) sepia(93%) saturate(1352%) hue-rotate(87deg) brightness(119%) contrast(119%);
-  }
-   #loadMore {
-     color: #777;
-  }
-  #replyBanner {
+
+.senderInfo * {
+    text-decoration: none;
+}
+
+.senderInfo {
+    font-style: italic;
+}
+
+/* Timestamp */
+#timestamp {
+    color: #555;
+    font-size: 9pt;
+    font-style: italic;
+}
+
+/* Top Banner */
+#top_banner {
+    background-color: #5ac800;
+    color: #FFF !important;
+}
+
+/* Load More Button */
+#loadMore {
+    color: #777;
+}
+
+/* Reply Banner */
+#replyBanner {
     font-size: 10pt;
-  }
-  .ctxMenuOption {
+}
+
+/* Context Menu */
+.ctxMenuOption {
     background-color: #333 !important;
-    color: #00ff00;
-  }
-  .ctxMenuOption:hover {
-    background-color: #00ff00 !important;
+    color: #5ac800;
+}
+
+.ctxMenuOption:hover {
+    background-color: #5ac800 !important;
     color: #333;
-  }
-  #ctxMenu {
+}
+
+#ctxMenu {
     background-color: #111 !important;
+}
+
+/* Links */
+.msgBody a {
+    color: #5ac800 !important;
+}
+
+/* Emoji Tray */
+#emojiTray {
+    background-color: #111;
+    color: #c7f0c7;
+    border-color: #5ac800;
+}
+
+/* Settings Menu */
+#settingsMenu {
+    background-color: #111;
+}
+
+#save {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+    border: solid 1px #5ac800;
+    color: #5ac800;
+    background-color: transparent;
+    border-radius: 2px;
+}
+
+#save:hover {
+    color: #111;
+    background-color: #5ac800;
+}
+
+#settingsMenu hr {
+    height: 2px;
+    width: 100%;
+    margin: auto;
+    background-color: #5ac800;
+    border: none;
+}
+
+  #emojiTray {
+     background-color: #333;
   }
-  .msgBody a {
-    color: #00ff00 !important;
-  } 
+  #emojiTray h3 {
+     color: #00ff00;
+  }
