@@ -209,3 +209,6 @@ blockquote {
   #emojiTray h3 {
      color: #00ff00;
   }
+ #emojiTrayToggle {
+    filter: invert(42%) sepia(93%) saturate(1352%) hue-rotate(87deg) brightness(119%) contrast(119%);
+ }
