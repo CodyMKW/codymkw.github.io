@@ -47,6 +47,19 @@
              <option value="oldest">Oldest First</option>
              <option value="featured">Featured First</option>
            </select>        
+
+           <div id="patch-notes-container" style="text-align: center; margin-top: 1.5rem;">
+            <button id="patch-notes-button" class="form-button">View Patch Notes</button>
+        </div>
+        <div id="patch-notes-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-button" onclick="togglePatchNotes(false)">&times;</span>
+                <h2>Patch Notes</h2>
+                <div id="patch-notes-content">
+                    <!-- Patch notes will be loaded here dynamically -->
+                </div>
+            </div>
+        </div>        
         </div>
         <div id="featured-playlist-container" class="playlist-grid">
             <!-- Featured playlist will be injected here -->

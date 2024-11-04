@@ -127,3 +127,44 @@ function sortPlaylists() {
     playlists.forEach(playlist => container.appendChild(playlist));
 }
 
+document.getElementById('patch-notes-button').addEventListener('click', () => togglePatchNotes(true));
+
+function togglePatchNotes(show) {
+    const modal = document.getElementById('patch-notes-modal');
+    modal.style.display = show ? 'block' : 'none';
+
+    if (show) {
+        fetchPatchNotes();
+    }
+}
+
+function fetchPatchNotes() {
+    fetch('https://api.npoint.io/3cd63e8f6762892efbf8')
+        .then(response => response.json())
+        .then(patchNotes => {
+            const contentDiv = document.getElementById('patch-notes-content');
+            contentDiv.innerHTML = '';
+
+            patchNotes.forEach(note => {
+                const noteDiv = document.createElement('div');
+                noteDiv.className = 'patch-note';
+                noteDiv.innerHTML = `
+                    <h3>${note.version}</h3>
+                    <p>${note.date}</p>
+                    <ul>
+                        ${note.changes.map(change => `<li>${change}</li>`).join('')}
+                    </ul>
+                `;
+                contentDiv.appendChild(noteDiv);
+            });
+        })
+        .catch(error => console.error('Error loading patch notes:', error));
+}
+
+// Optional: Close modal when clicking outside of it
+window.onclick = function(event) {
+    const modal = document.getElementById('patch-notes-modal');
+    if (event.target === modal) {
+        togglePatchNotes(false);
+    }
+};
