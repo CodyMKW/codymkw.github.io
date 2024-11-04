@@ -299,3 +299,15 @@ body {
 .modal-content ul li {
     padding: 0.2rem 0;           /* Slight padding for readability */
 }
+
+.submitandpatchnotes-container {
+    display: flex;
+    gap: 10px; /* Space between the buttons, adjust as needed */
+    justify-content: center; /* Center the buttons horizontally */
+    align-items: center;     /* Vertically align buttons if they have different heights */
+}
+
+.form-button, #patch-notes-button {
+    padding: 10px 20px; /* Adjust padding as needed */
+    font-size: 1rem;    /* Ensure consistent font size */
+}
