@@ -22,6 +22,9 @@ function loadPlaylists() {
                 // Append the original card to the main container
                 mainContainer.appendChild(card);
             });
+
+            document.getElementById('sort-options').value = "alphabetical"; // Set dropdown to alphabetical by default
+            sortPlaylists(); // Sort playlists alphabetically by default
         })
         .catch(error => console.error('Error loading playlists:', error));
 }
