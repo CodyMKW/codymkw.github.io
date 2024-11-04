@@ -287,3 +287,15 @@ body {
 .close-button:hover {
     color: #FFF;
 }
+
+/* Style for list items in the patch notes modal */
+.modal-content ul {
+    list-style-position: inside; /* Moves bullets closer to text */
+    padding-left: 0;             /* Removes extra padding */
+    margin: 0.5rem 0;            /* Space between list items */
+    text-align: left;            /* Aligns list items to the left */
+}
+
+.modal-content ul li {
+    padding: 0.2rem 0;           /* Slight padding for readability */
+}
