@@ -127,26 +127,3 @@ function sortPlaylists() {
     playlists.forEach(playlist => container.appendChild(playlist));
 }
 
-function showPatchNotes() {
-    fetch('https://api.npoint.io/3cd63e8f6762892efbf8')
-        .then(response => response.json())
-        .then(patchNotes => {
-            const patchNotesList = document.getElementById('patch-notes-list');
-            patchNotesList.innerHTML = ''; // Clear any existing notes
-
-            // Populate patch notes
-            patchNotes.forEach(note => {
-                const listItem = document.createElement('li');
-                listItem.innerHTML = `<strong>Version ${note.version} (${note.date}):</strong> ${note.notes}`;
-                patchNotesList.appendChild(listItem);
-            });
-
-            // Show the popup
-            document.getElementById('patch-notes-popup').classList.remove('hidden');
-        })
-        .catch(error => console.error('Error loading patch notes:', error));
-}
-
-function closePatchNotes() {
-    document.getElementById('patch-notes-popup').classList.add('hidden');
-}
