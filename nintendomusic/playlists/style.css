@@ -182,7 +182,7 @@ body {
 
 /* Featured Playlist Container */
 #featured-playlist-container {
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
 }
 
 #featured-playlist-container .playlist-card {
@@ -227,10 +227,6 @@ body {
 
 .form-button:hover {
     background-color: #cd0112; /* Slightly darker red on hover */
-}
-
-#form-link-container {
-    margin-bottom: 1rem; /* Adjust the amount of space as needed */
 }
 
 /* Sorting Dropdown Styling */
