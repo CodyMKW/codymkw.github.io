@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nintendo Music Playlists | Discover Iconic Soundtracks</title>
+    <meta name="description" content="A collection of my own and other people's playlists made in the Nintendo Music app. Enjoy curated Nintendo soundtracks from a variety of games!">
+    <meta name="keywords" content="Nintendo Music, playlists, Nintendo Music app, Animal Crossing, Splatoon, video game music, Switch theme">
+    <meta name="author" content="CodyMKW">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="Nintendo Music Playlists | Discover Iconic Soundtracks">
+    <meta property="og:description" content="A collection of my own and other people's playlists made in the Nintendo Music app. Enjoy curated Nintendo soundtracks from a variety of games!">
+    <meta property="og:image" content="https://files.catbox.moe/zm8wdh.jpg">
+    <meta property="og:url" content="https://codymkw.github.io/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Nintendo Music Playlists">
+    <meta property="og:locale" content="en_US">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Nintendo Music Playlists | Discover Iconic Soundtracks">
+    <meta name="twitter:description" content="A collection of my own and other people's playlists made in the Nintendo Music app. Enjoy curated Nintendo soundtracks from a variety of games!">
+    <meta name="twitter:image" content="https://files.catbox.moe/zm8wdh.jpg">
+    <meta name="twitter:site" content="@CodyMKW">
+    <link rel="icon" href="https://files.catbox.moe/zm8wdh.jpg" type="image/x-icon">
+    <link rel="apple-touch-icon" href="https://files.catbox.moe/zm8wdh.jpg">
+    <link rel="icon" type="image/jpg" sizes="192x192" href="https://files.catbox.moe/zm8wdh.jpg">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="main-container">
+        <div id="logo-container">
+           <img src="https://files.catbox.moe/zm8wdh.jpg" alt="Nintendo Music Logo" id="site-logo">
+        </div>
+        <h1 class="page-title">Nintendo Music Playlists</h1>
+        <p class="page-description">
+           A collection of my own and other people's playlists made in the Nintendo Music app. Enjoy curated Nintendo soundtracks from a variety of games!
+        </p>
+        <div id="search-container">
+           <input type="text" id="search-bar" placeholder="Search playlists..." oninput="filterPlaylists()">
+           <select id="sort-options" class="sort-dropdown" onchange="sortPlaylists()">
+             <option value="">Sort by...</option>
+             <option value="alphabetical">Alphabetical (A-Z)</option>
+             <option value="reverse-alphabetical">Alphabetical (Z-A)</option>
+             <option value="creator">Creator (A-Z)</option>
+             <option value="creator-reverse">Creator (Z-A)</option>
+             <option value="newest">Newest First</option>
+             <option value="oldest">Oldest First</option>
+             <option value="featured">Featured First</option>
+           </select>        
+        </div>
+        <div id="featured-playlist-container" class="playlist-grid">
+            <!-- Featured playlist will be injected here -->
+        </div>
+        <div id="form-link-container" style="text-align: center; margin-top: 1.5rem;">
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLScpORLhv_0xbawrnCPQmMRB8OlJR6cHkf7_zav-JStIycPMlQ/viewform" target="_blank" class="form-button">
+                Submit Your Playlist
+            </a>
+        </div>        
+        <div id="playlist-container" class="playlist-grid">
+            <!-- Playlists will be injected here -->
+        </div>
+        <div class="app-note">
+            <p>Note: You must have the <strong>Nintendo Music mobile app</strong> for <strong>iOS</strong> or <strong>Android</strong> installed for playlists to open correctly.</p>
+            <div class="app-links">
+                <a href="https://apps.apple.com/us/app/nintendo-music/id6466376604" class="app-button" target="_blank">Download on iOS</a>
+                <a href="https://play.google.com/store/apps/details?id=com.nintendo.znba" class="app-button" target="_blank">Download on Android</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
