@@ -32,14 +32,13 @@ function loadPlaylists() {
 function createPlaylistCard(playlist) {
     const card = document.createElement('div');
     card.className = 'playlist-card';
-    // Add a special class for official Nintendo playlists
+
     if (playlist.creator.toLowerCase() === 'nintendo') {
         card.classList.add('official-playlist');
     }
-    // Add a special class for Nintendo Music Credits Project playlists
     if (playlist.icon === "https://files.catbox.moe/e4legu.jpg") {
         card.classList.add('nm-credit-project');
-    }    
+    }
     card.onclick = () => window.open(playlist.link, '_blank');
 
     const icon = document.createElement('img');
@@ -64,22 +63,18 @@ function createPlaylistCard(playlist) {
     const copyMessage = document.createElement('div');
     copyMessage.className = 'copy-message';
     copyMessage.textContent = 'Link copied to clipboard!';
+    copyMessage.style.display = 'none'; // Initially hidden
 
+    // Append elements to the card
     card.appendChild(icon);
     card.appendChild(title);
     card.appendChild(creator);
+    card.appendChild(copyButton);
+    card.appendChild(copyMessage); // Append copyMessage here
 
-    // Set data-tags attribute to include all tags for search functionality
-    if (playlist.tags) {
-        card.setAttribute('data-tags', playlist.tags.join(' ')); // Join tags as a single string
-    } else {
-        card.setAttribute('data-tags', ''); // Empty if no tags
-    }
-
-    // Set data-date attribute for sorting
+    // Set data attributes for search and sorting
+    card.setAttribute('data-tags', playlist.tags ? playlist.tags.join(' ') : '');
     card.setAttribute('data-date', playlist.dateAdded);
-
-    // Set data-featured attribute for sorting
     card.setAttribute('data-featured', playlist.featured ? "true" : "false");
 
     return card;
@@ -186,8 +181,9 @@ function copyLink(event, link) {
 
     // Copy the link to the clipboard
     navigator.clipboard.writeText(link).then(() => {
+        // Find the copyMessage element directly within the parent card
         const copyMessage = event.target.nextElementSibling;
-        
+
         // Show the copy message
         copyMessage.style.display = 'block';
         
