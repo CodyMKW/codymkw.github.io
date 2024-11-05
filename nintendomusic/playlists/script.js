@@ -54,6 +54,17 @@ function createPlaylistCard(playlist) {
     creator.className = 'playlist-creator';
     creator.textContent = `Created by: ${playlist.creator}`;
 
+    // Create the copy button
+    const copyButton = document.createElement('button');
+    copyButton.className = 'copy-button';
+    copyButton.textContent = 'Copy Link';
+    copyButton.onclick = (event) => copyLink(event, playlist.link);
+
+    // Create a message for link copied confirmation
+    const copyMessage = document.createElement('div');
+    copyMessage.className = 'copy-message';
+    copyMessage.textContent = 'Link copied to clipboard!';
+
     card.appendChild(icon);
     card.appendChild(title);
     card.appendChild(creator);
@@ -168,3 +179,23 @@ window.onclick = function(event) {
         togglePatchNotes(false);
     }
 };
+
+function copyLink(event, link) {
+    // Prevent card click event from opening the playlist link
+    event.stopPropagation();
+
+    // Copy the link to the clipboard
+    navigator.clipboard.writeText(link).then(() => {
+        const copyMessage = event.target.nextElementSibling;
+        
+        // Show the copy message
+        copyMessage.style.display = 'block';
+        
+        // Hide the message after 2 seconds
+        setTimeout(() => {
+            copyMessage.style.display = 'none';
+        }, 2000);
+    }).catch(error => {
+        console.error('Failed to copy link:', error);
+    });
+}

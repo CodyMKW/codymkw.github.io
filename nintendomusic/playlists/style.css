@@ -311,3 +311,29 @@ body {
 #form-link-container, #patch-notes-container {
     margin-bottom: 1rem;
 }
+
+/* Copy Button Styles */
+.copy-button {
+    margin-top: 0.5rem;
+    padding: 0.3rem 0.6rem;
+    font-size: 0.9rem;
+    color: #FFF;
+    background-color: #00BFFF;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.copy-button:hover {
+    background-color: #009ACD;
+}
+
+/* Copy Message Styles */
+.copy-message {
+    display: none; /* Hidden by default */
+    color: #00FF7F;
+    font-size: 0.8rem;
+    margin-top: 0.2rem;
+    text-align: center;
+}
