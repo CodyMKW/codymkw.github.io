@@ -318,7 +318,7 @@ body {
     padding: 0.3rem 0.6rem;
     font-size: 0.9rem;
     color: #FFF;
-    background-color: #00BFFF;
+    background-color: #0d88b2;
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -326,7 +326,7 @@ body {
 }
 
 .copy-button:hover {
-    background-color: #009ACD;
+    background-color: #0b6381;
 }
 
 /* Copy Message Styles */
