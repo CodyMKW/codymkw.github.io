@@ -36,6 +36,9 @@ function createPlaylistCard(playlist) {
     if (playlist.creator.toLowerCase() === 'nintendo') {
         card.classList.add('official-playlist');
     }
+    if (playlist.creator.toLowerCase() === 'codymkw') {
+        card.classList.add('pageowner-playlist');
+    }
     if (playlist.icon === "https://files.catbox.moe/e4legu.jpg") {
         card.classList.add('nm-credit-project');
     }

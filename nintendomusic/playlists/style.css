@@ -142,6 +142,25 @@ body {
     font-size: 1rem;
 }
 
+.pageowner-playlist {
+    border: 2px solid #5ac800;
+    position: relative;
+}
+
+/* Optional: Badge for Page Owner Playlists */
+.pageowner-playlist::after {
+    content: "Page Owner";
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background-color: #5ac800;
+    color: #FFF;
+    font-size: 0.7rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
 .official-playlist {
     border: 2px solid #e60012; /* Nintendo red border for official playlists */
     position: relative;
