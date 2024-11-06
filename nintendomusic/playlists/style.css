@@ -263,6 +263,12 @@ body {
     color: #FFFFFF; 
 }
 
+#patch-notes-content {
+    max-height: 300px;
+    overflow-y: auto; 
+    padding-right: 1rem;
+}
+
 /* Modal Background Overlay */
 .modal {
     display: none;
