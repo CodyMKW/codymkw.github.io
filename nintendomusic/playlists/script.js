@@ -68,13 +68,6 @@ function createPlaylistCard(playlist) {
     copyMessage.textContent = 'Link copied to clipboard!';
     copyMessage.style.display = 'none'; // Initially hidden
 
-    // Favorite button
-    const favoriteButton = document.createElement('button');
-    favoriteButton.innerText = "Favorite";
-    favoriteButton.className = "favorite-button";
-    favoriteButton.onclick = () => toggleFavorite(playlist);
-    card.appendChild(favoriteButton);
-
     // Append elements to the card
     card.appendChild(icon);
     card.appendChild(title);
@@ -204,40 +197,4 @@ function copyLink(event, link) {
     }).catch(error => {
         console.error('Failed to copy link:', error);
     });
-}
-
-function toggleFavorite(playlist) {
-    const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
-    const index = favorites.findIndex(item => item.id === playlist.id);
-
-    if (index === -1) {
-        favorites.push(playlist);
-    } else {
-        favorites.splice(index, 1);
-    }
-
-    localStorage.setItem('favorites', JSON.stringify(favorites));
-    updateFavoritesModal();
-}
-
-function updateFavoritesModal() {
-    const favoritesContent = document.getElementById('favorites-content');
-    const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
-
-    favoritesContent.innerHTML = ""; // Clear previous content
-    favorites.forEach(playlist => {
-        const card = document.createElement('div');
-        card.className = 'playlist-card';
-        card.innerHTML = `
-            <img src="${playlist.imageURL}" alt="${playlist.name}">
-            <div class="playlist-title">${playlist.name}</div>
-            <div class="playlist-creator">${playlist.creator}</div>
-        `;
-        favoritesContent.appendChild(card);
-    });
-}
-
-function toggleFavoritesModal(show) {
-    const modal = document.getElementById('favorites-modal');
-    modal.style.display = show ? 'block' : 'none';
 }

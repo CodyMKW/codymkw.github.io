@@ -362,26 +362,3 @@ body {
     margin-top: 0.2rem;
     text-align: center;
 }
-
-/* Favorites Button */
-#view-favorites-button {
-    padding: 10px 20px;
-    font-size: 1rem;
-    color: #FFF;
-    background-color: #e60012; /* Nintendo red */
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-#view-favorites-button:hover {
-    background-color: #cd0112;
-}
-
-/* Favorites Modal Content */
-#favorites-content {
-    max-height: 300px;
-    overflow-y: auto; 
-    padding-right: 1rem;
-}
