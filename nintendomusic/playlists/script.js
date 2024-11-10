@@ -33,7 +33,7 @@ function createPlaylistCard(playlist) {
     const card = document.createElement('div');
     card.className = 'playlist-card';
 
-    if (playlist.tags && playlist.tags.includes('Official')) {
+    if (playlist.tags && playlist.tags.includes('Official Playlist')) {
         card.classList.add('official-playlist');
     }
     if (playlist.tags && playlist.tags.includes('Nintendo Music Credit Project')) {
