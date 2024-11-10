@@ -57,6 +57,18 @@
                 Submit Your Playlist
             </a>
         </div>  
+        <div id="favorites-container" style="text-align: center; margin-top: 1rem;">
+            <button id="view-favorites-button" class="form-button" onclick="toggleFavoritesModal(true)">View Favorites</button>
+        </div>
+        <div id="favorites-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-button" onclick="toggleFavoritesModal(false)">&times;</span>
+                <h2>Your Favorite Playlists</h2>
+                <div id="favorites-content">
+                    <!-- Favorite playlists will be dynamically loaded here -->
+                </div>
+            </div>
+        </div>        
         <div id="patch-notes-container" style="text-align: center; margin-top: 1rem;">
             <button id="patch-notes-button" class="form-button">View Patch Notes</button>
         </div>
