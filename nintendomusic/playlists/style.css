@@ -362,3 +362,42 @@ body {
     margin-top: 0.2rem;
     text-align: center;
 }
+
+/* Favorites Modal Styling */
+#favorites-container {
+    text-align: center;
+    margin-top: 1rem;
+}
+
+#favorites-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    overflow: auto;
+}
+
+#favorites-modal .modal-content {
+    background-color: #252525;
+    color: #FFF;
+    margin: 10% auto;
+    padding: 1.5rem;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 500px;
+    position: relative;
+}
+
+#favorites-modal .close-button {
+    color: #AAAAAA;
+    font-size: 1.5rem;
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    cursor: pointer;
+    font-weight: bold;
+}

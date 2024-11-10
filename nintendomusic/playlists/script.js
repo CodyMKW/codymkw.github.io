@@ -1,4 +1,9 @@
-document.addEventListener('DOMContentLoaded', loadPlaylists);
+document.addEventListener('DOMContentLoaded', () => {
+    loadPlaylists();
+    loadFavorites();
+
+    document.getElementById('view-favorites-button').addEventListener('click', () => toggleFavorites(true));
+});
 
 function loadPlaylists() {
     fetch('https://api.npoint.io/28718000abe41036232b')
@@ -55,6 +60,12 @@ function createPlaylistCard(playlist) {
     const creator = document.createElement('div');
     creator.className = 'playlist-creator';
     creator.textContent = `Created by: ${playlist.creator}`;
+
+    const favoriteButton = document.createElement('button');
+    favoriteButton.className = 'favorite-button';
+    favoriteButton.innerText = '☆ Favorite';
+    favoriteButton.onclick = () => toggleFavorite(playlist);
+    card.appendChild(favoriteButton);
 
     // Create the copy button
     const copyButton = document.createElement('button');
@@ -197,4 +208,39 @@ function copyLink(event, link) {
     }).catch(error => {
         console.error('Failed to copy link:', error);
     });
+}
+
+function toggleFavorite(playlist) {
+    let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+
+    const exists = favorites.find(fav => fav.id === playlist.id);
+    if (exists) {
+        favorites = favorites.filter(fav => fav.id !== playlist.id);
+    } else {
+        favorites.push(playlist);
+    }
+
+    localStorage.setItem('favorites', JSON.stringify(favorites));
+    loadFavorites();
+}
+
+function loadFavorites() {
+    const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+    const favoritesContent = document.getElementById('favorites-content');
+
+    favoritesContent.innerHTML = ''; // Clear previous content
+
+    if (favorites.length === 0) {
+        favoritesContent.innerHTML = '<p>No favorites added yet.</p>';
+    } else {
+        favorites.forEach(fav => {
+            const card = createPlaylistCard(fav);
+            favoritesContent.appendChild(card);
+        });
+    }
+}
+
+function toggleFavorites(show) {
+    const modal = document.getElementById('favorites-modal');
+    modal.style.display = show ? 'block' : 'none';
 }
