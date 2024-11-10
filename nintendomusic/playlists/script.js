@@ -33,14 +33,14 @@ function createPlaylistCard(playlist) {
     const card = document.createElement('div');
     card.className = 'playlist-card';
 
-    if (playlist.creator.toLowerCase() === 'nintendo') {
+    if (playlist.tags && playlist.tags.includes('Official')) {
         card.classList.add('official-playlist');
     }
-    if (playlist.creator.toLowerCase() === 'codymkw') {
-        card.classList.add('pageowner-playlist');
-    }
-    if (playlist.icon === "https://files.catbox.moe/e4legu.jpg") {
+    if (playlist.tags && playlist.tags.includes('Nintendo Music Credit Project')) {
         card.classList.add('nm-credit-project');
+    }
+    if (playlist.tags && playlist.tags.includes('Page Owner')) {
+        card.classList.add('pageowner-playlist');
     }
     card.onclick = () => window.open(playlist.link, '_blank');
 
