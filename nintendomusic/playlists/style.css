@@ -362,3 +362,19 @@ body {
     margin-top: 0.2rem;
     text-align: center;
 }
+
+.favorite-button {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    font-size: 1.2rem;
+    color: #FFD700; /* Gold for favorite */
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.favorite-button:hover {
+    transform: scale(1.2);
+}

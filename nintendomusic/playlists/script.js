@@ -56,6 +56,11 @@ function createPlaylistCard(playlist) {
     creator.className = 'playlist-creator';
     creator.textContent = `Created by: ${playlist.creator}`;
 
+    const favoriteButton = document.createElement('button');
+    favoriteButton.className = 'favorite-button';
+    favoriteButton.textContent = '☆'; // Star icon for favorite
+    favoriteButton.onclick = (event) => toggleFavorite(event, playlist);
+
     // Create the copy button
     const copyButton = document.createElement('button');
     copyButton.className = 'copy-button';
@@ -74,6 +79,7 @@ function createPlaylistCard(playlist) {
     card.appendChild(creator);
     card.appendChild(copyButton);
     card.appendChild(copyMessage); // Append copyMessage here
+    card.appendChild(favoriteButton);
 
     // Set data attributes for search and sorting
     card.setAttribute('data-tags', playlist.tags ? playlist.tags.join(' ') : '');
@@ -197,4 +203,44 @@ function copyLink(event, link) {
     }).catch(error => {
         console.error('Failed to copy link:', error);
     });
+}
+
+document.getElementById('favorites-button').addEventListener('click', () => toggleFavorites(true));
+
+function toggleFavorites(show) {
+    const modal = document.getElementById('favorites-modal');
+    modal.style.display = show ? 'block' : 'none';
+
+    if (show) {
+        loadFavorites();
+    }
+}
+
+// Load favorites from local storage
+function loadFavorites() {
+    const favoritesContainer = document.getElementById('favorites-content');
+    favoritesContainer.innerHTML = ''; // Clear current content
+
+    const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+
+    favorites.forEach(playlist => {
+        const card = createPlaylistCard(playlist);
+        favoritesContainer.appendChild(card);
+    });
+}
+
+// Toggle favorite state
+function toggleFavorite(event, playlist) {
+    event.stopPropagation();
+
+    let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+    const index = favorites.findIndex(fav => fav.name === playlist.name);
+
+    if (index >= 0) {
+        favorites.splice(index, 1);
+    } else {
+        favorites.push(playlist);
+    }
+
+    localStorage.setItem('favorites', JSON.stringify(favorites));
 }
