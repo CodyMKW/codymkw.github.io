@@ -56,9 +56,13 @@ function createPlaylistCard(playlist) {
     creator.className = 'playlist-creator';
     creator.textContent = `Created by: ${playlist.creator}`;
 
+
+    // Check if already favorited and set the star
+    const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+    const isFavorited = favorites.some(fav => fav.name === playlist.name);
     const favoriteButton = document.createElement('button');
     favoriteButton.className = 'favorite-button';
-    favoriteButton.textContent = '☆'; // Star icon for favorite
+    favoriteButton.textContent = isFavorited ? '★' : '☆'; // Filled if favorited
     favoriteButton.onclick = (event) => toggleFavorite(event, playlist);
 
     // Create the copy button
@@ -236,10 +240,13 @@ function toggleFavorite(event, playlist) {
     let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
     const index = favorites.findIndex(fav => fav.name === playlist.name);
 
+    // Toggle favorite state
     if (index >= 0) {
         favorites.splice(index, 1);
+        event.target.textContent = '☆'; // Unfilled star
     } else {
         favorites.push(playlist);
+        event.target.textContent = '★'; // Filled star
     }
 
     localStorage.setItem('favorites', JSON.stringify(favorites));

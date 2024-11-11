@@ -378,3 +378,13 @@ body {
 .favorite-button:hover {
     transform: scale(1.2);
 }
+
+/* Favorites modal grid styling */
+#favorites-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1rem;
+    padding-right: 1rem;
+    max-height: 400px;
+    overflow-y: auto; /* Enables scrolling if needed */
+}
