@@ -32,6 +32,7 @@ function loadPlaylists() {
 function createPlaylistCard(playlist) {
     const card = document.createElement('div');
     card.className = 'playlist-card';
+    card.style.position = 'relative';
 
     if (playlist.tags && playlist.tags.includes('Official Playlist')) {
         card.classList.add('official-playlist');
@@ -237,16 +238,16 @@ function loadFavorites() {
 function toggleFavorite(event, playlist) {
     event.stopPropagation();
 
+    // Toggle the icon based on the favorite state
     let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
     const index = favorites.findIndex(fav => fav.name === playlist.name);
 
-    // Toggle favorite state
     if (index >= 0) {
         favorites.splice(index, 1);
-        event.target.textContent = '☆'; // Unfilled star
+        event.target.textContent = '☆'; // Set to unfilled star
     } else {
         favorites.push(playlist);
-        event.target.textContent = '★'; // Filled star
+        event.target.textContent = '★'; // Set to filled star
     }
 
     localStorage.setItem('favorites', JSON.stringify(favorites));
