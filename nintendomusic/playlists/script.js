@@ -25,11 +25,12 @@ function loadPlaylists() {
         .catch(error => console.error('Error loading playlists:', error));
 }
 
-function createPlaylistCard(playlist) {
+function createPlaylistCard(playlist, isFeatured = false) { // Add isFeatured as a parameter
     const card = document.createElement('div');
     card.className = 'playlist-card';
     card.style.position = 'relative';
 
+    // Add tags for styling and categorization if they exist
     if (playlist.tags && playlist.tags.includes('Official Playlist')) {
         card.classList.add('official-playlist');
     }
@@ -39,6 +40,7 @@ function createPlaylistCard(playlist) {
     if (playlist.tags && playlist.tags.includes('Page Owner')) {
         card.classList.add('pageowner-playlist');
     }
+    
     card.onclick = () => window.open(playlist.link, '_blank');
 
     const icon = document.createElement('img');
