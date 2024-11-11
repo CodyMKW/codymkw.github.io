@@ -362,30 +362,3 @@ body {
     margin-top: 0.2rem;
     text-align: center;
 }
-
-.favorite-button {
-    position: absolute;
-    top: 8px;
-    left: 8px;
-    font-size: 1.2rem;
-    color: #FFD700; /* Gold for favorite */
-    background: none;
-    border: none;
-    cursor: pointer;
-    transition: transform 0.2s;
-    z-index: 1;
-}
-
-.favorite-button:hover {
-    transform: scale(1.2);
-}
-
-/* Favorites modal grid styling */
-#favorites-content {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 1rem;
-    padding-right: 1rem;
-    max-height: 400px;
-    overflow-y: auto; /* Enables scrolling if needed */
-}

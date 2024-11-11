@@ -6,31 +6,33 @@ function loadPlaylists() {
         .then(playlists => {
             const mainContainer = document.getElementById('playlist-container');
             const featuredContainer = document.getElementById('featured-playlist-container');
+
             let featuredCount = 0;
 
             playlists.forEach(playlist => {
-                const isFeatured = playlist.featured && featuredCount < 4;
-                
-                if (isFeatured) {
-                    featuredContainer.appendChild(createPlaylistCard(playlist, true));
+                const card = createPlaylistCard(playlist); // Create the card
+
+                // Check if it's a featured playlist
+                if (playlist.featured && featuredCount < 4) {
+                    // Append a cloned card to the featured container
+                    featuredContainer.appendChild(createPlaylistCard(playlist));
                     featuredCount++; 
-                } else {
-                    mainContainer.appendChild(createPlaylistCard(playlist, false));
                 }
+
+                // Append the original card to the main container
+                mainContainer.appendChild(card);
             });
 
-            document.getElementById('sort-options').value = "newest";
-            sortPlaylists();
+            document.getElementById('sort-options').value = "newest"; // Set dropdown to newest first by default
+            sortPlaylists(); // Sort playlists newest first by default
         })
         .catch(error => console.error('Error loading playlists:', error));
 }
 
-function createPlaylistCard(playlist, isFeatured = false) { // Add isFeatured as a parameter
+function createPlaylistCard(playlist) {
     const card = document.createElement('div');
     card.className = 'playlist-card';
-    card.style.position = 'relative';
 
-    // Add tags for styling and categorization if they exist
     if (playlist.tags && playlist.tags.includes('Official Playlist')) {
         card.classList.add('official-playlist');
     }
@@ -40,7 +42,6 @@ function createPlaylistCard(playlist, isFeatured = false) { // Add isFeatured as
     if (playlist.tags && playlist.tags.includes('Page Owner')) {
         card.classList.add('pageowner-playlist');
     }
-    
     card.onclick = () => window.open(playlist.link, '_blank');
 
     const icon = document.createElement('img');
@@ -54,22 +55,6 @@ function createPlaylistCard(playlist, isFeatured = false) { // Add isFeatured as
     const creator = document.createElement('div');
     creator.className = 'playlist-creator';
     creator.textContent = `Created by: ${playlist.creator}`;
-
-    // Only add the favorite button if not featured
-    if (!isFeatured) {
-        const favoriteButton = document.createElement('button');
-        favoriteButton.className = 'favorite-button';
-
-        // Check if the playlist is already favorited to set the star state
-        const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
-        const isFavorited = favorites.some(fav => fav.name === playlist.name);
-        favoriteButton.textContent = isFavorited ? '★' : '☆'; // Filled if favorited
-
-        favoriteButton.onclick = (event) => toggleFavorite(event, playlist);
-
-        // Append favorite button within the card
-        card.appendChild(favoriteButton);
-    }
 
     // Create the copy button
     const copyButton = document.createElement('button');
@@ -212,47 +197,4 @@ function copyLink(event, link) {
     }).catch(error => {
         console.error('Failed to copy link:', error);
     });
-}
-
-document.getElementById('favorites-button').addEventListener('click', () => toggleFavorites(true));
-
-function toggleFavorites(show) {
-    const modal = document.getElementById('favorites-modal');
-    modal.style.display = show ? 'block' : 'none';
-
-    if (show) {
-        loadFavorites();
-    }
-}
-
-// Load favorites from local storage
-function loadFavorites() {
-    const favoritesContainer = document.getElementById('favorites-content');
-    favoritesContainer.innerHTML = ''; // Clear current content
-
-    const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
-
-    favorites.forEach(playlist => {
-        const card = createPlaylistCard(playlist);
-        favoritesContainer.appendChild(card);
-    });
-}
-
-// Toggle favorite state
-function toggleFavorite(event, playlist) {
-    event.stopPropagation();
-
-    // Toggle the icon based on the favorite state
-    let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
-    const index = favorites.findIndex(fav => fav.name === playlist.name);
-
-    if (index >= 0) {
-        favorites.splice(index, 1);
-        event.target.textContent = '☆'; // Set to unfilled star
-    } else {
-        favorites.push(playlist);
-        event.target.textContent = '★'; // Set to filled star
-    }
-
-    localStorage.setItem('favorites', JSON.stringify(favorites));
 }
