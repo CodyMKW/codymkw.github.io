@@ -6,25 +6,21 @@ function loadPlaylists() {
         .then(playlists => {
             const mainContainer = document.getElementById('playlist-container');
             const featuredContainer = document.getElementById('featured-playlist-container');
-
             let featuredCount = 0;
 
             playlists.forEach(playlist => {
-                const card = createPlaylistCard(playlist); // Create the card
-
-                // Check if it's a featured playlist
-                if (playlist.featured && featuredCount < 4) {
-                    // Append a cloned card to the featured container
-                    featuredContainer.appendChild(createPlaylistCard(playlist));
+                const isFeatured = playlist.featured && featuredCount < 4;
+                
+                if (isFeatured) {
+                    featuredContainer.appendChild(createPlaylistCard(playlist, true));
                     featuredCount++; 
+                } else {
+                    mainContainer.appendChild(createPlaylistCard(playlist, false));
                 }
-
-                // Append the original card to the main container
-                mainContainer.appendChild(card);
             });
 
-            document.getElementById('sort-options').value = "newest"; // Set dropdown to newest first by default
-            sortPlaylists(); // Sort playlists newest first by default
+            document.getElementById('sort-options').value = "newest";
+            sortPlaylists();
         })
         .catch(error => console.error('Error loading playlists:', error));
 }
@@ -57,14 +53,21 @@ function createPlaylistCard(playlist) {
     creator.className = 'playlist-creator';
     creator.textContent = `Created by: ${playlist.creator}`;
 
+    // Only add the favorite button if not featured
+    if (!isFeatured) {
+        const favoriteButton = document.createElement('button');
+        favoriteButton.className = 'favorite-button';
 
-    // Check if already favorited and set the star
-    const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
-    const isFavorited = favorites.some(fav => fav.name === playlist.name);
-    const favoriteButton = document.createElement('button');
-    favoriteButton.className = 'favorite-button';
-    favoriteButton.textContent = isFavorited ? '★' : '☆'; // Filled if favorited
-    favoriteButton.onclick = (event) => toggleFavorite(event, playlist);
+        // Check if the playlist is already favorited to set the star state
+        const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+        const isFavorited = favorites.some(fav => fav.name === playlist.name);
+        favoriteButton.textContent = isFavorited ? '★' : '☆'; // Filled if favorited
+
+        favoriteButton.onclick = (event) => toggleFavorite(event, playlist);
+
+        // Append favorite button within the card
+        card.appendChild(favoriteButton);
+    }
 
     // Create the copy button
     const copyButton = document.createElement('button');
@@ -84,7 +87,6 @@ function createPlaylistCard(playlist) {
     card.appendChild(creator);
     card.appendChild(copyButton);
     card.appendChild(copyMessage); // Append copyMessage here
-    card.appendChild(favoriteButton);
 
     // Set data attributes for search and sorting
     card.setAttribute('data-tags', playlist.tags ? playlist.tags.join(' ') : '');
