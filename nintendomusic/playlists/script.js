@@ -211,6 +211,15 @@ function showRandomPlaylist() {
             // Populate the modal with the random playlist details
             document.getElementById('random-playlist-icon').src = randomPlaylist.icon;
             document.getElementById('random-playlist-name').textContent = randomPlaylist.name;
+            if (randomPlaylist.tag && randomPlaylist.tag.includes('Official Playlist')) {
+                document.getElementById('random-playlist-extra-description').textContent = "This is an official playlist by Nintendo.";
+            }
+            if (randomPlaylist.tag && randomPlaylist.tag.includes('Nintendo Music Credit Project')) {
+                document.getElementById('random-playlist-extra-description').textContent = "This is a composer playlist by Nintendo Music Credit Project to credit the composer who made the tracks.";
+            }
+            if (randomPlaylist.tag && randomPlaylist.tag.includes('Page Owner')) {
+                document.getElementById('random-playlist-extra-description').textContent = "This is a playlist by the creator of this page.";
+            }
             document.getElementById('random-playlist-creator').querySelector('span').textContent = randomPlaylist.creator;
             document.getElementById('random-playlist-link').href = randomPlaylist.link;
             // Add event listener for the reroll button
