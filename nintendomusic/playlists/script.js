@@ -213,6 +213,8 @@ function showRandomPlaylist() {
             document.getElementById('random-playlist-name').textContent = randomPlaylist.name;
             document.getElementById('random-playlist-creator').querySelector('span').textContent = randomPlaylist.creator;
             document.getElementById('random-playlist-link').href = randomPlaylist.link;
+            // Add event listener for the reroll button
+            document.getElementById('reroll-button').addEventListener('click', displayRandomPlaylist);
 
             // Show the modal
             document.getElementById('random-playlist-modal').style.display = 'block';
