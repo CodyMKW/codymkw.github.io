@@ -198,9 +198,3 @@ function copyLink(event, link) {
         console.error('Failed to copy link:', error);
     });
 }
-
-// Optional: Adds a subtle pulse effect to draw attention to the notice.
-setInterval(() => {
-    const notice = document.getElementById('featured-playlist-notice');
-    notice.classList.toggle('pulse');
-}, 3000);

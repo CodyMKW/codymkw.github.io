@@ -375,12 +375,3 @@ body {
     font-weight: bold;
     box-shadow: 0 4px 10px rgba(0, 255, 127, 0.3); /* Subtle green shadow */
 }
-
-.pulse {
-    animation: pulse-animation 1s ease-in-out infinite alternate;
-}
-
-@keyframes pulse-animation {
-    from { transform: scale(1); }
-    to { transform: scale(1.05); }
-}
