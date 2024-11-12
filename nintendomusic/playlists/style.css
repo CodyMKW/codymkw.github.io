@@ -385,6 +385,7 @@ body {
     width: 100px;  /* or adjust as needed */
     height: auto;
     margin-top: 1rem;
+    border-radius: 50%;
 }
 
 .modal2 {
