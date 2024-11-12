@@ -60,8 +60,18 @@
                 Submit Your Playlist
             </a>
         </div> 
-        <button id="random-button" class="form-button" onclick="pickRandomPlaylist()">Random Playlist</button>
-        <div id="random-result" class="notice-container" style="display: none;"></div>        
+<!-- Random Playlist Button -->
+<div id="random-playlist-container" style="text-align: center; margin-top: 1.5rem;">
+    <button id="random-playlist-button" class="form-button">Play a Random Playlist</button>
+</div>
+<div id="random-playlist-modal" class="modal">
+    <div class="modal-content">
+        <span class="close-button" onclick="closeRandomPlaylistModal()">&times;</span>
+        <h3 id="random-playlist-name">Playlist Name</h3>
+        <p id="random-playlist-creator">Created by: <span></span></p>
+        <a id="random-playlist-link" href="#" target="_blank" class="form-button">Open Playlist</a>
+    </div>
+</div>      
         <div id="patch-notes-container" style="text-align: center; margin-top: 1rem;">
             <button id="patch-notes-button" class="form-button">View Patch Notes</button>
         </div>

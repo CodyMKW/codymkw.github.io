@@ -199,26 +199,34 @@ function copyLink(event, link) {
     });
 }
 
-function pickRandomPlaylist() {
+document.getElementById('random-playlist-button').addEventListener('click', showRandomPlaylist);
+
+function showRandomPlaylist() {
     fetch('https://api.npoint.io/28718000abe41036232b')
         .then(response => response.json())
         .then(playlists => {
-            // Select a random playlist
-            const randomIndex = Math.floor(Math.random() * playlists.length);
-            const randomPlaylist = playlists[randomIndex];
+            // Pick a random playlist
+            const randomPlaylist = playlists[Math.floor(Math.random() * playlists.length)];
 
-            // Display the selected playlist in the random result container
-            const randomResult = document.getElementById('random-result');
-            randomResult.innerHTML = `
-                <p>Random Pick: <strong>${randomPlaylist.name}</strong> by <em>${randomPlaylist.creator}</em></p>
-                <button onclick="openPlaylist('${randomPlaylist.link}')" class="form-button">Open Playlist</button>
-            `;
-            randomResult.style.display = 'block';
+            // Populate the modal with the random playlist details
+            document.getElementById('random-playlist-name').textContent = randomPlaylist.name;
+            document.getElementById('random-playlist-creator').querySelector('span').textContent = randomPlaylist.creator;
+            document.getElementById('random-playlist-link').href = randomPlaylist.link;
+
+            // Show the modal
+            document.getElementById('random-playlist-modal').style.display = 'block';
         })
-        .catch(error => console.error('Error selecting random playlist:', error));
+        .catch(error => console.error('Error fetching playlists:', error));
 }
 
-// Function to open the selected playlist in a new tab
-function openPlaylist(link) {
-    window.open(link, '_blank');
+function closeRandomPlaylistModal() {
+    document.getElementById('random-playlist-modal').style.display = 'none';
 }
+
+// Optional: Close modal when clicking outside of it
+window.onclick = function(event) {
+    const modal = document.getElementById('random-playlist-modal');
+    if (event.target === modal) {
+        modal.style.display = 'none';
+    }
+};
