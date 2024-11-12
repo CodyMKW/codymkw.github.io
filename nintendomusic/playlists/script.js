@@ -211,11 +211,11 @@ function showRandomPlaylist() {
             // Populate the modal with the random playlist details
             document.getElementById('random-playlist-icon').src = randomPlaylist.icon;
             document.getElementById('random-playlist-name').textContent = randomPlaylist.name;
-            if (randomPlaylist.tag && randomPlaylist.tag.includes('Official Playlist')) {
+            if (randomPlaylist.tags && randomPlaylist.tags.includes('Official Playlist')) {
                 document.getElementById('random-playlist-extra-description').textContent = "This is an official playlist by Nintendo.";
-            } else if (randomPlaylist.tag && randomPlaylist.tag.includes('Nintendo Music Credit Project')) {
+            } else if (randomPlaylist.tags && randomPlaylist.tags.includes('Nintendo Music Credit Project')) {
                 document.getElementById('random-playlist-extra-description').textContent = "This is a composer playlist by Nintendo Music Credit Project to credit the composer who made the tracks.";
-            } else if (randomPlaylist.tag && randomPlaylist.tag.includes('Page Owner')) {
+            } else if (randomPlaylist.tags && randomPlaylist.tags.includes('Page Owner')) {
                 document.getElementById('random-playlist-extra-description').textContent = "This is a playlist by the creator of this page.";
             } else {
                 document.getElementById('random-playlist-extra-description').textContent = ""; // Clear if no tag matches
