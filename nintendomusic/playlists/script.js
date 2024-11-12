@@ -213,13 +213,13 @@ function showRandomPlaylist() {
             document.getElementById('random-playlist-name').textContent = randomPlaylist.name;
             if (randomPlaylist.tag && randomPlaylist.tag.includes('Official Playlist')) {
                 document.getElementById('random-playlist-extra-description').textContent = "This is an official playlist by Nintendo.";
-            }
-            if (randomPlaylist.tag && randomPlaylist.tag.includes('Nintendo Music Credit Project')) {
+            } else if (randomPlaylist.tag && randomPlaylist.tag.includes('Nintendo Music Credit Project')) {
                 document.getElementById('random-playlist-extra-description').textContent = "This is a composer playlist by Nintendo Music Credit Project to credit the composer who made the tracks.";
-            }
-            if (randomPlaylist.tag && randomPlaylist.tag.includes('Page Owner')) {
+            } else if (randomPlaylist.tag && randomPlaylist.tag.includes('Page Owner')) {
                 document.getElementById('random-playlist-extra-description').textContent = "This is a playlist by the creator of this page.";
-            }
+            } else {
+                document.getElementById('random-playlist-extra-description').textContent = ""; // Clear if no tag matches
+            }            
             document.getElementById('random-playlist-creator').querySelector('span').textContent = randomPlaylist.creator;
             document.getElementById('random-playlist-link').href = randomPlaylist.link;
             // Add event listener for the reroll button
