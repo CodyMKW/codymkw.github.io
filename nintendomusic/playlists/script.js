@@ -198,3 +198,27 @@ function copyLink(event, link) {
         console.error('Failed to copy link:', error);
     });
 }
+
+function pickRandomPlaylist() {
+    fetch('https://api.npoint.io/28718000abe41036232b')
+        .then(response => response.json())
+        .then(playlists => {
+            // Select a random playlist
+            const randomIndex = Math.floor(Math.random() * playlists.length);
+            const randomPlaylist = playlists[randomIndex];
+
+            // Display the selected playlist in the random result container
+            const randomResult = document.getElementById('random-result');
+            randomResult.innerHTML = `
+                <p>Random Pick: <strong>${randomPlaylist.name}</strong> by <em>${randomPlaylist.creator}</em></p>
+                <button onclick="openPlaylist('${randomPlaylist.link}')" class="form-button">Open Playlist</button>
+            `;
+            randomResult.style.display = 'block';
+        })
+        .catch(error => console.error('Error selecting random playlist:', error));
+}
+
+// Function to open the selected playlist in a new tab
+function openPlaylist(link) {
+    window.open(link, '_blank');
+}

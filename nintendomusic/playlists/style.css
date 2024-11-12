@@ -375,3 +375,18 @@ body {
     font-weight: bold;
     box-shadow: 0 4px 10px rgba(0, 255, 127, 0.3); /* Subtle green shadow */
 }
+
+#random-button {
+    margin-top: 1rem;
+}
+
+#random-result {
+    background-color: #252525; /* Same as other dark elements */
+    color: #00FF7F; /* Green to match featured section */
+    padding: 1rem;
+    text-align: center;
+    border: 2px solid #00FF7F;
+    border-radius: 8px;
+    margin-top: 1rem;
+    font-size: 1.1rem;
+}
