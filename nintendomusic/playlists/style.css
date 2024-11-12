@@ -362,3 +362,25 @@ body {
     margin-top: 0.2rem;
     text-align: center;
 }
+
+.notice-container {
+    background-color: #252525; /* Dark background */
+    color: #00FF7F; /* Featured green color */
+    border: 2px solid #00FF7F;
+    border-radius: 8px;
+    padding: 1rem;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-size: 1.1rem;
+    font-weight: bold;
+    box-shadow: 0 4px 10px rgba(0, 255, 127, 0.3); /* Subtle green shadow */
+}
+
+.pulse {
+    animation: pulse-animation 1s ease-in-out infinite alternate;
+}
+
+@keyframes pulse-animation {
+    from { transform: scale(1); }
+    to { transform: scale(1.05); }
+}
