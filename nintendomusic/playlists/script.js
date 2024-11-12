@@ -209,7 +209,7 @@ function showRandomPlaylist() {
             const randomPlaylist = playlists[Math.floor(Math.random() * playlists.length)];
 
             // Populate the modal with the random playlist details
-            document.getElementById('random-playlist-icon').textContent = randomPlaylist.icon;
+            document.getElementById('random-playlist-icon').src = randomPlaylist.icon;
             document.getElementById('random-playlist-name').textContent = randomPlaylist.name;
             document.getElementById('random-playlist-creator').querySelector('span').textContent = randomPlaylist.creator;
             document.getElementById('random-playlist-link').href = randomPlaylist.link;
