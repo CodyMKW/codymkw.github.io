@@ -333,7 +333,7 @@ body {
     font-size: 1rem;    /* Ensure consistent font size */
 }
 
-#form-link-container, #patch-notes-container {
+#form-link-container, #patch-notes-container, #random-playlist-container {
     margin-bottom: 1rem;
 }
 
@@ -378,6 +378,12 @@ body {
 
 /* Random Playlist Modal Styling */
 #random-playlist-container {
+    margin-top: 1rem;
+}
+
+#random-playlist-icon {
+    width: 100px;  /* or adjust as needed */
+    height: auto;
     margin-top: 1rem;
 }
 
