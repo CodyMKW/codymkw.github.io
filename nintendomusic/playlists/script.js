@@ -213,10 +213,13 @@ function showRandomPlaylist() {
             document.getElementById('random-playlist-name').textContent = randomPlaylist.name;
             if (randomPlaylist.tags && randomPlaylist.tags.includes('Official Playlist')) {
                 document.getElementById('random-playlist-extra-description').textContent = "This is an official playlist.";
+                document.getElementById('random-playlist-extra-description').style.color = "#e60012";
             } else if (randomPlaylist.tags && randomPlaylist.tags.includes('Nintendo Music Credit Project')) {
                 document.getElementById('random-playlist-extra-description').textContent = "This is a composer playlist to credit the composer who made the tracks.";
+                document.getElementById('random-playlist-extra-description').style.color = "#800080";
             } else if (randomPlaylist.tags && randomPlaylist.tags.includes('Page Owner')) {
                 document.getElementById('random-playlist-extra-description').textContent = "This is a playlist by the creator of this page.";
+                document.getElementById('random-playlist-extra-description').style.color = "#5ac800";
             } else {
                 document.getElementById('random-playlist-extra-description').textContent = ""; // Clear if no tag matches
             }            
