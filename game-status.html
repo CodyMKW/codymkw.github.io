@@ -30,6 +30,35 @@
     <script defer src="assets/javascript/status.js"></script>
     <script defer src="assets/javascript/avatarFramestickyheader.js"></script>
     <title>Game Status - CodyMKW</title>
+    <style>
+.alert {
+  padding: 20px;
+  background-color: #f44336;
+  color: white;
+  opacity: 1;
+  transition: opacity 0.6s;
+  margin-bottom: 15px;
+}
+
+.alert.success {background-color: #04AA6D;}
+.alert.info {background-color: #2196F3;}
+.alert.warning {background-color: #ff9800;}
+
+.closebtn {
+  margin-left: 15px;
+  color: white;
+  font-weight: bold;
+  float: right;
+  font-size: 22px;
+  line-height: 20px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.closebtn:hover {
+  color: black;
+}
+</style>
 </head>
 
 <body>
@@ -64,6 +93,10 @@
             <button onclick="window.location.href='social-media'">Social Media</button>
         </div>
         <div class="content" id="statusContent">
+        <div class="alert warning">
+           <span class="closebtn">&times;</span>  
+           <strong>Warning:</strong> Due to a change that Nintendo has done the Game Status page is currently broken.
+        </div>
         <h3>Current Switch Profile Icon:</h3>
     <h1><img id="avatarImage" alt="Nintendo Switch Profile Icon"></h1>
     <h1><span id="playerName"></span></h1>
@@ -97,5 +130,17 @@
         </div>
     </div>
     <footer></footer>
+    <script>
+var close = document.getElementsByClassName("closebtn");
+var i;
+
+for (i = 0; i < close.length; i++) {
+  close[i].onclick = function(){
+    var div = this.parentElement;
+    div.style.opacity = "0";
+    setTimeout(function(){ div.style.display = "none"; }, 600);
+  }
+}
+</script>
 </body>
 </html>
