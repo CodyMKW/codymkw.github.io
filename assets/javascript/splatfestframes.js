@@ -108,6 +108,9 @@ function updateFrameOptions() {
           "Team_Wizard.avif",
           "Team_Ninja.avif",
           "Team_Knight.avif",
+          "Team_Money_(2025).avif",
+          "Team_Experiences.avif",
+          "Team_Presents.avif",
           // Add more octopus frame options here
       ],
       squid: [
@@ -162,6 +165,9 @@ function updateFrameOptions() {
         "Team_Wizard.avif",
         "Team_Ninja.avif",
         "Team_Knight.avif",
+        "Team_Money_(2025).avif",
+        "Team_Experiences.avif",
+        "Team_Presents.avif",
         // Add more squid frame options here
       ]
   };
