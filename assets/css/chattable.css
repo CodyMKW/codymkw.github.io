@@ -133,8 +133,8 @@ blockquote {
 
 /* Top Banner */
 :where(#top_banner) {
-    background: #5ac800;
-    color: #FFF !important;
+    background: #1f1f1f;
+    color: #00ff00 !important;
 }
 
 /* Load More Button */
