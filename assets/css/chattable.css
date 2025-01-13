@@ -140,3 +140,16 @@ body {
   .msgBody a {
     color: #00ff00 !important;
   } 
+  #settingsMenu {
+    color: #00ff00;
+    background-color: #202020a3;
+  }
+  a {
+    color: #04b7c8;
+  }
+  a:hover {
+    color: #0393a0;
+  }
+  input[type=checkbox]:checked + label:after {
+    color: #01a3ff;
+  }
