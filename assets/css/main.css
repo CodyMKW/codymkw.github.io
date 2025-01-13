@@ -687,3 +687,29 @@ footer {
       background-position: top right;
   }
 }
+.button-container {
+  display: flex;
+  flex-wrap: wrap; /* Allow buttons to wrap into multiple rows */
+  justify-content: center; /* Center the buttons horizontally */
+  gap: 20px; /* Add spacing between buttons */
+  padding: 0;
+  list-style-type: none; /* Remove default bullet points */
+}
+
+.otherstuff-button {
+  display: inline-block;
+  text-align: center;
+  background-color: #00C900;
+  color: #000;
+  text-decoration: none;
+  padding: 10px 20px;
+  border: 2px solid #000;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.otherstuff-button:hover {
+  background-color: #008a00;
+  color: #fff;
+}
