@@ -687,3 +687,36 @@ footer {
       background-position: top right;
   }
 }
+.button-grid ul {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 buttons per row */
+  gap: 20px; /* Space between buttons */
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  justify-content: center; /* Center the grid */
+}
+
+.button-grid ul li {
+  display: flex;
+  justify-content: center; /* Center align the button */
+}
+
+.button {
+  display: inline-block;
+  background-color: #00C900;
+  color: #000;
+  text-decoration: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  text-align: center;
+  transition: background-color 0.3s ease;
+  font-size: 16px;
+  width: 100%; /* Make the button stretch to match grid column size */
+  max-width: 200px; /* Limit button size for uniformity */
+}
+
+.button:hover {
+  background-color: #008a00;
+  color: #fff;
+}
