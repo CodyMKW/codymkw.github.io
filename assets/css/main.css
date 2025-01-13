@@ -687,36 +687,29 @@ footer {
       background-position: top right;
   }
 }
-.button-grid ul {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr); /* 3 buttons per row */
-  gap: 20px; /* Space between buttons */
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-  justify-content: center; /* Center the grid */
-}
-
-.button-grid ul li {
+.button-container {
   display: flex;
-  justify-content: center; /* Center align the button */
+  flex-wrap: wrap; /* Allow buttons to wrap into multiple rows */
+  justify-content: center; /* Center the buttons horizontally */
+  gap: 20px; /* Add spacing between buttons */
+  padding: 0;
+  list-style-type: none; /* Remove default bullet points */
 }
 
-.button {
+.custom-button {
   display: inline-block;
+  text-align: center;
   background-color: #00C900;
   color: #000;
   text-decoration: none;
-  padding: 10px 15px;
-  border-radius: 5px;
-  text-align: center;
-  transition: background-color 0.3s ease;
-  font-size: 16px;
-  width: 100%; /* Make the button stretch to match grid column size */
-  max-width: 200px; /* Limit button size for uniformity */
+  padding: 10px 20px;
+  border: 2px solid #000;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: background-color 0.3s, color 0.3s;
 }
 
-.button:hover {
+.custom-button:hover {
   background-color: #008a00;
   color: #fff;
 }
