@@ -696,7 +696,7 @@ footer {
   list-style-type: none; /* Remove default bullet points */
 }
 
-.custom-button {
+.otherstuff-button {
   display: inline-block;
   text-align: center;
   background-color: #00C900;
@@ -709,7 +709,7 @@ footer {
   transition: background-color 0.3s, color 0.3s;
 }
 
-.custom-button:hover {
+.otherstuff-button:hover {
   background-color: #008a00;
   color: #fff;
 }
