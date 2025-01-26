@@ -54,7 +54,12 @@ function createPlaylistCard(playlist) {
 
     const creator = document.createElement('div');
     creator.className = 'playlist-creator';
-    creator.textContent = `Created by: ${playlist.creator}`;
+    if (playlist.creator === "Unknown") {
+        creator.textContent = "Creator: Unknown (Name not provided)";
+        creator.style.color = "#FF4500"; // Optional: Change text color for better visibility
+    } else {
+        creator.textContent = `Created by: ${playlist.creator}`;
+    }
 
     // Create the copy button
     const copyButton = document.createElement('button');
