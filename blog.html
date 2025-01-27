@@ -63,44 +63,97 @@
         <div class="content" id="BlogContent">   
             <h2><i class="emoji codyBlog"></i></h2>
             <div id="blog-container"></div>
+            <div id="pagination" class="pagination"></div>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script>
-  // Fetch and render blog posts
-  async function loadBlogPosts() {
-    const container = document.getElementById('blog-container');
+const postsPerPage = 5; // Number of posts per page
+let currentPage = 1;
+let posts = [];
 
-    try {
-      // Fetch JSON data
-      const response = await fetch('https://api.npoint.io/c5a0cf622c6bac905e59');
-      const posts = await response.json();
+// Fetch JSON posts
+async function fetchPosts() {
+  try {
+    const response = await fetch("https://api.npoint.io/c5a0cf622c6bac905e59"); // Path to your JSON file
+    posts = await response.json();
+    renderPosts();
+    renderPagination();
+  } catch (error) {
+    console.error("Failed to fetch posts:", error);
+  }
+}
 
-      // Clear existing content
-      container.innerHTML = '';
+// Render posts for the current page
+function renderPosts() {
+  const blogContainer = document.getElementById("blog-posts");
+  blogContainer.innerHTML = ""; // Clear previous posts
 
-      // Render each post
-      posts.forEach(post => {
-        const postElement = document.createElement('div');
-        postElement.className = 'blog-post';
+  const startIndex = (currentPage - 1) * postsPerPage;
+  const endIndex = startIndex + postsPerPage;
+  const currentPosts = posts.slice(startIndex, endIndex);
 
-        postElement.innerHTML = `
-          <h2>${post.title}</h2>
-          <p><em>${post.date} by ${post.author}</em></p>
-          ${post.image ? `<img src="${post.image}" alt="${post.title}" class="blog-image">` : ''}
-          <div class="blog-content">${marked.parse(post.content)}</div>
-          ${post.video ? `<iframe src="${post.video}" class="blog-video" frameborder="0" allowfullscreen></iframe>` : ''}
-          <hr>
-        `;
+  currentPosts.forEach((post) => {
+    const postElement = document.createElement("div");
+    postElement.classList.add("blog-post");
+    postElement.innerHTML = `
+      <h3>${post.title}</h3>
+      <p><strong>By:</strong> ${post.author || "Unknown"} <em>${post.date || "No Date"}</em></p>
+      <div>${marked(post.content)}</div>
+      ${post.image ? `<img src="${post.image}" alt="${post.title}" class="blog-image">` : ""}
+      ${post.video ? `<video src="${post.video}" controls class="blog-video"></video>` : ""}
+    `;
+    blogContainer.appendChild(postElement);
+  });
+}
 
-        container.appendChild(postElement);
-      });
-    } catch (error) {
-      container.innerHTML = '<p>Error loading blog posts. Please try again later.</p>';
-      console.error('Error loading blog posts:', error);
+// Render pagination controls
+function renderPagination() {
+  const paginationContainer = document.getElementById("pagination");
+  paginationContainer.innerHTML = "";
+
+  const totalPages = Math.ceil(posts.length / postsPerPage);
+
+  // Previous button
+  const prevButton = document.createElement("button");
+  prevButton.textContent = "Previous";
+  prevButton.classList.toggle("disabled", currentPage === 1);
+  prevButton.onclick = () => {
+    if (currentPage > 1) {
+      currentPage--;
+      renderPosts();
+      renderPagination();
     }
+  };
+  paginationContainer.appendChild(prevButton);
+
+  // Page numbers
+  for (let i = 1; i <= totalPages; i++) {
+    const pageButton = document.createElement("button");
+    pageButton.textContent = i;
+    pageButton.classList.toggle("active", i === currentPage);
+    pageButton.onclick = () => {
+      currentPage = i;
+      renderPosts();
+      renderPagination();
+    };
+    paginationContainer.appendChild(pageButton);
   }
 
-  // Call the function on page load
-  loadBlogPosts();
+  // Next button
+  const nextButton = document.createElement("button");
+  nextButton.textContent = "Next";
+  nextButton.classList.toggle("disabled", currentPage === totalPages);
+  nextButton.onclick = () => {
+    if (currentPage < totalPages) {
+      currentPage++;
+      renderPosts();
+      renderPagination();
+    }
+  };
+  paginationContainer.appendChild(nextButton);
+}
+
+// Initialize
+document.addEventListener("DOMContentLoaded", fetchPosts);
 </script>
         </div>
         </div>

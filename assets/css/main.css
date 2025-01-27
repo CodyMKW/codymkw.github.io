@@ -408,6 +408,34 @@ h1.notfoundheading {
   color: #008a00;
 }
 
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.pagination button {
+  background-color: #00C900;
+  color: #000;
+  border: solid #000 1px;
+  border-radius: 5px;
+  padding: 10px 15px;
+  margin: 0 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.pagination button:hover {
+  background-color: #008a00;
+  color: #fff;
+}
+
+.pagination button.disabled {
+  background-color: #222;
+  color: #555;
+  cursor: not-allowed;
+}
+
 /* Switch FC styles */
 #friendCodeContent {
   padding: 20px;
