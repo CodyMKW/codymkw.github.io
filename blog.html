@@ -84,7 +84,7 @@ async function fetchPosts() {
 
 // Render posts for the current page
 function renderPosts() {
-  const blogContainer = document.getElementById("blog-posts");
+  const blogContainer = document.getElementById("blog-container"); // Correct ID
   blogContainer.innerHTML = ""; // Clear previous posts
 
   const startIndex = (currentPage - 1) * postsPerPage;
