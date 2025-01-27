@@ -334,6 +334,36 @@ h1.notfoundheading {
   border-radius: 4px;
 }
 
+/* Blog styles */
+#BlogContent {
+  padding: 20px;
+  background-color: #111111c9;
+  border: 2px solid #000;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+#BlogContent p, h2 {
+  color: #fff;
+  margin-bottom: 10px;
+}
+
+#BlogContent b {
+    font-size: 35px;
+}
+
+#BlogContent img {
+  max-width: 100%;
+  max-height: 250px;
+  margin-bottom: 20px;
+  border-radius: 4px;
+}
+
+#BlogContent b:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 /* Switch FC styles */
 #friendCodeContent {
   padding: 20px;
