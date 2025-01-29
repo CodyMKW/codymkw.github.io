@@ -22,7 +22,7 @@ if (postParam !== null) {
     }
 }
 
-filteredPosts = [...posts];
+filteredPosts = [...posts].reverse();
 
         populateCategories();
         renderPosts();
@@ -79,14 +79,19 @@ function changePage(direction) {
 
 function searchPosts() {
     const query = document.getElementById("searchBar").value.toLowerCase();
-    filteredPosts = posts.filter(post => post.title.toLowerCase().includes(query) || post.content.toLowerCase().includes(query));
+    filteredPosts = posts.filter(post => 
+        post.title.toLowerCase().includes(query) || 
+        post.content.toLowerCase().includes(query)
+    ).reverse(); // Ensure newest posts first
     currentPage = 1;
     renderPosts();
 }
 
 function filterByCategory() {
     const selectedCategory = document.getElementById("categoryFilter").value;
-    filteredPosts = selectedCategory === "all" ? posts : posts.filter(post => post.category === selectedCategory);
+    filteredPosts = (selectedCategory === "all" ? posts : posts.filter(post => 
+        post.category === selectedCategory
+    )).reverse(); // Ensure newest posts first
     currentPage = 1;
     renderPosts();
 }
