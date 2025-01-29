@@ -12,6 +12,12 @@ async function loadBlog() {
         const response = await fetch("https://api.npoint.io/5ac2ef5dd46fbff62a02");
         const data = await response.json();
 
+        // Ensure that posts have a correct index value
+        posts = data.posts.map((post, index) => ({
+            ...post,
+            index: index // Set the index value to the current index in the array
+        }));
+
         // Sort the posts by index in descending order (newest posts first)
         posts = data.posts.sort((a, b) => b.index - a.index);
         filteredPosts = [...posts]; // Copy sorted posts into filteredPosts
@@ -62,7 +68,7 @@ function renderPosts() {
     pagePosts.forEach((post, index) => {
         const postHTML = `
             <div class="blog-post">
-                <h3><a href="?post=${startIndex + index}" onclick="jumpToPost(${startIndex + index})">${post.title}</a></h3>
+                <h3><a href="?post=${post.index}" onclick="jumpToPost(${post.index})">${post.title}</a></h3>
                 <p class="post-meta">${post.date} • ${post.author} • ${post.category}</p>
                 ${post.image ? `<img src="${post.image}" alt="Post Image">` : ""}
                 ${post.video ? `<iframe src="${post.video}" frameborder="0" allowfullscreen></iframe>` : ""}
@@ -112,8 +118,7 @@ function populateCategories() {
     });
 }
 
-function jumpToPost(index) {
-    const postIndex = posts.findIndex(post => post.title === filteredPosts[index].title);
+function jumpToPost(postIndex) {
     const page = Math.floor(postIndex / postsPerPage) + 1;
 
     // Update the URL with a query parameter for the post
