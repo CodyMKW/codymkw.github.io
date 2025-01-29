@@ -28,7 +28,19 @@ filteredPosts = [...posts];
         renderPosts();
         window.addEventListener("popstate", () => {
             loadBlog();
-        });        
+        }); 
+        setTimeout(() => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const postParam = urlParams.get("post");
+        
+            if (postParam !== null) {
+                const postIndex = parseInt(postParam, 10);
+                const postElement = document.querySelectorAll(".blog-post")[postIndex % postsPerPage];
+                if (postElement) {
+                    postElement.scrollIntoView({ behavior: "smooth", block: "start" });
+                }
+            }
+        }, 100);               
     } catch (error) {
         console.error("Error loading blog posts:", error);
     }
