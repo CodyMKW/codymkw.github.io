@@ -15,7 +15,7 @@ async function loadBlog() {
         // Ensure that posts have a correct index value
         posts = data.posts.map((post, index) => ({
             ...post,
-            originalIndex: index // Set the index value to the current index in the array
+            index: index // Set the index value to the current index in the array
         }));
 
         // Sort the posts by index in descending order (newest posts first)
@@ -68,8 +68,7 @@ function renderPosts() {
     pagePosts.forEach((post, index) => {
         const postHTML = `
             <div class="blog-post">
-                <h3><a href="?post=${post.originalIndex}" onclick="jumpToPost(${post.originalIndex})">${post.title}</a>
-</h3>
+                <h3><a href="?post=${post.index}" onclick="jumpToPost(${post.index})">${post.title}</a></h3>
                 <p class="post-meta">${post.date} • ${post.author} • ${post.category}</p>
                 ${post.image ? `<img src="${post.image}" alt="Post Image">` : ""}
                 ${post.video ? `<iframe src="${post.video}" frameborder="0" allowfullscreen></iframe>` : ""}
