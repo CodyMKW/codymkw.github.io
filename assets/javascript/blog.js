@@ -42,15 +42,18 @@ async function loadBlog() {
         setTimeout(() => {
             const urlParams = new URLSearchParams(window.location.search);
             const postParam = urlParams.get("post");
-
+        
             if (postParam !== null) {
                 const postIndex = parseInt(postParam, 10);
-                const postElement = document.querySelectorAll(".blog-post")[postIndex % postsPerPage];
+        
+                // Correctly identify the post in the filtered list
+                const postElement = document.querySelectorAll(".blog-post")[postIndex - (currentPage - 1) * postsPerPage];
+                
                 if (postElement) {
                     postElement.scrollIntoView({ behavior: "smooth", block: "start" });
                 }
             }
-        }, 100);               
+        }, 100);                    
 
     } catch (error) {
         console.error("Error loading blog posts:", error);
