@@ -67,9 +67,9 @@ function renderPosts() {
         const postHTML = `
             <div class="blog-post" data-index="${post.originalIndex}">
                 <h3><a href="?post=${post.originalIndex}" onclick="jumpToPost(${post.originalIndex})">${post.title}</a></h3>
-                <p class="post-meta">${post.date} • ${post.time} • ${post.author} • ${post.category}</p>
+                <p class="post-meta" id="blogmetadata">${post.date} • ${post.time} • ${post.author} • ${post.category}</p>
                 ${post.image ? `<img src="${post.image}" alt="Post Image">` : ""}
-                <p class="post-content">${marked.parse(post.content)}</p>
+                <p class="post-content" id="blogcontent">${marked.parse(post.content)}</p>
                 ${post.video ? `<iframe src="${post.video}" frameborder="0" allowfullscreen></iframe>` : ""}
             </div>
         `;
