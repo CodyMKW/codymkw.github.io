@@ -57,7 +57,7 @@ function renderPosts() {
     pagePosts.forEach((post, index) => {
         const postHTML = `
             <div class="blog-post">
-                <h3><a href="javascript:void(0);" onclick="jumpToPost(${startIndex + index})">${post.title}</a></h3>
+                <h3><a href="?post=${startIndex + index}" onclick="jumpToPost(${startIndex + index})">${post.title}</a></h3>
                 <p class="post-meta">${post.date} • ${post.author} • ${post.category}</p>
                 ${post.image ? `<img src="${post.image}" alt="Post Image">` : ""}
                 ${post.video ? `<iframe src="${post.video}" frameborder="0" allowfullscreen></iframe>` : ""}
