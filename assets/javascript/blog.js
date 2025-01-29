@@ -12,10 +12,10 @@ async function loadBlog() {
         const response = await fetch("https://api.npoint.io/5ac2ef5dd46fbff62a02");
         const data = await response.json();
 
-        // Ensure that posts have a correct index value
+        // Assign original indices before sorting
         posts = data.posts.map((post, index) => ({
             ...post,
-            index: index // Set the index value to the current index in the array
+            originalIndex: index  // Preserve original JSON index
         }));
 
         // Sort posts by date and time (newest to oldest)
@@ -24,7 +24,7 @@ async function loadBlog() {
             const dateB = new Date(`${b.date} ${b.time}`);
             return dateB - dateA; // Sort descending (newest first)
         });
-        
+
         filteredPosts = [...posts];
 
         const urlParams = new URLSearchParams(window.location.search);
@@ -32,8 +32,10 @@ async function loadBlog() {
 
         if (postParam !== null) {
             const postIndex = parseInt(postParam, 10);
-            if (!isNaN(postIndex) && postIndex >= 0 && postIndex < posts.length) {
-                currentPage = Math.floor(postIndex / postsPerPage) + 1;
+            const postPosition = filteredPosts.findIndex(post => post.originalIndex === postIndex);
+
+            if (postPosition !== -1) {
+                currentPage = Math.floor(postPosition / postsPerPage) + 1;
             }
         }
 
@@ -47,26 +49,23 @@ async function loadBlog() {
         setTimeout(() => {
             const urlParams = new URLSearchParams(window.location.search);
             const postParam = urlParams.get("post");
-        
+
             if (postParam !== null) {
                 const postIndex = parseInt(postParam, 10);
-        
-                // Find the post in the filteredPosts array
-                const targetPost = filteredPosts.find(post => post.index === postIndex);
-        
-                if (targetPost) {
-                    // Get the actual position of the post in the current page
+
+                // Find the correct post using the original JSON index
+                const postPosition = filteredPosts.findIndex(post => post.originalIndex === postIndex);
+
+                if (postPosition !== -1) {
                     const postElements = document.querySelectorAll(".blog-post");
-                    const postElement = Array.from(postElements).find(element => 
-                        element.querySelector("a").href.includes(`?post=${postIndex}`)
-                    );
-        
+                    const postElement = postElements[postPosition % postsPerPage]; // Get post within the current page
+
                     if (postElement) {
                         postElement.scrollIntoView({ behavior: "smooth", block: "start" });
                     }
                 }
             }
-        }, 300);                               
+        }, 300);
 
     } catch (error) {
         console.error("Error loading blog posts:", error);
