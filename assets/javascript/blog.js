@@ -51,18 +51,22 @@ async function loadBlog() {
             if (postParam !== null) {
                 const postIndex = parseInt(postParam, 10);
         
-                // Find the post with the matching index from the JSON
-                const postElement = Array.from(document.querySelectorAll(".blog-post")).find((element, index) => {
-                    // Check if the index of the current post in the DOM matches the postIndex
-                    const post = filteredPosts[(currentPage - 1) * postsPerPage + index];
-                    return post && post.index === postIndex;
-                });
+                // Find the post in the filteredPosts array
+                const targetPost = filteredPosts.find(post => post.index === postIndex);
         
-                if (postElement) {
-                    postElement.scrollIntoView({ behavior: "smooth", block: "start" });
+                if (targetPost) {
+                    // Get the actual position of the post in the current page
+                    const postElements = document.querySelectorAll(".blog-post");
+                    const postElement = Array.from(postElements).find(element => 
+                        element.querySelector("a").href.includes(`?post=${postIndex}`)
+                    );
+        
+                    if (postElement) {
+                        postElement.scrollIntoView({ behavior: "smooth", block: "start" });
+                    }
                 }
             }
-        }, 100);                         
+        }, 300);                               
 
     } catch (error) {
         console.error("Error loading blog posts:", error);
