@@ -19,7 +19,7 @@ async function loadBlog() {
         }));
 
         // Sort the posts by index in descending order (newest posts first)
-        posts = data.posts.sort((a, b) => b.index - a.index);
+        posts = posts.sort((a, b) => b.originalIndex - a.originalIndex); // Sorting by originalIndex
         filteredPosts = [...posts]; // Copy sorted posts into filteredPosts
 
         const urlParams = new URLSearchParams(window.location.search);
@@ -45,12 +45,12 @@ async function loadBlog() {
 
             if (postParam !== null) {
                 const postIndex = parseInt(postParam, 10);
-                const postElement = document.querySelectorAll(".blog-post")[postIndex % postsPerPage];
+                const postElement = document.querySelector(`.blog-post[data-index="${postIndex}"]`);
                 if (postElement) {
                     postElement.scrollIntoView({ behavior: "smooth", block: "start" });
                 }
             }
-        }, 100);               
+        }, 100);
 
     } catch (error) {
         console.error("Error loading blog posts:", error);
@@ -65,11 +65,10 @@ function renderPosts() {
 
     blogContainer.innerHTML = "";
 
-    pagePosts.forEach((post, index) => {
+    pagePosts.forEach((post) => {
         const postHTML = `
-            <div class="blog-post">
-                <h3><a href="?post=${post.originalIndex}" onclick="jumpToPost(${post.originalIndex})">${post.title}</a>
-</h3>
+            <div class="blog-post" data-index="${post.originalIndex}">
+                <h3><a href="?post=${post.originalIndex}" onclick="jumpToPost(${post.originalIndex})">${post.title}</a></h3>
                 <p class="post-meta">${post.date} • ${post.author} • ${post.category}</p>
                 ${post.image ? `<img src="${post.image}" alt="Post Image">` : ""}
                 ${post.video ? `<iframe src="${post.video}" frameborder="0" allowfullscreen></iframe>` : ""}
