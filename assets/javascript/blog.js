@@ -78,8 +78,8 @@ function renderPosts() {
                 <h3><a href="?post=${post.index}" onclick="jumpToPost(${post.index})">${post.title}</a></h3>
                 <p class="post-meta">${post.date} • ${post.author} • ${post.category}</p>
                 ${post.image ? `<img src="${post.image}" alt="Post Image">` : ""}
-                ${post.video ? `<iframe src="${post.video}" frameborder="0" allowfullscreen></iframe>` : ""}
                 <p class="post-content">${marked.parse(post.content)}</p>
+                ${post.video ? `<iframe src="${post.video}" frameborder="0" allowfullscreen></iframe>` : ""}
             </div>
         `;
         blogContainer.innerHTML += postHTML;
