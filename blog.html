@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,32 +10,27 @@
     <meta name="msapplication-TileColor" content="#00c900">
     <meta name="theme-color" content="#00c900">
     <link href="https://social.vivaldi.net/@codymkw" rel="me">
-    <meta name="description" content="Hang out with other users and chat about whatever you want!">
-    <meta name="keywords" content="CodyMKW, Nintendo fan, Animal Crossing, Nintendo Switch, Mario Kart, Pokémon, gaming enthusiast, peaceful gaming, relaxing atmosphere, gaming community, Nintendo Switch gaming, gaming adventures, video games, Nintendo games, gaming journey, social media, gaming community, anime, Clannad, future of Nintendo, QR code, Nintendo news, web apps, social links, gaming fun, Friend Code, gaming enthusiast, gaming community.">
+    <meta name="description" content="Random blog where Cody will post random shit! lol">
+    <meta name="keywords" content="CodyMKW, Nintendo fan, Animal Crossing, Nintendo Switch, 3DS, Wii U, Pretendo Network, Pretendo, Mario Kart, Pokémon, gaming enthusiast, peaceful gaming, relaxing atmosphere, gaming community, Nintendo Switch gaming, gaming adventures, video games, Nintendo games, gaming journey, social media, gaming community, anime, Clannad, future of Nintendo, QR code, Nintendo news, web apps, social links, gaming fun, Friend Code, gaming enthusiast, gaming community.">
     <meta name="author" content="CodyMKW">
-    <meta property="og:title" content="Chat - CodyMKW">
-    <meta property="og:description" content="Hang out with other users and chat about whatever you want!">
-    <meta property="og:image" content="/assets/images/emojis/chat.png">
+    <meta property="og:title" content="Blog - CodyMKW">
+    <meta property="og:description" content="Random blog where Cody will post random shit! lol">
+    <meta property="og:image" content="/assets/images/emojis/miiverse.png">
     <meta property="og:url" content="https://codymkw.github.io">
     <meta property="og:type" content="website">
     <meta name="twitter:creator" content="@CodyMKW" />
-    <meta name="twitter:title" content="Chat - CodyMKW" />
-    <meta name="twitter:description" content="Hang out with other users and chat about whatever you want!" />
-    <meta name="twitter:image:src" content="/assets/images/emojis/chat.png" />
+    <meta name="twitter:title" content="Blog - CodyMKW" />
+    <meta name="twitter:description" content="Random blog where Cody will post random shit! lol" />
+    <meta name="twitter:image:src" content="/assets/images/emojis/miiverse.png" />
     <link rel="stylesheet" href="assets/css/main.css">
     <link rel="stylesheet" href="assets/css/emoji.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.0.0/marked.min.js"></script>
     <script defer src="assets/javascript/main.js"></script>
+    <script defer src="assets/javascript/blog.js"></script>
     <script defer src="assets/javascript/backgrounds.js"></script>
     <script defer src="assets/javascript/avatarFramestickyheader.js"></script>
-    <script src="https://chattable.neocities.org/scripts/main.min.js"></script>
-    <script>
-	   chattable.initialize({
-	     	stylesheet : "assets/css/chattable.css",
-    	});
-    </script>
-    <title>Chat - CodyMKW</title>
+    <title>Blog - CodyMKW</title>
 </head>
-
 <body>
   <div id="sticky-header" class="sticky-header" style="display: none;">
     <span id="close-button" onclick="toggleHeader()">X</span>
@@ -68,10 +62,23 @@
             <button onclick="window.location.href='other-stuff'">Other Stuff</button>
             <button onclick="window.location.href='social-media'">Social Media</button>
         </div>
-        <div class="content" id="chatroomContent">
-                <h2><i class="emoji chat"></i></h2>
-                <h2>Chat</h2>
-                <iframe src='https://iframe.chat/embed/index.html?chat=CodyChat' style="width: 100%; height: 500px;" id='chattable' frameborder='none'></iframe>
+        <div class="content" id="BlogContent">   
+            <h2><i class="emoji codyBlog"></i></h2>
+            <div class="blog-container">
+                <div class="blog-header">
+                    <input type="text" id="searchBar" placeholder="Search posts..." oninput="searchPosts()">
+                    <select id="categoryFilter" onchange="filterByCategory()">
+                        <option value="all">All Categories</option>
+                    </select>
+                </div>
+                <div id="blogPosts"></div>
+                <div class="pagination">
+                    <button id="prevPage" onclick="changePage(-1)">← Prev</button>
+                    <span id="pageInfo"></span>
+                    <button id="nextPage" onclick="changePage(1)">Next →</button>
+                </div>
+            </div>            
+        </div>
         </div>
     </div>
     <footer></footer>
