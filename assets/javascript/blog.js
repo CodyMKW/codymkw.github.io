@@ -9,7 +9,7 @@ const postsPerPage = 5;
 
 async function loadBlog() {
     try {
-        const response = await fetch("assets/json/blog.json");
+        const response = await fetch("https://api.npoint.io/5ac2ef5dd46fbff62a02");
         const data = await response.json();
         posts = data.posts.reverse(); // Newest posts first
         filteredPosts = [...posts];
