@@ -346,6 +346,7 @@ h1.notfoundheading {
 #BlogContent p, h2 {
   color: #fff;
   margin-bottom: 10px;
+  text-align: left;
 }
 
 #BlogContent b {
@@ -402,6 +403,7 @@ h1.notfoundheading {
 .post-meta {
   font-size: 0.9em;
   color: #bbb;
+  text-align: center !important;
 }
 
 .blog-post img {
