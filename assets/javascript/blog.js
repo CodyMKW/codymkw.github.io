@@ -12,10 +12,23 @@ async function loadBlog() {
         const response = await fetch("https://api.npoint.io/5ac2ef5dd46fbff62a02");
         const data = await response.json();
         posts = data.posts.reverse(); // Newest posts first
-        filteredPosts = [...posts];
+        const urlParams = new URLSearchParams(window.location.search);
+const postParam = urlParams.get("post");
+
+if (postParam !== null) {
+    const postIndex = parseInt(postParam, 10);
+    if (!isNaN(postIndex) && postIndex >= 0 && postIndex < posts.length) {
+        currentPage = Math.floor(postIndex / postsPerPage) + 1;
+    }
+}
+
+filteredPosts = [...posts];
 
         populateCategories();
         renderPosts();
+        window.addEventListener("popstate", () => {
+            loadBlog();
+        });        
     } catch (error) {
         console.error("Error loading blog posts:", error);
     }
@@ -78,6 +91,14 @@ function populateCategories() {
 }
 
 function jumpToPost(index) {
-    currentPage = Math.floor(index / postsPerPage) + 1;
+    const postIndex = posts.findIndex(post => post.title === filteredPosts[index].title);
+    const page = Math.floor(postIndex / postsPerPage) + 1;
+
+    // Update the URL with a query parameter for the post
+    const url = new URL(window.location);
+    url.searchParams.set("post", postIndex);
+    window.history.pushState({}, "", url);
+
+    currentPage = page;
     renderPosts();
 }
