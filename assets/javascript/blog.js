@@ -71,7 +71,7 @@ function renderPosts() {
                 ${post.image ? `<img src="${post.image}" alt="Post Image">` : ""}
                 <div class="post-content" id="blogcontent">${marked.parse(post.content)}</div>
                 ${post.video ? `<iframe src="${post.video}" frameborder="0" allowfullscreen></iframe>` : ""}
-                <div class="post-content2" id="blogcontent2">${marked.parse(post.content2)}</div>
+                <div class="post-content" id="blogcontent">${post.content2 ? marked.parse(post.content2) : ""}</div>
             </div>
         `;
         blogContainer.innerHTML += postHTML;
