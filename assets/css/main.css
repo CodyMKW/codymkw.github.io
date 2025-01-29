@@ -81,6 +81,10 @@ a:hover {
   text-align: center;
 }
 
+.content li {
+  text-align: left;
+}
+
 .tabs {
   display: flex;
   justify-content: space-around;
