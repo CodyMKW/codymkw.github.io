@@ -18,9 +18,14 @@ async function loadBlog() {
             index: index // Set the index value to the current index in the array
         }));
 
-        // Sort the posts by index in descending order (newest posts first)
-        posts = data.posts.sort((a, b) => b.index - a.index);
-        filteredPosts = [...posts]; // Copy sorted posts into filteredPosts
+        // Sort posts by date and time (newest to oldest)
+        posts.sort((a, b) => {
+            const dateA = new Date(`${a.date} ${a.time}`);
+            const dateB = new Date(`${b.date} ${b.time}`);
+            return dateB - dateA; // Sort descending (newest first)
+        });
+        
+        filteredPosts = [...posts];
 
         const urlParams = new URLSearchParams(window.location.search);
         const postParam = urlParams.get("post");
@@ -76,7 +81,7 @@ function renderPosts() {
         const postHTML = `
             <div class="blog-post">
                 <h3><a href="?post=${post.index}" onclick="jumpToPost(${post.index})">${post.title}</a></h3>
-                <p class="post-meta">${post.date} • ${post.author} • ${post.category}</p>
+                <p class="post-meta">${post.date} • ${post.time} • ${post.author} • ${post.category}</p>
                 ${post.image ? `<img src="${post.image}" alt="Post Image">` : ""}
                 <p class="post-content">${marked.parse(post.content)}</p>
                 ${post.video ? `<iframe src="${post.video}" frameborder="0" allowfullscreen></iframe>` : ""}
