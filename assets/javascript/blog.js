@@ -11,28 +11,32 @@ async function loadBlog() {
     try {
         const response = await fetch("https://api.npoint.io/5ac2ef5dd46fbff62a02");
         const data = await response.json();
-        posts = data.posts.reverse(); // Newest posts first
+
+        // Sort the posts by index in descending order (newest posts first)
+        posts = data.posts.sort((a, b) => b.index - a.index);
+        filteredPosts = [...posts]; // Copy sorted posts into filteredPosts
+
         const urlParams = new URLSearchParams(window.location.search);
-const postParam = urlParams.get("post");
+        const postParam = urlParams.get("post");
 
-if (postParam !== null) {
-    const postIndex = parseInt(postParam, 10);
-    if (!isNaN(postIndex) && postIndex >= 0 && postIndex < posts.length) {
-        currentPage = Math.floor(postIndex / postsPerPage) + 1;
-    }
-}
-
-filteredPosts = [...posts].reverse();
+        if (postParam !== null) {
+            const postIndex = parseInt(postParam, 10);
+            if (!isNaN(postIndex) && postIndex >= 0 && postIndex < posts.length) {
+                currentPage = Math.floor(postIndex / postsPerPage) + 1;
+            }
+        }
 
         populateCategories();
         renderPosts();
+
         window.addEventListener("popstate", () => {
             loadBlog();
-        }); 
+        });
+
         setTimeout(() => {
             const urlParams = new URLSearchParams(window.location.search);
             const postParam = urlParams.get("post");
-        
+
             if (postParam !== null) {
                 const postIndex = parseInt(postParam, 10);
                 const postElement = document.querySelectorAll(".blog-post")[postIndex % postsPerPage];
@@ -41,6 +45,7 @@ filteredPosts = [...posts].reverse();
                 }
             }
         }, 100);               
+
     } catch (error) {
         console.error("Error loading blog posts:", error);
     }
@@ -82,7 +87,7 @@ function searchPosts() {
     filteredPosts = posts.filter(post => 
         post.title.toLowerCase().includes(query) || 
         post.content.toLowerCase().includes(query)
-    ).reverse(); // Ensure newest posts first
+    );
     currentPage = 1;
     renderPosts();
 }
@@ -91,7 +96,7 @@ function filterByCategory() {
     const selectedCategory = document.getElementById("categoryFilter").value;
     filteredPosts = (selectedCategory === "all" ? posts : posts.filter(post => 
         post.category === selectedCategory
-    )).reverse(); // Ensure newest posts first
+    ));
     currentPage = 1;
     renderPosts();
 }
