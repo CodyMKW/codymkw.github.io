@@ -69,7 +69,7 @@ function renderPosts() {
                 <h3><a href="?post=${post.originalIndex}" onclick="jumpToPost(${post.originalIndex})">${post.title}</a></h3>
                 <p class="post-meta" id="blogmetadata">${post.date} • ${post.time} • ${post.author} • ${post.category}</p>
                 ${post.image ? `<img src="${post.image}" alt="Post Image">` : ""}
-                <div class="post-content" id="blogcontent">${marked.parse(post.content)}</div>
+                <div class="post-content" id="blogcontent">${post.content ? marked.parse(post.content) : ""}</div>
                 ${post.video ? `<iframe src="${post.video}" frameborder="0" allowfullscreen></iframe>` : ""}
                 <div class="post-content" id="blogcontent">${post.content2 ? marked.parse(post.content2) : ""}</div>
             </div>
