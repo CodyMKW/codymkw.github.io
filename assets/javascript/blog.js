@@ -88,11 +88,18 @@ function changePage(direction) {
 }
 
 function searchPosts() {
-    const query = document.getElementById("searchBar").value.toLowerCase();
-    filteredPosts = posts.filter(post => 
-        post.title.toLowerCase().includes(query) || 
-        post.content.toLowerCase().includes(query)
-    );
+    const query = document.getElementById("searchBar").value.trim().toLowerCase();
+
+    if (!query) {
+        filteredPosts = [...posts]; // Reset to full post list when query is empty
+    } else {
+        filteredPosts = posts.filter(post => 
+            (post.title && post.title.toLowerCase().includes(query)) || 
+            (post.content && post.content.toLowerCase().includes(query)) ||
+            (post.content2 && post.content2.toLowerCase().includes(query)) // Ensuring content2 is checked as well
+        );
+    }
+
     currentPage = 1;
     renderPosts();
 }
