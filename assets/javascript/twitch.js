@@ -12,7 +12,7 @@ function loadTwitchStream(username) {
         document.getElementById("twitch-player").innerHTML = `
             <iframe 
                 src="https://player.twitch.tv/?channel=${username}&parent=${window.location.hostname}" 
-                height="480" width="800" 
+                height="480" width="800" muted="false"
                 allowfullscreen>
             </iframe>`;
     }
