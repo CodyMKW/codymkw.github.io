@@ -338,6 +338,48 @@ h1.notfoundheading {
   border-radius: 4px;
 }
 
+/* Twitch Page styles */
+#TwitchContent {
+  padding: 20px;
+  background-color: #111111c9;
+  border: 2px solid #000;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+#twitch-container {
+  text-align: center;
+  margin: 20px auto;
+}
+
+#twitch-username {
+  padding: 8px;
+  width: 250px;
+  font-size: 16px;
+  border: 2px solid #9146FF; /* Twitch purple */
+  border-radius: 5px;
+}
+
+#TwitchContent button {
+  padding: 8px 12px;
+  font-size: 16px;
+  background-color: #9146FF;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#TwitchContent button:hover {
+  background-color: #772ce8;
+}
+
+#twitch-player iframe {
+  margin-top: 15px;
+  max-width: 100%;
+  border: none;
+}
+
 /* Blog styles */
 #BlogContent {
   padding: 20px;
