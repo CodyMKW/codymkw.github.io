@@ -1,68 +1,41 @@
-let streams = new Set();
-
-function getChannelsFromURL() {
+function getChannelsParam() {
     const params = new URLSearchParams(window.location.search);
-    return params.get("channels") ? params.get("channels").split(',') : [];
+    return params.get("channels") || "";
 }
 
-function updateURL() {
-    const params = new URLSearchParams();
-    if (streams.size > 0) {
-        params.set('channels', Array.from(streams).join(','));
-    }
-    window.history.replaceState({}, "", `?${params.toString()}`);
-}
-
-function createStreamElement(username) {
-    const container = document.createElement('div');
-    container.className = 'stream-wrapper';
-    container.id = `stream-${username}-${Date.now()}`;
-
-    const closeBtn = document.createElement('button');
-    closeBtn.className = 'close-stream';
-    closeBtn.innerHTML = '×';
-    closeBtn.onclick = () => removeStream(username, container);
-
-    const playerDiv = document.createElement('div');
-    playerDiv.className = 'twitch-player';
-
-    container.appendChild(closeBtn);
-    container.appendChild(playerDiv);
+function loadTwitchStreams() {
+    const input = document.getElementById("twitch-usernames").value;
+    const channels = input.split(',').map(c => c.trim()).filter(c => c);
     
-    return { container, playerDiv };
-}
-
-function addStream(username) {
-    if (!username) {
-        username = document.getElementById('twitch-username').value.trim().toLowerCase();
-    }
-    if (!username || streams.has(username)) return;
-
-    streams.add(username);
+    if (channels.length === 0) return;
     
-    const { container, playerDiv } = createStreamElement(username);
-    document.getElementById('streams-container').appendChild(container);
+    window.history.pushState({}, "", `?channels=${channels.join(',')}`);
+    const container = document.getElementById("twitch-players");
+    container.innerHTML = '';
+    
+    channels.forEach((channel, index) => {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'twitch-player-wrapper';
+        wrapper.innerHTML = `<div id="twitch-player-${index}"></div>`;
+        container.appendChild(wrapper);
 
-    new Twitch.Embed(playerDiv.id, {
-        width: '100%',
-        height: 400,
-        channel: username,
-        parent: [window.location.hostname],
-        autoplay: true,
-        layout: 'video'
+        new Twitch.Embed(`twitch-player-${index}`, {
+            width: '100%',
+            height: '100%',
+            channel: channel,
+            parent: [window.location.hostname],
+            autoplay: true,
+            layout: 'video'
+        }).addEventListener(Twitch.Embed.VIDEO_READY, (player) => {
+            player.getPlayer().setVolume(1.0);
+        });
     });
-
-    updateURL();
 }
 
-function removeStream(username, element) {
-    streams.delete(username);
-    element.remove();
-    updateURL();
-}
-
-// Initialize streams from URL on page load
-document.addEventListener("DOMContentLoaded", () => {
-    const channels = getChannelsFromURL();
-    channels.forEach(channel => addStream(channel));
+document.addEventListener("DOMContentLoaded", function() {
+    const channels = getChannelsParam();
+    if (channels) {
+        document.getElementById("twitch-usernames").value = channels;
+        loadTwitchStreams();
+    }
 });

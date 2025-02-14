@@ -67,10 +67,12 @@
             <h2><i class="emoji Twitch"></i></h2>
             <div id="twitch-container">
                 <h2>Watch Twitch Streams</h2>
-                <input type="text" id="twitch-username" placeholder="Enter Twitch Username">
-                <button onclick="addStream()">Add Stream</button>
-                <div id="streams-container" class="streams-grid"></div>
-            </div>            
+                <div class="input-group">
+                    <input type="text" id="twitch-usernames" placeholder="Enter comma-separated usernames">
+                    <button onclick="loadTwitchStreams()">Load Streams</button>
+                </div>
+                <div id="twitch-players" class="players-grid"></div>
+            </div>          
         </div>
         </div>
     </div>
