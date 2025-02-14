@@ -1,74 +1,68 @@
-function getQueryParams() {
+let streams = new Set();
+
+function getChannelsFromURL() {
     const params = new URLSearchParams(window.location.search);
-    const channelsParam = params.get('channels');
-    if (channelsParam) {
-        return channelsParam.split(',').map(channel => channel.trim()).filter(channel => channel);
+    return params.get("channels") ? params.get("channels").split(',') : [];
+}
+
+function updateURL() {
+    const params = new URLSearchParams();
+    if (streams.size > 0) {
+        params.set('channels', Array.from(streams).join(','));
     }
-    // Backward compatibility for old 'channel' parameter
-    const oldChannel = params.get('channel');
-    return oldChannel ? [oldChannel.trim()] : [];
+    window.history.replaceState({}, "", `?${params.toString()}`);
+}
+
+function createStreamElement(username) {
+    const container = document.createElement('div');
+    container.className = 'stream-wrapper';
+    container.id = `stream-${username}-${Date.now()}`;
+
+    const closeBtn = document.createElement('button');
+    closeBtn.className = 'close-stream';
+    closeBtn.innerHTML = '×';
+    closeBtn.onclick = () => removeStream(username, container);
+
+    const playerDiv = document.createElement('div');
+    playerDiv.className = 'twitch-player';
+
+    container.appendChild(closeBtn);
+    container.appendChild(playerDiv);
+    
+    return { container, playerDiv };
 }
 
 function addStream(username) {
-    // Check for existing stream
-    const existing = Array.from(document.querySelectorAll('.stream-container'))
-        .some(div => div.dataset.channel === username);
-    if (existing) return;
+    if (!username) {
+        username = document.getElementById('twitch-username').value.trim().toLowerCase();
+    }
+    if (!username || streams.has(username)) return;
 
-    const containerId = `twitch-player-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    streams.add(username);
     
-    // Create container div
-    const container = document.createElement('div');
-    container.className = 'stream-container';
-    container.dataset.channel = username;
-    container.innerHTML = `
-        <div id="${containerId}" class="twitch-embed"></div>
-        <div class="close-button" onclick="removeStream('${username}', this.parentElement)">×</div>
-    `;
-
+    const { container, playerDiv } = createStreamElement(username);
     document.getElementById('streams-container').appendChild(container);
 
-    // Create Twitch embed
-    new Twitch.Embed(containerId, {
-        width: 400,
-        height: 225,
+    new Twitch.Embed(playerDiv.id, {
+        width: '100%',
+        height: 400,
         channel: username,
         parent: [window.location.hostname],
         autoplay: true,
-        layout: "video"
+        layout: 'video'
     });
-}
 
-function addStreams() {
-    const input = document.getElementById("twitch-username").value;
-    const usernames = input.split(',').map(name => name.trim()).filter(name => name !== "");
-    
-    usernames.forEach(username => addStream(username));
     updateURL();
 }
 
 function removeStream(username, element) {
+    streams.delete(username);
     element.remove();
     updateURL();
 }
 
-function updateURL() {
-    const channels = Array.from(document.querySelectorAll('.stream-container'))
-        .map(div => div.dataset.channel)
-        .filter(channel => channel);
-    
-    const params = new URLSearchParams();
-    if (channels.length > 0) {
-        params.set('channels', channels.join(','));
-    }
-    
-    const newUrl = window.location.pathname + (channels.length > 0 ? `?${params.toString()}` : '');
-    window.history.pushState({}, "", newUrl);
-}
-
-// Initialize on page load
-document.addEventListener("DOMContentLoaded", function () {
-    const channels = getQueryParams();
+// Initialize streams from URL on page load
+document.addEventListener("DOMContentLoaded", () => {
+    const channels = getChannelsFromURL();
     channels.forEach(channel => addStream(channel));
-    document.getElementById("twitch-username").value = channels.join(', ');
 });
