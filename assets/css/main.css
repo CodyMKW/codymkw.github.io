@@ -390,11 +390,34 @@ h1.notfoundheading {
 
 .twitch-player-wrapper {
   position: relative;
-  padding-bottom: 56.25%; /* 16:9 aspect ratio */
+  padding-bottom: 56.25%;
   height: 0;
   overflow: hidden;
   background: #000;
   border-radius: 8px;
+}
+
+.stream-close-button {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.7);
+  border: none;
+  color: white;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  transition: background 0.2s;
+}
+
+.stream-close-button:hover {
+  background: rgba(255, 0, 0, 0.8);
 }
 
 .twitch-player-wrapper iframe {

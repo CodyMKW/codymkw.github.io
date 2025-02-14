@@ -16,7 +16,13 @@ function loadTwitchStreams() {
     channels.forEach((channel, index) => {
         const wrapper = document.createElement('div');
         wrapper.className = 'twitch-player-wrapper';
-        wrapper.innerHTML = `<div id="twitch-player-${index}"></div>`;
+        
+        // Add close button
+        wrapper.innerHTML = `
+            <button class="stream-close-button" onclick="this.parentElement.remove()">×</button>
+            <div id="twitch-player-${index}"></div>
+        `;
+        
         container.appendChild(wrapper);
 
         new Twitch.Embed(`twitch-player-${index}`, {
