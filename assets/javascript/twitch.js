@@ -20,6 +20,7 @@ function loadTwitchStream(username) {
             channel: username,
             parent: [window.location.hostname], 
             autoplay: true, 
+            layout: "video"
         });
 
         // Wait for the player to load, then unmute
