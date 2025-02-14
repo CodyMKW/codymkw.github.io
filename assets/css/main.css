@@ -380,6 +380,32 @@ h1.notfoundheading {
   border: none;
 }
 
+#TwitchContent .streams-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+#TwitchContent .stream-container {
+  position: relative;
+  margin: 10px;
+}
+
+#TwitchContent .close-button {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  cursor: pointer;
+  background: red;
+  color: white;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  text-align: center;
+  line-height: 20px;
+}
+
 /* Blog styles */
 #BlogContent {
   padding: 20px;
