@@ -397,7 +397,7 @@ h1.notfoundheading {
   border-radius: 8px;
 }
 
-.stream-close-button {
+#TwitchContent .stream-close-button {
   position: absolute;
   top: 5px;
   right: 5px;
@@ -416,7 +416,7 @@ h1.notfoundheading {
   transition: background 0.2s;
 }
 
-.stream-close-button:hover {
+#TwitchContent .stream-close-button:hover {
   background: rgba(255, 0, 0, 0.8);
 }
 
