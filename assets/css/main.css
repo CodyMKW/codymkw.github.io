@@ -338,6 +338,103 @@ h1.notfoundheading {
   border-radius: 4px;
 }
 
+/* YouTube Page styles */
+#YouTubeContent {
+  padding: 20px;
+  background-color: #111111c9;
+  border: 2px solid #000;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+#youtube-container {
+  text-align: center;
+  margin: 20px auto;
+}
+
+#youtube-videos {
+  padding: 8px;
+  width: 250px;
+  font-size: 16px;
+  border: 2px solid #FF0000; /* YouTube red */
+  border-radius: 5px;
+}
+
+#YouTubeContent button {
+  padding: 8px 12px;
+  font-size: 16px;
+  background-color: #FF0000;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#YouTubeContent button:hover {
+  background-color: #CC0000;
+}
+
+.youtube-player-wrapper iframe {
+  margin-top: 15px;
+  max-width: 100%;
+  border: none;
+}
+
+/* Player grid adjustments */
+.players-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.youtube-player-wrapper {
+  position: relative;
+  padding-bottom: 56.25%;
+  height: 0;
+  overflow: hidden;
+  background: #000;
+  border-radius: 8px;
+}
+
+#YouTubeContent .stream-close-button {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.7);
+  border: none;
+  color: white;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  transition: background 0.2s;
+}
+
+#YouTubeContent .stream-close-button:hover {
+  background: rgba(255, 0, 0, 0.8);
+}
+
+.input-group {
+  display: flex;
+  gap: 10px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+#youtube-videos {
+  flex: 1;
+  padding: 8px;
+  font-size: 16px;
+  border: 2px solid #FF0000;
+  border-radius: 5px;
+}
+
 /* Twitch Page styles */
 #TwitchContent {
   padding: 20px;

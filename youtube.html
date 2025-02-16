@@ -7,29 +7,29 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     <link rel="manifest" href="/site.webmanifest">
-    <meta name="msapplication-TileColor" content="#00c900">
-    <meta name="theme-color" content="#00c900">
+    <meta name="msapplication-TileColor" content="#FF0000">
+    <meta name="theme-color" content="#FF0000">
     <link href="https://social.vivaldi.net/@codymkw" rel="me">
-    <meta name="description" content="Enter a Twitch username to watch live streams directly from CodyMKW's site.">
-    <meta name="keywords" content="Twitch, live stream, gaming, CodyMKW, watch Twitch">
+    <meta name="description" content="Enter YouTube video IDs or URLs to watch videos directly from CodyMKW's site.">
+    <meta name="keywords" content="YouTube, videos, CodyMKW, watch YouTube">
     <meta name="author" content="CodyMKW">
-    <meta property="og:title" content="Watch Twitch Streams - CodyMKW">
-    <meta property="og:description" content="Enter a Twitch username to watch their live stream on CodyMKW's site.">
-    <meta property="og:image" content="/assets/images/twitch.png">
-    <meta property="og:url" content="https://codymkw.github.io">
+    <meta property="og:title" content="Watch YouTube Videos - CodyMKW">
+    <meta property="og:description" content="Enter YouTube video IDs or URLs to watch videos on CodyMKW's site.">
+    <meta property="og:image" content="/assets/images/youtube.png">
+    <meta property="og:url" content="https://codymkw.github.io/youtube">
     <meta property="og:type" content="website">
     <meta name="twitter:creator" content="@CodyMKW" />
-    <meta name="twitter:title" content="Watch Twitch Streams - CodyMKW" />
-    <meta name="twitter:description" content="Enter a Twitch username to watch their live stream on CodyMKW's site." />
-    <meta name="twitter:image:src" content="/assets/images/twitch.png" />
-    <meta http-equiv="Content-Security-Policy" content="frame-ancestors 'self' https://player.twitch.tv;">
+    <meta name="twitter:title" content="Watch YouTube Videos - CodyMKW" />
+    <meta name="twitter:description" content="Enter YouTube video IDs or URLs to watch videos on CodyMKW's site." />
+    <meta name="twitter:image:src" content="/assets/images/youtube.png" />
+    <meta http-equiv="Content-Security-Policy" content="frame-ancestors 'self' https://www.youtube.com;">
     <link rel="stylesheet" href="assets/css/main.css">
     <link rel="stylesheet" href="assets/css/emoji.css">
     <script defer src="assets/javascript/main.js"></script>
-    <script defer src="assets/javascript/twitch.js"></script>
+    <script defer src="assets/javascript/youtube.js"></script>
     <script defer src="assets/javascript/backgrounds.js"></script>
     <script defer src="assets/javascript/avatarFramestickyheader.js"></script>
-    <title>Watch Twitch Streams - CodyMKW</title>
+    <title>Watch YouTube Videos - CodyMKW</title>
 </head>
 <body>
   <div id="sticky-header" class="sticky-header" style="display: none;">
@@ -62,20 +62,20 @@
             <button onclick="window.location.href='other-stuff'">Other Stuff</button>
             <button onclick="window.location.href='social-media'">Social Media</button>
         </div>
-        <div class="content" id="TwitchContent">   
-            <h2><i class="emoji Twitch"></i></h2>
-            <div id="twitch-container">
-                <h2>Watch Twitch Streams</h2>
+        <div class="content" id="YouTubeContent">   
+            <h2><i class="emoji YouTube"></i></h2>
+            <div id="youtube-container">
+                <h2>Watch YouTube Videos</h2>
                 <div class="input-group">
-                    <input type="text" id="twitch-usernames" placeholder="Enter comma-separated usernames">
-                    <button onclick="loadTwitchStreams()">Load Streams</button>
+                    <input type="text" id="youtube-videos" placeholder="Enter video IDs or URLs (comma-separated)">
+                    <button onclick="loadYouTubeVideos()">Load Videos</button>
                 </div>
-                <div id="twitch-players" class="players-grid"></div>
+                <div id="youtube-players" class="players-grid"></div>
             </div>          
         </div>
         </div>
     </div>
     <footer></footer>
-    <script src="https://embed.twitch.tv/embed/v1.js"></script>
+    <script src="https://www.youtube.com/iframe_api"></script>
 </body>
 </html>
