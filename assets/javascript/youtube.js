@@ -10,12 +10,21 @@ function updateUrl() {
   window.history.pushState({}, "", `?videos=${videos}`);
 }
 
+function extractYouTubeVideoID(input) {
+  // Regular expression to match typical YouTube URL patterns
+  const urlPattern = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+  const match = input.match(urlPattern);
+  return match ? match[1] : input; // If match found, return the ID; else return the input as-is
+}
+
 function loadYouTubeVideos() {
   const input = document.getElementById("youtube-video-ids").value;
   const newVideos = input
+  const newVideos = input
     .split(",")
-    .map((v) => v.trim())
+    .map((v) => extractYouTubeVideoID(v.trim()))
     .filter((v) => v && !activeVideos.has(v));
+
 
   if (newVideos.length === 0) return;
 
@@ -59,7 +68,7 @@ function loadYouTubeVideos() {
 document.addEventListener("DOMContentLoaded", function () {
   const videos = getVideosParam()
     .split(",")
-    .map((v) => v.trim())
+    .map((v) => extractYouTubeVideoID(v.trim()))
     .filter((v) => v);
 
   if (videos.length) {
