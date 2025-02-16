@@ -17,6 +17,18 @@ function extractYouTubeVideoID(input) {
   return match ? match[1] : input; // If match found, return the ID; else return the input as-is
 }
 
+// Function to check and load autoplay preference
+function checkAutoplayConsent() {
+  const consent = localStorage.getItem("autoplayConsent");
+  document.getElementById("autoplay-consent").checked = consent === "true";
+}
+
+// Function to save user preference
+function saveAutoplayConsent() {
+  const isChecked = document.getElementById("autoplay-consent").checked;
+  localStorage.setItem("autoplayConsent", isChecked);
+}
+
 function loadYouTubeVideos() {
   const input = document.getElementById("youtube-video-ids").value;
   const newVideos = input
@@ -50,9 +62,10 @@ function loadYouTubeVideos() {
 
     // Create and configure the YouTube iframe
     const iframe = document.createElement("iframe");
+    const autoplayEnabled = localStorage.getItem("autoplayConsent") === "true";
     iframe.width = "100%";
     iframe.height = "100%";
-    iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+    iframe.src = `https://www.youtube.com/embed/${videoId}${autoplayEnabled ? "?autoplay=1" : ""}`;
     iframe.frameBorder = "0";
     iframe.allow = "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture";
     iframe.allowFullscreen = true;
@@ -96,6 +109,7 @@ document.addEventListener("DOMContentLoaded", function () {
       iframe.allowFullscreen = true;
 
       wrapper.querySelector("div").appendChild(iframe);
+      checkAutoplayConsent();
     });
   }
 });
