@@ -2,14 +2,12 @@ let activeVideos = new Set();
 
 function getVideosParam() {
   const params = new URLSearchParams(window.location.search);
-  return params.get("autoplay") === "1";
   return params.get("videos") || "";
 }
 
 function updateUrl() {
   const videos = Array.from(activeVideos).join(",");
-  const autoplay = getAutoplayParam() ? "&autoplay=1" : ""
-  window.history.pushState({}, "", `?videos=${videos}${autoplay}`);
+  window.history.pushState({}, "", `?videos=${videos}`);
 }
 
 function extractYouTubeVideoID(input) {
@@ -67,7 +65,6 @@ function loadYouTubeVideos() {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-  const autoplay = getAutoplayParam();
   const videos = getVideosParam()
     .split(",")
     .map((v) => extractYouTubeVideoID(v.trim()))
@@ -100,9 +97,5 @@ document.addEventListener("DOMContentLoaded", function () {
 
       wrapper.querySelector("div").appendChild(iframe);
     });
-
-    if (autoplay) {
-      updateUrl();
-    }
   }
 });
