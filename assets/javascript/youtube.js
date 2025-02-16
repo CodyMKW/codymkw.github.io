@@ -20,7 +20,6 @@ function extractYouTubeVideoID(input) {
 function loadYouTubeVideos() {
   const input = document.getElementById("youtube-video-ids").value;
   const newVideos = input
-  const newVideos = input
     .split(",")
     .map((v) => extractYouTubeVideoID(v.trim()))
     .filter((v) => v && !activeVideos.has(v));
