@@ -1,5 +1,17 @@
 let activeVideos = new Set();
 let players = new Map();
+let isYouTubeAPIReady = false;
+let pendingVideos = [];
+
+// YouTube API callback
+function onYouTubeIframeAPIReady() {
+    isYouTubeAPIReady = true;
+    // Process any pending videos from URL parameters
+    if (pendingVideos.length > 0) {
+        pendingVideos.forEach(videoID => createPlayer(videoID, true));
+        pendingVideos = [];
+    }
+}
 
 function getVideosParam() {
     const params = new URLSearchParams(window.location.search);
@@ -17,61 +29,72 @@ function extractVideoID(url) {
     return (match && match[2].length === 11) ? match[2] : url;
 }
 
+function createPlayer(videoID, isFromUrl = false) {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'youtube-player-wrapper';
+    const playerId = `yt-player-${Date.now()}-${videoID}`;
+    
+    wrapper.innerHTML = `
+        <button class="stream-close-button" onclick="
+            this.parentElement.remove();
+            activeVideos.delete('${videoID}');
+            players.get('${videoID}').destroy();
+            players.delete('${videoID}');
+            updateUrl();
+        ">×</button>
+        <div id="${playerId}"></div>
+    `;
+    
+    document.getElementById("youtube-players").appendChild(wrapper);
+
+    const player = new YT.Player(playerId, {
+        height: '100%',
+        width: '100%',
+        videoId: videoID,
+        playerVars: {
+            'autoplay': isFromUrl ? 0 : 1, // Don't autoplay for URL-loaded videos
+            'controls': 1,
+            'rel': 0,
+            'modestbranding': 1,
+            'enablejsapi': 1
+        },
+        events: {
+            'onReady': (event) => {
+                event.target.setVolume(100);
+                // Set initial size based on container
+                const container = event.target.a.parentElement;
+                event.target.setSize(container.offsetWidth, container.offsetHeight);
+                
+                // Play only if not from URL parameters
+                if (!isFromUrl) {
+                    event.target.playVideo();
+                }
+            },
+            'onStateChange': (event) => {
+                if (event.data === YT.PlayerState.PLAYING) {
+                    const container = event.target.a.parentElement;
+                    event.target.setSize(container.offsetWidth, container.offsetHeight);
+                }
+            }
+        }
+    });
+    
+    players.set(videoID, player);
+}
+
 function loadYouTubeVideos() {
     const input = document.getElementById("youtube-videos").value;
     const videoIDs = input.split(',')
         .map(v => extractVideoID(v.trim()))
         .filter(v => v && !activeVideos.has(v));
 
-    if (videoIDs.length === 0) return;
-
-    const container = document.getElementById("youtube-players");
-    
     videoIDs.forEach(videoID => {
         activeVideos.add(videoID);
-        const wrapper = document.createElement('div');
-        wrapper.className = 'youtube-player-wrapper';
-        const playerId = `yt-player-${Date.now()}-${videoID}`;
-        
-        wrapper.innerHTML = `
-            <button class="stream-close-button" onclick="
-                this.parentElement.remove();
-                activeVideos.delete('${videoID}');
-                players.get('${videoID}').destroy();
-                players.delete('${videoID}');
-                updateUrl();
-            ">×</button>
-            <div id="${playerId}"></div>
-        `;
-        
-        container.appendChild(wrapper);
-
-        const player = new YT.Player(playerId, {
-            height: '100%',
-            width: '100%',
-            videoId: videoID,
-            playerVars: {
-                'autoplay': 1,
-                'controls': 1,
-                'rel': 0,
-                'modestbranding': 1,
-                'enablejsapi': 1
-            },
-            events: {
-                'onReady': (event) => {
-                    event.target.setVolume(100);
-                    event.target.setSize(window.innerWidth, window.innerHeight);
-                },
-                // Add resize handler
-                'onStateChange': (event) => {
-                   if (event.data === YT.PlayerState.PLAYING) {
-                       event.target.setSize(window.innerWidth, window.innerHeight);
-                    }
-                }
-            }
-        });
-        
-        players.set(videoID, player);
+        if (isYouTubeAPIReady) {
+            createPlayer(videoID);
+        } else {
+            pendingVideos.push(videoID);
+        }
     });
 
     updateUrl();
@@ -82,54 +105,26 @@ document.addEventListener("DOMContentLoaded", function() {
     const videoIDs = getVideosParam().split(',')
         .map(v => v.trim())
         .filter(v => v);
-    
+
     if (videoIDs.length) {
         activeVideos = new Set(videoIDs);
-        const container = document.getElementById("youtube-players");
-        
         videoIDs.forEach(videoID => {
-            const wrapper = document.createElement('div');
-            wrapper.className = 'youtube-player-wrapper';
-            const playerId = `yt-player-${Date.now()}-${videoID}`;
-            
-            wrapper.innerHTML = `
-                <button class="stream-close-button" onclick="
-                    this.parentElement.remove();
-                    activeVideos.delete('${videoID}');
-                    players.get('${videoID}').destroy();
-                    players.delete('${videoID}');
-                    updateUrl();
-                ">×</button>
-                <div id="${playerId}"></div>
-            `;
-            
-            container.appendChild(wrapper);
-
-            const player = new YT.Player(playerId, {
-                height: '100%',
-                width: '100%',
-                videoId: videoID,
-                playerVars: {
-                    'autoplay': 1,
-                    'controls': 1,
-                    'rel': 0
-                },
-                events: {
-                    'onReady': (event) => {
-                        event.target.setVolume(100);
-                    }
-                }
-            });
-            
-            players.set(videoID, player);
+            if (isYouTubeAPIReady) {
+                createPlayer(videoID, true);
+            } else {
+                pendingVideos.push(videoID);
+            }
         });
     }
 });
 
+// Proper resize handler using container dimensions
 window.addEventListener('resize', () => {
-    players.forEach(player => {
+    players.forEach((player, videoID) => {
         try {
-            player.setSize(window.innerWidth, window.innerHeight);
+            const iframe = document.getElementById(player.a.id);
+            const container = iframe.parentElement;
+            player.setSize(container.offsetWidth, container.offsetHeight);
         } catch (e) {
             console.log('Error resizing player:', e);
         }

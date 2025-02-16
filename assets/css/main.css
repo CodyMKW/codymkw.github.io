@@ -374,34 +374,35 @@ h1.notfoundheading {
   background-color: #CC0000;
 }
 
-#YouTubeContent .youtube-player-wrapper iframe {
-  max-width: 100%;
+.youtube-player-wrapper iframe {
+  width: 100% !important;
+  height: 100% !important;
   border: none;
 }
 
 /* Player grid adjustments */
 #YouTubeContent .players-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 20px;
   margin-top: 20px;
 }
 
-#YouTubeContent .youtube-player-wrapper {
+.youtube-player-wrapper {
   position: relative;
-  padding-bottom: 85.25%;
+  padding-bottom: 56.25%;
   height: 0;
-  overflow: hidden;
+  overflow: visible;
   background: #000;
   border-radius: 8px;
 }
 
-#YouTubeContent .youtube-player-wrapper > div {
+.youtube-player-wrapper > div {
   position: absolute;
   top: 0;
   left: 0;
   width: 100% !important;
-  height: 315px !important;
+  height: 100% !important;
 }
 
 #YouTubeContent .stream-close-button {
