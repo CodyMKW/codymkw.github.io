@@ -375,7 +375,6 @@ h1.notfoundheading {
 }
 
 .youtube-player-wrapper iframe {
-  margin-top: 15px;
   max-width: 100%;
   border: none;
 }
@@ -395,6 +394,14 @@ h1.notfoundheading {
   overflow: hidden;
   background: #000;
   border-radius: 8px;
+}
+
+.youtube-player-wrapper > div {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100% !important;
+  height: 100% !important;
 }
 
 #YouTubeContent .stream-close-button {

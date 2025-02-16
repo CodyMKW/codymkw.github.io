@@ -53,12 +53,20 @@ function loadYouTubeVideos() {
             playerVars: {
                 'autoplay': 1,
                 'controls': 1,
-                'rel': 0
+                'rel': 0,
+                'modestbranding': 1,
+                'enablejsapi': 1
             },
             events: {
                 'onReady': (event) => {
                     event.target.setVolume(100);
-                }
+                    event.target.setSize(window.innerWidth, window.innerHeight);
+                },
+                // Add resize handler
+                'onStateChange': (event) => {
+                   if (event.data === YT.PlayerState.PLAYING) {
+                       event.target.setSize(window.innerWidth, window.innerHeight);
+                    }
             }
         });
         
@@ -115,4 +123,14 @@ document.addEventListener("DOMContentLoaded", function() {
             players.set(videoID, player);
         });
     }
+});
+
+window.addEventListener('resize', () => {
+    players.forEach(player => {
+        try {
+            player.setSize(window.innerWidth, window.innerHeight);
+        } catch (e) {
+            console.log('Error resizing player:', e);
+        }
+    });
 });
