@@ -389,7 +389,7 @@ h1.notfoundheading {
 
 #YouTubeContent .youtube-player-wrapper {
   position: relative;
-  padding-bottom: 56.25%;
+  padding-bottom: 85.25%;
   height: 0;
   overflow: hidden;
   background: #000;
@@ -401,7 +401,7 @@ h1.notfoundheading {
   top: 0;
   left: 0;
   width: 100% !important;
-  height: 85px !important;
+  height: 315px !important;
 }
 
 #YouTubeContent .stream-close-button {
