@@ -67,6 +67,7 @@ function loadYouTubeVideos() {
                    if (event.data === YT.PlayerState.PLAYING) {
                        event.target.setSize(window.innerWidth, window.innerHeight);
                     }
+                }
             }
         });
         
