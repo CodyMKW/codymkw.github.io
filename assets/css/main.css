@@ -374,20 +374,20 @@ h1.notfoundheading {
   background-color: #CC0000;
 }
 
-.youtube-player-wrapper iframe {
+#YouTubeContent .youtube-player-wrapper iframe {
   max-width: 100%;
   border: none;
 }
 
 /* Player grid adjustments */
-.players-grid {
+#YouTubeContent .players-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
   gap: 20px;
   margin-top: 20px;
 }
 
-.youtube-player-wrapper {
+#YouTubeContent .youtube-player-wrapper {
   position: relative;
   padding-bottom: 56.25%;
   height: 0;
@@ -396,7 +396,7 @@ h1.notfoundheading {
   border-radius: 8px;
 }
 
-.youtube-player-wrapper > div {
+#YouTubeContent .youtube-player-wrapper > div {
   position: absolute;
   top: 0;
   left: 0;
@@ -427,7 +427,7 @@ h1.notfoundheading {
   background: rgba(255, 0, 0, 0.8);
 }
 
-.input-group {
+#YouTubeContent .input-group {
   display: flex;
   gap: 10px;
   max-width: 600px;
