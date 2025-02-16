@@ -47,7 +47,7 @@ function loadYouTubeVideos() {
         container.appendChild(wrapper);
 
         const player = new YT.Player(playerId, {
-            height: '315',
+            height: '100%',
             width: '100%',
             videoId: videoID,
             playerVars: {
