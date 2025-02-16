@@ -352,7 +352,7 @@ h1.notfoundheading {
   margin: 20px auto;
 }
 
-#youtube-videos {
+#youtube-video-ids {
   padding: 8px;
   width: 250px;
   font-size: 16px;
@@ -374,35 +374,13 @@ h1.notfoundheading {
   background-color: #CC0000;
 }
 
-.youtube-player-wrapper iframe {
-  width: 100% !important;
-  height: 100% !important;
-  border: none;
-}
-
-/* Player grid adjustments */
-#YouTubeContent .players-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 20px;
-  margin-top: 20px;
-}
-
 .youtube-player-wrapper {
   position: relative;
   padding-bottom: 56.25%;
   height: 0;
-  overflow: visible;
+  overflow: hidden;
   background: #000;
   border-radius: 8px;
-}
-
-.youtube-player-wrapper > div {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100% !important;
-  height: 100% !important;
 }
 
 #YouTubeContent .stream-close-button {
@@ -428,19 +406,20 @@ h1.notfoundheading {
   background: rgba(255, 0, 0, 0.8);
 }
 
+.youtube-player-wrapper iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
 #YouTubeContent .input-group {
   display: flex;
   gap: 10px;
   max-width: 600px;
   margin: 0 auto;
-}
-
-#youtube-videos {
-  flex: 1;
-  padding: 8px;
-  font-size: 16px;
-  border: 2px solid #FF0000;
-  border-radius: 5px;
 }
 
 /* Twitch Page styles */
