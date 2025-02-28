@@ -153,3 +153,6 @@ body {
   input[type=checkbox]:checked + label:after {
     color: #01a3ff;
   }
+.emoji {
+    height: 50px;
+}
