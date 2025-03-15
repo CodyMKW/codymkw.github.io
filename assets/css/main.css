@@ -338,6 +338,20 @@ h1.notfoundheading {
   border-radius: 4px;
 }
 
+.gem-preview {
+  display: block;
+  margin: 10px auto; /* Centers the image */
+  width: 300px; /* Adjust size if needed */
+  height: auto;
+  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.8)); /* White glow effect */
+  transition: transform 0.2s ease-in-out, filter 0.2s ease-in-out;
+}
+
+.gem-preview:hover {
+  transform: scale(1.05);
+  filter: drop-shadow(0 0 15px rgba(255, 255, 255, 1));
+}
+
 /* YouTube Page styles */
 #YouTubeContent {
   padding: 20px;
