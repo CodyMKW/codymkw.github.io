@@ -376,6 +376,7 @@ h1.notfoundheading {
       justify-content: center;
     }
 
+
 /* Dream Address page styles */
 #DreamAddressContent {
   padding: 20px;
@@ -540,8 +541,8 @@ h1.notfoundheading {
 /* Multi-stream grid layout */
 .players-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
   margin-top: 20px;
 }
 
