@@ -317,6 +317,65 @@ h1.notfoundheading {
   color: #fff;
 }
 
+/* Buttons page styles */
+#buttonContent {
+  display: block;
+  padding: 20px;
+  background-color: #111111c9;
+  border: 2px solid #000;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  text-align: left;
+}
+
+#buttonContent h2 {
+  text-align: center;
+}
+
+#buttonContent p, h2 {
+  color: #fff;
+}
+
+    /* Styles for the button table */
+    .button-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+    }
+    .button-table th, .button-table td {
+      border: 1px solid #00C900;
+      padding: 10px;
+      text-align: center;
+    }
+    .button-table th {
+      background-color: #00C900;
+      color: #000;
+    }
+    /* Styles for the code section */
+    .code-container textarea {
+      background-color: #222;
+      color: #fff;
+      border: 1px solid #00C900;
+      padding: 10px;
+      border-radius: 5px;
+      font-family: monospace;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .code-container button {
+      margin-top: 10px;
+    }
+    .button-preview img {
+      max-width: 150px;
+    }
+    .button-preview {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
 /* Dream Address page styles */
 #DreamAddressContent {
   padding: 20px;
