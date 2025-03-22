@@ -182,6 +182,7 @@ blockquote {
 /* Settings & Emoji Tray Icons */
 #settings, #emojiTrayToggle {
   filter: invert(42%) sepia(93%) saturate(1352%) hue-rotate(87deg) brightness(119%) contrast(119%);
+  margin-top: 12px;
 }
 
 /* Load More Button */
@@ -247,8 +248,8 @@ input[type=checkbox]:checked + label::after {
 }
 
 /* Emoji Sizing */
-.emoji {
-  height: 20px;
+.allMessages.containsOnlyEmojis .emoji {
+    height: 50px;
 }
 
 /* Typing Indicator */
