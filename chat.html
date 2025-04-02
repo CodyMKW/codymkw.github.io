@@ -28,6 +28,7 @@
     <script defer src="assets/javascript/main.js"></script>
     <script defer src="assets/javascript/backgrounds.js"></script>
     <script defer src="assets/javascript/avatarFramestickyheader.js"></script>
+    <script defer src="assets/javascript/chatstuff.js"></script>
     <script src="https://chattable.neocities.org/scripts/main.min.js"></script>
     <script>
        chattable.commands = {
@@ -93,21 +94,42 @@
     <h3>Flair Shop</h3>
     <p>Points: <span id="points-display">0</span></p>
     <div id="flair-options">
-        <label data-cost="0"><input type="checkbox" name="flair" value="none"> None</label>
-        <label data-cost="5"><input type="checkbox" name="flair" value="redname"> Red Name (5 pts)</label>
-        <label data-cost="5"><input type="checkbox" name="flair" value="orangename"> Orange Name (5 pts)</label>
-        <label data-cost="5"><input type="checkbox" name="flair" value="yellowname"> Yellow Name (5 pts)</label>
-        <label data-cost="5"><input type="checkbox" name="flair" value="greenname"> Green Name (5 pts)</label>
-        <label data-cost="5"><input type="checkbox" name="flair" value="bluename"> Blue Name (5 pts)</label>
-        <label data-cost="5"><input type="checkbox" name="flair" value="purplename"> Purple Name (5 pts)</label>
-        <label data-cost="30"><input type="checkbox" name="flair" value="fox"> Fox badge (30 pts)</label>
-        <label data-cost="69"><input type="checkbox" name="flair" value="shrek"> Shrek badge (69 pts)</label>
-        <label data-cost="500"><input type="checkbox" name="flair" value="splatoon"> Splatoon Message BG (500 pts)</label>
-        <label data-cost="500"><input type="checkbox" name="flair" value="animalcrossing"> Animal Crossing Message BG (500 pts)</label>
-        <label data-cost="10000"><input type="checkbox" name="flair" value="golden"> Golden Message BG (10000 pts)</label>
+        <fieldset>
+           <legend>Name Colors</legend>
+           <label data-cost="3"><input type="checkbox" name="flair" value="redname"> Red Name (3 pts)</label>
+           <label data-cost="3"><input type="checkbox" name="flair" value="orangename"> Orange Name (3 pts)</label>
+           <label data-cost="3"><input type="checkbox" name="flair" value="yellowname"> Yellow Name (3 pts)</label>
+           <label data-cost="3"><input type="checkbox" name="flair" value="greenname"> Green Name (3 pts)</label>
+           <label data-cost="3"><input type="checkbox" name="flair" value="bluename"> Blue Name (3 pts)</label>
+           <label data-cost="3"><input type="checkbox" name="flair" value="purplename"> Purple Name (3 pts)</label>
+        </fieldset>
+        <fieldset>
+           <legend>Name Glow Effects</legend>
+           <label data-cost="40"><input type="checkbox" name="flair" value="rednameglow"> Red Name Glow (40 pts)</label>
+           <label data-cost="40"><input type="checkbox" name="flair" value="orangenameglow"> Orange Name Glow (40 pts)</label>
+           <label data-cost="40"><input type="checkbox" name="flair" value="yellownameglow"> Yellow Name Glow (40 pts)</label>
+           <label data-cost="40"><input type="checkbox" name="flair" value="greennameglow"> Green Name Glow (40 pts)</label>
+           <label data-cost="40"><input type="checkbox" name="flair" value="bluenameglow"> Blue Name Glow (40 pts)</label>
+           <label data-cost="40"><input type="checkbox" name="flair" value="purplenameglow"> Purple Name Glow (40 pts)</label>
+        </fieldset>
+        <fieldset>
+           <legend>Badges</legend>
+           <label data-cost="100"><input type="checkbox" name="flair" value="fox"> Fox badge (100 pts)</label>
+           <label data-cost="100"><input type="checkbox" name="flair" value="isabelle"> Isabelle Pumpkin Costume badge (100 pts)</label>
+           <label data-cost="169"><input type="checkbox" name="flair" value="shrek"> Shrek badge (169 pts)</label>
+        </fieldset>
+        <fieldset>
+           <legend>Message Backgrounds</legend>
+           <label data-cost="500"><input type="checkbox" name="flair" value="splatoon"> Splatoon Message BG (500 pts)</label>
+           <label data-cost="500"><input type="checkbox" name="flair" value="animalcrossing"> Animal Crossing Message BG (500 pts)</label>
+           <label data-cost="500"><input type="checkbox" name="flair" value="mariokart8"> Mario Kart 8 Message BG (500 pts)</label>
+           <label data-cost="10000"><input type="checkbox" name="flair" value="golden"> Golden Message BG (10000 pts)</label>
+        </fieldset>
     </div>
     <p id="flair-message" style="display:none;">Flair set!</p>
     <p id="flair-message2" style="display:none;">Not Enough Points!</p>
+    <p id="remove-flair-message" style="display:none;">Flair removed!</p>
+    <a href="#" id="remove-flair">Remove Flair</a>
 </div>
 <div id="promo-section">
     <h3>Redeem Promo Code</h3>
@@ -118,142 +140,5 @@
         </div>
     </div>
     <footer></footer>
-<script>
-document.addEventListener("DOMContentLoaded", async () => {
-    let points = parseInt(localStorage.getItem("userPoints")) || 0;
-    let ownedFlairs = JSON.parse(localStorage.getItem("ownedFlairs")) || [];
-    let redeemedCodes = JSON.parse(localStorage.getItem("redeemedCodes")) || [];
-    
-    const pointsDisplay = document.getElementById("points-display");
-    const checkboxes = document.querySelectorAll("#flair-options input[type='checkbox']");
-    const message = document.getElementById("flair-message");
-    const message2 = document.getElementById("flair-message2");
-    const promoInput = document.getElementById("promo-input");
-    const redeemButton = document.getElementById("redeem-button");
-    const promoMessage = document.getElementById("promo-message");
-
-    pointsDisplay.textContent = points;
-
-    function savePoints() {
-        localStorage.setItem("userPoints", points);
-        pointsDisplay.textContent = points;
-    }
-
-    function saveFlairs() {
-        localStorage.setItem("ownedFlairs", JSON.stringify(ownedFlairs));
-    }
-
-    async function getEventBonus() {
-        try {
-            const response = await fetch("https://api.npoint.io/0cd5a97ecc2b0d608505"); // Update with actual URL
-            const data = await response.json();
-            const now = new Date();
-            let activeEvent = null;
-
-            for (let event of data.events) {
-                let start = new Date(event.start.replace(" ", "T"));
-                let end = new Date(event.end.replace(" ", "T"));
-
-                if (now >= start && now <= end) {
-                    activeEvent = event;
-                    break;
-                }
-            }
-
-            if (activeEvent) {
-                document.getElementById("event-message").style.display = "block";
-                document.getElementById("event-text").textContent = `🔥 Event Active: ${activeEvent.name}! Earn ${activeEvent.pointsPerMinute} points per minute! 🔥`;
-                return activeEvent.pointsPerMinute;
-            } else {
-                document.getElementById("event-message").style.display = "none";
-            }
-        } catch (error) {
-            console.error("Failed to fetch event data:", error);
-        }
-        return 3; // Default points per minute
-    }
-
-    let pointsPerMinute = await getEventBonus();
-
-    setInterval(async () => {
-        pointsPerMinute = await getEventBonus();
-        points += pointsPerMinute;
-        savePoints();
-    }, 60000);
-
-    checkboxes.forEach(checkbox => {
-        const label = checkbox.parentElement;
-        const cost = parseInt(label.getAttribute("data-cost"));
-        const flair = checkbox.value;
-
-        if (ownedFlairs.includes(flair)) {
-            checkbox.disabled = false;
-            label.style.color = "gold";
-        } else {
-            checkbox.disabled = true;
-        }
-
-        label.addEventListener("click", () => {
-            if (!ownedFlairs.includes(flair) && points >= cost) {
-                points -= cost;
-                ownedFlairs.push(flair);
-                checkbox.disabled = false;
-                label.style.color = "gold";
-                savePoints();
-                saveFlairs();
-            } else if (!ownedFlairs.includes(flair)) {
-                message2.style.display = "block";
-                setTimeout(() => message2.style.display = "none", 2000);
-            }
-        });
-
-        checkbox.addEventListener("change", function () {
-            checkboxes.forEach(cb => cb.checked = false);
-            this.checked = true;
-            chattable.setFlair(this.value);
-            message.style.display = "block";
-            setTimeout(() => message.style.display = "none", 2000);
-        });
-    });
-
-    // PROMO CODE HANDLING
-    async function getPromoData() {
-        try {
-            const response = await fetch("https://api.npoint.io/0cd5a97ecc2b0d608505"); // Update with actual JSON URL
-            return await response.json();
-        } catch (error) {
-            console.error("Failed to fetch promo data:", error);
-            return { promoCodes: {} };
-        }
-    }
-
-    redeemButton.addEventListener("click", async () => {
-        const promoCode = promoInput.value.trim().toUpperCase();
-        const promoData = await getPromoData();
-
-        if (!promoCode) {
-            promoMessage.textContent = "⚠️ Please enter a promo code!";
-            promoMessage.style.color = "red";
-        } else if (redeemedCodes.includes(promoCode)) {
-            promoMessage.textContent = "❌ You have already redeemed this promo code!";
-            promoMessage.style.color = "red";
-        } else if (promoData.promoCodes && promoData.promoCodes[promoCode]) {
-            let bonusPoints = promoData.promoCodes[promoCode].points;
-            points += bonusPoints;
-            redeemedCodes.push(promoCode);
-            savePoints();
-            localStorage.setItem("redeemedCodes", JSON.stringify(redeemedCodes));
-            promoMessage.textContent = `✅ Success! You earned ${bonusPoints} points.`;
-            promoMessage.style.color = "green";
-        } else {
-            promoMessage.textContent = "⚠️ Invalid promo code!";
-            promoMessage.style.color = "red";
-        }
-
-        promoMessage.style.display = "block";
-        setTimeout(() => { promoMessage.style.display = "none"; }, 3000);
-    });
-});
-</script>
 </body>
 </html>

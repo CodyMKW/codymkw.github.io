@@ -332,12 +332,106 @@ code {
 .purplename {
   color: #F0F;
 }
+.rednameglow {
+  color: #C00;
+  animation: rednameglow 1.5s infinite alternate;
+}
+
+.orangenameglow {
+  color: #F70;
+  animation: orangenameglow 1.5s infinite alternate;
+}
+
+.yellownameglow {
+  color: #FF0;
+  animation: yellownameglow 1.5s infinite alternate;
+}
+
+.greennameglow {
+  color: #0C0;
+  animation: greennameglow 1.5s infinite alternate;
+}
+
+.bluenameglow {
+  color: #33F;
+  animation: bluenameglow 1.5s infinite alternate;
+}
+
+.purplenameglow {
+  color: #F0F;
+  animation: purplenameglow 1.5s infinite alternate;
+}
+
+/* Fixing the keyframes */
+@-webkit-keyframes rednameglow {
+  from {
+    text-shadow: 0 0 5px #e60073, 0 0 10px #e60073, 0 0 15px #e60073;
+  }
+  to {
+    text-shadow: 0 0 10px #ff4da6, 0 0 20px #ff4da6, 0 0 30px #ff4da6;
+  }
+}
+
+@-webkit-keyframes orangenameglow {
+  from {
+    text-shadow: 0 0 5px #ff9900, 0 0 10px #ff9900, 0 0 15px #ff9900;
+  }
+  to {
+    text-shadow: 0 0 10px #ffcc66, 0 0 20px #ffcc66, 0 0 30px #ffcc66;
+  }
+}
+
+@-webkit-keyframes yellownameglow {
+  from {
+    text-shadow: 0 0 5px #ffeb00, 0 0 10px #ffeb00, 0 0 15px #ffeb00;
+  }
+  to {
+    text-shadow: 0 0 10px #ffff66, 0 0 20px #ffff66, 0 0 30px #ffff66;
+  }
+}
+
+@-webkit-keyframes greennameglow {
+  from {
+    text-shadow: 0 0 5px #00e600, 0 0 10px #00e600, 0 0 15px #00e600;
+  }
+  to {
+    text-shadow: 0 0 10px #66ff66, 0 0 20px #66ff66, 0 0 30px #66ff66;
+  }
+}
+
+@-webkit-keyframes bluenameglow {
+  from {
+    text-shadow: 0 0 5px #0066ff, 0 0 10px #0066ff, 0 0 15px #0066ff;
+  }
+  to {
+    text-shadow: 0 0 10px #66a3ff, 0 0 20px #66a3ff, 0 0 30px #66a3ff;
+  }
+}
+
+@-webkit-keyframes purplenameglow {
+  from {
+    text-shadow: 0 0 5px #9900cc, 0 0 10px #9900cc, 0 0 15px #9900cc;
+  }
+  to {
+    text-shadow: 0 0 10px #cc66ff, 0 0 20px #cc66ff, 0 0 30px #cc66ff;
+  }
+}
 .fox:after {
   content: " ";
   display: inline-block;
   height: 15pt;
   width: 15pt;
-  background-image: url(https://nightscape.xobyte.org/media/fox.gif);
+  background-image: url(https://files.catbox.moe/4llkfy.gif);
+  background-size: 100% auto;
+  background-repeat: no-repeat;
+  margin-left: 3px;
+}
+.isabelle:after {
+  content: " ";
+  display: inline-block;
+  height: 15pt;
+  width: 15pt;
+  background-image: url(https://files.catbox.moe/n830em.gif);
   background-size: 100% auto;
   background-repeat: no-repeat;
   margin-left: 3px;
@@ -351,6 +445,16 @@ code {
   background-size: 100% auto;
   background-repeat: no-repeat;
   margin-left: 3px;
+}
+.allMessages:has(.mariokart8){
+  background-color: unset;
+  background-image: url(https://files.catbox.moe/zf5d7r.jpg);
+  background-size: 500px 500px;
+  background-repeat: repeat;
+  color: #e0e0e0;
+  font-family: Times, Serif;
+  font-size: 15px;
+  box-shadow: 1px 1px 2px #000;
 }
 .allMessages:has(.splatoon){
   background-color: unset;

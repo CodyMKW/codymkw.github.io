@@ -875,21 +875,52 @@ p#blogmetadata {
     flex-wrap: wrap;
     justify-content: center;
     gap: 10px;
+    align-items: flex-start; /* Ensures labels align properly */
+}
+
+fieldset {
+    width: 100%;
+    max-width: 600px; /* Adjust based on your layout */
+    border: 1px solid #666;
+    padding: 10px;
+    border-radius: 8px;
+    background: #222;
+}
+
+legend {
+    font-weight: bold;
+    color: #fff;
+    padding: 0 10px;
 }
 
 #flair-options label {
-    background: #333;
-    padding: 8px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background 0.2s ease-in-out, transform 0.1s ease-in-out;
-    color: #bbb;
-    border: 1px solid #444;
+    display: inline-flex; /* Ensures labels align nicely */
+    align-items: center;
+    justify-content: center;
+    padding: 8px 12px;
+    min-width: 150px; /* Prevents text from collapsing */
+    text-align: center;
+}
+
+#flair-options label input {
+    display: none; /* Keeps radio buttons hidden */
 }
 
 #flair-options label:hover {
     background: #555;
-    transform: scale(1.05);
+}
+
+#remove-flair {
+    display: block;
+    margin-top: 15px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #00C900;
+    text-decoration: none;
+}
+
+#remove-flair:hover {
+    text-decoration: underline;
 }
 
 #flair-options label[data-cost]:before {
@@ -900,6 +931,13 @@ p#blogmetadata {
     display: none;
 }
 
+#flair-options label.owned {
+    color: gold !important;
+    font-weight: bold;
+    border: 2px solid gold;
+    background: #444;
+}
+
 #flair-options input:checked + label {
     background: #007acc;
     color: white;
@@ -907,7 +945,7 @@ p#blogmetadata {
     box-shadow: 0 0 10px rgba(0, 122, 204, 0.5);
 }
 
-#flair-message, #flair-message2 {
+#flair-message, #flair-message2, #remove-flair-message {
     margin-top: 10px;
     color: #00ff88;
     font-weight: bold;
@@ -1252,4 +1290,3 @@ footer {
   justify-content: center;
   gap: 15px;
 }
-
