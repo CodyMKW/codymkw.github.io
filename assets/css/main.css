@@ -914,6 +914,64 @@ p#blogmetadata {
     display: none;
 }
 
+#promo-section {
+    margin-top: 20px;
+    padding: 15px;
+    border: 2px solid #666;
+    border-radius: 8px;
+    background-color: #222;
+    text-align: center;
+    color: #ddd;
+}
+
+#promo-section h3 {
+    font-size: 1.5em;
+    color: #fff;
+    margin-bottom: 10px;
+}
+
+#promo-input {
+    width: 80%;
+    max-width: 250px;
+    padding: 8px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #444;
+    background: #333;
+    color: #fff;
+    text-align: center;
+    outline: none;
+    transition: border 0.2s ease-in-out;
+}
+
+#promo-input:focus {
+    border-color: #00C900;
+    box-shadow: 0 0 8px rgba(0, 201, 0, 0.5);
+}
+
+#redeem-button {
+    margin-left: 10px;
+    padding: 8px 15px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    background: #00C900;
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.2s ease-in-out, transform 0.1s ease-in-out;
+}
+
+#redeem-button:hover {
+    background: #008a00;
+    transform: scale(1.05);
+}
+
+#promo-message {
+    margin-top: 10px;
+    font-weight: bold;
+    display: none;
+}
+
 /* Nintendo News styles */
 #nintendoNewsContent {
   padding: 20px;
@@ -1194,3 +1252,4 @@ footer {
   justify-content: center;
   gap: 15px;
 }
+
