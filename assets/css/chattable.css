@@ -138,16 +138,26 @@ blockquote {
 }
 
 /* Sender Info with Badges */
-.senderInfo:has(.owner)::after {
-  content: "[Owner]";
-  color: red;
-  padding-left: 7px;
+.senderInfo:has(.owner)::before {
+  content: " ";
+  display: inline-block;
+  height: 15pt;
+  width: 15pt;
+  background-image: url(https://files.catbox.moe/c2ru29.png);
+  background-size: 100% auto;
+  background-repeat: no-repeat;
+  margin-right: 3px;
 }
 
-.senderInfo:has(.mod)::after {
-  content: "[Mod]";
-  color: var(--accent);
-  padding-left: 7px;
+.senderInfo:has(.mod)::before {
+  content: " ";
+  display: inline-block;
+  height: 15pt;
+  width: 15pt;
+  background-image: url(https://files.catbox.moe/5kdwh0.png);
+  background-size: 100% auto;
+  background-repeat: no-repeat;
+  margin-right: 3px;
 }
 
 .senderInfo * {
@@ -182,6 +192,9 @@ blockquote {
 /* Settings & Emoji Tray Icons */
 #settings, #emojiTrayToggle {
   filter: invert(42%) sepia(93%) saturate(1352%) hue-rotate(87deg) brightness(119%) contrast(119%);
+}
+
+#emojiTrayToggle {
   margin-top: 12px;
 }
 
@@ -252,6 +265,10 @@ input[type=checkbox]:checked + label::after {
     height: 50px;
 }
 
+.emoji[title=":3ds:"], .emoji[title=":switch2:"] {
+    height: 15px !important;
+}
+
 /* Typing Indicator */
 #is_typing {
   background-color: transparent;
@@ -294,4 +311,70 @@ code {
   background-color: #202020;
   padding: 2px 4px;
   border-radius: 3px;
+}
+
+/* Flairs */
+.redname {
+  color: #C00;
+}
+.orangename {
+  color: #F70;
+}
+.yellowname {
+  color: #FF0;
+}
+.greenname {
+  color: #0C0;
+}
+.bluename {
+  color: #33F;
+}
+.purplename {
+  color: #F0F;
+}
+.fox:after {
+  content: " ";
+  display: inline-block;
+  height: 15pt;
+  width: 15pt;
+  background-image: url(https://nightscape.xobyte.org/media/fox.gif);
+  background-size: 100% auto;
+  background-repeat: no-repeat;
+  margin-left: 3px;
+}
+.shrek:after {
+  content: " ";
+  display: inline-block;
+  height: 15pt;
+  width: 15pt;
+  background-image: url(https://files.catbox.moe/mhaqyo.png);
+  background-size: 100% auto;
+  background-repeat: no-repeat;
+  margin-left: 3px;
+}
+.allMessages:has(.splatoon){
+  background-color: unset;
+  background-image: url(https://files.catbox.moe/zwivlh.jpg);
+  background-size: 500px 500px;
+  background-repeat: repeat;
+  color: #e0e0e0;
+  font-family: Times, Serif;
+  font-size: 15px;
+  box-shadow: 1px 1px 2px #000;
+}
+.allMessages:has(.animalcrossing){
+  background-color: unset;    
+  background-image: url(https://files.catbox.moe/kzhjx8.jpg);
+  background-size: 500px 500px;
+  background-repeat: repeat;
+  color: #e0e0e0;
+  font-family: Times, Serif;
+  font-size: 15px;
+  box-shadow: 1px 1px 2px #000;
+}
+.allMessages:has(.golden) {
+  background-color: unset;
+  background: linear-gradient(to right, #BF953F, #FCF6BA, #B38728, #FBF5B7, #AA771C);
+  color: #000;
+  font-family: arial, sans-serif;
 }

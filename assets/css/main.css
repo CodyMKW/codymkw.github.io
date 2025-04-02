@@ -849,6 +849,71 @@ p#blogmetadata {
   color: #008a00 !important;
 }
 
+#flair-shop {
+    margin-top: 20px;
+    padding: 15px;
+    border: 2px solid #666;
+    border-radius: 8px;
+    background-color: #222;
+    text-align: center;
+    color: #ddd;
+}
+
+#flair-shop h3 {
+    font-size: 1.5em;
+    color: #fff;
+    display: block;
+}
+
+#points-display {
+    font-weight: bold;
+    color: #00ff88;
+}
+
+#flair-options {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+}
+
+#flair-options label {
+    background: #333;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.2s ease-in-out, transform 0.1s ease-in-out;
+    color: #bbb;
+    border: 1px solid #444;
+}
+
+#flair-options label:hover {
+    background: #555;
+    transform: scale(1.05);
+}
+
+#flair-options label[data-cost]:before {
+    content: "💰 ";
+}
+
+#flair-options input {
+    display: none;
+}
+
+#flair-options input:checked + label {
+    background: #007acc;
+    color: white;
+    font-weight: bold;
+    box-shadow: 0 0 10px rgba(0, 122, 204, 0.5);
+}
+
+#flair-message, #flair-message2 {
+    margin-top: 10px;
+    color: #00ff88;
+    font-weight: bold;
+    display: none;
+}
+
 /* Nintendo News styles */
 #nintendoNewsContent {
   padding: 20px;
@@ -1095,4 +1160,37 @@ footer {
 .otherstuff-button:hover {
   background-color: #008a00;
   color: #fff;
+}
+
+#profile-selector {
+  background-color: #111; /* similar to your other sections */
+  border: 2px solid #000;
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 20px;
+  text-align: center;
+}
+
+#profile-selector h2 {
+  color: #00C900;
+  margin-bottom: 15px;
+}
+
+.profile-thumbnail {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 2px solid #00C900;
+  transition: transform 0.2s;
+}
+
+.profile-thumbnail:hover {
+  transform: scale(1.1);
+}
+
+.button-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
 }

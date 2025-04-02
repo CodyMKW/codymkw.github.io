@@ -30,6 +30,20 @@
     <script defer src="assets/javascript/avatarFramestickyheader.js"></script>
     <script src="https://chattable.neocities.org/scripts/main.min.js"></script>
     <script>
+       chattable.commands = {
+        "3ds" : function(){
+           chattable.sendMessage(`Hey *${chattable.user.name}*, If you use Pretendo on the :3ds: Cody's friend code is **3189-0001-4178**`, "Pretendo Bot");
+         },
+        "wiiu" : function(){
+           chattable.sendMessage(`Hey *${chattable.user.name}*, If you use Pretendo on the :wiiu: Cody's ID is **CodyAC**`, "Pretendo Bot");
+         },
+        "switch" : function(){
+           chattable.sendMessage(`Hey *${chattable.user.name}*, If you have a :switch: Cody's friend code is **SW-2549-4631-6600**`, "Nintendo Bot");
+         },
+        "userid" : function(){
+           chattable.sendMessage(`*${chattable.user.name}*'s user ID for Chattable is **${chattable.user.uid}**`, "System");
+         }
+       };
 	   chattable.initialize({
 	     	stylesheet : "assets/css/chattable.css",
     	});
@@ -71,9 +85,126 @@
         <div class="content" id="chatroomContent">
                 <h2><i class="emoji chat"></i></h2>
                 <h2>Chat</h2>
-                <iframe src='https://iframe.chat/embed/index.html?chat=CodyChat' style="width: 100%; height: 500px;" id='chattable' frameborder='none'></iframe>
+                <iframe src='https://iframe.chat/embed/index.html?chat=CodyMKWChatroom' style="width: 100%; height: 600px;" id='chattable' frameborder='none'></iframe>
+<div id="event-message" style="display: none; background: #00C900; padding: 10px; text-align: center; font-weight: bold;">
+    <span id="event-text"></span>
+</div>
+<div id="flair-shop">
+    <h3>Flair Shop</h3>
+    <p>Points: <span id="points-display">0</span></p>
+    <div id="flair-options">
+        <label data-cost="0"><input type="checkbox" name="flair" value="none"> None</label>
+        <label data-cost="5"><input type="checkbox" name="flair" value="redname"> Red Name (5 pts)</label>
+        <label data-cost="5"><input type="checkbox" name="flair" value="orangename"> Orange Name (5 pts)</label>
+        <label data-cost="5"><input type="checkbox" name="flair" value="yellowname"> Yellow Name (5 pts)</label>
+        <label data-cost="5"><input type="checkbox" name="flair" value="greenname"> Green Name (5 pts)</label>
+        <label data-cost="5"><input type="checkbox" name="flair" value="bluename"> Blue Name (5 pts)</label>
+        <label data-cost="5"><input type="checkbox" name="flair" value="purplename"> Purple Name (5 pts)</label>
+        <label data-cost="30"><input type="checkbox" name="flair" value="fox"> Fox badge (30 pts)</label>
+        <label data-cost="69"><input type="checkbox" name="flair" value="shrek"> Shrek badge (69 pts)</label>
+        <label data-cost="500"><input type="checkbox" name="flair" value="splatoon"> Splatoon Message BG (500 pts)</label>
+        <label data-cost="500"><input type="checkbox" name="flair" value="animalcrossing"> Animal Crossing Message BG (500 pts)</label>
+        <label data-cost="10000"><input type="checkbox" name="flair" value="golden"> Golden Message BG (10000 pts)</label>
+    </div>
+    <p id="flair-message" style="display:none;">Flair set!</p>
+    <p id="flair-message2" style="display:none;">Not Enough Points!</p>
+</div>
         </div>
     </div>
     <footer></footer>
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+    let points = parseInt(localStorage.getItem("userPoints")) || 0;
+    let ownedFlairs = JSON.parse(localStorage.getItem("ownedFlairs")) || [];
+    const pointsDisplay = document.getElementById("points-display");
+    const checkboxes = document.querySelectorAll("#flair-options input[type='checkbox']");
+    const message = document.getElementById("flair-message");
+    const message2 = document.getElementById("flair-message2");
+
+    pointsDisplay.textContent = points;
+
+    function savePoints() {
+        localStorage.setItem("userPoints", points);
+        pointsDisplay.textContent = points;
+    }
+
+    function saveFlairs() {
+        localStorage.setItem("ownedFlairs", JSON.stringify(ownedFlairs));
+    }
+
+async function getEventBonus() {
+    try {
+        const response = await fetch("https://api.npoint.io/0cd5a97ecc2b0d608505"); // Update with actual URL
+        const data = await response.json();
+        const now = new Date();
+        let activeEvent = null;
+        
+        for (let event of data.events) {
+            let start = new Date(event.start.replace(" ", "T"));
+            let end = new Date(event.end.replace(" ", "T"));
+            
+            if (now >= start && now <= end) {
+                activeEvent = event;
+                break;
+            }
+        }
+
+        if (activeEvent) {
+            document.getElementById("event-message").style.display = "block";
+            document.getElementById("event-text").textContent = `🔥 Event Active: ${activeEvent.name}! Earn ${activeEvent.pointsPerMinute} points per minute! 🔥`;
+            return activeEvent.pointsPerMinute;
+        } else {
+            document.getElementById("event-message").style.display = "none";
+        }
+    } catch (error) {
+        console.error("Failed to fetch event data:", error);
+    }
+    return 3; // Default points per minute
+}
+
+let pointsPerMinute = await getEventBonus();
+
+setInterval(async () => {
+    pointsPerMinute = await getEventBonus();
+    points += pointsPerMinute;
+    savePoints();
+}, 60000);
+
+    checkboxes.forEach(checkbox => {
+        const label = checkbox.parentElement;
+        const cost = parseInt(label.getAttribute("data-cost"));
+        const flair = checkbox.value;
+
+        if (ownedFlairs.includes(flair)) {
+            checkbox.disabled = false;
+            label.style.color = "gold";
+        } else {
+            checkbox.disabled = true;
+        }
+
+        label.addEventListener("click", () => {
+            if (!ownedFlairs.includes(flair) && points >= cost) {
+                points -= cost;
+                ownedFlairs.push(flair);
+                checkbox.disabled = false;
+                label.style.color = "gold";
+                savePoints();
+                saveFlairs();
+            } else if (!ownedFlairs.includes(flair)) {
+                message2.style.display = "block";
+                setTimeout(() => message2.style.display = "none", 2000);
+            }
+        });
+
+        checkbox.addEventListener("change", function () {
+            checkboxes.forEach(cb => cb.checked = false);
+            this.checked = true;
+            chattable.setFlair(this.value);
+            message.style.display = "block";
+            setTimeout(() => message.style.display = "none", 2000);
+        });
+    });
+});
+</script>
 </body>
 </html>
