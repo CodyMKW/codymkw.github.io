@@ -37,6 +37,11 @@ body {
   border-color: var(--accent);
 }
 
+/* Image Fixes */
+.msgBody img:not(.emoji) {
+    height: 65px;
+}
+
 /* Sent Messages */
 .sent {
   border-radius: 5px 5px 0 5px;
@@ -265,8 +270,16 @@ input[type=checkbox]:checked + label::after {
     height: 50px;
 }
 
-.emoji[title=":3ds:"], .emoji[title=":switch2:"] {
+.emoji {
+    height: 23px;
+}
+
+.emoji[title=":3ds:"], .emoji[title=":switch2:"], .emoji[title=":wii:"], .emoji[title=":wiiu:"] {
     height: 15px !important;
+}
+
+.emoji[title=":splat2:"], .emoji[title=":splat3:"] {
+    height: 20px !important;
 }
 
 /* Typing Indicator */
@@ -331,6 +344,11 @@ code {
 }
 .purplename {
   color: #F0F;
+}
+.rainbowname {
+  background: linear-gradient(to right, #ef5350, #f48fb1, #7e57c2, #2196f3, #26c6da, #43a047, #eeff41, #f9a825, #ff5722);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 .rednameglow {
   color: #C00;
@@ -419,8 +437,8 @@ code {
 .fox:after {
   content: " ";
   display: inline-block;
-  height: 15pt;
-  width: 15pt;
+  height: 20pt;
+  width: 20pt;
   background-image: url(https://files.catbox.moe/4llkfy.gif);
   background-size: 100% auto;
   background-repeat: no-repeat;
@@ -429,8 +447,8 @@ code {
 .isabelle:after {
   content: " ";
   display: inline-block;
-  height: 15pt;
-  width: 15pt;
+  height: 20pt;
+  width: 20pt;
   background-image: url(https://files.catbox.moe/n830em.gif);
   background-size: 100% auto;
   background-repeat: no-repeat;
@@ -439,12 +457,56 @@ code {
 .shrek:after {
   content: " ";
   display: inline-block;
-  height: 15pt;
-  width: 15pt;
+  height: 20pt;
+  width: 20pt;
   background-image: url(https://files.catbox.moe/mhaqyo.png);
   background-size: 100% auto;
   background-repeat: no-repeat;
   margin-left: 3px;
+}
+.officialnintendo:after {
+  content: " ";
+  display: inline-block;
+  height: 20pt;
+  width: 20pt;
+  background-image: url(https://files.catbox.moe/5o7c5m.png);
+  background-size: 100% auto;
+  background-repeat: no-repeat;
+  margin-left: 3px;
+}
+.twitterverified:after {
+  content: " ";
+  display: inline-block;
+  height: 20pt;
+  width: 20pt;
+  background-image: url(https://files.catbox.moe/s9uv12.png);
+  background-size: 100% auto;
+  background-repeat: no-repeat;
+  margin-left: 3px;
+}
+.allMessages:has(.redmessagebg) {
+    background-color: red;
+    color: #000;
+}
+.allMessages:has(.orangemessagebg) {
+    background-color: orange;
+    color: #000;
+}
+.allMessages:has(.yellowmessagebg) {
+    background-color: yellow;
+    color: #000;
+}
+.allMessages:has(.greenmessagebg) {
+    background-color: green;
+    color: #000;
+}
+.allMessages:has(.bluemessagebg) {
+    background-color: blue;
+    color: #000;
+}
+.allMessages:has(.purplemessagebg) {
+    background-color: purple;
+    color: #000;
 }
 .allMessages:has(.mariokart8){
   background-color: unset;

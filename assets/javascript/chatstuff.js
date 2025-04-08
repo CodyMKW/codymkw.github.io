@@ -1,21 +1,44 @@
-document.addEventListener("DOMContentLoaded", async () => {
+let flairPrices = {};
+let flairDataMap = {};
+const currencyName = "$"; // Update this to change the currency display
+
+function formatCurrency(cents) {
+    return `${currencyName}${(cents / 100).toFixed(2)}`;
+}
+
+async function fetchFlairData() {
+    try {
+        const response = await fetch("https://api.npoint.io/0cd5a97ecc2b0d608505");
+        const data = await response.json();
+        if (data.flairs) {
+            data.flairs.forEach(f => {
+                flairPrices[f.value] = f.cost; // cost is now in cents
+                flairDataMap[f.value] = f;
+            });
+        }
+        return data;
+    } catch (error) {
+        console.error("Failed to fetch flair data:", error);
+        return {};
+    }
+}
+
+async function initFlairShop() {
     let points = parseInt(localStorage.getItem("userPoints")) || 0;
     let ownedFlairs = JSON.parse(localStorage.getItem("ownedFlairs")) || [];
     let redeemedCodes = JSON.parse(localStorage.getItem("redeemedCodes")) || [];
-    
+
     const pointsDisplay = document.getElementById("points-display");
-    const checkboxes = document.querySelectorAll("#flair-options input[type='checkbox']");
+    const flairOptions = document.getElementById("flair-options");
     const message = document.getElementById("flair-message");
     const message2 = document.getElementById("flair-message2");
     const promoInput = document.getElementById("promo-input");
     const redeemButton = document.getElementById("redeem-button");
     const promoMessage = document.getElementById("promo-message");
 
-    pointsDisplay.textContent = points;
-
     function savePoints() {
         localStorage.setItem("userPoints", points);
-        pointsDisplay.textContent = points;
+        pointsDisplay.textContent = formatCurrency(points);
     }
 
     function saveFlairs() {
@@ -24,7 +47,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     async function getEventBonus() {
         try {
-            const response = await fetch("https://api.npoint.io/0cd5a97ecc2b0d608505"); // Update with actual URL
+            const response = await fetch("https://api.npoint.io/0cd5a97ecc2b0d608505");
             const data = await response.json();
             const now = new Date();
             let activeEvent = null;
@@ -41,7 +64,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             if (activeEvent) {
                 document.getElementById("event-message").style.display = "block";
-                document.getElementById("event-text").textContent = `🔥 Event Active: ${activeEvent.name}! Earn ${activeEvent.pointsPerMinute} points per minute! 🔥`;
+                document.getElementById("event-text").textContent = `🔥 Event Active: ${activeEvent.name}! Earn ${formatCurrency(activeEvent.pointsPerMinute)} per 3 minutes! 🔥`;
                 return activeEvent.pointsPerMinute;
             } else {
                 document.getElementById("event-message").style.display = "none";
@@ -49,7 +72,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         } catch (error) {
             console.error("Failed to fetch event data:", error);
         }
-        return 3; // Default points per minute
+        return 100; // default: 100 cents = $1.00 per minute
     }
 
     let pointsPerMinute = await getEventBonus();
@@ -58,18 +81,45 @@ document.addEventListener("DOMContentLoaded", async () => {
         pointsPerMinute = await getEventBonus();
         points += pointsPerMinute;
         savePoints();
-    }, 60000);
+    }, 180000); // 3 minutes
+
+    await fetchFlairData();
+
+    const checkboxes = flairOptions.querySelectorAll("input[type='checkbox']");
+    const defaultTariffReason = [
+        "📈 Price adjusted due to tariffs imposed by Princess Peach"
+    ];
 
     checkboxes.forEach(checkbox => {
         const label = checkbox.parentElement;
-        const cost = parseInt(label.getAttribute("data-cost"));
         const flair = checkbox.value;
+        let cost = flairPrices[flair] || 0;
+        const flairData = flairDataMap[flair];
+        let originalCost = cost;
 
-        if (ownedFlairs.includes(flair)) {
-            checkbox.disabled = false;
-            label.style.color = "gold";
-        } else {
-            checkbox.disabled = true;
+        if (flairData && flairData.tariff) {
+            const { type, amount } = flairData.tariff;
+            if (type === "percent") {
+                cost += Math.ceil(cost * (amount / 100));
+            } else if (type === "flat") {
+                cost += amount;
+            }
+
+            label.classList.add("tariffed");
+            const tooltip = flairData.tariff.tooltip || defaultTariffReason[Math.floor(Math.random() * defaultTariffReason.length)];
+            label.title = tooltip;
+        }
+
+        const costText = label.querySelector(".cost-text");
+        if (costText) {
+            if (ownedFlairs.includes(flair)) {
+                costText.textContent = "Purchased";
+                label.classList.add("purchased");
+            } else if (flairData && flairData.tariff) {
+                costText.innerHTML = `<span style="text-decoration: line-through; opacity: 0.6;">${formatCurrency(originalCost)}</span> → <strong>${formatCurrency(cost)}</strong>`;
+            } else {
+                costText.textContent = formatCurrency(cost);
+            }
         }
 
         label.addEventListener("click", () => {
@@ -77,7 +127,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                 points -= cost;
                 ownedFlairs.push(flair);
                 checkbox.disabled = false;
-                label.style.color = "gold";
+                label.classList.add("purchased");
+                if (costText) costText.textContent = "Purchased";
                 savePoints();
                 saveFlairs();
             } else if (!ownedFlairs.includes(flair)) {
@@ -87,6 +138,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
 
         checkbox.addEventListener("change", function () {
+            if (!ownedFlairs.includes(this.value)) {
+                this.checked = false;
+                message2.style.display = "block";
+                setTimeout(() => message2.style.display = "none", 2000);
+                return;
+            }
+
             checkboxes.forEach(cb => cb.checked = false);
             this.checked = true;
             chattable.setFlair(this.value);
@@ -95,20 +153,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     });
 
-    // PROMO CODE HANDLING
-    async function getPromoData() {
-        try {
-            const response = await fetch("https://api.npoint.io/0cd5a97ecc2b0d608505"); // Update with actual JSON URL
-            return await response.json();
-        } catch (error) {
-            console.error("Failed to fetch promo data:", error);
-            return { promoCodes: {} };
-        }
-    }
-
     redeemButton.addEventListener("click", async () => {
-        const promoCode = promoInput.value.trim().toUpperCase();
-        const promoData = await getPromoData();
+        const promoCode = promoInput.value.trim();
+        const promoData = await fetchFlairData();
 
         if (!promoCode) {
             promoMessage.textContent = "⚠️ Please enter a promo code!";
@@ -117,13 +164,22 @@ document.addEventListener("DOMContentLoaded", async () => {
             promoMessage.textContent = "❌ You have already redeemed this promo code!";
             promoMessage.style.color = "red";
         } else if (promoData.promoCodes && promoData.promoCodes[promoCode]) {
-            let bonusPoints = promoData.promoCodes[promoCode].points;
-            points += bonusPoints;
-            redeemedCodes.push(promoCode);
-            savePoints();
-            localStorage.setItem("redeemedCodes", JSON.stringify(redeemedCodes));
-            promoMessage.textContent = `✅ Success! You earned ${bonusPoints} points.`;
-            promoMessage.style.color = "green";
+            let promoDetails = promoData.promoCodes[promoCode];
+            let bonusPoints = promoDetails.points; // should be in cents
+            let expirationDate = new Date(promoDetails.expires.replace(" ", "T"));
+            let now = new Date();
+
+            if (now > expirationDate) {
+                promoMessage.textContent = "⏳ This promo code has expired!";
+                promoMessage.style.color = "red";
+            } else {
+                points += bonusPoints;
+                redeemedCodes.push(promoCode);
+                savePoints();
+                localStorage.setItem("redeemedCodes", JSON.stringify(redeemedCodes));
+                promoMessage.textContent = `✅ Success! You earned ${formatCurrency(bonusPoints)}.`;
+                promoMessage.style.color = "green";
+            }
         } else {
             promoMessage.textContent = "⚠️ Invalid promo code!";
             promoMessage.style.color = "red";
@@ -132,11 +188,35 @@ document.addEventListener("DOMContentLoaded", async () => {
         promoMessage.style.display = "block";
         setTimeout(() => { promoMessage.style.display = "none"; }, 3000);
     });
-});
-document.getElementById("remove-flair").addEventListener("click", (e) => {
-    const removeflairmessage = document.getElementById("remove-flair-message");
-    e.preventDefault();
-    chattable.setFlair("none");
-    removeflairmessage.style.display = "block";
-    setTimeout(() => removeflairmessage.style.display = "none", 2000);
+
+    pointsDisplay.textContent = formatCurrency(points);
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    initFlairShop();
+
+    document.getElementById("remove-flair").addEventListener("click", (e) => {
+        const removeflairmessage = document.getElementById("remove-flair-message");
+        e.preventDefault();
+        chattable.setFlair("none");
+        removeflairmessage.style.display = "block";
+        setTimeout(() => removeflairmessage.style.display = "none", 2000);
+    });
+
+    document.getElementById("reset-purchases").addEventListener("click", (e) => {
+        e.preventDefault();
+        if (confirm("Are you sure you want to reset all your flair purchases?")) {
+            localStorage.removeItem("ownedFlairs");
+            localStorage.setItem("ownedFlairs", JSON.stringify([]));
+
+            const flairShop = document.getElementById("flair-shop");
+            const originalHTML = flairShop.innerHTML;
+            flairShop.innerHTML = originalHTML;
+
+            setTimeout(() => {
+                initFlairShop();
+                chattable.setFlair("none");
+            }, 0);
+        }
+    });
 });

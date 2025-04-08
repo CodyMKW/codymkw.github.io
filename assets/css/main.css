@@ -842,11 +842,11 @@ p#blogmetadata {
 }
 
 #chatroomContent a {
-  color: #00C900 !important;
+  color: #00C900;
 }
 
 #chatroomContent a:hover {
-  color: #008a00 !important;
+  color: #008a00;
 }
 
 #flair-shop {
@@ -921,10 +921,6 @@ legend {
 
 #remove-flair:hover {
     text-decoration: underline;
-}
-
-#flair-options label[data-cost]:before {
-    content: "💰 ";
 }
 
 #flair-options input {
@@ -1008,6 +1004,36 @@ legend {
     margin-top: 10px;
     font-weight: bold;
     display: none;
+}
+
+.purchased {
+    position: relative;
+    color: #00c900 !important;
+}
+
+.tariffed:not(.purchased) {
+    position: relative;
+    color: #ffa500 !important;
+}
+
+.tariffed::before {
+    content: "💰";
+}
+
+#reset-purchases {
+    display: inline-block;
+    margin-top: 5px;
+    color: red !important;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+#reset-purchases:hover {
+    display: inline-block;
+    margin-top: 5px;
+    color: darkred !important;
+    text-decoration: underline;
+    cursor: pointer;
 }
 
 /* Nintendo News styles */
