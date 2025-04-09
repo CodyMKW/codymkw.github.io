@@ -220,3 +220,45 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 });
+
+function exportShopData() {
+    const data = {
+        userPoints: localStorage.getItem("userPoints"),
+        ownedFlairs: localStorage.getItem("ownedFlairs"),
+        redeemedCodes: localStorage.getItem("redeemedCodes")
+    };
+
+    const encoded = btoa(JSON.stringify(data));
+    const blob = new Blob([encoded], { type: 'application/octet-stream' });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = "yourflairshop.savedata"; // custom file extension
+    a.click();
+
+    URL.revokeObjectURL(url);
+}
+
+function importShopData(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const decoded = atob(e.target.result);
+            const data = JSON.parse(decoded);
+
+            localStorage.setItem("userPoints", data.userPoints);
+            localStorage.setItem("ownedFlairs", data.ownedFlairs);
+            localStorage.setItem("redeemedCodes", data.redeemedCodes);
+
+            alert("✅ Import successful! Reload the page to see changes.");
+        } catch (err) {
+            alert("❌ Failed to import data. File might be corrupted.");
+            console.error("Import error:", err);
+        }
+    };
+    reader.readAsText(file);
+}
