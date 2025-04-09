@@ -83,13 +83,72 @@ async function initFlairShop() {
         savePoints();
     }, 180000); // 3 minutes
 
-    await fetchFlairData();
+    const flairData = await fetchFlairData();
+    
+    // Clear existing content in flairOptions
+    flairOptions.innerHTML = '';
+    
+    // Group flairs by their category
+    const categories = {};
+    
+    flairData.flairs.forEach(flair => {
+        // Use the category from the JSON, defaulting to "Other" if not specified
+        const category = flair.category || "Other";
+        
+        if (!categories[category]) {
+            categories[category] = [];
+        }
+        
+        categories[category].push(flair);
+    });
+    
+    // Create fieldsets for each category
+    for (const [category, flairs] of Object.entries(categories)) {
+        const fieldset = document.createElement('fieldset');
+        const legend = document.createElement('legend');
+        legend.textContent = category;
+        fieldset.appendChild(legend);
+        
+        // Add items from this category
+        flairs.forEach(flair => {
+            const label = document.createElement('label');
+            const input = document.createElement('input');
+            input.type = 'checkbox';
+            input.name = 'flair';
+            input.value = flair.value;
+            
+            const costSpan = document.createElement('span');
+            costSpan.className = 'cost-text';
+            
+            label.appendChild(input);
+            // Use the display name from the JSON if available, otherwise format the value
+            const displayName = flair.displayName || formatFlairName(flair.value);
+            label.appendChild(document.createTextNode(` ${displayName} (`));
+            label.appendChild(costSpan);
+            label.appendChild(document.createTextNode(')')); 
+            
+            fieldset.appendChild(label);
+        });
+        
+        flairOptions.appendChild(fieldset);
+    }
+    
+    // Format flair names for display (fallback if displayName is not in JSON)
+    function formatFlairName(value) {
+        // Convert camelCase or kebab-case to readable text
+        return value
+            .replace(/([A-Z])/g, ' $1') // Add space before capital letters
+            .replace(/^./, str => str.toUpperCase()) // Capitalize first letter
+            .replace(/([a-z])([A-Z])/g, '$1 $2') // Add space between words
+            .replace(/([a-zA-Z])(\d+)/g, '$1 $2'); // Add space between letters and numbers
+    }
 
-    const checkboxes = flairOptions.querySelectorAll("input[type='checkbox']");
     const defaultTariffReason = [
         "📈 Price adjusted due to tariffs imposed by Princess Peach"
     ];
-
+    
+    // Now attach event handlers to the dynamically created checkboxes
+    const checkboxes = flairOptions.querySelectorAll("input[type='checkbox']");
     checkboxes.forEach(checkbox => {
         const label = checkbox.parentElement;
         const flair = checkbox.value;
