@@ -449,7 +449,7 @@ code {
   display: inline-block;
   height: 20pt;
   width: 20pt;
-  background-image: url(https://files.catbox.moe/n830em.gif);
+  background-image: url(https://files.catbox.moe/nhcet0.png);
   background-size: 100% auto;
   background-repeat: no-repeat;
   margin-left: 3px;
@@ -460,6 +460,26 @@ code {
   height: 20pt;
   width: 20pt;
   background-image: url(https://files.catbox.moe/mhaqyo.png);
+  background-size: 100% auto;
+  background-repeat: no-repeat;
+  margin-left: 3px;
+}
+.switchlogo:after {
+  content: " ";
+  display: inline-block;
+  height: 20pt;
+  width: 20pt;
+  background-image: url(https://files.catbox.moe/f0uz1y.png);
+  background-size: 100% auto;
+  background-repeat: no-repeat;
+  margin-left: 3px;
+}
+.switch2logo:after {
+  content: " ";
+  display: inline-block;
+  height: 20pt;
+  width: 20pt;
+  background-image: url(https://files.catbox.moe/qg925k.png);
   background-size: 100% auto;
   background-repeat: no-repeat;
   margin-left: 3px;
