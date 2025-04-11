@@ -42,7 +42,7 @@
       name="twitter:image:src"
       content="https://www.gravatar.com/avatar/5127de8a3a295a02ff3fc55bb6b2fabe?s=2048"
     />
-    <link rel="stylesheet" href="assets/css/main.css" />
+    <link id="theme-style" rel="stylesheet" href="assets/css/main.css" />
     <link rel="stylesheet" href="assets/css/emoji.css" />
     <script defer src="assets/javascript/main.js"></script>
     <script defer src="assets/javascript/backgrounds.js"></script>
@@ -256,9 +256,19 @@
               </td>
               <td>Rayn</td>
             </tr>
+            <tr>
+              <td>
+                <a href="https://iframe.chat" target="_blank"> 
+                <img 
+                    src="https://iframe.chat/chattable-alt.gif"
+                    alt="Chattable Button"
+                    /> 
+                    </a>
+              </td>
+              <td>Andrew</td>
+            </tr>
           </tbody>
         </table>
-
         <h2>My Button Code</h2>
         <div class="button-preview">
           <h3>Preview:</h3>
@@ -272,12 +282,13 @@
         <div class="code-container">
           <h3>Copy the code below:</h3>
           <textarea id="buttonCode" readonly onclick="this.select();">
-&lt;a href="https://codymkw.github.io" target="_blank"&gt;&lt;img src="https://codymkw.github.io/button.jpg" alt="CodyMKW Button"&gt;&lt;/a&gt;</textarea
+&lt;a href="https://codymkw.nekoweb.org" target="_blank"&gt;&lt;img src="https://codymkw.nekoweb.org/button.jpg" alt="CodyMKW Button"&gt;&lt;/a&gt;</textarea
           >
           <button onclick="copyCode()">Copy Code</button>
         </div>
       </div>
     </div>
+    <button id="theme-toggle" class="theme-toggle-button"><span>☀️</span> Light Mode</button>
     <footer></footer>
     <script>
       function copyCode() {

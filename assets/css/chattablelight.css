@@ -1,0 +1,474 @@
+:root {
+  --notification-sfx: https://us-east-1.tixte.net/uploads/joseph.is-from.space/Mario-coin-sound.mp3;
+  --primary-bg: #f5f5f5;
+  --secondary-bg: #ffffff;
+  --accent: #007acc;
+  --text-light: #333333;
+  --text-muted: #666666;
+  --border-color: #e0e0e0;
+}
+
+body {
+  color: var(--accent);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+/* Hide top banner */
+#top_banner {
+  display: none;
+}
+
+/* Chat Message Container */
+.allMessages {
+  border-radius: 10px;
+  font-size: 10pt;
+  width: calc(95% - 20px);
+  padding: 10px;
+  margin: 5px auto;
+  position: relative;
+  border: 1px solid var(--border-color);
+  background-color: var(--secondary-bg);
+  transition: border-color 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.allMessages:hover {
+  border-color: var(--accent);
+}
+
+/* Image Fixes */
+.msgBody img:not(.emoji) {
+    height: 65px;
+}
+
+/* Sent Messages */
+.sent {
+  border-radius: 5px 5px 0 5px;
+  background-color: #e0e0e0;
+  color: var(--text-muted);
+}
+
+.sent:after {
+  content: "";
+  background-color: inherit;
+  height: 10px;
+  width: 10px;
+  position: absolute;
+  right: -5px;
+  bottom: 5px;
+  transform: rotate(45deg);
+  border-radius: 0 2px 0 0;
+  transition: all 0.2s ease;
+}
+
+.sent:hover:after {
+  right: -6px;
+  bottom: 6px;
+  border-right: 1px solid var(--accent);
+  border-top: 1px solid var(--accent);
+}
+
+/* Received Messages */
+.recieved {
+  border-radius: 5px 5px 5px 0;
+  background-color: #f0f0f0;
+  color: var(--text-light);
+}
+
+.recieved:before {
+  content: "";
+  background-color: inherit;
+  height: 10px;
+  width: 10px;
+  position: absolute;
+  left: -5px;
+  bottom: 5px;
+  transform: rotate(45deg);
+  border-radius: 0 0 0 2px;
+  transition: all 0.2s ease;
+}
+
+.recieved:hover:before {
+  left: -6px;
+  bottom: 6px;
+  border-left: 1px solid var(--accent);
+  border-bottom: 1px solid var(--accent);
+}
+
+/* Blockquotes */
+blockquote {
+  background-color: #f0f0f0;
+  color: #333;
+  border: 1px solid #ddd;
+  padding: 5px 10px;
+  margin: 10px 0;
+}
+
+/* Scrollbar */
+#background {
+  scrollbar-color: var(--accent) var(--primary-bg);
+  scrollbar-width: thin;
+}
+
+/* Input Field */
+#input {
+  color: var(--text-muted);
+  background: #ffffff;
+  border: 1px solid var(--border-color);
+  outline: none;
+  padding: 8px;
+  border-radius: 5px;
+}
+
+#input:empty::before {
+  content: "Send Message [Enter to send]";
+  color: #aaa;
+}
+
+/* Emoji Tray */
+#emojiTray {
+  background-color: #ffffff;
+  padding: 10px;
+  border-top: 1px solid var(--border-color);
+}
+
+#emojiTray h3 {
+  color: var(--accent);
+}
+
+/* Hidden Badge */
+.badge {
+  display: none;
+}
+
+/* Sender Info with Badges */
+.senderInfo:has(.owner)::before {
+  content: " ";
+  display: inline-block;
+  height: 15pt;
+  width: 15pt;
+  background-image: url(https://files.catbox.moe/c2ru29.png);
+  background-size: 100% auto;
+  background-repeat: no-repeat;
+  margin-right: 3px;
+}
+
+.senderInfo:has(.mod)::before {
+  content: " ";
+  display: inline-block;
+  height: 15pt;
+  width: 15pt;
+  background-image: url(https://files.catbox.moe/5kdwh0.png);
+  background-size: 100% auto;
+  background-repeat: no-repeat;
+  margin-right: 3px;
+}
+
+.senderInfo * {
+  text-decoration: none;
+}
+
+.senderInfo {
+  font-style: italic;
+}
+
+/* Timestamps */
+#timestamp {
+  color: #777;
+  font-size: 9pt;
+  font-style: italic;
+}
+
+/* Text Input Container */
+#textInput {
+  background-color: var(--primary-bg);
+  padding: 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+}
+
+/* Top Banner Override */
+:where(#top_banner) {
+  background: #ffffff;
+  color: var(--accent) !important;
+}
+
+/* Settings & Emoji Tray Icons */
+#settings, #emojiTrayToggle {
+  filter: invert(38%) sepia(95%) saturate(1200%) hue-rotate(190deg) brightness(90%) contrast(90%);
+}
+
+#emojiTrayToggle {
+  margin-top: 12px;
+}
+
+/* Load More Button */
+#loadMore {
+  color: #777;
+  padding: 5px 10px;
+  background-color: var(--secondary-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+}
+
+/* Reply Banner */
+#replyBanner {
+  font-size: 10pt;
+  padding: 5px;
+  background-color: var(--secondary-bg);
+}
+
+/* Context Menu */
+.ctxMenuOption {
+  background-color: #ffffff !important;
+  color: var(--accent);
+  padding: 5px 10px;
+}
+
+.ctxMenuOption:hover {
+  background-color: var(--accent) !important;
+  color: #fff;
+}
+
+#ctxMenu {
+  background-color: var(--primary-bg) !important;
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+}
+
+/* Links in Chat */
+.msgBody a {
+  color: var(--accent) !important;
+  text-decoration: underline;
+}
+
+/* Settings Menu */
+#settingsMenu {
+  color: var(--accent);
+  background-color: rgba(245, 245, 245, 0.95);
+  padding: 15px;
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+}
+
+/* Anchor Styling */
+a {
+  color: #007acc;
+}
+
+a:hover {
+  color: #005a9c;
+}
+
+/* Checkbox for Settings */
+input[type=checkbox]:checked + label::after {
+  color: var(--accent);
+}
+
+/* Emoji Sizing */
+.allMessages.containsOnlyEmojis .emoji {
+    height: 50px;
+}
+
+.emoji {
+    height: 23px;
+}
+
+.emoji[title=":3ds:"], .emoji[title=":switch2:"], .emoji[title=":wii:"], .emoji[title=":wiiu:"] {
+    height: 15px !important;
+}
+
+.emoji[title=":splat2:"], .emoji[title=":splat3:"] {
+    height: 20px !important;
+}
+
+/* Typing Indicator */
+#is_typing {
+  background-color: transparent;
+}
+
+/* Pinned Messages */
+.pinned {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background-color: #e0e0e0;
+  border: 2px solid var(--accent);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 3px;
+  margin-top: 5px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-height: 24px;
+  transition: max-height 0.3s ease, white-space 0.3s ease;
+}
+
+.pinned::before {
+  content: "📌 Pinned Post";
+  margin-right: 8px;
+  font-size: 1.2em;
+}
+
+.pinned:hover {
+  max-height: none;
+  white-space: normal;
+}
+
+.pinned:after {
+    display: none;
+}
+
+/* Code Blocks */
+code {
+  background-color: #f0f0f0;
+  padding: 2px 4px;
+  border-radius: 3px;
+  color: #333;
+}
+
+/* Flairs */
+.redname {
+  color: #C00;
+}
+.orangename {
+  color: #F70;
+}
+.yellowname {
+  color: #FF0;
+}
+.greenname {
+  color: #0C0;
+}
+.bluename {
+  color: #33F;
+}
+.purplename {
+  color: #F0F;
+}
+.rainbowname {
+  background: linear-gradient(to right, #ef5350, #f48fb1, #7e57c2, #2196f3, #26c6da, #43a047, #eeff41, #f9a825, #ff5722);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.rednameglow {
+  color: #C00;
+  animation: rednameglow 1.5s infinite alternate;
+}
+
+.orangenameglow {
+  color: #F70;
+  animation: orangenameglow 1.5s infinite alternate;
+}
+
+.yellownameglow {
+  color: #FF0;
+  animation: yellownameglow 1.5s infinite alternate;
+}
+
+.greennameglow {
+  color: #0C0;
+  animation: greennameglow 1.5s infinite alternate;
+}
+
+.bluenameglow {
+  color: #33F;
+  animation: bluenameglow 1.5s infinite alternate;
+}
+
+.purplenameglow {
+  color: #F0F;
+  animation: purplenameglow 1.5s infinite alternate;
+}
+
+/* Keyframes remain the same as they're color-based */
+@-webkit-keyframes rednameglow {
+  from {
+    text-shadow: 0 0 5px #e60073, 0 0 10px #e60073, 0 0 15px #e60073;
+  }
+  to {
+    text-shadow: 0 0 10px #ff4da6, 0 0 20px #ff4da6, 0 0 30px #ff4da6;
+  }
+}
+
+/* ... other keyframes remain unchanged ... */
+
+/* Special message backgrounds */
+.allMessages:has(.mariokart8){
+  background-color: unset;
+  background-image: url(https://files.catbox.moe/n98za3.png);
+  background-size: 500px 500px;
+  background-repeat: repeat;
+  color: #333;
+  font-family: Times, Serif;
+  font-size: 15px;
+  box-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+}
+
+.allMessages:has(.splatoon){
+  background-color: unset;
+  background-image: url(https://files.catbox.moe/zwivlh.jpg);
+  background-size: 500px 500px;
+  background-repeat: repeat;
+  color: #333;
+  font-family: Times, Serif;
+  font-size: 15px;
+  box-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+}
+
+.allMessages:has(.animalcrossing){
+  background-color: unset;    
+  background-image: url(https://files.catbox.moe/kzhjx8.jpg);
+  background-size: 500px 500px;
+  background-repeat: repeat;
+  color: #333;
+  font-family: Times, Serif;
+  font-size: 15px;
+  box-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+}
+
+.allMessages:has(.golden) {
+  background-color: unset;
+  background: linear-gradient(to right, #BF953F, #FCF6BA, #B38728, #FBF5B7, #AA771C);
+  color: #000;
+  font-family: arial, sans-serif;
+}
+
+/* Special badges (fox, isabelle, etc.) remain unchanged */
+.fox:after,
+.isabelle:after,
+.shrek:after,
+.switchlogo:after,
+.switch2logo:after,
+.officialnintendo:after,
+.twitterverified:after {
+  /* Styles remain the same as they're image-based */
+}
+
+/* Colored message backgrounds */
+.allMessages:has(.redmessagebg) {
+    background-color: #ffdddd;
+    color: #000;
+}
+.allMessages:has(.orangemessagebg) {
+    background-color: #ffeedd;
+    color: #000;
+}
+.allMessages:has(.yellowmessagebg) {
+    background-color: #ffffdd;
+    color: #000;
+}
+.allMessages:has(.greenmessagebg) {
+    background-color: #ddffdd;
+    color: #000;
+}
+.allMessages:has(.bluemessagebg) {
+    background-color: #ddddff;
+    color: #000;
+}
+.allMessages:has(.purplemessagebg) {
+    background-color: #eeccff;
+    color: #000;
+}

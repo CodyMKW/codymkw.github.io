@@ -250,3 +250,43 @@ function isSpecificDomain(url, domain) {
 
 // Call the function to update title and favicon
 updateTitleAndFavicon();
+
+// Theme Switcher
+document.addEventListener('DOMContentLoaded', function() {
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeStyle = document.getElementById('theme-style');
+    
+    // Check for saved preference or use system preference
+    const savedTheme = localStorage.getItem('theme');
+    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    
+    // Set initial theme
+    if (savedTheme === 'light' || (!savedTheme && !systemPrefersDark)) {
+        setLightTheme();
+    } else {
+        setDarkTheme();
+    }
+    
+    // Toggle theme on button click
+    themeToggle.addEventListener('click', function() {
+        if (themeStyle.getAttribute('href').includes('light')) {
+            setDarkTheme();
+        } else {
+            setLightTheme();
+        }
+    });
+    
+function setLightTheme() {
+    themeStyle.href = 'assets/css/main-light.css';
+    themeToggle.innerHTML = '<span>🌙</span> Dark Mode';
+    localStorage.setItem('theme', 'light');
+    document.dispatchEvent(new CustomEvent('themeChanged', { detail: 'light' }));
+}
+
+function setDarkTheme() {
+    themeStyle.href = 'assets/css/main.css';
+    themeToggle.innerHTML = '<span>☀️</span> Light Mode';
+    localStorage.setItem('theme', 'dark');
+    document.dispatchEvent(new CustomEvent('themeChanged', { detail: 'dark' }));
+}
+});

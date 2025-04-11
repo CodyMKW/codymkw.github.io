@@ -1,0 +1,1338 @@
+body {
+  font-family: Roboto, sans-serif;
+  background-color: #f5f5f5;
+  color: #333;
+  margin: 0;
+  padding: 20px;
+}
+
+.whatpretendo {
+  display: none;
+}
+
+#latest-changes {
+  background-color: #ffffff;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin: 20px 0;
+  text-align: left;
+}
+
+#latest-changes h2 {
+  color: #007acc;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+#latest-changes ul {
+  list-style-type: disc;
+  padding-left: 25%;
+  margin-left: 0;
+}
+
+#latest-changes ul li {
+  color: #333;
+  margin-bottom: 5px;
+  padding-left: 0;
+}
+
+select {
+  background-color: #fff;
+  color: #333;
+  border: 2px solid #e0e0e0;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+
+#background-image {
+  width: 100%;
+  height: 100%;
+}
+
+a {
+  color: #007acc;
+}
+
+a:hover {
+  color: #005a9c;
+}
+
+.emoji {
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: 2.0em 2.0em;
+  display: inline-block;
+  height: 2.0em;
+  margin: 0 .05em 0 .1em;
+  vertical-align: -1em;
+  width: 2.0em;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 40px;
+}
+
+.content {
+  text-align: center;
+}
+
+.content li {
+  text-align: left;
+}
+
+.tabs {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+button {
+  background-color: #007acc;
+  color: #fff;
+  border: solid #e0e0e0 1px;
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin: 5px;
+  flex: 1;
+}
+
+button:hover {
+  background-color: #005a9c;
+  color: #fff;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.header img {
+  width: 200px;
+  border-radius: 50%;
+}
+
+.cody-header-bg {
+  background: rgba(255, 255, 255, 0.7);
+  padding: 10px;
+  border-radius: 8px;
+  display: inline-block;
+  margin-top: 10px;
+  width: fit-content;
+}
+
+.cody-header-bg {
+  color: #333;
+}
+
+.header-text {
+  background: rgba(255, 255, 255, 0.7);
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.header-text h1 {
+  margin: 10px 0 5px;
+}
+
+.header-text p {
+  margin: 0;
+  font-size: 14px;
+  color: #333;
+}
+
+.avatar-frame {
+  position: relative;
+  display: inline-block;
+  z-index: 1;
+}
+
+.avatar-frame .avatar-image {
+  width: 200px;
+  border-radius: 50%;
+}
+
+.avatar-frame .frame-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 200px;
+}
+
+#preview-image {
+  width: 200px;
+}
+
+/* Game Status styles */
+.modal-container img {
+  max-width: 100%;
+}
+
+#statusContent {
+  padding: 20px;
+  background-color: #ffffffc9;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+#statusContent h3 {
+  margin-bottom: -23px;
+}
+        #gameInfo {
+            background-color: #ffffff;
+            border-radius: 10px;
+            padding: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            margin: 0 auto 15px;
+        }
+
+        #splatoonInfo, #salmonRunInfo {
+            background-color: #ffffff;
+            border-radius: 10px;
+            padding: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            margin: 0 auto 15px;
+        }
+
+        #onlineStatusContainer {
+            background-color: #ffffff;
+            border-radius: 10px;
+            padding: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            margin: 15px auto 0;
+        }
+
+        img#gameImage {
+            max-width: 50%;
+            border-radius: 10px;
+            margin-top: 10px;
+            border: 2px solid #e0e0e0;
+        }
+
+        img#avatarImage {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin-top: 10px;
+        }
+        /* Add styles for online status */
+        span#onlineStatus {
+            font-weight: bold;
+        }
+
+        .online {
+            color: #4caf50;
+        }
+
+        .offline {
+            color: #ff4436;
+        }
+
+        .inactive {
+            color: #FFC107;
+        }
+        span#gameName {
+            font-weight: bold;
+        }
+
+        /* Add a subtle pulsating effect for fun */
+        #gameInfo.special-effect {
+            animation: pulse 1s infinite alternate;
+        }
+
+        @keyframes pulse {
+            from {
+                box-shadow: 0 0 10px rgba(76, 175, 80, 0.8);
+            }
+            to {
+                box-shadow: 0 0 20px rgba(76, 175, 80, 0.4);
+            }
+        }
+
+/* 404 Page styles */
+#notfound {
+  background-color: #ffffffc9;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+img.notfoundimg {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+}
+
+h1.notfoundheading {
+  text-align: center;
+}
+
+/* Credits styles */
+#creditsContent {
+  padding: 20px;
+  background-color: #ffffffc9;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.credit-list {
+  list-style-type: disc;
+  padding-left: 20px;
+  text-align: left;
+}
+
+.credit-list li {
+  margin-bottom: 10px;
+}
+
+/* About styles */
+#aboutContent {
+  display: block;
+  padding: 20px;
+  background-color: #ffffffc9;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: left;
+}
+
+#aboutContent h2 {
+  text-align: center;
+}
+
+#aboutContent p, h2 {
+  color: #333;
+}
+
+/* Buttons page styles */
+#buttonContent {
+  display: block;
+  padding: 20px;
+  background-color: #ffffffc9;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: left;
+}
+
+#buttonContent h2 {
+  text-align: center;
+}
+
+#buttonContent p, h2 {
+  color: #333;
+}
+
+    /* Styles for the button table */
+    .button-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+    }
+    .button-table th, .button-table td {
+      border: 1px solid #007acc;
+      padding: 10px;
+      text-align: center;
+    }
+    .button-table th {
+      background-color: #007acc;
+      color: #fff;
+    }
+    /* Styles for the code section */
+    .code-container textarea {
+      background-color: #fff;
+      color: #333;
+      border: 1px solid #007acc;
+      padding: 10px;
+      border-radius: 5px;
+      font-family: monospace;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .code-container button {
+      margin-top: 10px;
+    }
+    .button-preview img {
+      max-width: 150px;
+    }
+    .button-preview {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+
+/* Dream Address page styles */
+#DreamAddressContent {
+  padding: 20px;
+  background-color: #ffffffc9;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#DreamAddressContent p, h2 {
+  color: #333;
+  margin-bottom: 10px;
+}
+
+#DreamAddressContent img {
+  max-width: 100%;
+  max-height: 250px;
+  margin-bottom: 20px;
+  border-radius: 4px;
+}
+
+.gem-preview {
+  display: block;
+  margin: 10px auto;
+  width: 300px;
+  height: auto;
+  filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.3));
+  transition: transform 0.2s ease-in-out, filter 0.2s ease-in-out;
+}
+
+.gem-preview:hover {
+  transform: scale(1.05);
+  filter: drop-shadow(0 0 15px rgba(0, 0, 0, 0.4));
+}
+
+/* YouTube Page styles */
+#YouTubeContent {
+  padding: 20px;
+  background-color: #ffffffc9;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#youtube-container {
+  text-align: center;
+  margin: 20px auto;
+}
+
+#youtube-video-ids {
+  padding: 8px;
+  width: 250px;
+  font-size: 16px;
+  border: 2px solid #FF0000;
+  border-radius: 5px;
+}
+
+#YouTubeContent button {
+  padding: 8px 12px;
+  font-size: 16px;
+  background-color: #FF0000;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#YouTubeContent button:hover {
+  background-color: #CC0000;
+}
+
+.youtube-player-wrapper {
+  position: relative;
+  padding-bottom: 56.25%;
+  height: 0;
+  overflow: hidden;
+  background: #fff;
+  border-radius: 8px;
+}
+
+#YouTubeContent .stream-close-button {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.7);
+  border: none;
+  color: #333;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  transition: background 0.2s;
+}
+
+#YouTubeContent .stream-close-button:hover {
+  background: rgba(255, 0, 0, 0.8);
+}
+
+.youtube-player-wrapper iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+#YouTubeContent .input-group {
+  display: flex;
+  gap: 10px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Twitch Page styles */
+#TwitchContent {
+  padding: 20px;
+  background-color: #ffffffc9;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#twitch-container {
+  text-align: center;
+  margin: 20px auto;
+}
+
+#twitch-username {
+  padding: 8px;
+  width: 250px;
+  font-size: 16px;
+  border: 2px solid #9146FF;
+  border-radius: 5px;
+}
+
+#TwitchContent button {
+  padding: 8px 12px;
+  font-size: 16px;
+  background-color: #9146FF;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#TwitchContent button:hover {
+  background-color: #772ce8;
+}
+
+#twitch-player iframe {
+  margin-top: 15px;
+  max-width: 100%;
+  border: none;
+}
+
+/* Multi-stream grid layout */
+.players-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-top: 20px;
+}
+
+.twitch-player-wrapper {
+  position: relative;
+  padding-bottom: 56.25%;
+  height: 0;
+  overflow: hidden;
+  background: #fff;
+  border-radius: 8px;
+}
+
+#TwitchContent .stream-close-button {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.7);
+  border: none;
+  color: #333;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  transition: background 0.2s;
+}
+
+#TwitchContent .stream-close-button:hover {
+  background: rgba(255, 0, 0, 0.8);
+}
+
+.twitch-player-wrapper iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.input-group {
+  display: flex;
+  gap: 10px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+#twitch-usernames {
+  flex: 1;
+  padding: 8px;
+  font-size: 16px;
+  border: 2px solid #9146FF;
+  border-radius: 5px;
+}
+
+/* Blog styles */
+#BlogContent {
+  padding: 20px;
+  background-color: #ffffffc9;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#BlogContent p, h2 {
+  color: #333;
+  margin-bottom: 10px;
+}
+
+#blogcontent p {
+  text-align: left;
+}
+
+#BlogContent b {
+    font-size: 35px;
+}
+
+#BlogContent img {
+  max-width: 100%;
+  max-height: 250px;
+  margin-bottom: 20px;
+  border-radius: 4px;
+}
+
+#BlogContent b:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.blog-container {
+  background: rgba(255, 255, 255, 0.8);
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.blog-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+#searchBar, #categoryFilter {
+  background: #fff;
+  color: #333;
+  border: 1px solid #e0e0e0;
+  padding: 8px;
+  border-radius: 5px;
+  width: 48%;
+}
+
+.blog-post {
+  border-bottom: 1px solid #e0e0e0;
+  padding: 15px 0;
+}
+
+.blog-post h3 a {
+  color: #007acc;
+  text-decoration: none;
+}
+
+.blog-post h3 a:hover {
+  text-decoration: underline;
+}
+
+.post-meta {
+  font-size: 0.9em;
+  color: #666;
+}
+
+p#blogmetadata {
+  text-align: center;
+}
+
+.blog-post img {
+  max-width: 100%;
+  border-radius: 5px;
+  margin-top: 10px;
+}
+
+.blog-post iframe {
+  width: 100%;
+  height: 400px;
+  border-radius: 5px;
+  margin-top: 10px;
+}
+
+.post-content {
+  margin-top: 10px;
+}
+
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+}
+
+.pagination button {
+  background: #007acc;
+  color: #fff;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.pagination button:disabled {
+  background: #aaa;
+  cursor: not-allowed;
+}
+
+/* Switch FC styles */
+#friendCodeContent {
+  padding: 20px;
+  background-color: #ffffffc9;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#friendCodeContent p, h2 {
+  color: #333;
+  margin-bottom: 10px;
+}
+
+#friendCodeContent b {
+    font-size: 35px;
+}
+
+#friendCodeContent img {
+  max-width: 100%;
+  max-height: 250px;
+  margin-bottom: 20px;
+  border-radius: 4px;
+}
+
+#friendCodeContent b:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* Nintendo Facts styles */
+#NintendoFactsContent {
+  padding: 20px;
+  background-color: #ffffffc9;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#NintendoFactsContent p, h2 {
+  color: #333;
+}
+
+/* Social Media styles */
+#socialMediaContent {
+  padding: 20px;
+  background-color: #ffffffc9;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#socialMediaContent p, h2 {
+  color: #333;
+}
+
+.social-icons {
+  margin-top: 20px;
+}
+
+.social-icons a {
+  display: inline-block;
+  margin-right: 10px;
+  transition: transform 0.3s;
+}
+
+.social-icons a:hover {
+  transform: scale(1.2);
+}
+
+.social-icons img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+/* Splatfest Frames page styles */
+#SplatfestFramesContent {
+  padding: 20px;
+  background-color: #ffffffc9;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.preview-image {
+  width: 200px;
+  height: 200px;
+}
+
+#frameTypeSelection {
+  padding-bottom: 10px;
+}
+
+/* Chatroom styles */
+#chatroomContent {
+  padding: 20px;
+  background-color: #ffffffc9;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: left;
+}
+
+#chatroomContent h2 {
+  text-align: center;
+}
+
+#chatroomContent h3 {
+  display: none;
+}
+
+#chatroomContent h4 {
+  color: #007acc;
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+#chatroomContent p {
+  margin-bottom: 10px;
+  color: #333;
+}
+
+#chatroomContent a {
+  color: #007acc;
+}
+
+#chatroomContent a:hover {
+  color: #005a9c;
+}
+
+#flair-shop {
+    margin-top: 20px;
+    padding: 15px;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    text-align: center;
+    color: #333;
+}
+
+#flair-shop h3 {
+    font-size: 1.5em;
+    color: #333;
+    display: block;
+}
+
+#points-display {
+    font-weight: bold;
+    color: #007acc;
+}
+
+#flair-options {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    align-items: flex-start;
+}
+
+fieldset {
+    width: 100%;
+    max-width: 600px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 8px;
+    background: #f9f9f9;
+}
+
+legend {
+    font-weight: bold;
+    color: #333;
+    padding: 0 10px;
+}
+
+#flair-options label {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 12px;
+    min-width: 150px;
+    text-align: center;
+}
+
+#flair-options label input {
+    display: none;
+}
+
+#flair-options label:hover {
+    background: #e0e0e0;
+}
+
+#remove-flair {
+    display: block;
+    margin-top: 15px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #007acc;
+    text-decoration: none;
+}
+
+#remove-flair:hover {
+    text-decoration: underline;
+}
+
+#flair-options input {
+    display: none;
+}
+
+#flair-options label.owned {
+    color: #d4af37 !important;
+    font-weight: bold;
+    border: 2px solid #d4af37;
+    background: #f5f5f5;
+}
+
+#flair-options input:checked + label {
+    background: #007acc;
+    color: white;
+    font-weight: bold;
+    box-shadow: 0 0 10px rgba(0, 122, 204, 0.5);
+}
+
+#flair-message, #flair-message2, #remove-flair-message {
+    margin-top: 10px;
+    color: #007acc;
+    font-weight: bold;
+    display: none;
+}
+
+#promo-section {
+    margin-top: 20px;
+    padding: 15px;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    text-align: center;
+    color: #333;
+}
+
+#promo-section h3 {
+    font-size: 1.5em;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+#promo-input {
+    width: 80%;
+    max-width: 250px;
+    padding: 8px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background: #fff;
+    color: #333;
+    text-align: center;
+    outline: none;
+    transition: border 0.2s ease-in-out;
+}
+
+#promo-input:focus {
+    border-color: #007acc;
+    box-shadow: 0 0 8px rgba(0, 122, 204, 0.5);
+}
+
+#redeem-button, #exportimport-button {
+    margin-left: 10px;
+    padding: 8px 15px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    background: #007acc;
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.2s ease-in-out, transform 0.1s ease-in-out;
+}
+
+#redeem-button:hover, #exportimport-button:hover {
+    background: #005a9c;
+    transform: scale(1.05);
+}
+
+#promo-message {
+    margin-top: 10px;
+    font-weight: bold;
+    display: none;
+}
+
+.purchased {
+    position: relative;
+    color: #007acc !important;
+}
+
+.tariffed:not(.purchased) {
+    position: relative;
+    color: #ff8c00 !important;
+}
+
+.tariffed::before {
+    content: "💰";
+}
+
+#reset-purchases {
+    display: inline-block;
+    margin-top: 5px;
+    color: #ff4436 !important;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+#reset-purchases:hover {
+    display: inline-block;
+    margin-top: 5px;
+    color: #cc0000 !important;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+/* Nintendo News styles */
+#nintendoNewsContent {
+  padding: 20px;
+  background-color: #ffffffc9;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: left;
+}
+
+#nintendoNewsContent h2 {
+  text-align: center;
+}
+
+#nintendoNewsContent h3 {
+  display: none;
+}
+
+#nintendoNewsContent h4 {
+  color: #007acc;
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+#nintendoNewsContent p {
+  margin-bottom: 10px;
+  color: #333;
+}
+
+#nintendoNewsContent a {
+  color: #007acc !important;
+}
+
+#nintendoNewsContent a:hover {
+  color: #005a9c !important;
+}
+
+/* Web Apps styles */
+#OtherStuffContent {
+  padding: 20px;
+  background-color: #ffffffc9;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#OtherStuffContent p, h2 {
+  color: #333;
+}
+
+/* Sticky Header Styles */
+.sticky-header {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0) 100%);
+  padding: 15px;
+  font-size: 20px;
+  text-align: center;
+  color: #333;
+  transition: background-color 0.3s, font-size 0.3s;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  white-space: normal;
+}
+
+.sticky-header:hover {
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
+.sticky-header .important {
+  color: #007acc;
+  padding: 10px;
+  border-radius: 5px;
+  font-weight: bold;
+}
+
+#close-button {
+  cursor: pointer;
+  float: right;
+  color: #666;
+  font-weight: bold;
+  padding: 0 10px;
+}
+
+#close-button:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+}
+
+/* Responsive Sticky Header Styles */
+@media (max-width: 768px) {
+  .sticky-header {
+    font-size: 16px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .sticky-header span {
+    margin-top: 5px;
+  }
+}
+
+footer {
+  background-color: #ffffffc9;
+  padding: 20px;
+  font-size: medium;
+  text-align: center;
+  color: #333;
+}
+
+.modal-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background-color: #ffffff;
+  border: 2px solid #e0e0e0;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+}
+
+.modal-open {
+  overflow: hidden;
+}
+
+#beta-icon {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: auto;
+    cursor: pointer;
+    z-index: 999;
+}
+
+.beta-icon img {
+  width: 50px;
+  height: auto;
+}
+
+/* Birthday shimmer */
+.shimmer {
+  color: rgba(0, 122, 204, 0.7);
+  background: -webkit-gradient(linear, left top, right top, from(#f5f5f5), to(#f5f5f5), color-stop(0.5, #fff));
+  background: -moz-gradient(linear, left top, right top, from(#f5f5f5), to(#f5f5f5), color-stop(0.5, #fff));
+  background: gradient(linear, left top, right top, from(#f5f5f5), to(#f5f5f5), color-stop(0.5, #fff));
+  -webkit-background-size: 125px 100%;
+  -moz-background-size: 125px 100%;
+  background-size: 125px 100%;
+  -webkit-background-clip: text;
+  -moz-background-clip: text;
+  background-clip: text;
+  -webkit-animation-name: shimmer;
+  -moz-animation-name: shimmer;
+  animation-name: shimmer;
+  -webkit-animation-duration: 2s;
+  -moz-animation-duration: 2s;
+  animation-duration: 2s;
+  -webkit-animation-iteration-count: infinite;
+  -moz-animation-iteration-count: infinite;
+  animation-iteration-count: infinite;
+  background-repeat: no-repeat;
+  background-position: 0 0;
+}
+
+@-moz-keyframes shimmer {
+  0% {
+      background-position: top left;
+  }
+  100% {
+      background-position: top right;
+  }
+}
+
+@-webkit-keyframes shimmer {
+  0% {
+      background-position: top left;
+  }
+  100% {
+      background-position: top right;
+  }
+}
+
+@-o-keyframes shimmer {
+  0% {
+      background-position: top left;
+  }
+  100% {
+      background-position: top right;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+      background-position: top left;
+  }
+  100% {
+      background-position: top right;
+  }
+}
+.button-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  padding: 0;
+  list-style-type: none;
+}
+
+.otherstuff-button {
+  display: inline-block;
+  text-align: center;
+  background-color: #007acc;
+  color: #fff;
+  text-decoration: none;
+  padding: 10px 20px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.otherstuff-button:hover {
+  background-color: #005a9c;
+  color: #fff;
+}
+
+#profile-selector {
+  background-color: #fff;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 20px;
+  text-align: center;
+}
+
+#profile-selector h2 {
+  color: #007acc;
+  margin-bottom: 15px;
+}
+
+.profile-thumbnail {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 2px solid #007acc;
+  transition: transform 0.2s;
+}
+
+.profile-thumbnail:hover {
+  transform: scale(1.1);
+}
+
+.button-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
+}
+
+.theme-toggle-button {
+    background-color: #007acc;
+    color: #fff;
+    border: 1px solid #000;
+    border-radius: 20px;
+    padding: 8px 15px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    margin: 10px auto;
+    transition: all 0.3s;
+}
+
+.theme-toggle-button:hover {
+    background-color: #005a9c;
+    color: #fff;
+}

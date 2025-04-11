@@ -1316,3 +1316,23 @@ footer {
   justify-content: center;
   gap: 15px;
 }
+
+.theme-toggle-button {
+    background-color: #00C900;
+    color: #000;
+    border: 1px solid #000;
+    border-radius: 20px;
+    padding: 8px 15px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    margin: 10px auto;
+    transition: all 0.3s;
+}
+
+.theme-toggle-button:hover {
+    background-color: #008a00;
+    color: #fff;
+}

@@ -23,7 +23,7 @@
     <meta name="twitter:title" content="Chat - CodyMKW" />
     <meta name="twitter:description" content="Hang out with other users and chat about whatever you want!" />
     <meta name="twitter:image:src" content="/assets/images/emojis/chat.png" />
-    <link rel="stylesheet" href="assets/css/main.css">
+    <link id="theme-style" rel="stylesheet" href="assets/css/main.css">
     <link rel="stylesheet" href="assets/css/emoji.css">
     <script defer src="assets/javascript/main.js"></script>
     <script defer src="assets/javascript/backgrounds.js"></script>
@@ -45,9 +45,37 @@
            chattable.sendMessage(`*${chattable.user.name}*'s user ID for Chattable is **${chattable.user.uid}**`, "System");
          }
        };
-	   chattable.initialize({
-	     	stylesheet : "assets/css/chattable.css",
-    	});
+// Initialize chat with current theme
+function initializeChattable() {
+    const currentTheme = localStorage.getItem('theme') || 
+                        (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    
+    // Only initialize if not already initialized
+    if (!window.chattableInitialized) {
+        chattable.initialize({
+            stylesheet: `assets/css/chattable${currentTheme === 'light' ? 'light' : ''}.css`
+        });
+        window.chattableInitialized = true;
+    } else {
+        // If already initialized, reload with new theme
+        chattable.reinitialize({
+            stylesheet: `assets/css/chattable${currentTheme === 'light' ? 'light' : ''}.css`
+        });
+    }
+}
+
+// Listen for theme changes
+document.addEventListener('themeChanged', function(e) {
+    const newTheme = e.detail;
+    if (window.chattable && chattable.reinitialize) {
+        chattable.reinitialize({
+            stylesheet: `assets/css/chattable${newTheme === 'light' ? 'light' : ''}.css`
+        });
+    }
+});
+
+// Initial initialization
+initializeChattable();
     </script>
     <title>Chat - CodyMKW</title>
 </head>
@@ -115,6 +143,7 @@
 </div>
         </div>
     </div>
+    <button id="theme-toggle" class="theme-toggle-button"><span>☀️</span> Light Mode</button>
     <footer></footer>
 </body>
 </html>
