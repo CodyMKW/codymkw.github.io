@@ -103,9 +103,9 @@
     <br>
     <a href="#" id="reset-purchases">Reset Purchases</a>
     <br>
-    <button onclick="exportShopData()">Export Data</button>
+    <button id="exportimport-button" onclick="exportShopData()">Export Data</button>
     <input type="file" id="import-file" style="display: none;" onchange="importShopData(event)">
-    <button onclick="document.getElementById('import-file').click()">Import Data</button>
+    <button id="exportimport-button" onclick="document.getElementById('import-file').click()">Import Data</button>
 </div>
 <div id="promo-section">
     <h3>Redeem Promo Code</h3>
