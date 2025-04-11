@@ -383,7 +383,7 @@ code {
   animation: purplenameglow 1.5s infinite alternate;
 }
 
-/* Keyframes remain the same as they're color-based */
+/* Fixing the keyframes */
 @-webkit-keyframes rednameglow {
   from {
     text-shadow: 0 0 5px #e60073, 0 0 10px #e60073, 0 0 15px #e60073;
@@ -393,82 +393,177 @@ code {
   }
 }
 
-/* ... other keyframes remain unchanged ... */
+@-webkit-keyframes orangenameglow {
+  from {
+    text-shadow: 0 0 5px #ff9900, 0 0 10px #ff9900, 0 0 15px #ff9900;
+  }
+  to {
+    text-shadow: 0 0 10px #ffcc66, 0 0 20px #ffcc66, 0 0 30px #ffcc66;
+  }
+}
 
-/* Special message backgrounds */
+@-webkit-keyframes yellownameglow {
+  from {
+    text-shadow: 0 0 5px #ffeb00, 0 0 10px #ffeb00, 0 0 15px #ffeb00;
+  }
+  to {
+    text-shadow: 0 0 10px #ffff66, 0 0 20px #ffff66, 0 0 30px #ffff66;
+  }
+}
+
+@-webkit-keyframes greennameglow {
+  from {
+    text-shadow: 0 0 5px #00e600, 0 0 10px #00e600, 0 0 15px #00e600;
+  }
+  to {
+    text-shadow: 0 0 10px #66ff66, 0 0 20px #66ff66, 0 0 30px #66ff66;
+  }
+}
+
+@-webkit-keyframes bluenameglow {
+  from {
+    text-shadow: 0 0 5px #0066ff, 0 0 10px #0066ff, 0 0 15px #0066ff;
+  }
+  to {
+    text-shadow: 0 0 10px #66a3ff, 0 0 20px #66a3ff, 0 0 30px #66a3ff;
+  }
+}
+
+@-webkit-keyframes purplenameglow {
+  from {
+    text-shadow: 0 0 5px #9900cc, 0 0 10px #9900cc, 0 0 15px #9900cc;
+  }
+  to {
+    text-shadow: 0 0 10px #cc66ff, 0 0 20px #cc66ff, 0 0 30px #cc66ff;
+  }
+}
+.fox:after {
+  content: " ";
+  display: inline-block;
+  height: 20pt;
+  width: 20pt;
+  background-image: url(https://files.catbox.moe/4llkfy.gif);
+  background-size: 100% auto;
+  background-repeat: no-repeat;
+  margin-left: 3px;
+}
+.isabelle:after {
+  content: " ";
+  display: inline-block;
+  height: 20pt;
+  width: 20pt;
+  background-image: url(https://files.catbox.moe/nhcet0.png);
+  background-size: 100% auto;
+  background-repeat: no-repeat;
+  margin-left: 3px;
+}
+.shrek:after {
+  content: " ";
+  display: inline-block;
+  height: 20pt;
+  width: 20pt;
+  background-image: url(https://files.catbox.moe/mhaqyo.png);
+  background-size: 100% auto;
+  background-repeat: no-repeat;
+  margin-left: 3px;
+}
+.switchlogo:after {
+  content: " ";
+  display: inline-block;
+  height: 20pt;
+  width: 20pt;
+  background-image: url(https://files.catbox.moe/f0uz1y.png);
+  background-size: 100% auto;
+  background-repeat: no-repeat;
+  margin-left: 3px;
+}
+.switch2logo:after {
+  content: " ";
+  display: inline-block;
+  height: 20pt;
+  width: 20pt;
+  background-image: url(https://files.catbox.moe/qg925k.png);
+  background-size: 100% auto;
+  background-repeat: no-repeat;
+  margin-left: 3px;
+}
+.officialnintendo:after {
+  content: " ";
+  display: inline-block;
+  height: 20pt;
+  width: 20pt;
+  background-image: url(https://files.catbox.moe/5o7c5m.png);
+  background-size: 100% auto;
+  background-repeat: no-repeat;
+  margin-left: 3px;
+}
+.twitterverified:after {
+  content: " ";
+  display: inline-block;
+  height: 20pt;
+  width: 20pt;
+  background-image: url(https://files.catbox.moe/s9uv12.png);
+  background-size: 100% auto;
+  background-repeat: no-repeat;
+  margin-left: 3px;
+}
+.allMessages:has(.redmessagebg) {
+    background-color: red;
+    color: #000 !important;
+}
+.allMessages:has(.orangemessagebg) {
+    background-color: orange;
+    color: #000 !important;
+}
+.allMessages:has(.yellowmessagebg) {
+    background-color: yellow;
+    color: #000 !important;
+}
+.allMessages:has(.greenmessagebg) {
+    background-color: green;
+    color: #000 !important;
+}
+.allMessages:has(.bluemessagebg) {
+    background-color: blue;
+    color: #000 !important;
+}
+.allMessages:has(.purplemessagebg) {
+    background-color: purple;
+    color: #000 !important;
+}
 .allMessages:has(.mariokart8){
   background-color: unset;
   background-image: url(https://files.catbox.moe/n98za3.png);
   background-size: 500px 500px;
   background-repeat: repeat;
-  color: #333;
+  color: #e0e0e0 !important;
   font-family: Times, Serif;
   font-size: 15px;
-  box-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+  box-shadow: 1px 1px 2px #000;
 }
-
 .allMessages:has(.splatoon){
   background-color: unset;
   background-image: url(https://files.catbox.moe/zwivlh.jpg);
   background-size: 500px 500px;
   background-repeat: repeat;
-  color: #333;
+  color: #e0e0e0 !important;
   font-family: Times, Serif;
   font-size: 15px;
-  box-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+  box-shadow: 1px 1px 2px #000;
 }
-
 .allMessages:has(.animalcrossing){
   background-color: unset;    
   background-image: url(https://files.catbox.moe/kzhjx8.jpg);
   background-size: 500px 500px;
   background-repeat: repeat;
-  color: #333;
+  color: #e0e0e0 !important;
   font-family: Times, Serif;
   font-size: 15px;
-  box-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+  box-shadow: 1px 1px 2px #000;
 }
-
 .allMessages:has(.golden) {
   background-color: unset;
   background: linear-gradient(to right, #BF953F, #FCF6BA, #B38728, #FBF5B7, #AA771C);
-  color: #000;
+  color: #000 !important;
   font-family: arial, sans-serif;
-}
-
-/* Special badges (fox, isabelle, etc.) remain unchanged */
-.fox:after,
-.isabelle:after,
-.shrek:after,
-.switchlogo:after,
-.switch2logo:after,
-.officialnintendo:after,
-.twitterverified:after {
-  /* Styles remain the same as they're image-based */
-}
-
-/* Colored message backgrounds */
-.allMessages:has(.redmessagebg) {
-    background-color: #ffdddd;
-    color: #000;
-}
-.allMessages:has(.orangemessagebg) {
-    background-color: #ffeedd;
-    color: #000;
-}
-.allMessages:has(.yellowmessagebg) {
-    background-color: #ffffdd;
-    color: #000;
-}
-.allMessages:has(.greenmessagebg) {
-    background-color: #ddffdd;
-    color: #000;
-}
-.allMessages:has(.bluemessagebg) {
-    background-color: #ddddff;
-    color: #000;
-}
-.allMessages:has(.purplemessagebg) {
-    background-color: #eeccff;
-    color: #000;
 }
