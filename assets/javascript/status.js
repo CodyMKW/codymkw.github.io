@@ -1,316 +1,231 @@
-// Add a function to format the weapons list
 function formatWeaponsList(weapons) {
     const weaponsArray = weapons.split(', ');
     const lastWeapon = weaponsArray.pop();
     return weaponsArray.join(', ') + (weaponsArray.length > 0 ? ', and ' : '') + lastWeapon;
 }
-        
-async function fetchData() {
+
+async function fetchWithRetry(url) {
     try {
-        const response = await fetch('https://nxapi-presence.fancy.org.uk/api/presence/644cd5195d154bd5?include-splatoon3=1');
+        const response = await fetch(url);
         const data = await response.json();
-        // Fetch the additional JSON file
-        const subtextResponse = await fetch('https://api.npoint.io/f96cb06703bad4f850de');
-        const subtextData = await subtextResponse.json();
-        const splatfestColorsResponse = await fetch('https://api.npoint.io/f96cb06703bad4f850de');
-        const splatfestColorsData = await splatfestColorsResponse.json();
-
-        // Update HTML with fetched subtext data
-        const acnhSubtext = subtextData.games.acnh.subtext;
-        const fortSubtext = subtextData.games.fort.subtext;
-        const mhurSubtext = subtextData.games.mhur.subtext;
-
-        // Update HTML with fetched splatfestColors data
-        const splatfestColors = splatfestColorsData.splatfestColors;
-
-        // Update HTML with fetched data
-        document.getElementById('avatarImage').src = data.friend.imageUri;
-        document.getElementById('playerName').textContent = data.friend.name;
-
-        const onlineStatusElement = document.getElementById('onlineStatus');
-        const onlineStatusText = data.friend.presence.state.toLowerCase();
-        const playerNameElement = document.getElementById('playerName');
-        const playingStatusElement = document.querySelector('h1 span#playerName');
-
-// Set class for styling based on online status
-if (onlineStatusText === 'offline') {
-    onlineStatusElement.textContent = 'Offline';
-    onlineStatusElement.className = 'offline';
-    playingStatusElement.textContent = `${data.friend.name} is not on the Nintendo Switch right now.`;
-} else if (onlineStatusText === 'inactive') {
-    onlineStatusElement.textContent = 'Inactive';
-    onlineStatusElement.className = 'inactive';
-    playingStatusElement.textContent = `${data.friend.name} is chilling on the home menu.`;
-} else if (onlineStatusText === 'playing' || onlineStatusText === 'online') {
-    onlineStatusElement.textContent = 'Online';
-    onlineStatusElement.className = 'online';
-    playingStatusElement.textContent = `${data.friend.name} is currently playing:`;
-}
-// Update additional data when title is not null
-if (data.title !== null) {
-    document.getElementById('gameInfo').style.display = 'block'; // Show gameInfo div
-    document.getElementById('gameName').textContent = data.title.name;
-// Check if playing Animal Crossing: New Horizons
-if (data.title.id === '01006f8002326000' && acnhSubtext !== undefined) {
-    // Apply the special effect class
-    document.getElementById('gameInfo').classList.add('special-effect');
-    // Display subtext for Animal Crossing
-    const subtextContainer = document.getElementById('subText');
-
-    // Choose subtext based on the value from the JSON file
-    switch (acnhSubtext) {
-        case 1:
-            subtextContainer.textContent = 'Having visitors over';
-            subtextContainer.style.display = 'block';
-            break;
-        case 2:
-            subtextContainer.textContent = 'Visiting a friend';
-            subtextContainer.style.display = 'block';
-            break;
-        case 3:
-            subtextContainer.textContent = 'Designing some Vacation Homes';
-            subtextContainer.style.display = 'block';
-            break;
-        default:
-            // If subtext is 0 or undefined, clear the subtext
-            subtextContainer.style.display = 'none';
-            break;
+        if (data.error) throw new Error('Fallback required');
+        return data;
+    } catch {
+        const fallbackUrl = url.split('?')[0];
+        const fallbackResponse = await fetch(fallbackUrl);
+        return await fallbackResponse.json();
     }
-} else if (data.title.id === '010025400aece000' && fortSubtext !== undefined) {
-    // Check if playing Fortnite
-    // Display subtext for Fortnite
-    const subtextContainer = document.getElementById('subText');
-
-    // Choose subtext based on the value from the JSON file
-    switch (fortSubtext) {
-        case 1:
-            subtextContainer.textContent = 'Playing some Zero Build';
-            subtextContainer.style.display = 'block';
-            break;
-        case 2:
-            subtextContainer.textContent = 'Messing around in Creative';
-            subtextContainer.style.display = 'block';
-            break;
-        case 3:
-            subtextContainer.textContent = 'Tearing up the track in Rocket Racing';
-            subtextContainer.style.display = 'block';
-            break;
-        case 4:
-            subtextContainer.textContent = 'Playing with some legos in Lego Fortnite';
-            subtextContainer.style.display = 'block';
-            break;
-        default:
-            // If subtext is 0 or undefined, clear the subtext
-            subtextContainer.style.display = 'none';
-            break;
-    }
-} else if (data.title.id === '0100ba6013f0e000' && mhurSubtext !== undefined) {
-    // Check if playing My Hero Ultra Rumble
-    // Display subtext for My Hero Ultra Rumble
-    const subtextContainer = document.getElementById('subText');
-
-    // Choose subtext based on the value from the JSON file
-    switch (mhurSubtext) {
-        case 1:
-            subtextContainer.textContent = 'Battling it out in Unranked Battle';
-            subtextContainer.style.display = 'block';
-            break;
-        case 2:
-            subtextContainer.textContent = 'Aiming for the top in Ranked Battle';
-            subtextContainer.style.display = 'block';
-            break;
-        case 3:
-            subtextContainer.textContent = 'Taking a break from dumb teammates so fighting in Solo Battle';
-            subtextContainer.style.display = 'block';
-            break;
-        case 4:
-            subtextContainer.textContent = 'Warming up in a CPU Battle';
-            subtextContainer.style.display = 'block';
-            break;
-        case 5:
-            subtextContainer.textContent = 'Messing around in Training mode';
-            subtextContainer.style.display = 'block';
-            break;
-        case 6:
-            subtextContainer.textContent = 'Learning the controls in the Tutorial';
-            subtextContainer.style.display = 'block';
-            break;
-        default:
-            // If subtext is 0 or undefined, clear the subtext
-            subtextContainer.style.display = 'none';
-            break;
-    }
-} else {
-    // Remove the special effect class if not playing Animal Crossing, My Hero Ultra Rumble, or Fortnite
-    document.getElementById('gameInfo').classList.remove('special-effect');
-    document.getElementById('subText').style.display = 'none';
-}
-    document.getElementById('sysDescription').textContent = data.friend.presence.game.sysDescription;
-    document.getElementById('gameImage').src = data.title.image_url;
-    document.getElementById('gameID').textContent = data.title.id;
-    const firstPlayedDate = new Date(data.friend.presence.game.firstPlayedAt * 1000);
-    document.getElementById('firstPlayedTime').textContent = firstPlayedDate.toLocaleString();
-    document.getElementById('gameShopLink').href = data.title.url;
-
-       // Display total play time
-        const totalPlayTimeHours = Math.floor(data.friend.presence.game.totalPlayTime / 60);
-        const totalPlayTimeMinutes = data.friend.presence.game.totalPlayTime % 60;
-        document.getElementById('totalPlayTime').textContent = `${totalPlayTimeHours} hours and ${totalPlayTimeMinutes} minutes`;
-
-       // Display time playing now
-        const sinceTimestamp = new Date(data.title.since).getTime();
-        updatePlayingTime(sinceTimestamp);
-        
-    // Update metadata description with game name and total playtime (even when not playing a game)
-    const metaDescription = `Currently playing: ${data.title.name}. Total playtime: ${totalPlayTimeHours} hours and ${totalPlayTimeMinutes} minutes.`;
-    document.querySelector('meta[name="description"]').setAttribute('content', metaDescription);
-    // Update Twitter description
-    const twitterDescription = `Currently playing: ${data.title.name}. Total playtime: ${totalPlayTimeHours} hours and ${totalPlayTimeMinutes} minutes.`;
-    document.querySelector('meta[name="twitter:description"]').setAttribute('content', twitterDescription);
-    // Update OG description
-    const ogDescription = `Currently playing: ${data.title.name}. Total playtime: ${totalPlayTimeHours} hours and ${totalPlayTimeMinutes} minutes.`;
-    document.querySelector('meta[property="og:description"]').setAttribute('content', ogDescription);
-
-    
-// Display additional Splatoon 3 info
-if (data.splatoon3) {
-    const vsMode = data.splatoon3.vsMode;
-    const vsSetting = data.splatoon3_vs_setting;
-    const onlineState = data.splatoon3.onlineState;
-        
-    // Display mode name only when playing a mode
-    if (vsMode && vsMode.name !== 'N/A') {
-        document.getElementById('modeLabel').style.display = 'block'; // Show the "Mode:" label
-        document.getElementById('splatoonMode').textContent = vsMode.name;
-        document.getElementById('splatoonInfo').style.display = 'block'; // Show Splatoon 3 info
-    } else if (onlineState === 'MINI_GAME_PLAYING') {
-        // Show "Tableturf Battle" when playing mini-game
-        document.getElementById('modeLabel').style.display = 'block'; // Show the "Mode:" label
-        document.getElementById('splatoonMode').textContent = 'Tableturf Battle';
-        document.getElementById('splatoonInfo').style.display = 'block'; // Show Splatoon 3 info
-    }
-
-    // Display vs stages
-    if (vsSetting && vsSetting.vsStages) {
-        // Show "Stages" label only when not playing Salmon Run
-        document.getElementById('splatoonStagesLabel').style.display = 'block';
-        const stageNames = vsSetting.vsStages.map(stage => stage.name).join(' and ');
-        document.getElementById('splatoonStages').textContent = stageNames;
-    } 
-
-// Mode name colors for Splatoon 3
-const splatoonModeElement = document.getElementById('splatoonMode');
-if (vsMode && vsMode.name) {
-    switch (vsMode.name) {
-        case 'Splatfest Battle':
-            splatoonModeElement.style.background = `linear-gradient(to right, ${splatfestColors[0]}, ${splatfestColors[1]}, ${splatfestColors[2]})`;
-            splatoonModeElement.style.webkitBackgroundClip = 'text';
-            splatoonModeElement.style.webkitTextFillColor = 'transparent';
-            break;
-        case 'Tricolor Battle':
-            splatoonModeElement.style.background = `linear-gradient(to right, ${splatfestColors[0]}, ${splatfestColors[1]}, ${splatfestColors[2]})`;
-            splatoonModeElement.style.webkitBackgroundClip = 'text';
-            splatoonModeElement.style.webkitTextFillColor = 'transparent';
-            break;
-        case 'Tableturf Battle':
-            splatoonModeElement.style.color = '#0534a3';
-            break;
-        case 'Private Battle':
-            splatoonModeElement.style.color = '#c21786';
-            break;
-        case 'Regular Battle':
-            splatoonModeElement.style.color = '#20c927';
-            break;
-        case 'Anarchy Battle':
-            splatoonModeElement.style.color = '#d17d02';
-            break;
-        case 'Challenge':
-            splatoonModeElement.style.color = '#d10263';
-            break;
-        default:
-            // Set a default color if the mode name doesn't match any case
-            splatoonModeElement.style.color = '#FFFFFF'; // Choose the desired default color
-            break;
-    }
-} else {
-    // Handle the case when vsMode or vsMode.name is null
-    splatoonModeElement.style.color = '#FFFFFF'; // Choose the desired default color
-}
-}
-    // Display additional Salmon Run info
-    const salmonRunInfo = data.splatoon3_coop_setting;
-    if (salmonRunInfo) {
-        document.getElementById('splatoonInfo').style.display = 'none'; // Hide Splatoon 3 info
-        document.getElementById('SRmodeLabel').style.display = 'block'; // Show Salmon Run mode
-        document.getElementById('splatoonSRMode').textContent = 'Salmon Run';
-
-        // Update Salmon Run stage
-        const salmonRunStage = salmonRunInfo.coopStage.name;
-        const salmonRunBoss = salmonRunInfo.boss.name;
-        document.getElementById('salmonRunStage').textContent = salmonRunStage;
-        document.getElementById('salmonRunBoss').textContent = salmonRunBoss;
-        
-// SR Mode name color
-const splatoonSRModeElement = document.getElementById('splatoonSRMode');
-if (salmonRunStage.name !== 'Salmon Run') {
-    splatoonSRModeElement.style.color = '#e05e0d';
-} else {
-    // Set a default color if the mode name is 'Salmon Run'
-    splatoonSRModeElement.style.color = '#FFFFFF'; // Choose the desired default color
 }
 
-        // Update Salmon Run weapons
-        const salmonRunWeapons = salmonRunInfo.weapons.map(weapon => weapon.name).join(', ');
-        const formattedSalmonRunWeapons = formatWeaponsList(salmonRunWeapons);
-        document.getElementById('salmonRunWeapons').textContent = formattedSalmonRunWeapons;
-        document.getElementById('salmonRunInfo').style.display = 'block'; // Show Salmon Run info
+function setSubtext(subtextValue, map) {
+    const container = document.getElementById('subText');
+    const text = map[subtextValue];
+    if (text) {
+        container.textContent = text;
+        container.style.display = 'block';
+    } else {
+        container.style.display = 'none';
     }
-} else {
-    document.getElementById('gameInfo').style.display = 'none'; // Hide gameInfo div
-    document.getElementById('splatoonInfo').style.display = 'none'; // Hide Splatoon 3 info
-    document.getElementById('salmonRunInfo').style.display = 'none'; // Hide Salmon Run info
-    document.getElementById('SRmodeLabel').style.display = 'none'; // Hide Salmon Run mode
-    
-    // Update metadata description when not playing a game
-    const metaDescription = "Not currently playing a game.";
-    document.querySelector('meta[name="description"]').setAttribute('content', metaDescription);
-    
-    // Update Twitter description when not playing a game
-    const twitterNoGameDescription = "Not currently playing a game.";
-    document.querySelector('meta[name="twitter:description"]').setAttribute('content', twitterNoGameDescription);
-
-    // Update OG description when not playing a game
-    const ogNoGameDescription = "Not currently playing a game.";
-    document.querySelector('meta[property="og:description"]').setAttribute('content', ogNoGameDescription);
 }
-    } catch (error) {
-        console.error('Error fetching data:', error);
-    }
+
+function setMetaDescriptions(description) {
+    document.querySelector('meta[name="description"]').setAttribute('content', description);
+    document.querySelector('meta[name="twitter:description"]').setAttribute('content', description);
+    document.querySelector('meta[property="og:description"]').setAttribute('content', description);
 }
 
 function updatePlayingTime(sinceTimestamp) {
-    const timePlayingNowElement = document.getElementById('timePlayingNow');
-
-    // Update time every second
+    const element = document.getElementById('timePlayingNow');
     setInterval(() => {
-        const currentTime = new Date().getTime();
-        const timeDifference = currentTime - sinceTimestamp;
-
-        const hours = Math.floor(timeDifference / 3600000);
-        const minutes = Math.floor((timeDifference % 3600000) / 60000);
-        const seconds = Math.floor((timeDifference % 60000) / 1000);
-
-        timePlayingNowElement.textContent = `${hours} hours, ${minutes} minutes, ${seconds} seconds`;
+        const diff = Date.now() - sinceTimestamp;
+        const hours = Math.floor(diff / 3600000);
+        const minutes = Math.floor((diff % 3600000) / 60000);
+        const seconds = Math.floor((diff % 60000) / 1000);
+        element.textContent = `${hours} hours, ${minutes} minutes, ${seconds} seconds`;
     }, 1000);
 }
 
-// Function to refresh the page every 3 minutes
 function refreshPage() {
     location.reload();
 }
 
-// Fetch data when the page loads
-fetchData();
+async function fetchData() {
+    try {
+        const presenceUrl = 'https://nxapi-presence.fancy.org.uk/api/presence/644cd5195d154bd5?include-splatoon3=1';
+        const data = await fetchWithRetry(presenceUrl);
 
-// Refresh the page every 3 minutes (180,000 milliseconds)
+        const [subtextData, splatfestColorsData] = await Promise.all([
+            fetch('https://api.npoint.io/f96cb06703bad4f850de').then(res => res.json()),
+            fetch('https://api.npoint.io/f96cb06703bad4f850de').then(res => res.json())
+        ]);
+
+        const { acnh, fort, mhur } = subtextData.games;
+        const splatfestColors = splatfestColorsData.splatfestColors;
+
+        const { friend, title } = data;
+
+        document.getElementById('avatarImage').src = friend.imageUri;
+        document.getElementById('playerName').textContent = friend.name;
+
+        const status = friend.presence.state.toLowerCase();
+        const statusElement = document.getElementById('onlineStatus');
+        const nameSpan = document.querySelector('h1 span#playerName');
+        const statusMap = {
+            offline: 'Offline',
+            inactive: 'Inactive',
+            playing: 'Online',
+            online: 'Online'
+        };
+        const messageMap = {
+            offline: `${friend.name} is not on the Nintendo Switch right now.`,
+            inactive: `${friend.name} is chilling on the home menu.`,
+            playing: `${friend.name} is currently playing:`,
+            online: `${friend.name} is currently playing:`
+        };
+
+        statusElement.textContent = statusMap[status];
+        statusElement.className = status;
+        nameSpan.textContent = messageMap[status];
+
+        if (title !== null) {
+            document.getElementById('gameInfo').style.display = 'block';
+            document.getElementById('gameName').textContent = title.name;
+
+            const subtextMaps = {
+                '01006f8002326000': {
+                    value: acnh.subtext,
+                    map: {
+                        1: 'Having visitors over',
+                        2: 'Visiting a friend',
+                        3: 'Designing some Vacation Homes'
+                    },
+                    effect: true
+                },
+                '010025400aece000': {
+                    value: fort.subtext,
+                    map: {
+                        1: 'Playing some Zero Build',
+                        2: 'Messing around in Creative',
+                        3: 'Tearing up the track in Rocket Racing',
+                        4: 'Playing with some legos in Lego Fortnite'
+                    }
+                },
+                '0100ba6013f0e000': {
+                    value: mhur.subtext,
+                    map: {
+                        1: 'Battling it out in Unranked Battle',
+                        2: 'Aiming for the top in Ranked Battle',
+                        3: 'Fighting in Solo Battle',
+                        4: 'Warming up in a CPU Battle',
+                        5: 'Messing around in Training mode',
+                        6: 'Learning the controls in the Tutorial'
+                    }
+                }
+            };
+
+            const game = subtextMaps[title.id];
+            if (game) {
+                if (game.effect) document.getElementById('gameInfo').classList.add('special-effect');
+                setSubtext(game.value, game.map);
+            } else {
+                document.getElementById('gameInfo').classList.remove('special-effect');
+                document.getElementById('subText').style.display = 'none';
+            }
+
+            document.getElementById('sysDescription').textContent = friend.presence.game.sysDescription;
+            document.getElementById('gameImage').src = title.image_url;
+            document.getElementById('gameID').textContent = title.id;
+            document.getElementById('gameShopLink').href = title.url;
+
+            const firstPlayed = new Date(friend.presence.game.firstPlayedAt * 1000);
+            document.getElementById('firstPlayedTime').textContent = firstPlayed.toLocaleString();
+
+            const totalTime = friend.presence.game.totalPlayTime;
+            const totalHours = Math.floor(totalTime / 60);
+            const totalMinutes = totalTime % 60;
+            document.getElementById('totalPlayTime').textContent = `${totalHours} hours and ${totalMinutes} minutes`;
+
+            const since = new Date(title.since).getTime();
+            updatePlayingTime(since);
+
+            const desc = `Currently playing: ${title.name}. Total playtime: ${totalHours} hours and ${totalMinutes} minutes.`;
+            setMetaDescriptions(desc);
+        } else {
+            document.getElementById('gameInfo').style.display = 'none';
+            setMetaDescriptions("Not currently playing a game.");
+        }
+
+        if (data.splatoon3) {
+            const vsMode = data.splatoon3.vsMode;
+            const vsSetting = data.splatoon3_vs_setting;
+            const splatoonInfo = document.getElementById('splatoonInfo');
+            const splatoonMode = document.getElementById('splatoonMode');
+            const modeLabel = document.getElementById('modeLabel');
+
+            if (vsMode && vsMode.name !== 'N/A') {
+                splatoonMode.textContent = vsMode.name;
+                splatoonInfo.style.display = 'block';
+                modeLabel.style.display = 'block';
+            } else if (data.splatoon3.onlineState === 'MINI_GAME_PLAYING') {
+                splatoonMode.textContent = 'Tableturf Battle';
+                splatoonInfo.style.display = 'block';
+                modeLabel.style.display = 'block';
+            }
+
+            if (vsSetting?.vsStages) {
+                const stageNames = vsSetting.vsStages.map(s => s.name).join(' and ');
+                document.getElementById('splatoonStagesLabel').style.display = 'block';
+                document.getElementById('splatoonStages').textContent = stageNames;
+            }
+
+            const modeColors = {
+                'Splatfest Battle': `linear-gradient(to right, ${splatfestColors[0]}, ${splatfestColors[1]}, ${splatfestColors[2]})`,
+                'Tricolor Battle': `linear-gradient(to right, ${splatfestColors[0]}, ${splatfestColors[1]}, ${splatfestColors[2]})`,
+                'Tableturf Battle': '#0534a3',
+                'Private Battle': '#c21786',
+                'Regular Battle': '#20c927',
+                'Anarchy Battle': '#d17d02',
+                'Challenge': '#d10263'
+            };
+
+            const color = modeColors[vsMode?.name] || '#FFFFFF';
+            if (color.includes('linear-gradient')) {
+                splatoonMode.style.background = color;
+                splatoonMode.style.webkitBackgroundClip = 'text';
+                splatoonMode.style.webkitTextFillColor = 'transparent';
+            } else {
+                splatoonMode.style.color = color;
+            }
+            
+            // Fallback: if vsMode is not available but Tableturf Battle is showing, still set its color
+            if ((!vsMode || !vsMode.name) && splatoonMode.textContent === 'Tableturf Battle') {
+                splatoonMode.style.color = modeColors['Tableturf Battle'];
+            }
+        }
+
+        const coop = data.splatoon3_coop_setting;
+        if (coop) {
+            document.getElementById('splatoonInfo').style.display = 'none';
+            document.getElementById('SRmodeLabel').style.display = 'block';
+            document.getElementById('splatoonSRMode').textContent = 'Salmon Run';
+            document.getElementById('salmonRunStage').textContent = coop.coopStage.name;
+            document.getElementById('salmonRunBoss').textContent = coop.boss.name;
+
+            document.getElementById('splatoonSRMode').style.color =
+                coop.coopStage.name !== 'Salmon Run' ? '#e05e0d' : '#FFFFFF';
+
+            const weaponList = formatWeaponsList(coop.weapons.map(w => w.name).join(', '));
+            document.getElementById('salmonRunWeapons').textContent = weaponList;
+            document.getElementById('salmonRunInfo').style.display = 'block';
+        } else {
+            document.getElementById('salmonRunInfo').style.display = 'none';
+            document.getElementById('SRmodeLabel').style.display = 'none';
+        }
+    } catch (err) {
+        console.error('Error fetching data:', err);
+    }
+}
+
+// Load on page load + auto refresh every 3 minutes
+fetchData();
 setInterval(refreshPage, 180000);
