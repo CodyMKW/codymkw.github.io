@@ -92,13 +92,10 @@ async function initFlairShop() {
     const categories = {};
     
     flairData.flairs.forEach(flair => {
-        // Use the category from the JSON, defaulting to "Other" if not specified
         const category = flair.category || "Other";
-        
         if (!categories[category]) {
             categories[category] = [];
         }
-        
         categories[category].push(flair);
     });
     
@@ -111,6 +108,9 @@ async function initFlairShop() {
         
         // Add items from this category
         flairs.forEach(flair => {
+            const container = document.createElement('div');
+            container.className = 'flair-item';
+            
             const label = document.createElement('label');
             const input = document.createElement('input');
             input.type = 'checkbox';
@@ -121,35 +121,43 @@ async function initFlairShop() {
             costSpan.className = 'cost-text';
             
             label.appendChild(input);
-            // Use the display name from the JSON if available, otherwise format the value
             const displayName = flair.displayName || formatFlairName(flair.value);
             label.appendChild(document.createTextNode(` ${displayName} (`));
             label.appendChild(costSpan);
-            label.appendChild(document.createTextNode(')')); 
+            label.appendChild(document.createTextNode(')'));
             
-            fieldset.appendChild(label);
+            // Add description box if description exists
+            if (flair.description) {
+                const descriptionBox = document.createElement('div');
+                descriptionBox.className = 'flair-description';
+                descriptionBox.textContent = flair.description;
+                container.appendChild(descriptionBox);
+            }
+            
+            container.appendChild(label);
+            fieldset.appendChild(container);
         });
         
         flairOptions.appendChild(fieldset);
     }
     
-    // Format flair names for display (fallback if displayName is not in JSON)
+    // Format flair names for display
     function formatFlairName(value) {
-        // Convert camelCase or kebab-case to readable text
         return value
-            .replace(/([A-Z])/g, ' $1') // Add space before capital letters
-            .replace(/^./, str => str.toUpperCase()) // Capitalize first letter
-            .replace(/([a-z])([A-Z])/g, '$1 $2') // Add space between words
-            .replace(/([a-zA-Z])(\d+)/g, '$1 $2'); // Add space between letters and numbers
+            .replace(/([A-Z])/g, ' $1')
+            .replace(/^./, str => str.toUpperCase())
+            .replace(/([a-z])([A-Z])/g, '$1 $2')
+            .replace(/([a-zA-Z])(\d+)/g, '$1 $2');
     }
 
     const defaultTariffReason = [
         "📈 Price adjusted due to tariffs imposed by Princess Peach"
     ];
     
-    // Now attach event handlers to the dynamically created checkboxes
+    // Attach event handlers to checkboxes
     const checkboxes = flairOptions.querySelectorAll("input[type='checkbox']");
     checkboxes.forEach(checkbox => {
+        const container = checkbox.closest('.flair-item');
         const label = checkbox.parentElement;
         const flair = checkbox.value;
         let cost = flairPrices[flair] || 0;
@@ -166,14 +174,14 @@ async function initFlairShop() {
 
             label.classList.add("tariffed");
             const tooltip = flairData.tariff.tooltip || defaultTariffReason[Math.floor(Math.random() * defaultTariffReason.length)];
-            label.title = tooltip;
+            label.title = tooltip; // Keep tariff tooltip as regular browser tooltip
         }
 
         const costText = label.querySelector(".cost-text");
         if (costText) {
             if (ownedFlairs.includes(flair)) {
                 costText.textContent = "Purchased";
-                label.classList.add("purchased");
+                container.classList.add("purchased");
             } else if (flairData && flairData.tariff) {
                 costText.innerHTML = `<span style="text-decoration: line-through; opacity: 0.6;">${formatCurrency(originalCost)}</span> → <strong>${formatCurrency(cost)}</strong>`;
             } else {
@@ -181,22 +189,22 @@ async function initFlairShop() {
             }
         }
 
-        label.addEventListener("click", () => {
-            if (!ownedFlairs.includes(flair) && points >= cost) {
+        container.addEventListener("click", (e) => {
+            if (e.target.tagName !== 'INPUT' && !ownedFlairs.includes(flair) && points >= cost) {
                 points -= cost;
                 ownedFlairs.push(flair);
-                checkbox.disabled = false;
-                label.classList.add("purchased");
+                checkbox.checked = true;
+                container.classList.add("purchased");
                 if (costText) costText.textContent = "Purchased";
                 savePoints();
                 saveFlairs();
-            } else if (!ownedFlairs.includes(flair)) {
+            } else if (e.target.tagName !== 'INPUT' && !ownedFlairs.includes(flair)) {
                 message2.style.display = "block";
                 setTimeout(() => message2.style.display = "none", 2000);
             }
         });
 
-        checkbox.addEventListener("change", function () {
+        checkbox.addEventListener("change", function() {
             if (!ownedFlairs.includes(this.value)) {
                 this.checked = false;
                 message2.style.display = "block";
@@ -224,7 +232,7 @@ async function initFlairShop() {
             promoMessage.style.color = "red";
         } else if (promoData.promoCodes && promoData.promoCodes[promoCode]) {
             let promoDetails = promoData.promoCodes[promoCode];
-            let bonusPoints = promoDetails.points; // should be in cents
+            let bonusPoints = promoDetails.points;
             let expirationDate = new Date(promoDetails.expires.replace(" ", "T"));
             let now = new Date();
 
@@ -293,7 +301,7 @@ function exportShopData() {
 
     const a = document.createElement('a');
     a.href = url;
-    a.download = "yourflairshop.savedata"; // custom file extension
+    a.download = "yourflairshop.savedata";
     a.click();
 
     URL.revokeObjectURL(url);

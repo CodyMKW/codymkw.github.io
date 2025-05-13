@@ -276,7 +276,7 @@ input[type=checkbox]:checked + label::after {
     height: 23px;
 }
 
-.emoji[title=":3ds:"], .emoji[title=":switch2:"], .emoji[title=":wii:"], .emoji[title=":wiiu:"] {
+.emoji[title=":3ds:"], .emoji[title=":switch:"], .emoji[title=":switch2:"], .emoji[title=":wii:"], .emoji[title=":wiiu:"] {
     height: 15px !important;
 }
 
@@ -566,4 +566,327 @@ code {
   background: linear-gradient(to right, #BF953F, #FCF6BA, #B38728, #FBF5B7, #AA771C);
   color: #000 !important;
   font-family: arial, sans-serif;
+}
+.allMessages:has(.upsidedown) > .msgBody {
+  transform: rotate(180deg);
+  direction: rtl;
+}
+.allMessages:has(.typewriter) > .msgBody {
+  overflow: hidden;
+  white-space: nowrap;
+  border-right: 0.15em solid orange;
+  animation: typing 3s steps(20, end), blink 0.75s step-end infinite;
+}
+@keyframes typing {
+  from { width: 0 }
+  to { width: 100% }
+}
+
+@keyframes blink {
+  50% { border-color: transparent }
+}
+.allMessages:has(.glitchy) > .msgBody {
+  text-shadow: 1px 0 red, -1px 0 blue;
+  animation: glitch 0.3s infinite;
+}
+@keyframes glitch {
+  0% { transform: translate(0); }
+  50% { transform: translate(-1px, 1px); }
+  100% { transform: translate(1px, -1px); }
+}
+.allMessages:has(.rainbowpulse) > .msgBody {
+  animation: rainbowText 5s infinite linear;
+}
+@keyframes rainbowText {
+  0% { color: red; }
+  20% { color: orange; }
+  40% { color: yellow; }
+  60% { color: green; }
+  80% { color: blue; }
+  100% { color: purple; }
+}
+.star:after {
+  content: '⭐';
+  margin-right: 0.3em;
+}
+.bouncingpoop:after {
+  content: '💩';
+  display: inline-block;
+  animation: bounce 1s infinite;
+}
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+.galaxyname {
+  background: linear-gradient(to right, #3a0ca3, #7209b7, #f72585, #4361ee, #4cc9f0);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: galaxymove 3s linear infinite;
+}
+@keyframes galaxymove {
+  0% { background-position: 0% center; }
+  100% { background-position: 200% center; }
+}
+
+.starlightglow {
+  color: #fff;
+  animation: starlight 2s ease-in-out infinite;
+}
+@keyframes starlight {
+  0%, 100% { text-shadow: 0 0 2px #fff, 0 0 4px #f0f; }
+  50% { text-shadow: 0 0 10px #fff, 0 0 20px #0ff; }
+}
+
+.allMessages:has(.vaporwavebg) {
+  background-image: linear-gradient(135deg, #ff6ec4, #7873f5);
+  color: #fff;
+  font-family: 'Comic Sans MS', cursive, sans-serif;
+  font-size: 14px;
+  text-shadow: 1px 1px 2px #000;
+}
+
+.allMessages:has(.vaporwavebg):after, .allMessages:has(.holographicbg):after  {
+   background-color: transparent;
+}
+
+.allMessages:has(.holographicbg) {
+  background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+  background-size: 400% 400%;
+  animation: holoBG 10s ease infinite;
+  color: #000;
+  font-weight: bold;
+}
+@keyframes holoBG {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.allMessages:has(.fireeffect) > .msgBody {
+  animation: firetext 1.5s infinite alternate;
+  color: #ff4500;
+  text-shadow: 0 0 5px #ff6347, 0 0 10px #ff4500;
+}
+@keyframes firetext {
+  0% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(1.02); opacity: 0.9; }
+}
+
+.allMessages:has(.freezetext) > .msgBody {
+  color: #aaf;
+  text-shadow: 0 0 3px #00f, 0 0 6px #0ff;
+  animation: freezeWobble 1s ease-in-out infinite;
+}
+@keyframes freezeWobble {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.02) rotate(-1deg); }
+  100% { transform: scale(1); }
+}
+
+.heartbeatglow {
+  color: #e91e63;
+  animation: heartbeat 1s infinite;
+}
+@keyframes heartbeat {
+  0%, 100% { text-shadow: 0 0 5px #e91e63; transform: scale(1); }
+  50% { text-shadow: 0 0 15px #ff80ab; transform: scale(1.05); }
+}
+
+.terminalgreen {
+  color: #00ff00;
+  font-family: 'Courier New', monospace;
+}
+
+.allMessages:has(.crtglitch) > .msgBody {
+  color: #0ff;
+  text-shadow: 2px 2px #f0f, -2px -2px #0ff;
+  animation: crtshake 0.2s infinite alternate;
+}
+@keyframes crtshake {
+  0% { transform: translate(0px, 0px); }
+  100% { transform: translate(1px, -1px); }
+}
+
+.allMessages:has(.candyrainbow) > .msgBody {
+  animation: candycolor 4s infinite;
+}
+@keyframes candycolor {
+  0% { color: #ff66cc; }
+  25% { color: #ffcc00; }
+  50% { color: #33cc33; }
+  75% { color: #66ccff; }
+  100% { color: #ff66cc; }
+}
+
+.floppydisk:after {
+  content: "💾";
+  margin-left: 0.3em;
+  animation: bounce 1s infinite;
+}
+
+.owlbadge:after {
+  content: "🦉";
+  margin-left: 0.3em;
+}
+
+.pizzabadge:after {
+  content: '🍕';
+  display: inline-block;
+  animation: bounce 1s infinite;
+}
+
+.gamerbadge:after {
+  content: "🕹️";
+  margin-left: 0.3em;
+}
+
+/* Bundle testing */
+.codybundle {
+  color: #0C0;
+  animation: greennameglow 1.5s infinite alternate;
+}
+.allMessages:has(.codybundle){
+  background-color: unset;    
+  background-image: url(https://files.catbox.moe/kzhjx8.jpg);
+  background-size: 500px 500px;
+  background-repeat: repeat;
+  color: #e0e0e0;
+  font-family: Times, Serif;
+  font-size: 15px;
+  box-shadow: 1px 1px 2px #000;
+}
+.allMessages:has(.codybundle) > .msgBody {
+  text-shadow: 1px 0 red, -1px 0 blue;
+  animation: glitch 0.3s infinite;
+}
+.codybundle:after {
+  content: " ";
+  display: inline-block;
+  height: 20pt;
+  width: 20pt;
+  background-image: url(https://files.catbox.moe/nhcet0.png);
+  background-size: 100% auto;
+  background-repeat: no-repeat;
+  margin-left: 3px;
+}
+
+.splatoonbundle {
+  background: linear-gradient(90deg,rgba(0, 17, 250, 1) 0%, rgba(255, 229, 0, 1) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.splatoonbundle:after {
+  content: " ";
+  display: inline-block;
+  height: 30pt;
+  width: 20pt;
+  background-image: url(https://i.imgur.com/IFaW6GJ.png);
+  background-size: 100% auto;
+  background-repeat: no-repeat;
+  margin-left: 3px;
+}
+.allMessages:has(.splatoonbundle){
+  background-color: unset;
+  background-image: url(https://files.catbox.moe/zwivlh.jpg);
+  background-size: 500px 500px;
+  background-repeat: repeat;
+  color: #e0e0e0;
+  font-family: Times, Serif;
+  font-size: 15px;
+  box-shadow: 1px 1px 2px #000;
+}
+
+.gamerbundle {
+  position: relative;
+  display: inline-block;
+  background: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet);
+  background-size: 400% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gamerflow 3s linear infinite;
+}
+@keyframes gamerflow {
+  0% { background-position: 0% center; }
+  100% { background-position: 400% center; }
+}
+.gamerbundle:after {
+  content: "🕹️";
+  margin-left: 5px;
+  display: inline-block;
+  -webkit-text-fill-color: initial;
+  color: white;
+  background: none;
+  text-shadow: 0 0 3px #000;
+}
+
+.allMessages:has(.gamerbundle) {
+  background: #121212;
+  color: #39ff14;
+  font-family: 'Courier New', monospace;
+  box-shadow: 0 0 5px #39ff14;
+}
+.allMessages:has(.gamerbundle) > .msgBody {
+  text-shadow: 1px 0 red, -1px 0 blue;
+  animation: glitch 0.3s infinite;
+}
+
+.retrotechbundle {
+  color: #0f0;
+  font-family: 'Courier New', monospace;
+  text-shadow: 0 0 2px #0f0;
+}
+.retrotechbundle:after {
+  content: "💾";
+  margin-left: 5px;
+  animation: bounce 1s infinite;
+  display: inline-block;
+  -webkit-text-fill-color: initial;
+  color: white;
+  background: none;
+  text-shadow: 0 0 3px #000;
+}
+
+.allMessages:has(.retrotechbundle) {
+  background-color: #000;
+  color: #0f0;
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  border: 1px solid #0f0;
+}
+.allMessages:has(.retrotechbundle) > .msgBody {
+  animation: crtshake 0.2s infinite alternate;
+}
+
+.sugarrushbundle {
+  background: linear-gradient(to right, #ff66cc, #ffcc00, #33cc33, #66ccff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: sugarspin 2s infinite linear;
+}
+@keyframes sugarspin {
+  0% { background-position: 0%; }
+  100% { background-position: 100%; }
+}
+.sugarrushbundle:after {
+  content: "🍕";
+  display: inline-block;
+  animation: bounce 1s infinite;
+  margin-left: 5px;
+  -webkit-text-fill-color: initial;
+  color: white;
+  background: none;
+  text-shadow: 0 0 3px #000;
+}
+
+.allMessages:has(.sugarrushbundle) {
+  color: #fff;
+  font-weight: bold;
+  font-family: 'Comic Sans MS', cursive;
+  text-shadow: 1px 1px #ff00ff;
+}
+.allMessages:has(.sugarrushbundle) > .msgBody {
+  animation: candycolor 4s infinite;
 }

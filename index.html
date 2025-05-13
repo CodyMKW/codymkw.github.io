@@ -72,15 +72,75 @@
                     </section>
                 
                     <section>
-                        <h2>Quick Facts</h2>
-                        <ul style="font-size:20">
-                            <li>I like all pizza even pineapple pizza. 🍍🍕</li><li>I am kinda shy around new people. 🫣</li><li>I prefer dubs of anime mainly because I suck at learning new languages.</li><li>I love the color <span style='color:#5ac800'>green</span>.</li>
-                        </ul>
-                        <p>Also you can check <a href="/buttons">here</a> for my site's button and other cool looking sites!</p>
+<div class="now-playing-split">
+  <div class="now-playing-box">
+    <h2>🎮 Switch Games I’m Playing</h2>
+    <ul>
+      <li>Splatoon 3</li>
+      <li>Animal Crossing: New Horizons</li>
+      <li>My Hero Ultra Rumble</li>
+      <li>LoZ: Tears of the Kingdom </li>
+      <li>Mario Kart 8 Deluxe</li>
+      <li>Yu-Gi-Oh! Master Duel</li>
+      <li>Palia</li>
+      <li>Stardew Valley</li>
+      <li>Fortnite</li>
+      <li>Super Smash Bros Ultimate </li>
+    </ul>
+  </div>
+  <div class="now-playing-box">
+    <h2>📺 Anime I’m Watching</h2>
+    <ul>
+      <li>Bleach</li>
+      <li>My Hero Academia: Vigilantes</li>
+      <li>Pokemon (2023)</li>
+      <li>One Piece</li>
+      <li>Aharen-san wa Hakarenai Season 2</li>
+      <li>From Bureaucrat to Villainess: Dad's Been Reincarnated!</li>
+      <li>Bye Bye, Earth 2nd Season</li>
+      <li>Dragon Ball Daima</li>
+      <li>Fire Force Season 3</li>
+      <li>The Apothecary Diaries Season 2</li>
+    </ul>
+  </div>
+</div>
+                    </section>
+                    <br>
+                    <section>
+                       <div style="display: flex; flex-direction: column; align-items: center; text-align: center;">
+                          <p>Also you can check <a href="/buttons">here</a> for my site's button and other cool looking sites!</p>
+                       </div>
                     </section>
         </div>
     </div>
     <button id="theme-toggle" class="theme-toggle-button"><span>☀️</span> Light Mode</button>
     <footer></footer>
+    <script>
+  function slugify(text) {
+    return encodeURIComponent(text.trim());
+  }
+
+  function autoLinkifyList(selector, baseUrl) {
+    document.querySelectorAll(selector).forEach(list => {
+      list.querySelectorAll('li').forEach(item => {
+        const text = item.textContent.trim();
+        const searchUrl = `${baseUrl}${slugify(text)}`;
+        const link = document.createElement('a');
+        link.href = searchUrl;
+        link.textContent = text;
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+        item.textContent = '';
+        item.appendChild(link);
+      });
+    });
+  }
+
+  // Switch games — uses Nintendo search
+  autoLinkifyList('.now-playing-box:nth-child(1) ul', 'https://www.nintendo.com/search/?q=');
+
+  // Anime — uses MAL search
+  autoLinkifyList('.now-playing-box:nth-child(2) ul', 'https://myanimelist.net/search/all?q=');
+</script>
 </body>
 </html>

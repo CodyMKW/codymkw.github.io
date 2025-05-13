@@ -6,6 +6,16 @@ body {
   padding: 20px;
 }
 
+#onlineStatus.offline {
+  color: red;
+}
+#onlineStatus.inactive {
+  color: yellow;
+}
+#onlineStatus.playing {
+  color: green;
+}
+
 .whatpretendo {
   display: none;
 }
@@ -315,6 +325,40 @@ h1.notfoundheading {
 
 #aboutContent p, h2 {
   color: #333;
+}
+
+.now-playing-split {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.now-playing-box {
+  flex: 1;
+  min-width: 250px;
+  background-color: #e4e4e4c9;
+  border: 2px solid #007acc;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  color: #000;
+}
+
+.now-playing-box h2 {
+  text-align: center;
+  color: #007acc;
+  margin-bottom: 10px;
+}
+
+.now-playing-box ul {
+  list-style-type: disc;
+  padding-left: 20px;
+  margin: 0;
+}
+
+.now-playing-box li {
+  margin-bottom: 8px;
 }
 
 /* Buttons page styles */
@@ -849,6 +893,14 @@ p#blogmetadata {
   color: #005a9c;
 }
 
+#chat-info h3 {
+    display: block;
+}
+
+#chat-info {
+    border: 2px solid #007acc;
+}
+
 #flair-shop {
     margin-top: 20px;
     padding: 15px;
@@ -1034,6 +1086,48 @@ legend {
     color: #cc0000 !important;
     text-decoration: underline;
     cursor: pointer;
+}
+
+/* Styled hover box */
+.flair-item {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.flair-description {
+    visibility: hidden;
+    width: 200px;
+    background-color: #ccc;
+    color: #000;
+    text-align: center;
+    border-radius: 6px;
+    padding: 8px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-size: 14px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+
+.flair-description::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #ccc transparent transparent transparent;
+}
+
+.flair-item:hover .flair-description {
+    visibility: visible;
+    opacity: 1;
 }
 
 /* Nintendo News styles */
@@ -1315,6 +1409,11 @@ footer {
   flex-wrap: wrap;
   justify-content: center;
   gap: 15px;
+}
+
+#event-message {
+    background: rgb(0 122 204) !important;
+    color: #fff;
 }
 
 .theme-toggle-button {

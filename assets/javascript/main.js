@@ -3,53 +3,78 @@ function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
+async function fetchWithRetry(url) {
+    try {
+        // First try with the Splatoon 3 parameter
+        const response = await fetch(url);
+        const data = await response.json();
+        
+        // If we get an error, try without the parameter
+        if (data.error) {
+            const fallbackUrl = url.split('?')[0]; // Remove everything after ?
+            const fallbackResponse = await fetch(fallbackUrl);
+            return await fallbackResponse.json();
+        }
+        
+        return data;
+    } catch (error) {
+        // If fetch fails completely, try without the parameter
+        const fallbackUrl = url.split('?')[0]; // Remove everything after ?
+        const fallbackResponse = await fetch(fallbackUrl);
+        return await fallbackResponse.json();
+    }
+}
+
 // Function to fetch data from the API and update HTML content
-function updatePresence() {
-  // Fetch JSON data from the API
-  fetch('https://nxapi-presence.fancy.org.uk/api/presence/644cd5195d154bd5?include-splatoon3=1')
-    .then(response => response.json())
-    .then(data => {
-      // Extract online status and game name from the JSON data
-      const onlineStatus = (data.friend.presence.state.toLowerCase() === 'playing') ? 'Online' : capitalizeFirstLetter(data.friend.presence.state.toLowerCase());
-      const gameName = data.friend.presence.game.name || null;
+// Modified updatePresence function
+async function updatePresence() {
+    try {
+        const data = await fetchWithRetry('https://nxapi-presence.fancy.org.uk/api/presence/644cd5195d154bd5?include-splatoon3=1');
+        
+        // Extract online status and game name from the JSON data
+        const onlineStatus = (data.friend.presence.state.toLowerCase() === 'playing') ? 'Online' : capitalizeFirstLetter(data.friend.presence.state.toLowerCase());
+        const gameName = data.friend.presence.game.name || null;
 
-      // Select the element where the content will be updated
-      const statusContainer = document.getElementById('status-container');
+        // Select the element where the content will be updated
+        const statusContainer = document.getElementById('status-container');
 
-      // Define colors based on the online status
-      let statusColor = '';
-      switch (onlineStatus.toLowerCase()) {
-        case 'online':
-        case 'playing':
-          statusColor = '#00C900';
-          break;
-        case 'offline':
-          statusColor = 'red';
-          break;
-        case 'inactive':
-          statusColor = 'yellow';
-          break;
-        default:
-          statusColor = 'white';
-      }
+        // Define colors based on the online status
+        let statusColor = '';
+        switch (onlineStatus.toLowerCase()) {
+            case 'online':
+            case 'playing':
+                statusColor = '#00C900';
+                break;
+            case 'offline':
+                statusColor = 'red';
+                break;
+            case 'inactive':
+                statusColor = 'yellow';
+                break;
+            default:
+                statusColor = 'white';
+        }
 
-      // Update HTML content based on whether a game is being played or not
-      if (gameName) {
-        statusContainer.innerHTML = `<p>Currently <span style="color: ${statusColor};">${onlineStatus}</span> playing ${gameName} <a id="check-switch-game-status">🔎</a></p>`;
-      } else {
-        statusContainer.innerHTML = `<p>Currently <span style="color: ${statusColor};">${onlineStatus.charAt(0)}${onlineStatus.slice(1).toLowerCase()}</span> <a id="check-switch-game-status">🔎</a></p>`;
-      }
+        // Update HTML content based on whether a game is being played or not
+        if (gameName) {
+            statusContainer.innerHTML = `<p>Currently <span style="color: ${statusColor};">${onlineStatus}</span> playing ${gameName} <a id="check-switch-game-status">🔎</a></p>`;
+        } else {
+            statusContainer.innerHTML = `<p>Currently <span style="color: ${statusColor};">${onlineStatus.charAt(0)}${onlineStatus.slice(1).toLowerCase()}</span> <a id="check-switch-game-status">🔎</a></p>`;
+        }
 
-      // Add event listener to the link to open modal
-      document.getElementById('check-switch-game-status').addEventListener('click', openModal);
-    })
-    .catch(error => {
-      console.error('Error fetching data:', error);
-    });
+        // Add event listener to the link to open modal
+        document.getElementById('check-switch-game-status').addEventListener('click', openModal);
+    } catch (error) {
+        console.error('Error fetching data:', error);
+    }
 }
 
 // Function to open modal
 function openModal() {
+  // Get current theme
+  const currentTheme = localStorage.getItem('theme') || 
+                      (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+
   // Create modal container
   const modalContainer = document.createElement('div');
   modalContainer.classList.add('modal-container');
@@ -67,14 +92,14 @@ function openModal() {
   // Create picture element
   const pictureElement = document.createElement('picture');
   
-  // Create source element
+  // Create source element (for dark theme)
   const sourceElement = document.createElement('source');
-  sourceElement.setAttribute('srcset', 'https://nxapi-presence.fancy.org.uk/api/presence/644cd5195d154bd5/embed?include-splatoon3=1&theme=dark&scale=2&friend-code=2549-4631-6600&transparent=1&width=630&show-splatoon3-fest-team=1');
+  sourceElement.setAttribute('srcset', `https://nxapi-presence.fancy.org.uk/api/presence/644cd5195d154bd5/embed?theme=${currentTheme}&friend-code=2549-4631-6600&transparent=1`);
   sourceElement.setAttribute('media', '(prefers-color-scheme: dark)');
   
-  // Create img element
+  // Create img element (with current theme)
   const imgElement = document.createElement('img');
-  imgElement.setAttribute('src', 'https://nxapi-presence.fancy.org.uk/api/presence/644cd5195d154bd5/embed?include-splatoon3=1&theme=dark&scale=2&friend-code=2549-4631-6600&transparent=1&width=630&show-splatoon3-fest-team=1');
+  imgElement.setAttribute('src', `https://nxapi-presence.fancy.org.uk/api/presence/644cd5195/embed?theme=${currentTheme}&friend-code=2549-4631-6600&transparent=1`);
   imgElement.setAttribute('alt', 'Nintendo Switch presence');
   
   // Append elements
@@ -89,6 +114,22 @@ function openModal() {
   
   // Add class to body to dim the screen
   document.body.classList.add('modal-open');
+
+  // Add event listener to update theme if changed while modal is open
+  const themeChangeHandler = (e) => {
+    const newTheme = e.detail;
+    sourceElement.setAttribute('srcset', sourceElement.srcset.replace(/theme=\w+/, `theme=${newTheme}`));
+    imgElement.setAttribute('src', imgElement.src.replace(/theme=\w+/, `theme=${newTheme}`));
+  };
+  document.addEventListener('themeChanged', themeChangeHandler);
+
+  // Clean up event listener when modal closes
+  modalContainer.addEventListener('click', function handler(e) {
+    if (e.target === modalContainer) {
+      document.removeEventListener('themeChanged', themeChangeHandler);
+      modalContainer.removeEventListener('click', handler);
+    }
+  });
 }
 
 // Function to close modal
