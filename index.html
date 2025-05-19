@@ -75,39 +75,18 @@
 <div class="now-playing-split">
   <div class="now-playing-box">
     <h2>🎮 Switch Games I’m Playing</h2>
-    <ul>
-      <li>Splatoon 3</li>
-      <li>Animal Crossing: New Horizons</li>
-      <li>My Hero Ultra Rumble</li>
-      <li>LoZ: Tears of the Kingdom </li>
-      <li>Mario Kart 8 Deluxe</li>
-      <li>Yu-Gi-Oh! Master Duel</li>
-      <li>Palia</li>
-      <li>Stardew Valley</li>
-      <li>Fortnite</li>
-      <li>Super Smash Bros Ultimate </li>
-    </ul>
+    <ul id="games-list"></ul>
   </div>
   <div class="now-playing-box">
-    <h2>📺 Anime I’m Watching</h2>
-    <ul>
-      <li>Bleach</li>
-      <li>My Hero Academia: Vigilantes</li>
-      <li>Pokemon (2023)</li>
-      <li>One Piece</li>
-      <li>Aharen-san wa Hakarenai Season 2</li>
-      <li>From Bureaucrat to Villainess: Dad's Been Reincarnated!</li>
-      <li>Bye Bye, Earth 2nd Season</li>
-      <li>Dragon Ball Daima</li>
-      <li>Fire Force Season 3</li>
-      <li>The Apothecary Diaries Season 2</li>
-    </ul>
+    <h2 title="Format: (Episodes watched / Total episodes)">📺 Anime I’m Watching</h2>
+    <ul id="anime-list"></ul>
   </div>
 </div>
                     </section>
                     <br>
                     <section>
                        <div style="display: flex; flex-direction: column; align-items: center; text-align: center;">
+                          <iframe src="https://nekoweb.org/frame/follow" frameborder="0" width="130" height="55"></iframe>
                           <p>Also you can check <a href="/buttons">here</a> for my site's button and other cool looking sites!</p>
                        </div>
                     </section>
@@ -115,32 +94,163 @@
     </div>
     <button id="theme-toggle" class="theme-toggle-button"><span>☀️</span> Light Mode</button>
     <footer></footer>
-    <script>
-  function slugify(text) {
-    return encodeURIComponent(text.trim());
+<script>
+  /* ---------- NOW-PLAYING LISTS ---------- */
+  let animeIdOverrides = {};
+  let loadedAnimeData   = [];
+
+  /* Fetch MAL URL, cover, synopsis */
+  async function getMyAnimeListUrlAndInfo(entry) {
+    const title      = typeof entry === 'string' ? entry : entry.title;
+    const overrideId = entry.mal_id || animeIdOverrides[title];
+
+    /* Direct lookup if we have an explicit MAL id */
+    if (overrideId) {
+      const res  = await fetch(`https://api.jikan.moe/v4/anime/${overrideId}`);
+      const data = await res.json();
+      return {
+        url:      `https://myanimelist.net/anime/${overrideId}`,
+        image:    data.data.images.jpg.image_url,
+        synopsis: data.data.synopsis
+      };
+    }
+
+    /* Otherwise search Jikan */
+    const query = encodeURIComponent(title);
+    try {
+      const res  = await fetch(`https://api.jikan.moe/v4/anime?q=${query}`);
+      const data = await res.json();
+      if (data?.data?.length) {
+        const anime = data.data[0];
+        return {
+          url:      `https://myanimelist.net/anime/${anime.mal_id}`,
+          image:    anime.images.jpg.image_url,
+          synopsis: anime.synopsis
+        };
+      }
+    } catch (err) {
+      console.error(`Jikan lookup failed for “${title}”`, err);
+    }
+
+    /* Fallback: generic search page */
+    return { url: `https://myanimelist.net/search/all?q=${query}`, image: null, synopsis: null };
   }
 
-  function autoLinkifyList(selector, baseUrl) {
-    document.querySelectorAll(selector).forEach(list => {
-      list.querySelectorAll('li').forEach(item => {
-        const text = item.textContent.trim();
-        const searchUrl = `${baseUrl}${slugify(text)}`;
-        const link = document.createElement('a');
-        link.href = searchUrl;
-        link.textContent = text;
-        link.target = "_blank";
-        link.rel = "noopener noreferrer";
-        item.textContent = '';
-        item.appendChild(link);
-      });
+  /* Build linked anime items (with tooltips on desktop only) */
+  async function autoLinkAnime() {
+    const listItems = document.querySelectorAll('#anime-list li');
+    const delay     = ms => new Promise(res => setTimeout(res, ms));
+
+    for (let i = 0; i < listItems.length; i++) {
+      const li      = listItems[i];
+      const entry   = loadedAnimeData[i];
+      const title   = typeof entry === 'string' ? entry : entry.title;
+      const watch   = entry.progress ? ` (${entry.progress})` : '';
+      const info    = await getMyAnimeListUrlAndInfo(entry);
+
+      /* --- wrapper structure --- */
+      const wrapper = document.createElement('span');
+      wrapper.classList.add('anime-tooltip-wrapper');
+
+      const link = document.createElement('a');
+      link.href  = info.url;
+      link.textContent = title + watch;
+      link.target = '_blank';
+      link.rel    = 'noopener noreferrer';
+      link.classList.add('anime-title');
+
+      /* Tooltips only on screens ≥ 768 px */
+      const tooltipNeeded = window.matchMedia('(min-width: 768px)').matches;
+      let tooltip = null;
+
+      if (tooltipNeeded) {
+        tooltip = document.createElement('div');
+        tooltip.classList.add('anime-tooltip');
+
+        if (info.image) {
+          const img = document.createElement('img');
+          img.src   = info.image;
+          img.alt   = `${title} cover`;
+          tooltip.appendChild(img);
+        }
+
+        if (info.synopsis) {
+          const p  = document.createElement('p');
+          p.textContent = info.synopsis;
+          tooltip.appendChild(p);
+        }
+      }
+
+      wrapper.appendChild(link);
+      if (tooltip) wrapper.appendChild(tooltip);
+
+      /* Replace list item content */
+      li.textContent = '';
+      li.appendChild(wrapper);
+
+      await delay(600);   // politeness delay for Jikan rate limit
+    }
+  }
+
+  /* Nintendo eShop URL generator */
+  function generateNintendoUrl(title) {
+    const slug = title
+      .trim().toLowerCase()
+      .replace(/\+/g, 'plus')
+      .replace(/[^a-z0-9\s-]/g, '')
+      .replace(/\s+/g, '-') + '-switch';
+    return `https://www.nintendo.com/store/products/${slug}/`;
+  }
+
+  /* Auto-link switch games */
+  function autoLinkSwitchGames() {
+    document.querySelectorAll('#games-list li').forEach(item => {
+      const title = item.textContent.trim();
+      const link  = document.createElement('a');
+      link.href   = generateNintendoUrl(title);
+      link.textContent = title;
+      link.target = '_blank';
+      link.rel    = 'noopener noreferrer';
+      item.textContent = '';
+      item.appendChild(link);
     });
   }
 
-  // Switch games — uses Nintendo search
-  autoLinkifyList('.now-playing-box:nth-child(1) ul', 'https://www.nintendo.com/search/?q=');
+  /* Pull data & kick everything off */
+  async function loadNowPlayingData() {
+    const src = 'https://api.npoint.io/236a60e9c7e6a8ecc57d';
+    try {
+      const res  = await fetch(src);
+      const data = await res.json();
 
-  // Anime — uses MAL search
-  autoLinkifyList('.now-playing-box:nth-child(2) ul', 'https://myanimelist.net/search/all?q=');
+      animeIdOverrides = data.animeIdOverrides || {};
+      loadedAnimeData  = data.anime || [];
+
+      const gameList  = document.getElementById('games-list');
+      const animeList = document.getElementById('anime-list');
+
+      data.games.forEach(title => {
+        const li = document.createElement('li');
+        li.textContent = title;
+        gameList.appendChild(li);
+      });
+
+      loadedAnimeData.forEach(entry => {
+        const li = document.createElement('li');
+        const t  = typeof entry === 'string' ? entry : entry.title;
+        const p  = entry.progress ? ` (${entry.progress})` : '';
+        li.textContent = t + p;
+        animeList.appendChild(li);
+      });
+
+      autoLinkSwitchGames();
+      autoLinkAnime();
+    } catch (err) {
+      console.error('Error loading now-playing data:', err);
+    }
+  }
+
+  window.addEventListener('DOMContentLoaded', loadNowPlayingData);
 </script>
 </body>
 </html>

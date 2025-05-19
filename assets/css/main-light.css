@@ -327,6 +327,51 @@ h1.notfoundheading {
   color: #333;
 }
 
+.anime-tooltip-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.anime-tooltip {
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  position: absolute;
+  z-index: 10;
+  top: 120%;
+  left: 0;
+  background: #e4e4e4;
+  border: 1px solid #444;
+  padding: 10px;
+  width: 280px;
+  color: #000;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+
+.anime-tooltip img {
+  width: 80px;
+  float: left;
+  margin-right: 10px;
+  border-radius: 4px;
+}
+
+.anime-tooltip p {
+  font-size: 0.85rem;
+  color: #000;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 5; /* Limit to 5 lines */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.anime-tooltip-wrapper:hover .anime-tooltip {
+  visibility: visible;
+  opacity: 1;
+}
+
 .now-playing-split {
   display: flex;
   justify-content: space-between;
