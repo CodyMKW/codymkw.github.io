@@ -148,7 +148,7 @@ function togglePatchNotes(show) {
 }
 
 function fetchPatchNotes() {
-    fetch('https://api.npoint.io/3cd63e8f6762892efbf8')
+    fetch('https://api.npoint.io/e5b4c9dc156a98b08087')
         .then(response => response.json())
         .then(patchNotes => {
             const contentDiv = document.getElementById('patch-notes-content');
