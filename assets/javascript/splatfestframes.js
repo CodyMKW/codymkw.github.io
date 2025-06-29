@@ -114,6 +114,9 @@ function updateFrameOptions() {
           "Team_Afternoon.avif",
           "Team_Morning.avif",
           "Team_Night.avif",
+          "Team_Land.avif",
+          "Team_Sea.avif",
+          "Team_Air.avif",
           // Add more octopus frame options here
       ],
       squid: [
@@ -171,9 +174,12 @@ function updateFrameOptions() {
         "Team_Money_(2025).avif",
         "Team_Experiences.avif",
         "Team_Presents.avif",
-         "Team_Afternoon.avif",
-         "Team_Morning.avif",
-         "Team_Night.avif",
+        "Team_Afternoon.avif",
+        "Team_Morning.avif",
+        "Team_Night.avif",
+        "Team_Land.avif",
+        "Team_Sea.avif",
+        "Team_Air.avif",
         // Add more squid frame options here
       ]
   };
