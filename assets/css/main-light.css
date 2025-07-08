@@ -465,7 +465,6 @@ h1.notfoundheading {
       justify-content: center;
     }
 
-
 /* Dream Address page styles */
 #DreamAddressContent {
   padding: 20px;
@@ -705,7 +704,7 @@ h1.notfoundheading {
   margin-bottom: 10px;
 }
 
-#blogcontent p {
+.post-content p {
   text-align: left;
 }
 
@@ -804,6 +803,31 @@ p#blogmetadata {
 .pagination button:disabled {
   background: #aaa;
   cursor: not-allowed;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.blog-back-button {
+    display: block;
+    margin-bottom: 20px;
+    font-size: 1.2em;
+    color: #007acc;
+    text-decoration: none;
+    cursor: pointer;
+    width: fit-content;
+}
+
+.blog-back-button:hover {
+    text-decoration: underline;
+}
+
+.blog-message {
+    text-align: center;
+    padding: 40px;
+    font-size: 1.2em;
+    color: #ccc;
 }
 
 /* Switch FC styles */

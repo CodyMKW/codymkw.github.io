@@ -759,8 +759,7 @@ code {
   box-shadow: 1px 1px 2px #000;
 }
 .allMessages:has(.codybundle) > .msgBody {
-  text-shadow: 1px 0 red, -1px 0 blue;
-  animation: glitch 0.3s infinite;
+  animation: candycolor 4s infinite;
 }
 .codybundle:after {
   content: " ";

@@ -1,278 +1,333 @@
-function mergeImages() {
-  const frameSelection = document.getElementById('frameSelection');
-  const selectedFrame = frameSelection.value;
-
-  const imageSelection = document.getElementById('imageSelection');
-  const selectedImage = imageSelection.files[0];
-
-  if (selectedImage) {
-      const canvas = document.createElement('canvas');
-      const context = canvas.getContext('2d');
-
-      const frameImage = new Image();
-      frameImage.src = selectedFrame;
-
-      frameImage.onload = () => {
-          // Set the canvas size to 400x400
-          canvas.width = 400;
-          canvas.height = 400;
-
-          const userImage = new Image();
-          userImage.src = URL.createObjectURL(selectedImage);
-
-          userImage.onload = () => {
-              // Draw the user-selected image
-              context.drawImage(userImage, 0, 0, 400, 400);
-
-              // Draw the frame on top of the user-uploaded image
-              context.drawImage(frameImage, 0, 0, 400, 400);
-
-              // Convert the merged image to a data URL
-              const mergedImageURL = canvas.toDataURL('image/png');
-
-              // Display the download link
-              const downloadLink = document.getElementById('downloadLink');
-              downloadLink.href = mergedImageURL;
-              downloadLink.style.display = 'block';
-
-              // Trigger the download
-              downloadLink.click();
-          };
-      };
-  }
+// Function to capitalize the first letter of a string
+function capitalizeFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-function displayFramePreview() {
-  const frameSelection = document.getElementById('frameSelection');
-  const selectedFrame = frameSelection.value;
-
-  const framePreview = document.getElementById('framePreview');
-  framePreview.src = selectedFrame;
-}
-
-function updateFrameOptions() {
-  const frameTypeSelection = document.querySelector('input[name="frameType"]:checked').value;
-  const frameSelection = document.getElementById('frameSelection');
-  frameSelection.innerHTML = '';  // Clear existing options
-
-  const frameOptions = {
-      octopus: [
-          "Team_Aliens.avif",
-          "Team_Nessie.avif",
-          "Team_Bigfoot.avif",
-          "Team_Frye.avif",
-          "Team_Shiver.avif",
-          "Team_BigMan.avif",
-          "Team_Love.avif",
-          "Team_Fame.avif",
-          "Team_Money.avif",
-          "Team_Mint_Chip.avif",
-          "Team_Vanilla.avif",
-          "Team_Strawberry.avif",
-          "Team_Power.avif",
-          "Team_Wisdom.avif",
-          "Team_Courage.avif",
-          "Team_Sweet.avif",
-          "Team_Sour.avif",
-          "Team_Spicy.avif",
-          "Team_Water.avif",
-          "Team_Grass.avif",
-          "Team_Fire.avif",
-          "Team_White_Chocolate.avif",
-          "Team_Milk_Chocolate.avif",
-          "Team_Dark_Chocolate.avif",
-          "Team_Zombie.avif",
-          "Team_Skeleton.avif",
-          "Team_Ghost.avif",
-          "Team_Handshake.avif",
-          "Team_Fistbump.avif",
-          "Team_Hug.avif",
-          "Team_Friends.avif",
-          "Team_Family.avif",
-          "Team_Solo.avif",
-          "Team_Drums.avif",
-          "Team_Guitar.avif",
-          "Team_Keyboard.avif",
-          "Team_Chicks.avif",
-          "Team_Li'l_Bunnies.avif",
-          "Team_Bear_Cubs.avif",
-          "Team_Same Ol'.avif",
-          "Team_Bucket_List.avif",
-          "Team_Save_the_Day.avif",
-          "Team_Palace.avif",
-          "Team_Theme_Park.avif",
-          "Team_Beach.avif",
-          "Team_Pasta.avif",
-          "Team_Rice.avif",
-          "Team_Bread.avif",
-          "Team_Wizard.avif",
-          "Team_Ninja.avif",
-          "Team_Knight.avif",
-          "Team_Money_(2025).avif",
-          "Team_Experiences.avif",
-          "Team_Presents.avif",
-          "Team_Afternoon.avif",
-          "Team_Morning.avif",
-          "Team_Night.avif",
-          "Team_Land.avif",
-          "Team_Sea.avif",
-          "Team_Air.avif",
-          // Add more octopus frame options here
-      ],
-      squid: [
-        "Team_Aliens.avif",
-        "Team_Nessie.avif",
-        "Team_Bigfoot.avif",
-        "Team_Frye.avif",
-        "Team_Shiver.avif",
-        "Team_BigMan.avif",
-        "Team_Love.avif",
-        "Team_Fame.avif",
-        "Team_Money.avif",
-        "Team_Mint_Chip.avif",
-        "Team_Vanilla.avif",
-        "Team_Strawberry.avif",
-        "Team_Power.avif",
-        "Team_Wisdom.avif",
-        "Team_Courage.avif",
-        "Team_Sweet.avif",
-        "Team_Sour.avif",
-        "Team_Spicy.avif",
-        "Team_Water.avif",
-        "Team_Grass.avif",
-        "Team_Fire.avif",
-        "Team_White_Chocolate.avif",
-        "Team_Milk_Chocolate.avif",
-        "Team_Dark_Chocolate.avif",
-        "Team_Zombie.avif",
-        "Team_Skeleton.avif",
-        "Team_Ghost.avif",
-        "Team_Handshake.avif",
-        "Team_Fistbump.avif",
-        "Team_Hug.avif",
-        "Team_Friends.avif",
-        "Team_Family.avif",
-        "Team_Solo.avif",
-        "Team_Drums.avif",
-        "Team_Guitar.avif",
-        "Team_Keyboard.avif",
-        "Team_Chicks.avif",
-        "Team_Li'l_Bunnies.avif",
-        "Team_Bear_Cubs.avif",
-        "Team_Same Ol'.avif",
-        "Team_Bucket_List.avif",
-        "Team_Save_the_Day.avif",
-        "Team_Palace.avif",
-        "Team_Theme_Park.avif",
-        "Team_Beach.avif",
-        "Team_Pasta.avif",
-        "Team_Rice.avif",
-        "Team_Bread.avif",
-        "Team_Wizard.avif",
-        "Team_Ninja.avif",
-        "Team_Knight.avif",
-        "Team_Money_(2025).avif",
-        "Team_Experiences.avif",
-        "Team_Presents.avif",
-        "Team_Afternoon.avif",
-        "Team_Morning.avif",
-        "Team_Night.avif",
-        "Team_Land.avif",
-        "Team_Sea.avif",
-        "Team_Air.avif",
-        // Add more squid frame options here
-      ]
-  };
-
-  frameOptions[frameTypeSelection].forEach(option => {
-      const optionElement = document.createElement('option');
-      optionElement.value = `/assets/images/splatfest/${frameTypeSelection}/${option}`;
-      optionElement.textContent = option.replace('.avif', '').replace(/_/g, ' ');
-      frameSelection.appendChild(optionElement);
-  });
-
-  // Display the preview of the first frame in the updated options
-  displayFramePreview();
-}
-
-function handleImageSelection() {
-  const imageSelection = document.getElementById('imageSelection');
-  const selectedImage = imageSelection.files[0];
-
-  if (selectedImage) {
-    const framePreview = document.getElementById('framePreview');
-    const canvas = document.createElement('canvas');
-    const context = canvas.getContext('2d');
-
-    // Load the current frame preview
-    const frameImage = new Image();
-    frameImage.src = framePreview.src;
-
-    frameImage.onload = () => {
-      // Set canvas size to match frame and user image
-      canvas.width = frameImage.width;
-      canvas.height = frameImage.height;
-
-      // Draw the user-selected image
-      const userImage = new Image();
-      userImage.src = URL.createObjectURL(selectedImage);
-
-      userImage.onload = () => {
-        context.drawImage(userImage, 0, 0, frameImage.width, frameImage.height);
-        context.drawImage(frameImage, 0, 0, frameImage.width, frameImage.height);
-
-        // Update the frame preview with the overlaid image
-        framePreview.src = canvas.toDataURL('image/avif');
-      };
-    };
-  }
-}
-
-// Add an event listener for changes in the image selection
-document.getElementById('imageSelection').addEventListener('change', handleImageSelection);
-
-// Update the frame preview when the frame selection changes
-document.getElementById('frameSelection').addEventListener('change', () => {
-  displayFramePreview();
-  handleImageSelection(); // Call the updated function to keep the user-selected image loaded
-});
-
-// Initialize frame options and preview on page load
-document.addEventListener('DOMContentLoaded', () => {
-  updateFrameOptions();
-});
-
-function toggleGrandfestMode() {
-    const grandfestToggle = document.getElementById('grandfestToggle').checked;
-    const frameTypeSelection = document.getElementById('frameTypeSelection');
-    const frameSelection = document.getElementById('frameSelection');
-    
-    if (grandfestToggle) {
-        // Disable "Which do you prefer" and hide it
-        frameTypeSelection.style.display = 'none';
-
-        // Change frame options to Team Past, Team Present, and Team Future
-        frameSelection.innerHTML = ''; // Clear existing options
-        const grandfestOptions = [
-            { value: "Team_Past.avif", text: "Team Past" },
-            { value: "Team_Present.avif", text: "Team Present" },
-            { value: "Team_Future.avif", text: "Team Future" }
-        ];
-
-        grandfestOptions.forEach(option => {
-            const optionElement = document.createElement('option');
-            optionElement.value = `/assets/images/splatfest/grandfest/${option.value}`;
-            optionElement.textContent = option.text;
-            frameSelection.appendChild(optionElement);
-        });
-
-        // Display the preview of the first frame
-        displayFramePreview();
-    } else {
-        // Enable "Which do you prefer" and show it
-        frameTypeSelection.style.display = 'block';
-
-        // Reset frame options based on the selected type (Squid or Octopus)
-        updateFrameOptions();
+async function fetchWithRetry(url) {
+    try {
+        // First try with the Splatoon 3 parameter
+        const response = await fetch(url);
+        const data = await response.json();
+        
+        // If we get an error, try without the parameter
+        if (data.error) {
+            const fallbackUrl = url.split('?')[0]; // Remove everything after ?
+            const fallbackResponse = await fetch(fallbackUrl);
+            return await fallbackResponse.json();
+        }
+        
+        return data;
+    } catch (error) {
+        // If fetch fails completely, try without the parameter
+        const fallbackUrl = url.split('?')[0]; // Remove everything after ?
+        const fallbackResponse = await fetch(fallbackUrl);
+        return await fallbackResponse.json();
     }
 }
+
+// Function to fetch data from the API and update HTML content
+// Modified updatePresence function
+async function updatePresence() {
+    try {
+        const data = await fetchWithRetry('https://nxapi-presence.fancy.org.uk/api/presence/644cd5195d154bd5?include-splatoon3=1');
+        
+        // Extract online status and game name from the JSON data
+        const onlineStatus = (data.friend.presence.state.toLowerCase() === 'playing') ? 'Online' : capitalizeFirstLetter(data.friend.presence.state.toLowerCase());
+        const gameName = data.friend.presence.game.name || null;
+
+        // Select the element where the content will be updated
+        const statusContainer = document.getElementById('status-container');
+
+        // Define colors based on the online status
+        let statusColor = '';
+        switch (onlineStatus.toLowerCase()) {
+            case 'online':
+            case 'playing':
+                statusColor = '#00C900';
+                break;
+            case 'offline':
+                statusColor = 'red';
+                break;
+            case 'inactive':
+                statusColor = 'yellow';
+                break;
+            default:
+                statusColor = 'white';
+        }
+
+        // Update HTML content based on whether a game is being played or not
+        if (gameName) {
+            statusContainer.innerHTML = `<p>Currently <span style="color: ${statusColor};">${onlineStatus}</span> playing ${gameName} <a id="check-switch-game-status">🔎</a></p>`;
+        } else {
+            statusContainer.innerHTML = `<p>Currently <span style="color: ${statusColor};">${onlineStatus.charAt(0)}${onlineStatus.slice(1).toLowerCase()}</span> <a id="check-switch-game-status">🔎</a></p>`;
+        }
+
+        // Add event listener to the link to open modal
+        document.getElementById('check-switch-game-status').addEventListener('click', openModal);
+    } catch (error) {
+        console.error('Error fetching data:', error);
+    }
+}
+
+// Function to open modal
+function openModal() {
+  // Get current theme
+  const currentTheme = localStorage.getItem('theme') || 
+                      (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+
+  // Create modal container
+  const modalContainer = document.createElement('div');
+  modalContainer.classList.add('modal-container');
+
+  // Create modal content
+  const modalContent = document.createElement('div');
+  modalContent.classList.add('modal-content');
+  
+  // Create close button
+  const closeButton = document.createElement('span');
+  closeButton.classList.add('close-button');
+  closeButton.innerHTML = 'X';
+  closeButton.onclick = closeModal;
+  
+  // Create picture element
+  const pictureElement = document.createElement('picture');
+  
+  // Create source element (for dark theme)
+  const sourceElement = document.createElement('source');
+  sourceElement.setAttribute('srcset', `https://nxapi-presence.fancy.org.uk/api/presence/644cd5195d154bd5/embed?theme=${currentTheme}&friend-code=2549-4631-6600&transparent=1`);
+  sourceElement.setAttribute('media', '(prefers-color-scheme: dark)');
+  
+  // Create img element (with current theme)
+  const imgElement = document.createElement('img');
+  imgElement.setAttribute('src', `https://nxapi-presence.fancy.org.uk/api/presence/644cd5195/embed?theme=${currentTheme}&friend-code=2549-4631-6600&transparent=1`);
+  imgElement.setAttribute('alt', 'Nintendo Switch presence');
+  
+  // Append elements
+  pictureElement.appendChild(sourceElement);
+  pictureElement.appendChild(imgElement);
+  modalContent.appendChild(closeButton);
+  modalContent.appendChild(pictureElement);
+  modalContainer.appendChild(modalContent);
+  
+  // Append modal container to body
+  document.body.appendChild(modalContainer);
+  
+  // Add class to body to dim the screen
+  document.body.classList.add('modal-open');
+
+  // Add event listener to update theme if changed while modal is open
+  const themeChangeHandler = (e) => {
+    const newTheme = e.detail;
+    sourceElement.setAttribute('srcset', sourceElement.srcset.replace(/theme=\w+/, `theme=${newTheme}`));
+    imgElement.setAttribute('src', imgElement.src.replace(/theme=\w+/, `theme=${newTheme}`));
+  };
+  document.addEventListener('themeChanged', themeChangeHandler);
+
+  // Clean up event listener when modal closes
+  modalContainer.addEventListener('click', function handler(e) {
+    if (e.target === modalContainer) {
+      document.removeEventListener('themeChanged', themeChangeHandler);
+      modalContainer.removeEventListener('click', handler);
+    }
+  });
+}
+
+// Function to close modal
+function closeModal() {
+  // Remove modal container
+  const modalContainer = document.querySelector('.modal-container');
+  modalContainer.parentNode.removeChild(modalContainer);
+  
+  // Remove class to body to undim the screen
+  document.body.classList.remove('modal-open');
+}
+
+// Call the function initially to update the content
+updatePresence();
+
+// Update presence every 5 seconds
+setInterval(updatePresence, 5000);
+
+// Birthday code
+// Get the current date
+var currentDate = new Date();
+
+// Define the target date for the birthday (January 17th)
+var birthday = new Date(currentDate.getFullYear(), 0, 17);
+
+// Check if it's the birthday
+if (
+  currentDate.getMonth() === birthday.getMonth() &&
+  currentDate.getDate() === birthday.getDate()
+) {
+  // Calculate age based on birthdate
+  var birthDate = new Date(1991, 0, 17);
+  var age = currentDate.getFullYear() - birthDate.getFullYear();
+
+  // Add cake emojis and sparkle effect to the heading
+  var codyHeading = document.getElementById("cody-heading");
+  var codyHeading2 = document.getElementById("cody-heading2");
+  codyHeading.innerHTML = "🎂 Cody 🎂";
+  codyHeading2.innerHTML = "Happy " + age + getOrdinalSuffix(age) + " Birthday!! 🥳";
+
+  // Add shimmer effect
+  codyHeading.classList.add("shimmer");
+  codyHeading2.classList.add("shimmer");
+
+  // Update age in the HTML code
+  var ageElement = document.getElementById('age');
+  if (ageElement) {
+    ageElement.textContent = age.toString();
+  }
+}
+
+// Function to get the ordinal suffix for the age
+function getOrdinalSuffix(number) {
+  var suffix = 'th';
+  var lastDigit = number % 10;
+  var lastTwoDigits = number % 100;
+
+  if (lastDigit === 1 && lastTwoDigits !== 11) {
+    suffix = 'st';
+  } else if (lastDigit === 2 && lastTwoDigits !== 12) {
+    suffix = 'nd';
+  } else if (lastDigit === 3 && lastTwoDigits !== 13) {
+    suffix = 'rd';
+  }
+
+  return suffix;
+}
+  
+  // Function to change the location to the specified URL
+  function changeLocation(url) {
+    window.location.href = url;
+  }
+  
+     // Get the footer element
+     var footer = document.querySelector('footer');
+  
+     // Get the start year
+     var startYear = 2023; // Replace with the desired start year
+     
+     // Get the current year
+     var currentYear = new Date().getFullYear();
+     
+     // Build the footer text
+     var footerText = '&copy; ' + (startYear === currentYear ? startYear : startYear + ' - ' + currentYear) + ' CodyMKW. All rights reserved. | <a href="credits" onclick="showContent(\'creditsContent\')">Credits</a>';
+     
+     // Update the footer text
+     footer.innerHTML = footerText;
+
+// Function to change the title and favicon based on the URL
+function updateTitleAndFavicon() {
+  // Get the current URL
+  var currentUrl = window.location.href;
+
+  // Check if the URL matches the desired domain
+  if (isSpecificDomain(currentUrl, 'codymkw.netlify.app')) {
+    // Add [PREVIEW] before the existing title
+    document.title = '[PREVIEW] ' + document.title;
+
+    // Change the favicon
+    var favicon = document.querySelector("link[rel='icon']");
+    favicon.href = 'https://i.imgur.com/1Tttgz6.png';
+
+    // Add the beta icon to the page
+    var betaIcon = document.createElement('div');
+    betaIcon.className = 'beta-icon';
+    betaIcon.id = 'beta-icon';
+    var img = document.createElement('img');
+    img.src = 'https://i.imgur.com/1Tttgz6.png';
+    img.alt = 'Beta Icon';
+    betaIcon.appendChild(img);
+    document.body.appendChild(betaIcon);
+
+    // Add event listener to the link to beta modal
+    document.getElementById('beta-icon').addEventListener('click', openBetaModal);
+  }
+}
+
+function openBetaModal() {
+    const modalContainer = document.createElement('div');
+    modalContainer.classList.add('modal-container');
+
+    const modalContent = document.createElement('div');
+    modalContent.classList.add('modal-content');
+
+    const closeButton = document.createElement('span');
+    closeButton.classList.add('close-button');
+    closeButton.innerHTML = 'X';
+    closeButton.onclick = closeModal;
+
+    // Add text indicating preview version and link to the main version
+    const betaText = document.createElement('p');
+    betaText.innerHTML = '<h1 style="text-align: center;"><b><u>Preview Webpage</u></b></h1><br>This is a preview version of the webpage. It gets updates for testing before being pushed to the main version. <br>';
+
+    // Create a container for the link and center it
+    const linkContainer = document.createElement('div');
+    linkContainer.style.textAlign = 'center';
+
+    // Create the link
+    const betaLink = document.createElement('a');
+    betaLink.href = 'https://codymkw.github.io';
+    betaLink.textContent = 'Click here to visit the main version.';
+    linkContainer.appendChild(betaLink);
+
+    // Append the link container to the beta text
+    betaText.appendChild(linkContainer);
+
+    modalContent.appendChild(closeButton);
+    modalContent.appendChild(betaText);
+    modalContainer.appendChild(modalContent);
+
+    document.body.appendChild(modalContainer);
+    document.body.classList.add('modal-open');
+}
+
+// Function to check if the URL matches a specific domain
+function isSpecificDomain(url, domain) {
+  return url.includes(domain);
+}
+
+// Call the function to update title and favicon
+updateTitleAndFavicon();
+
+// Theme Switcher
+document.addEventListener('DOMContentLoaded', function() {
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeStyle = document.getElementById('theme-style');
+    
+    // Check for saved preference or use system preference
+    const savedTheme = localStorage.getItem('theme');
+    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    
+    // Set initial theme
+    if (savedTheme === 'light' || (!savedTheme && !systemPrefersDark)) {
+        setLightTheme();
+    } else {
+        setDarkTheme();
+    }
+    
+    // Toggle theme on button click
+    themeToggle.addEventListener('click', function() {
+        if (themeStyle.getAttribute('href').includes('light')) {
+            setDarkTheme();
+        } else {
+            setLightTheme();
+        }
+    });
+    
+function setLightTheme() {
+    themeStyle.href = 'assets/css/main-light.css';
+    themeToggle.innerHTML = '<span>🌙</span> Dark Mode';
+    localStorage.setItem('theme', 'light');
+    document.dispatchEvent(new CustomEvent('themeChanged', { detail: 'light' }));
+}
+
+function setDarkTheme() {
+    themeStyle.href = 'assets/css/main.css';
+    themeToggle.innerHTML = '<span>☀️</span> Light Mode';
+    localStorage.setItem('theme', 'dark');
+    document.dispatchEvent(new CustomEvent('themeChanged', { detail: 'dark' }));
+}
+});
