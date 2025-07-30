@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="msapplication-TileColor" content="#00c900" />
+    <meta name="theme-color" content="#00c900" />
+    <link href="https://social.vivaldi.net/@codymkw" rel="me" />
+    <link href="https://nxapi-auth.fancy.org.uk/@CodyMKW" rel="me" />
+    <link rel="me" href="https://splashcat.ink/@CodyMKW/" />
+    <meta name="description" content="A Discord bot crafted for precision, personality, and privacy — built by CodyMKW for exclusive use." />
+    <meta name="keywords" content="Reggie Fils-Aime bot, Discord bot, Nintendo bot, CodyMKW, private bot, slash commands, fun Discord commands, interaction bot, custom Discord bot, Nintendo fun, meme bot" />
+    <meta name="author" content="CodyMKW" />
+    <meta property="og:title" content="Reggie Fils-Aimé Discord Bot - CodyMKW" />
+    <meta property="og:description" content="A Discord bot crafted for precision, personality, and privacy — built by CodyMKW for exclusive use." />
+    <meta property="og:image" content="https://i.imgur.com/Xa4zPGW.jpg" />
+    <meta property="og:url" content="https://codymkw.github.io" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:creator" content="@CodyMKW" />
+    <meta name="twitter:title" content="Reggie Fils-Aimé Discord Bot - CodyMKW" />
+    <meta name="twitter:description" content="A Discord bot crafted for precision, personality, and privacy — built by CodyMKW for exclusive use." />
+    <meta name="twitter:image:src" content="https://i.imgur.com/Xa4zPGW.jpg" />
+    <link id="theme-style" rel="stylesheet" href="assets/css/main.css" />
+    <link rel="stylesheet" href="assets/css/emoji.css" />
+    <script defer src="assets/javascript/main.js"></script>
+    <script defer src="assets/javascript/backgrounds.js"></script>
+    <script defer src="assets/javascript/avatarFramestickyheader.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+    <title>Reggie Fils-Aimé Bot - CodyMKW</title>
+  </head>
+
+  <body>
+    <div id="sticky-header" class="sticky-header" style="display: none;">
+      <span id="close-button" onclick="toggleHeader()">X</span>
+      <a href="" target="_blank" class="important"></a>
+    </div>
+    <div id="background-image"></div>
+    <div class="container">
+      <div class="header">
+        <p>
+        <div class="cody-header-bg">
+          <h1 id="cody-heading2"></h1>
+          <h1 id="cody-heading">CodyMKW</h1>
+        </div>
+        </p>
+        <div class="avatar-frame" id="avatar-frame" onclick="selectAvatarFrame()">
+          <img src="" alt="Avatar Frame" class="frame-image" style="display: none;" />
+          <img src="https://www.gravatar.com/avatar/5127de8a3a295a02ff3fc55bb6b2fabe?s=2048" alt="Reggie Fils-Aimé Bot Avatar" class="avatar-image" />
+        </div>
+        <div class="header-text">
+          <p>
+            🍃 Animal Crossing enthusiast | 🏁 Mario Kart racer | 🦑 Splatoon veteran | 🍥 Anime lover
+          </p>
+          <div id="status-container"></div>
+        </div>
+      </div>
+      <div class="tabs">
+        <button onclick="window.location.href='/'">About</button>
+        <button onclick="window.location.href='blog'">Blog</button>
+        <button onclick="window.location.href='nintendo-news'">Nintendo News</button>
+        <button onclick="window.location.href='chat'">Chat</button>
+        <button onclick="window.location.href='other-stuff'">Other Stuff</button>
+        <button onclick="window.location.href='social-media'">Social Media</button>
+      </div>
+      <div class="content" id="reggiebotContent">
+        <p>Created as a private, Nintendo-inspired Discord bot, <strong>Reggie</strong> pays homage to the legendary Reggie Fils-Aimé. This bot offers an array of interactive functionalities, valuable Nintendo game insights, and custom elements developed exclusively for Cody's friends and community.</p>
+
+        <p>Take a look at some screenshots and moments of Reggie in action!</p>
+        <div class="swiper image-gallery">
+          <div class="swiper-wrapper">
+            <div class="swiper-slide"><img src="assets/images/reggie1.png" alt="Reggie Bot Screenshot 1" /></div>
+            <div class="swiper-slide"><img src="assets/images/reggie2.png" alt="Reggie Bot Screenshot 2" /></div>
+            <div class="swiper-slide"><img src="assets/images/reggie3.png" alt="Reggie Bot Screenshot 3" /></div>
+            <div class="swiper-slide"><img src="assets/images/reggie4.png" alt="Reggie Bot Screenshot 4" /></div>
+            <div class="swiper-slide"><img src="assets/images/reggie5.png" alt="Reggie Bot Screenshot 5" /></div>
+          </div>
+          <div class="swiper-pagination"></div>
+          <div class="swiper-button-prev"></div>
+          <div class="swiper-button-next"></div>
+        </div>
+        
+        <div class="bot-invite-buttons">
+          <button class="invite-button disabled" disabled>Invite to Server</button>
+          <button class="invite-button disabled" disabled>Add to Your Account</button>
+        </div>
+        
+        <h2>Slash Commands</h2>
+        <ul>
+          <h3>📌 General Commands</h3>
+          <li><code>/help</code> – Lists all commands.</li>
+          <li><code>/avatar</code> – Get the avatar of any user.</li>
+          <li><code>/fact</code> – Receive a random fact. Might blow your mind.</li>
+          <li><code>/dog</code> – Doggo image incoming!</li>
+          <li><code>/cat</code> – Cat pic for the soul.</li>
+          <li><code>/say</code> – The bot will say whatever you want. Your digital megaphone.</li>
+          <li><code>/switchstatus</code> – Check Cody's current live Nintendo Switch status.</li>
+        </ul>
+        <ul>
+          <h3>🌳 Animal Crossing Commands</h3>
+          <li><code>/codyac</code> – Cody’s Animal Crossing info.</li>
+          <li><code>/josephac</code> – Joseph’s Animal Crossing info.</li>
+        </ul>
+        <ul>
+          <h3>🦑 Splatoon Rotation Commands</h3>
+          <li><code>/splat2</code> – Current Splatoon 2 stage rotation.</li>
+          <li><code>/splat3</code> – Current Splatoon 3 stage rotation.</li>
+          <li><code>/salmon2</code> – Current Salmon Run rotation in Splatoon 2.</li>
+          <li><code>/salmon3</code> – Current Salmon Run rotation in Splatoon 3.</li>
+        </ul>
+        <h3>🎭 Interaction & Fun Commands</h3>
+        <ul>
+          <li><code>/hug</code> – Hug your buddy with a cute anime gif.</li>
+          <li><code>/kiss</code> – Send a sweet anime kiss gif to your buddy.</li>
+          <li><code>/tickle</code> – Guaranteed giggles (anime-style).</li>
+          <li><code>/pat</code> – Pat your buddy like you're in a wholesome anime scene.</li>
+          <li><code>/poke</code> – Gentle poke with a gif. Classic.</li>
+          <li><code>/stare</code> – Lock eyes. Intense anime stare gif.</li>
+          <li><code>/smug</code> – Smug anime gif because you're just that confident.</li>
+          <li><code>/thumbsup</code> – Reggie-level approval in gif form.</li>
+          <li><code>/slap</code> – Anime slap of justice. Or comedy.</li>
+          <li><code>/highfive</code> – Epic anime high five moment, captured in gif glory.</li>
+        </ul>
+        
+        <h3>📌 FAQ</h3>
+        <ul>
+          <li><strong>Is Reggie available to the public?</strong> Nope—invite-only for now.</li>
+          <li><strong>Will Reggie ever be public?</strong> Honestly? I don’t even know. Maybe someday. Maybe never. It’s like asking if Waluigi will ever get his own game—hope exists, but we live in chaos.</li>
+          <li><strong>How do I become a tester?</strong> You don’t. It’s entirely up to Cody who gets in—there’s no form, request process, or secret handshake. 😎</li>
+          <li><strong>Can I suggest features?</strong> Absolutely. Cody’s always open to cool ideas.</li>
+          <li><strong>Why is it called Reggie?</strong> Because the legend himself, Reggie Fils-Aimé, is a king. Simple as that.</li>
+          <li><strong>Does Reggie store any data?</strong> Nope. It doesn’t log messages or track users. Just here to vibe.</li>
+          <li><strong>Is this bot affiliated with Nintendo?</strong> Nah. Reggie’s just a fun tribute and parody. No official ties at all.</li>
+        </ul>
+      </div>
+    </div>
+    <button id="theme-toggle" class="theme-toggle-button"><span>☀️</span> Light Mode</button>
+    <footer></footer>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const swiper = new Swiper('.swiper', {
+          loop: true,
+          pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+          },
+          navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+          },
+        });
+      });
+    </script>
+  </body>
+</html>

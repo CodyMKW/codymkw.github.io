@@ -45,6 +45,26 @@ function updatePlayingTime(sinceTimestamp) {
     }, 1000);
 }
 
+function getTimeAgo(timestamp) {
+    const seconds = Math.floor((Date.now() - timestamp * 1000) / 1000);
+    const intervals = [
+        { label: 'year', seconds: 31536000 },
+        { label: 'month', seconds: 2592000 },
+        { label: 'day', seconds: 86400 },
+        { label: 'hour', seconds: 3600 },
+        { label: 'minute', seconds: 60 },
+        { label: 'second', seconds: 1 }
+    ];
+
+    for (const interval of intervals) {
+        const count = Math.floor(seconds / interval.seconds);
+        if (count >= 1) {
+            return `${count} ${interval.label}${count > 1 ? 's' : ''} ago`;
+        }
+    }
+    return 'just now';
+}
+
 function refreshPage() {
     location.reload();
 }
@@ -87,6 +107,11 @@ async function fetchData() {
         statusElement.className = status;
         nameSpan.textContent = messageMap[status];
 
+        // ⏱️ Show "Last Updated"
+        const updatedAt = friend.presence.updatedAt;
+        const updatedAgo = getTimeAgo(updatedAt);
+        document.getElementById('lastUpdated').textContent = updatedAgo;
+
         if (title !== null) {
             document.getElementById('gameInfo').style.display = 'block';
             document.getElementById('gameName').textContent = title.name;
@@ -118,7 +143,8 @@ async function fetchData() {
                         3: 'Fighting in Solo Battle',
                         4: 'Warming up in a CPU Battle',
                         5: 'Messing around in Training mode',
-                        6: 'Learning the controls in the Tutorial'
+                        6: 'Learning the controls in the Tutorial',
+                        7: 'Dominating the competition in Area Control'
                     }
                 }
             };
@@ -196,8 +222,7 @@ async function fetchData() {
             } else {
                 splatoonMode.style.color = color;
             }
-            
-            // Fallback: if vsMode is not available but Tableturf Battle is showing, still set its color
+
             if ((!vsMode || !vsMode.name) && splatoonMode.textContent === 'Tableturf Battle') {
                 splatoonMode.style.color = modeColors['Tableturf Battle'];
             }
@@ -226,6 +251,5 @@ async function fetchData() {
     }
 }
 
-// Load on page load + auto refresh every 3 minutes
 fetchData();
 setInterval(refreshPage, 180000);
