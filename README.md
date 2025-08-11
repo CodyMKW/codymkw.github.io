@@ -50,13 +50,6 @@ Pull requests, suggestions, and bug reports are welcome!
 
 ---
 
-## 📄 License
-
-Content and code © CodyMKW.  
-See [LICENSE](LICENSE) for details.
-
----
-
 ## 💬 Contact
 
 - [GitHub Profile](https://github.com/CodyMKW)
