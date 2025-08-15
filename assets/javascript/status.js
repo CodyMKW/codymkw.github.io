@@ -1,4 +1,4 @@
-\function formatWeaponsList(weapons) {
+function formatWeaponsList(weapons) {
     const weaponsArray = weapons.split(', ');
     const lastWeapon = weaponsArray.pop();
     return weaponsArray.join(', ') + (weaponsArray.length > 0 ? ', and ' : '') + lastWeapon;
