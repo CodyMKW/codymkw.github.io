@@ -69,9 +69,25 @@ function refreshPage() {
     location.reload();
 }
 
+const accountUrls = {
+  us: 'https://nxapi-presence.fancy.org.uk/api/presence/644cd5195d154bd5?include-splatoon3=1',
+  uk: 'https://nxapi-presence.fancy.org.uk/api/presence/c63e17d19d140c06?include-splatoon3=1'
+};
+
+function getSelectedAccount() {
+  return localStorage.getItem('selectedAccount') || 'us';
+}
+
+function saveSelectedAccount(account) {
+  localStorage.setItem('selectedAccount', account);
+}
+
 async function fetchData() {
     try {
-        const presenceUrl = 'https://nxapi-presence.fancy.org.uk/api/presence/644cd5195d154bd5?include-splatoon3=1';
+        const selectedAccount = getSelectedAccount();
+        document.getElementById('accountSelect').value = selectedAccount;
+
+        const presenceUrl = accountUrls[selectedAccount];
         const data = await fetchWithRetry(presenceUrl);
 
         const [subtextData, splatfestColorsData] = await Promise.all([
@@ -251,5 +267,20 @@ async function fetchData() {
     }
 }
 
-fetchData();
-setInterval(refreshPage, 180000);
+// Handle dropdown change
+document.getElementById('accountSelect').addEventListener('change', () => {
+  const selected = document.getElementById('accountSelect').value;
+  saveSelectedAccount(selected);
+  fetchData(); // Refresh with new account
+});
+
+// Load saved account on page load
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('accountSelect').value = getSelectedAccount();
+  fetchData();
+});
+
+// Keep your refresh interval
+setInterval(() => {
+  fetchData();
+}, 180000);
