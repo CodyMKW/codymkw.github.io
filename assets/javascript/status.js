@@ -1,4 +1,4 @@
-function formatWeaponsList(weapons) {
+\function formatWeaponsList(weapons) {
     const weaponsArray = weapons.split(', ');
     const lastWeapon = weaponsArray.pop();
     return weaponsArray.join(', ') + (weaponsArray.length > 0 ? ', and ' : '') + lastWeapon;
@@ -90,14 +90,6 @@ async function fetchData() {
         const presenceUrl = accountUrls[selectedAccount];
         const data = await fetchWithRetry(presenceUrl);
 
-        const [subtextData, splatfestColorsData] = await Promise.all([
-            fetch('https://api.npoint.io/f96cb06703bad4f850de').then(res => res.json()),
-            fetch('https://api.npoint.io/f96cb06703bad4f850de').then(res => res.json())
-        ]);
-
-        const { acnh, fort, mhur } = subtextData.games;
-        const splatfestColors = splatfestColorsData.splatfestColors;
-
         const { friend, title } = data;
 
         document.getElementById('avatarImage').src = friend.imageUri;
@@ -131,48 +123,6 @@ async function fetchData() {
         if (title !== null) {
             document.getElementById('gameInfo').style.display = 'block';
             document.getElementById('gameName').textContent = title.name;
-
-            const subtextMaps = {
-                '01006f8002326000': {
-                    value: acnh.subtext,
-                    map: {
-                        1: 'Having visitors over',
-                        2: 'Visiting a friend',
-                        3: 'Designing some Vacation Homes'
-                    },
-                    effect: true
-                },
-                '010025400aece000': {
-                    value: fort.subtext,
-                    map: {
-                        1: 'Playing some Zero Build',
-                        2: 'Messing around in Creative',
-                        3: 'Tearing up the track in Rocket Racing',
-                        4: 'Playing with some legos in Lego Fortnite'
-                    }
-                },
-                '0100ba6013f0e000': {
-                    value: mhur.subtext,
-                    map: {
-                        1: 'Battling it out in Unranked Battle',
-                        2: 'Aiming for the top in Ranked Battle',
-                        3: 'Fighting in Solo Battle',
-                        4: 'Warming up in a CPU Battle',
-                        5: 'Messing around in Training mode',
-                        6: 'Learning the controls in the Tutorial',
-                        7: 'Dominating the competition in Area Control'
-                    }
-                }
-            };
-
-            const game = subtextMaps[title.id];
-            if (game) {
-                if (game.effect) document.getElementById('gameInfo').classList.add('special-effect');
-                setSubtext(game.value, game.map);
-            } else {
-                document.getElementById('gameInfo').classList.remove('special-effect');
-                document.getElementById('subText').style.display = 'none';
-            }
 
             document.getElementById('sysDescription').textContent = friend.presence.game.sysDescription;
             document.getElementById('gameImage').src = title.image_url;
@@ -221,8 +171,8 @@ async function fetchData() {
             }
 
             const modeColors = {
-                'Splatfest Battle': `linear-gradient(to right, ${splatfestColors[0]}, ${splatfestColors[1]}, ${splatfestColors[2]})`,
-                'Tricolor Battle': `linear-gradient(to right, ${splatfestColors[0]}, ${splatfestColors[1]}, ${splatfestColors[2]})`,
+                'Splatfest Battle': `linear-gradient(to right, #1a22f7, #ffba11, #4f4a55)`,
+                'Tricolor Battle': `linear-gradient(to right, #1a22f7, #ffba11, #4f4a55)`,
                 'Tableturf Battle': '#0534a3',
                 'Private Battle': '#c21786',
                 'Regular Battle': '#20c927',
