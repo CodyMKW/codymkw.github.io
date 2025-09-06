@@ -96,6 +96,7 @@
 <script>
   let animeIdOverrides = {};
   let loadedAnimeData   = [];
+  let loadedGameData    = [];
 
   async function getMyAnimeListUrlAndInfo(entry) {
     const title      = typeof entry === 'string' ? entry : entry.title;
@@ -191,20 +192,26 @@
     }
   }
 
-  function generateNintendoUrl(title) {
-    const slug = title
+  function generateNintendoUrl(title, isSwitch2 = false) {
+    let slug = title
       .trim().toLowerCase()
       .replace(/\+/g, 'plus')
       .replace(/[^a-z0-9\s-]/g, '')
       .replace(/\s+/g, '-') + '-switch';
+
+    if (isSwitch2) slug += '-2';
+
     return `https://www.nintendo.com/store/products/${slug}/`;
   }
 
   function autoLinkSwitchGames() {
-    document.querySelectorAll('#games-list li').forEach(item => {
-      const title = item.textContent.trim();
+    document.querySelectorAll('#games-list li').forEach((item, i) => {
+      const entry = loadedGameData[i];
+      const title = typeof entry === 'string' ? entry : entry.title;
+      const isSwitch2 = typeof entry === 'object' && entry.switch2 === true;
+
       const link  = document.createElement('a');
-      link.href   = generateNintendoUrl(title);
+      link.href   = generateNintendoUrl(title, isSwitch2);
       link.textContent = title;
       link.target = '_blank';
       link.rel    = 'noopener noreferrer';
@@ -221,13 +228,14 @@
 
       animeIdOverrides = data.animeIdOverrides || {};
       loadedAnimeData  = data.anime || [];
+      loadedGameData   = data.games || [];
 
       const gameList  = document.getElementById('games-list');
       const animeList = document.getElementById('anime-list');
 
-      data.games.forEach(title => {
+      loadedGameData.forEach(entry => {
         const li = document.createElement('li');
-        li.textContent = title;
+        li.textContent = typeof entry === 'string' ? entry : entry.title;
         gameList.appendChild(li);
       });
 
