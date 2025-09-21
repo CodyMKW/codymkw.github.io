@@ -10,7 +10,6 @@ Source code for [CodyMKW's web page](https://codymkw.github.io) — a personal s
 - **Miiverse Archive**: Preserved posts, images, and interactions from Nintendo's Miiverse.
 - **Blog**: Dynamic blog system with posts, categories, search, and pagination.
 - **Discord Bot (Reggie)**: Details and showcase for a custom Discord bot.
-- **Music Playlists**: Curated Nintendo music playlists.
 - **Other Fun Stuff**: Randomizers, games, and Easter eggs.
 
 ---
