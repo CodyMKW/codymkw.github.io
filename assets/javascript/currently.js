@@ -1,7 +1,7 @@
 async function fetchLastWatchedAnime(username) {
   const query = `
     query ($username: String) {
-      MediaListCollection(userName: $username, type: ANIME, sort: UPDATED_TIME_DESC, status: COMPLETED) {
+      MediaListCollection(userName: $username, type: ANIME, sort: UPDATED_TIME_DESC) {
         lists {
           entries {
             media {
