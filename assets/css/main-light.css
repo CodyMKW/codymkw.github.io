@@ -105,7 +105,7 @@ a:hover {
 button {
   background-color: #007acc;
   color: #fff;
-  border: solid #e0e0e0 1px;
+  border: solid #000 1px;
   border-radius: 5px;
   padding: 10px 20px;
   cursor: pointer;
@@ -325,6 +325,34 @@ h1.notfoundheading {
 
 #aboutContent p, h2 {
   color: #333;
+}
+
+/* Currently Section - Light Theme */
+#currently-section {
+  padding: 1.2rem 1.5rem;
+  margin-top: 1rem;
+}
+
+#currently-section .currently-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#currently-section .currently-list li {
+  font-size: 1rem;
+  color: #333; /* darker text for readability */
+  padding: 0.4rem 0;
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+}
+
+#currently-section .currently-list li:last-child {
+  border-bottom: none;
+}
+
+#currently-section .currently-list strong {
+  color: #2563eb; /* blue accent highlight */
+  font-weight: 600;
 }
 
 /* Buttons page styles */

@@ -67,10 +67,10 @@
         <div class="content" id="DreamAddressContent">
                     <h2><i class="emoji acLuna"></i></h2>
                     <h2>Ula'ula</h2>
-                    <h2>DA-2561-1806-9323</h2>
-                    <small>Dream Address was last updated on March 28, 2025</small>
+                    <h2 id="dream-address"></h2>
+                    <small id="dream-update-date"></small>
                     <p><img src="assets/images/ACNHWelcome.webp" alt="ACNH Screenshot"></p>
-                    <p><b>Number of Visitors:</b> 934 <small>(as of 3/28/2025)</small></p>
+                    <p id="visitor-count"></p>
                     <p align="left">Welcome to Ula'ula! Explore and talk to our lovely residents: Peanut, Marshal, Pekoe, Lucky, Ione, Chai, Marty, Judy, Sasha, and Shep. Also, pay a visit to the memorial for <a href="https://en.wikipedia.org/wiki/Etika" target="_blank">Etika</a> and <a href="https://en.wikipedia.org/wiki/Satoru_Iwata" target="_blank">Satoru Iwata</a>. 😊</p>
                     <p align="left"><b>Challenge:</b> Hidden around Ula'ula are five colorful gems—red, blue, green, purple, and yellow! Can you find them all? Take your time and explore every corner of the island. Good luck! 💎</p>
                     <small><i>(The gems will be in different spots each time I update my island, so check back for a new challenge!)</i></small>
@@ -81,5 +81,29 @@
     </div>
     <button id="theme-toggle" class="theme-toggle-button"><span>☀️</span> Light Mode</button>
     <footer></footer>
+<script>
+  fetch('https://api.npoint.io/c776077c114b32d71a04')
+    .then(response => response.json())
+    .then(data => {
+      // Update the date
+      const updateDateEl = document.getElementById('dream-update-date');
+      if (updateDateEl) {
+        updateDateEl.textContent = `Dream Address was last updated on ${data.date_long}`;
+      }
+
+      // Update the visitor count
+      const visitorTextEl = document.getElementById('visitor-count');
+      if (visitorTextEl) {
+        visitorTextEl.innerHTML = `<b>Number of Visitors:</b> ${data.visitors} <small>(as of ${data.date_short})</small>`;
+      }
+
+      // Update the Dream Address
+      const dreamAddressEl = document.getElementById('dream-address');
+      if (dreamAddressEl) {
+        dreamAddressEl.textContent = data.dream_address;
+      }
+    })
+    .catch(error => console.error('Error loading dream_data.json:', error));
+</script>
 </body>
 </html>

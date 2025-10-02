@@ -1,42 +1,48 @@
 {
-    "name": "CodyMKW",
-    "short_name": "CodyMKW",
-    "description": "Dive into Cody\u2019s world of gaming and anime. Experience the joy, thrill, and depth that have provided countless hours of joy and relaxation.",
-    "categories": ["CodyMKW", "Nintendo", "gaming", "Animal Crossing", "Splatoon", "Mario Kart", "The Legend of Zelda", "Pokemon", "Nintendo Switch", "Wii U", "bio", "quick facts"],
-    "lang": "en-US",
-    "orientation": "any",
-    "icons": [
-        {
-            "src": "/android-chrome-192x192.png",
-            "sizes": "192x192",
-            "type": "image/png",
-            "purpose": "any"
-        },
-        {
-            "src": "/android-chrome-512x512.png",
-            "sizes": "512x512",
-            "type": "image/png",
-            "purpose": "any"
-        },
-        {
-            "src": "/favicon-16x16.png",
-            "sizes": "16x16",
-            "type": "image/png",
-            "purpose": "any"
-        },
-        {
-            "src": "/favicon-32x32.png",
-            "sizes": "32x32",
-            "type": "image/png",
-            "purpose": "any"
-        }
-    ],
-    "theme_color": "#00c900",
-    "background_color": "#00c900",
-    "display": "standalone",
-    "start_url": "https://codymkw.github.io/",
-    "scope": "/",
-    "launch_handler": {
-        "client_mode": "auto"
+  "name": "CodyMKW",
+  "short_name": "CodyMKW",
+  "description": "Dive into Cody’s world of gaming and anime. Experience the joy, thrill, and depth that have provided countless hours of joy and relaxation.",
+  "lang": "en-US",
+  "dir": "ltr",
+  "start_url": "/?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#00c900",
+  "background_color": "#00c900",
+  "icons": [
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/favicon-16x16.png",
+      "sizes": "16x16",
+      "type": "image/png",
+      "purpose": "any"
     }
+  ],
+  "categories": [
+    "games",
+    "entertainment",
+    "lifestyle"
+  ],
+  "launch_handler": {
+    "client_mode": "auto"
+  },
+  "prefer_related_applications": false
 }

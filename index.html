@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,9 +11,10 @@
     <meta name="theme-color" content="#00c900">
     <link href="https://social.vivaldi.net/@codymkw" rel="me">
     <link href="https://nxapi-auth.fancy.org.uk/@CodyMKW" rel="me">
-    <link rel="me" href="https://splashcat.ink/@CodyMKW/"/>
+    <link rel="me" href="https://splashcat.ink/@CodyMKW/" />
     <meta name="description" content="Just Cody's little page on the interwebz! :)">
-    <meta name="keywords" content="CodyMKW, Nintendo fan, Animal Crossing, Nintendo Switch, Mario Kart, Pokémon, gaming enthusiast, peaceful gaming, relaxing atmosphere, gaming community, Nintendo Switch gaming, gaming adventures, video games, Nintendo games, gaming journey, social media, gaming community, anime, Clannad, future of Nintendo, QR code, Nintendo news, web apps, social links, gaming fun, Friend Code, gaming enthusiast, gaming community.">
+    <meta name="keywords"
+        content="CodyMKW, Nintendo fan, Animal Crossing, Nintendo Switch, Mario Kart, Pokémon, gaming enthusiast, peaceful gaming, relaxing atmosphere, gaming community, Nintendo Switch gaming, gaming adventures, video games, Nintendo games, gaming journey, social media, gaming community, anime, Clannad, future of Nintendo, QR code, Nintendo news, web apps, social links, gaming fun, Friend Code, gaming enthusiast, gaming community.">
     <meta name="author" content="CodyMKW">
     <meta property="og:title" content="CodyMKW">
     <meta property="og:description" content="Just Cody's little page on the interwebz! :)">
@@ -28,28 +28,29 @@
     <link id="theme-style" rel="stylesheet" href="assets/css/main.css">
     <link rel="stylesheet" href="assets/css/emoji.css">
     <script defer src="assets/javascript/main.js"></script>
+    <script defer src="assets/javascript/currently.js"></script>
     <script defer src="assets/javascript/backgrounds.js"></script>
     <script defer src="assets/javascript/avatarFramestickyheader.js"></script>
     <title>CodyMKW</title>
 </head>
-
 <body>
-  <div id="sticky-header" class="sticky-header" style="display: none;">
-    <span id="close-button" onclick="toggleHeader()">X</span>
-    <a href="" target="_blank" class="important"></a>
-  </div>  
+    <div id="sticky-header" class="sticky-header" style="display: none;">
+        <span id="close-button" onclick="toggleHeader()">X</span>
+        <a href="" target="_blank" class="important"></a>
+    </div>
     <div id="background-image"></div>
     <div class="container">
         <div class="header">
             <p>
             <div class="cody-header-bg">
-              <h1 id="cody-heading2"></h1>
-              <h1 id="cody-heading">CodyMKW</h1>
+                <h1 id="cody-heading2"></h1>
+                <h1 id="cody-heading">CodyMKW</h1>
             </div>
             </p>
             <div class="avatar-frame" id="avatar-frame" onclick="selectAvatarFrame()">
-               <img src="" alt="Avatar Frame" class="frame-image" style="display: none;">
-               <img src="https://www.gravatar.com/avatar/5127de8a3a295a02ff3fc55bb6b2fabe?s=2048" alt="Cody's Avatar" class="avatar-image">
+                <img src="" alt="Avatar Frame" class="frame-image" style="display: none;">
+                <img src="https://www.gravatar.com/avatar/5127de8a3a295a02ff3fc55bb6b2fabe?s=2048" alt="Cody's Avatar"
+                    class="avatar-image">
             </div>
             <div class="header-text">
                 <p>✨ Number 1 Fan of Monica Everett the one and only Silent Witch ✨</p>
@@ -65,17 +66,21 @@
             <button onclick="window.location.href='social-media'">Social Media</button>
         </div>
         <div class="content" id="aboutContent">
-                    <section>
-                        <h2><i class="emoji guraWave"></i></h2>
-                        <h2>About Me</i></h2>
-                        <p>Hey there, I'm Cody I love playing Nintendo games and watching anime. My favorite game series from Nintendo is Animal Crossing and my favorite anime is Secrets of the Silent Witch, because I'm the number one fan of Monica Everett. I also like to play Splatoon, I've been playing that since the first game on the Wii U all the way up to the newest entry on the Nintendo Switch. I like using the Custom Splattershot Jr. and <s>my wife</s> I mean my favorite idol is Marie. I also play as an Octoling ever since they were added in Splatoon 2. Umm yea this is all I can think of putting in the bio so that's it lol</p>
-                    </section>
-                    <br>
-                    <section>
-                       <div style="display: flex; flex-direction: column; align-items: center; text-align: center;">
-                          <p>Also you can check <a href="/buttons">here</a> for my site's button and other cool looking sites!</p>
-                       </div>
-                    </section>
+            <section>
+                <h2><i class="emoji guraWave"></i></h2>
+                <h2>About Me</i></h2>
+                <p>Hey there, I'm Cody I love playing Nintendo games and watching anime. My favorite game series from Nintendo is Animal Crossing and my favorite anime is Secrets of the Silent Witch, because I'm the number one fan of Monica Everett. I also like to play Splatoon, I've been playing that since the first game on the Wii U all the way up to the newest entry on the Nintendo Switch. I like using the Custom Splattershot Jr. and <s>my wife</s> I mean my favorite idol is Marie. I also play as an Octoling ever since they were added in Splatoon 2. Umm yea this is all I can think of putting in the bio so that's it lol</p>
+            </section>
+<section>
+  <h2>Currently</h2>
+  <div id="currently-section"></div>
+</section>
+            <br>
+            <section>
+                <div style="display: flex; flex-direction: column; align-items: center; text-align: center;">
+                    <p>Also you can check <a href="/buttons">here</a> for my site's button and other cool looking sites!</p>
+                </div>
+            </section>
         </div>
     </div>
     <button id="theme-toggle" class="theme-toggle-button"><span>☀️</span> Light Mode</button>
