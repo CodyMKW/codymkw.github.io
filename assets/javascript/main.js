@@ -297,12 +297,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const themeToggle = document.getElementById('theme-toggle');
     const themeStyle = document.getElementById('theme-style');
     
-    // Check for saved preference or use system preference
+    // Check for saved preference
     const savedTheme = localStorage.getItem('theme');
-    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     
     // Set initial theme
-    if (savedTheme === 'light' || (!savedTheme && !systemPrefersDark)) {
+    if (savedTheme === 'light') {
         setLightTheme();
     } else {
         setDarkTheme();

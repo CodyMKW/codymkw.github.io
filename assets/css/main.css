@@ -327,6 +327,34 @@ h1.notfoundheading {
   color: #fff;
 }
 
+/* Currently Section */
+#currently-section {
+  padding: 1.2rem 1.5rem;
+  margin-top: 1rem;
+}
+
+#currently-section .currently-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#currently-section .currently-list li {
+  font-size: 1rem;
+  color: #e0e0e0;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+#currently-section .currently-list li:last-child {
+  border-bottom: none;
+}
+
+#currently-section .currently-list strong {
+  color: #00c900; /* accent highlight */
+  font-weight: 600;
+}
+
 /* Buttons page styles */
 #buttonContent {
   display: block;

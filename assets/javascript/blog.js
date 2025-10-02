@@ -8,7 +8,7 @@ let posts = [];
 let filteredPosts = [];
 let currentPage = 1;
 const postsPerPage = 5;
-let isPaginating = false; // Add lock for pagination
+let isPaginating = false;
 
 async function initializeBlog() {
     const blogContainer = document.getElementById("blogPosts");
@@ -21,27 +21,23 @@ async function initializeBlog() {
         pagination.classList.add('hidden');
 
         const response = await fetch("https://api.npoint.io/5ac2ef5dd46fbff62a02");
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
-        posts = data.posts.map((post) => ({
+        const data = await response.json();
+        posts = data.posts.map(post => ({
             ...post,
-            originalIndex: post.index 
+            originalIndex: post.index
         })).sort((a, b) => new Date(`${b.date} ${b.time}`) - new Date(`${a.date} ${a.time}`));
-        
+
         filteredPosts = [...posts];
-        
+
         document.getElementById('searchBar').addEventListener('input', applyFiltersAndSearch);
         document.getElementById('categoryFilter').addEventListener('change', applyFiltersAndSearch);
         document.getElementById('prevPage').addEventListener('click', () => changePage(-1));
         document.getElementById('nextPage').addEventListener('click', () => changePage(1));
 
         populateCategories();
-        
         handleRouting();
-
         window.addEventListener("popstate", handleRouting);
 
     } catch (error) {
@@ -62,10 +58,8 @@ function handleRouting() {
 }
 
 function applyFiltersAndSearch() {
-    const searchBar = document.getElementById("searchBar");
-    const categoryFilter = document.getElementById("categoryFilter");
-    const query = searchBar.value.trim().toLowerCase();
-    const selectedCategory = categoryFilter.value;
+    const query = document.getElementById("searchBar").value.trim().toLowerCase();
+    const selectedCategory = document.getElementById("categoryFilter").value;
 
     filteredPosts = posts.filter(post => {
         const matchesCategory = selectedCategory === "all" || post.category === selectedCategory;
@@ -92,17 +86,17 @@ function renderListView() {
         updatePaginationUI();
         return;
     }
-    
+
     const startIndex = (currentPage - 1) * postsPerPage;
     const endIndex = startIndex + postsPerPage;
     const pagePosts = filteredPosts.slice(startIndex, endIndex);
 
-    pagePosts.forEach((post) => {
+    pagePosts.forEach(post => {
         const postElement = document.createElement('div');
         postElement.className = 'blog-post';
         postElement.dataset.index = post.originalIndex;
 
-        const postHTML = `
+        postElement.innerHTML = `
             <h3><a href="?post=${post.originalIndex}">${post.title}</a></h3>
             <p class="post-meta" id="blogmetadata">${post.date} • ${post.time} • ${post.author} • ${post.category}</p>
             ${post.image ? `<img src="${post.image}" alt="Post Image">` : ""}
@@ -110,9 +104,8 @@ function renderListView() {
             ${post.video ? `<iframe src="${post.video}" frameborder="0" allowfullscreen></iframe>` : ""}
             <div class="post-content">${post.content2 ? marked.parse(post.content2) : ""}</div>
         `;
-        postElement.innerHTML = postHTML;
-        
-        postElement.querySelector('h3 a').addEventListener('click', (e) => {
+
+        postElement.querySelector('h3 a').addEventListener('click', e => {
             e.preventDefault();
             window.history.pushState({ post: post.originalIndex }, "", `?post=${post.originalIndex}`);
             renderSinglePostView(post.originalIndex);
@@ -128,7 +121,7 @@ function renderSinglePostView(postId) {
     const blogContainer = document.getElementById("blogPosts");
     const blogHeader = document.querySelector(".blog-header");
     const pagination = document.querySelector(".pagination");
-    
+
     blogHeader.classList.add('hidden');
     pagination.classList.add('hidden');
 
@@ -152,11 +145,40 @@ function renderSinglePostView(postId) {
             <div class="post-content">${post.content ? marked.parse(post.content) : ""}</div>
             ${post.video ? `<iframe src="${post.video}" frameborder="0" allowfullscreen></iframe>` : ""}
             <div class="post-content">${post.content2 ? marked.parse(post.content2) : ""}</div>
+            <hr class="disqus-separator" style="margin: 2em 0; border: none; border-top: 1px solid #ccc;">
+            <div id="disqus_thread" style="margin-top: 2em;"></div>
         </div>
     `;
-    blogContainer.innerHTML = postHTML;
 
+    blogContainer.innerHTML = postHTML;
     document.querySelector('.blog-back-button').addEventListener('click', goBackToList);
+
+    // Disqus config
+    const disqus_config = function () {
+        this.page.url = window.location.href;
+        this.page.identifier = `post-${post.originalIndex}`;
+    };
+
+    function loadDisqus() {
+        if (window.DISQUS) {
+            DISQUS.reset({ reload: true, config: disqus_config });
+        } else {
+            const d = document, s = d.createElement('script');
+            s.src = 'https://codymkw.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        }
+    }
+
+    function refreshDisqus() {
+        if (window.DISQUS) {
+            DISQUS.reset({ reload: true, config: disqus_config });
+        }
+    }
+
+    loadDisqus();
+    document.removeEventListener('themeChanged', refreshDisqus);
+    document.addEventListener('themeChanged', refreshDisqus);
 }
 
 function goBackToList(e) {
@@ -189,7 +211,7 @@ function updatePaginationUI() {
 }
 
 function changePage(direction) {
-    if (isPaginating) return; // Prevent multiple rapid clicks
+    if (isPaginating) return;
     isPaginating = true;
 
     const totalPages = Math.ceil(filteredPosts.length / postsPerPage);
@@ -197,10 +219,9 @@ function changePage(direction) {
 
     if (newPage >= 1 && newPage <= totalPages) {
         currentPage = newPage;
-        renderListView(); // Re-render the view with the new page
+        renderListView();
     }
 
-    // Reset the flag shortly after to allow the next click
     setTimeout(() => {
         isPaginating = false;
     }, 200);
@@ -209,15 +230,16 @@ function changePage(direction) {
 function populateCategories() {
     const categories = [...new Set(posts.map(post => post.category))].filter(Boolean);
     const categoryFilter = document.getElementById("categoryFilter");
-    
+
     while (categoryFilter.options.length > 1) {
         categoryFilter.remove(1);
     }
-    
+
     categories.forEach(category => {
         const option = document.createElement("option");
         option.value = category;
         option.textContent = category;
         categoryFilter.appendChild(option);
     });
-}
+} 
+
