@@ -1185,7 +1185,7 @@ legend {
   color: #005a9c !important;
 }
 
-/* Web Apps styles */
+/* Other Stuff styles */
 #OtherStuffContent {
   padding: 20px;
   background-color: #ffffffc9;
@@ -1198,125 +1198,39 @@ legend {
   color: #333;
 }
 
-/* Reggie Bot page styles - Light Theme */
-#reggiebotContent {
-  padding: 20px;
-  background-color: #ffffffc9;
-  border: 2px solid #e0e0e0;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  display: flex; /* Added for layout */
-  flex-direction: column; /* Added for layout */
-}
-
-#reggiebotContent p,
-#reggiebotContent h2,
-#reggiebotContent h3 {
-  color: #333;
-}
-
-#reggiebotContent {
-  transition: all 0.3s ease-in-out;
-}
-
-#reggiebotContent:hover {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-}
-
-#reggiebotContent code {
-  background-color: #f0f0f0;
-  color: #007700;
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-family: "Fira Code", monospace;
-}
-
-#reggiebotContent ul {
-  list-style-type: none;
-  padding-left: 0;
-  margin-top: 0.5rem; /* Adjusted for better spacing */
-  margin-bottom: 1.5rem; /* Added for better spacing */
-}
-
-#reggiebotContent li {
-  background-color: #f8f8f8cc;
-  border: 1px solid #ccc;
-  padding: 10px 14px;
-  margin-bottom: 8px;
-  border-radius: 6px;
-  transition: background-color 0.3s ease;
-}
-
-#reggiebotContent li:hover {
-  background-color: #eaeaea;
-}
-
-#reggiebotContent li code {
-  color: #0077cc;
-  font-weight: bold;
-}
-
-#reggiebotContent .image-gallery {
-  max-width: 600px;
-  margin: 1em auto;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
-}
-
-#reggiebotContent .image-gallery img {
-  max-width: 100%;
-  height: 400px;
-  border-radius: 8px;
-  object-fit: scale-down;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
-  transition: transform 0.2s ease-in-out;
-}
-
-#reggiebotContent .image-gallery img:hover {
-  transform: scale(1.03);
-}
-
-#reggiebotContent .swiper-slide img {
-  display: block;
-  width: 100%;
-}
-
-/* Bot Invite Buttons */
-.bot-invite-buttons {
-  display: flex;
-  justify-content: center;
+.otherstuff-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
   gap: 15px;
-  margin-top: 25px;
-  margin-bottom: 25px;
-  flex-wrap: wrap; /* Allows buttons to wrap on smaller screens */
 }
 
-.invite-button {
-  background-color: #007acc; /* A nice blue for light mode */
-  color: #fff;
-  border: none;
-  padding: 12px 25px;
-  border-radius: 8px;
+.stuff-card {
+  display: block;
+  background-color: #f5f5f5;
+  color: #222;
+  border-radius: 10px;
+  padding: 15px;
+  text-decoration: none;
+  border: 2px solid #e0e0e0;
+  transition: transform 0.2s, background-color 0.3s, box-shadow 0.3s;
+}
+
+.stuff-card:hover {
+  background-color: #e0f2ff;
+  color: #000;
+  transform: translateY(-3px);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+}
+
+.stuff-card h3 {
+  margin: 0;
   font-size: 1.1em;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-  text-decoration: none; /* In case it's an <a> tag */
-  display: inline-flex; /* For better alignment */
-  align-items: center;
-  justify-content: center;
 }
 
-.invite-button:hover:not(:disabled) {
-  background-color: #005699;
-  transform: translateY(-2px);
-}
-
-.invite-button.disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
-  opacity: 0.6;
+.stuff-card p {
+  margin: 5px 0 0;
+  font-size: 0.9em;
+  opacity: 0.8;
 }
 
 /* Sticky Header Styles */
@@ -1497,24 +1411,6 @@ footer {
   gap: 20px;
   padding: 0;
   list-style-type: none;
-}
-
-.otherstuff-button {
-  display: inline-block;
-  text-align: center;
-  background-color: #007acc;
-  color: #fff;
-  text-decoration: none;
-  padding: 10px 20px;
-  border: 2px solid #e0e0e0;
-  border-radius: 8px;
-  font-size: 14px;
-  transition: background-color 0.3s, color 0.3s;
-}
-
-.otherstuff-button:hover {
-  background-color: #005a9c;
-  color: #fff;
 }
 
 #profile-selector {
