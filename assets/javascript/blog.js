@@ -96,19 +96,18 @@ function renderListView() {
         postElement.className = 'blog-post';
         postElement.dataset.index = post.originalIndex;
 
-        // Cut off long content for preview (if it exists)
+        // handle preview
         let previewHTML = "";
         if (post.content) {
-            const plainText = post.content.replace(/[#_*>\[\]\(\)!`]/g, ""); // strip markdown chars
-            const previewText = plainText.length > 200 
-                ? plainText.slice(0, 200) + "..." 
-                : plainText;
+            const trimmedContent = post.content.length > 185 
+                ? post.content.slice(0, 185) + "..." 
+                : post.content;
             previewHTML = `
-                <div class="post-content">${marked.parse(previewText)}</div>
-                <a href="?post=${post.originalIndex}" class="read-more">Read more →</a>
+                <div class="post-content">${marked.parse(trimmedContent)}</div>
+                <a href="?post=${post.originalIndex}" class="read-more">Read more →<</a>
             `;
         } else if (post.video || post.content2) {
-            // Show video or content2 if no main content
+            // show video and/or content2 when no content
             previewHTML = `
                 ${post.video ? `<iframe src="${post.video}" frameborder="0" allowfullscreen></iframe>` : ""}
                 ${post.content2 ? `<div class="post-content">${marked.parse(post.content2)}</div>` : ""}
@@ -122,6 +121,7 @@ function renderListView() {
             ${previewHTML}
         `;
 
+        // link click handlers
         postElement.querySelector('h3 a').addEventListener('click', e => {
             e.preventDefault();
             window.history.pushState({ post: post.originalIndex }, "", `?post=${post.originalIndex}`);
@@ -268,4 +268,3 @@ function populateCategories() {
         categoryFilter.appendChild(option);
     });
 } 
-
