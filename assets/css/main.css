@@ -20,34 +20,6 @@ body {
   display: none;
 }
 
-#latest-changes {
-  background-color: #111111c9;
-  border: 2px solid #000;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  padding: 20px;
-  margin: 20px 0;
-  text-align: left;
-}
-
-#latest-changes h2 {
-  color: #00C900;
-  text-align: center;
-  margin-bottom: 10px;
-}
-
-#latest-changes ul {
-  list-style-type: disc;
-  padding-left: 25%;
-  margin-left: 0;
-}
-
-#latest-changes ul li {
-  color: #fff;
-  margin-bottom: 5px;
-  padding-left: 0;
-}
-
 select {
   background-color: #222;
   color: #fff;
@@ -325,6 +297,80 @@ h1.notfoundheading {
 
 #aboutContent p, h2 {
   color: #fff;
+}
+
+/* About Me layout */
+#about-me-section .about-flex {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap; /* makes it mobile-friendly */
+  gap: 20px;
+}
+
+.about-text {
+  flex: 1;
+  min-width: 280px;
+}
+
+.about-mii img {
+  width: 150px; /* adjust as you like */
+  border-radius: 12px;
+  border: 2px solid #00c900;
+  background-color: #0a0a0a;
+  box-shadow: 0 0 8px rgba(0, 201, 0, 0.6);
+}
+
+.info-sections {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 40px;
+  text-align: left;
+}
+
+.info-sections > div {
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 12px;
+  padding: 20px;
+  min-width: 280px;
+  max-width: 360px;
+  flex: 1;
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+}
+
+.latest-posts h2,
+.currently h2 {
+  text-align: center;
+}
+
+.latest-posts ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.latest-posts li {
+  margin: 10px 0;
+}
+
+.latest-posts a {
+  color: #00c900;
+  text-decoration: none;
+  font-weight: bold;
+  transition: color 0.2s;
+}
+
+.latest-posts a:hover {
+  color: #66ff66;
+}
+
+.post-date {
+  color: #777;
+  font-size: 0.9em;
+  margin-left: 6px;
+  font-style: italic;
 }
 
 /* Currently Section */
@@ -1474,10 +1520,6 @@ footer {
 
   .container {
     padding: 15px 10px;
-  }
-
-  #latest-changes ul {
-    padding-left: 10px;
   }
 
   .header img, 
