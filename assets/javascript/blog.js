@@ -104,7 +104,7 @@ function renderListView() {
                 : post.content;
             previewHTML = `
                 <div class="post-content">${marked.parse(trimmedContent)}</div>
-                <a href="?post=${post.originalIndex}" class="read-more">Read more →<</a>
+                <a href="?post=${post.originalIndex}" class="read-more">Read more →</a>
             `;
         } else if (post.video || post.content2) {
             // show video and/or content2 when no content
@@ -268,3 +268,4 @@ function populateCategories() {
         categoryFilter.appendChild(option);
     });
 } 
+
