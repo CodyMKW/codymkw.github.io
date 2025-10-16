@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
 let posts = [];
 let filteredPosts = [];
 let currentPage = 1;
-const postsPerPage = 5;
+const postsPerPage = 7;
 let isPaginating = false;
 
 async function initializeBlog() {
@@ -96,13 +96,30 @@ function renderListView() {
         postElement.className = 'blog-post';
         postElement.dataset.index = post.originalIndex;
 
+        // Cut off long content for preview (if it exists)
+        let previewHTML = "";
+        if (post.content) {
+            const plainText = post.content.replace(/[#_*>\[\]\(\)!`]/g, ""); // strip markdown chars
+            const previewText = plainText.length > 200 
+                ? plainText.slice(0, 200) + "..." 
+                : plainText;
+            previewHTML = `
+                <div class="post-content">${marked.parse(previewText)}</div>
+                <a href="?post=${post.originalIndex}" class="read-more">Read more →</a>
+            `;
+        } else if (post.video || post.content2) {
+            // Show video or content2 if no main content
+            previewHTML = `
+                ${post.video ? `<iframe src="${post.video}" frameborder="0" allowfullscreen></iframe>` : ""}
+                ${post.content2 ? `<div class="post-content">${marked.parse(post.content2)}</div>` : ""}
+            `;
+        }
+
         postElement.innerHTML = `
             <h3><a href="?post=${post.originalIndex}">${post.title}</a></h3>
             <p class="post-meta" id="blogmetadata">${post.date} • ${post.time} • ${post.author} • ${post.category}</p>
             ${post.image ? `<img src="${post.image}" alt="Post Image">` : ""}
-            <div class="post-content">${post.content ? marked.parse(post.content) : ""}</div>
-            ${post.video ? `<iframe src="${post.video}" frameborder="0" allowfullscreen></iframe>` : ""}
-            <div class="post-content">${post.content2 ? marked.parse(post.content2) : ""}</div>
+            ${previewHTML}
         `;
 
         postElement.querySelector('h3 a').addEventListener('click', e => {
@@ -110,6 +127,15 @@ function renderListView() {
             window.history.pushState({ post: post.originalIndex }, "", `?post=${post.originalIndex}`);
             renderSinglePostView(post.originalIndex);
         });
+
+        const readMoreLink = postElement.querySelector('.read-more');
+        if (readMoreLink) {
+            readMoreLink.addEventListener('click', e => {
+                e.preventDefault();
+                window.history.pushState({ post: post.originalIndex }, "", `?post=${post.originalIndex}`);
+                renderSinglePostView(post.originalIndex);
+            });
+        }
 
         blogContainer.appendChild(postElement);
     });

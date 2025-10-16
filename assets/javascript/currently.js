@@ -50,7 +50,7 @@ async function fetchLastWatchedAnime(username) {
 
 async function loadCurrently() {
   try {
-    const response = await fetch('https://api.npoint.io/3759d526872378d513c4');
+    const response = await fetch('https://api.npoint.io/e48ee20c0a091f1b8963');
     const data = await response.json();
 
     const presenceRes = await fetch('https://nxapi-presence.fancy.org.uk/api/presence/644cd5195d154bd5');
@@ -75,10 +75,11 @@ async function loadCurrently() {
     if (container) {
       container.innerHTML = `
         <ul class="currently-list">
-          <li><strong>🎮 Playing:</strong> ${playing}</li>
-          ${data.working_on ? `<li><strong>🛠 Working On:</strong> ${data.working_on}</li>` : ""}
-          ${data.listening_to ? `<li><strong>🎧 Listening To:</strong> ${data.listening_to}</li>` : ""}
-          <li><strong>📺 Watching:</strong> ${watching}</li>
+          <li><strong>🎮 Playing:</strong><br> ${playing}</li>
+          ${data.currentlysection && data.currentlysection[0] && data.currentlysection[0].working_on 
+  ? `<li><strong>🛠 Working On:</strong><br> ${data.currentlysection[0].working_on}</li>` 
+  : ""}
+          <li><strong>📺 Watching:</strong><br> ${watching}</li>
         </ul>
       `;
     }
@@ -88,3 +89,44 @@ async function loadCurrently() {
 }
 
 document.addEventListener("DOMContentLoaded", loadCurrently);
+
+async function loadLatestPosts() {
+  try {
+    const response = await fetch("https://api.npoint.io/5ac2ef5dd46fbff62a02");
+    const data = await response.json();
+
+    const posts = data.posts.slice(-5).reverse(); // last 5 posts
+    const list = document.getElementById("latest-posts-list");
+
+    const now = new Date();
+
+    posts.forEach(post => {
+      const li = document.createElement("li");
+      const link = document.createElement("a");
+      link.href = `/blog?post=${post.index}`;
+      link.textContent = post.title;
+
+      // parse date from your JSON (assuming format like "9-22-2025")
+      const postDate = new Date(post.date);
+      const diffTime = Math.abs(now - postDate);
+      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+      let timeText = "";
+      if (diffDays === 0) timeText = "today";
+      else if (diffDays === 1) timeText = "1 day ago";
+      else timeText = `${diffDays} days ago`;
+
+      const dateSpan = document.createElement("span");
+      dateSpan.classList.add("post-date");
+      dateSpan.textContent = ` · ${timeText}`;
+
+      li.appendChild(link);
+      li.appendChild(dateSpan);
+      list.appendChild(li);
+    });
+  } catch (error) {
+    console.error("Error loading latest posts:", error);
+  }
+}
+
+document.addEventListener("DOMContentLoaded", loadLatestPosts);
