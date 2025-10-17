@@ -1207,39 +1207,90 @@ legend {
 
 /* Nintendo News styles */
 #nintendoNewsContent {
-  padding: 20px;
+  padding: 30px;
   background-color: #111111c9;
   border: 2px solid #000;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
   text-align: left;
+  backdrop-filter: blur(4px);
 }
 
-#nintendoNewsContent h2 {
+/* Header */
+#nintendoNewsContent .news-header {
   text-align: center;
+  margin-bottom: 25px;
 }
 
+#nintendoNewsContent .news-header h2 {
+  color: #00C900;
+  font-size: 2em;
+  margin: 10px 0 5px;
+  letter-spacing: 1px;
+}
+
+#nintendoNewsContent .news-header .subtext {
+  color: #ccc;
+  font-size: 0.95em;
+  margin-top: -5px;
+}
+
+/* RSS feed entries */
 #nintendoNewsContent h3 {
   display: none;
 }
 
 #nintendoNewsContent h4 {
   color: #00C900;
-  font-size: 24px;
-  margin-bottom: 10px;
+  font-size: 20px;
+  margin-bottom: 6px;
+  transition: color 0.2s ease-in-out;
 }
 
 #nintendoNewsContent p {
-  margin-bottom: 10px;
-  color: #fff;
+  margin-bottom: 15px;
+  color: #f1f1f1;
+  line-height: 1.6;
 }
 
+/* Links */
 #nintendoNewsContent a {
   color: #00C900 !important;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.25s ease;
 }
 
 #nintendoNewsContent a:hover {
-  color: #008a00 !important;
+  color: #00ff00 !important;
+  text-decoration: underline;
+}
+
+/* Individual article "cards" */
+#nintendoNewsContent div {
+  border-bottom: 1px solid #222;
+  padding-bottom: 12px;
+  margin-bottom: 18px;
+}
+
+#nintendoNewsContent div:last-child {
+  border-bottom: none;
+}
+
+/* Slight entry animation */
+#nintendoNewsContent {
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Other Stuff styles */
@@ -1563,3 +1614,4 @@ footer {
     font-size: 12px;
   }
 }
+
