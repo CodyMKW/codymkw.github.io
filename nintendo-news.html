@@ -62,13 +62,20 @@
             <button onclick="window.location.href='other-stuff'">Other Stuff</button>
             <button onclick="window.location.href='social-media'">Social Media</button>
         </div>
-        <div class="content" id="nintendoNewsContent">
-                <h2><i class="emoji superMushroom"></i></h2>
-                <h2>Nintendo News</h2>
-                <script src="//rss.bloople.net/?url=https%3A%2F%2Fmynintendonews.com%2Ffeed%2F&limit=10&type=js"></script>
-        </div>
+<div class="content" id="nintendoNewsContent">
+  <div class="news-header">
+    <i class="emoji superMushroom"></i>
+    <h2>Nintendo News</h2>
+    <p class="subtext">Latest updates from My Nintendo News</p>
+  </div>
+
+  <div class="news-feed">
+    <script src="//rss.bloople.net/?url=https%3A%2F%2Fmynintendonews.com%2Ffeed%2F&limit=10&type=js"></script>
+  </div>
+</div>
     </div>
     <button id="theme-toggle" class="theme-toggle-button"><span>☀️</span> Light Mode</button>
     <footer></footer>
 </body>
 </html>
+
