@@ -419,22 +419,33 @@ h1.notfoundheading {
 #buttonContent p, h2 {
   color: #fff;
 }
+/* Button wall layout */
+.button-wall {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(88px, 1fr));
+  gap: 10px;
+  justify-items: center;
+  align-items: center;
+  margin: 25px 0;
+  padding: 10px;
+  border: 2px solid #00C900;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
 
-    /* Styles for the button table */
-    .button-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 20px 0;
-    }
-    .button-table th, .button-table td {
-      border: 1px solid #00C900;
-      padding: 10px;
-      text-align: center;
-    }
-    .button-table th {
-      background-color: #00C900;
-      color: #000;
-    }
+.button-wall a img {
+  width: 88px;
+  height: 31px;
+  image-rendering: pixelated;
+  border: 1px solid #00C900;
+  border-radius: 4px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.button-wall a img:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 10px #00C900;
+}
     /* Styles for the code section */
     .code-container textarea {
       background-color: #222;
