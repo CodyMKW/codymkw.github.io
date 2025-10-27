@@ -455,6 +455,30 @@ h1.notfoundheading {
   transform: scale(1.05);
   box-shadow: 0 0 10px #007acc;
 }
+/* Featured "My Button" box */
+.my-button-box {
+  border-radius: 10px;
+  text-align: center;
+  margin: 25px 0;
+}
+
+.my-button-box h2 {
+  color: #007acc;
+  margin-bottom: 10px;
+  text-shadow: 0 0 5px #007acc;
+}
+
+.my-button-box .button-preview img {
+  border: 1px solid #007acc;
+  border-radius: 5px;
+  box-shadow: 0 0 8px rgba(0, 201, 0, 0.3);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.my-button-box .button-preview img:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 15px #007acc;
+}
     /* Styles for the code section */
     .code-container textarea {
       background-color: #fff;

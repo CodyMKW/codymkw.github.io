@@ -102,49 +102,56 @@
       </div>
       <div class="content" id="buttonContent">
         <h2>Button Wall</h2>
-<div class="button-wall">
-  <a href="https://arataka.moe/" target="_blank"><img src="https://reigen.moe/image/button/arataka-a.gif" alt="Laith Rai7an"></a>
-  <a href="https://hary.nekoweb.org/" target="_blank"><img src="https://files.catbox.moe/kvq55b.png" alt="Hary Button"></a>
-  <a href="https://dimden.dev" target="_blank"><img src="https://dimden.dev/services/images/88x31.gif" alt="DimDen Button"></a>
-  <a href="https://housepen.nekoweb.org" target="_blank"><img src="https://housepen.nekoweb.org/housepen.gif" alt="Housepen Button"></a>
-  <a href="https://thinliquid.dev" target="_blank"><img src="https://thinliquid.dev/thnlqd.png" alt="Thinliquid Button"></a>
-  <a href="https://naico.nekoweb.org" target="_blank"><img src="https://naico.nekoweb.org/Assets/banners/clewdbutton.png" alt="Naico Button"></a>
-  <a href="https://nons.page" target="_blank"><img src="https://nons.page/button-light.jpg" alt="Non Button"></a>
-  <a href="https://felixfever.nekoweb.org" target="_blank"><img src="https://felixfever.nekoweb.org/img/ff/graphics/iheartfelix.png" alt="Felixfever Button"></a>
-  <a href="https://onthequiet.nekoweb.org" target="_blank"><img src="https://gattonero.moe/gattonero.gif" alt="Onthequiet Button"></a>
-  <a href="https://caramelles.nekoweb.org" target="_blank"><img src="https://caramelles.nekoweb.org/carabutton.png" alt="Caramelle Button"></a>
-  <a href="https://medjed.nekoweb.org" target="_blank"><img src="https://medjed.nekoweb.org/assets/images/button.jpg" alt="Medjed Button"></a>
-  <a href="https://kdove.nekoweb.org" target="_blank"><img src="https://kdove.nekoweb.org/assets/kdovebuttonpurple.gif" alt="kdove Button"></a>
-  <a href="https://rayncoat.nekoweb.org" target="_blank"><img src="https://rayncoat.nekoweb.org/Art/RaynButton.gif" alt="Rayn Button"></a>
-  <a href="https://iframe.chat" target="_blank"><img src="https://iframe.chat/chattable-alt.gif" alt="Chattable Button"></a>
-  <a href="https://eyeorb.net" target="_blank"><img src="https://eyeorb.net/site_button2.gif" alt="Eyeorb Button"></a>
-  <a href="https://th-yinoe.nekoweb.org" target="_blank"><img src="https://th-yinoe.nekoweb.org/image/button.png" alt="Yinoe Button"></a>
-  <a href="https://electric-tenshi.nekoweb.org" target="_blank"><img src="https://file.garden/Z3nf4eZzZUtRPfhK/new%20button.gif" alt="Electric Tenshi Button"></a>
-  <a href="https://evehibi.nekoweb.org" target="_blank"><img src="https://evehibi.nekoweb.org/button1.gif" alt="Evehibi Button"></a>
-  <a href="https://nekoweb.org" target="_blank"><img src="https://nekoweb.org/assets/buttons/button1.gif" alt="Nekoweb Button"></a>
+<div class="button-wall"></div>
+<div class="my-button-box">
+  <h2>Grab My Button!</h2>
+  <div class="button-preview">
+    <a href="https://codymkw.nekoweb.org" target="_blank">
+      <img
+        src="https://codymkw.nekoweb.org/button.jpg"
+        alt="CodyMKW Button"
+      />
+    </a>
+  </div>
 </div>
-        <h2>My Button Code</h2>
-        <div class="button-preview">
-          <h3>Preview:</h3>
-          <a href="https://codymkw.nekoweb.org" target="_blank">
-            <img
-              src="https://codymkw.nekoweb.org/button.jpg"
-              alt="CodyMKW Button"
-            />
-          </a>
-        </div>
-        <div class="code-container">
-          <h3>Copy the code below:</h3>
-          <textarea id="buttonCode" readonly onclick="this.select();">
-&lt;a href="https://codymkw.nekoweb.org" target="_blank"&gt;&lt;img src="https://codymkw.nekoweb.org/button.jpg" alt="CodyMKW Button"&gt;&lt;/a&gt;</textarea
-          >
-          <button onclick="copyCode()">Copy Code</button>
-        </div>
+<div class="code-container">
+  <h3>Copy the code below:</h3>
+  <textarea id="buttonCode" readonly onclick="this.select();">
+&lt;a href="https://codymkw.nekoweb.org" target="_blank"&gt;&lt;img src="https://codymkw.nekoweb.org/button.jpg" alt="CodyMKW Button"&gt;&lt;/a&gt;</textarea>
+  <button onclick="copyCode()">Copy Code</button>
+</div>
       </div>
     </div>
     <button id="theme-toggle" class="theme-toggle-button"><span>☀️</span> Light Mode</button>
     <footer></footer>
     <script>
+  document.addEventListener("DOMContentLoaded", async () => {
+    const buttonWall = document.querySelector(".button-wall");
+
+    try {
+      // Change this path to wherever you host your JSON
+      const response = await fetch("https://api.npoint.io/2fa81a8358f4f0814713");
+      const data = await response.json();
+
+      buttonWall.innerHTML = ""; // clear existing static HTML
+
+      data.buttons.forEach(button => {
+        const a = document.createElement("a");
+        a.href = button.url;
+        a.target = "_blank";
+
+        const img = document.createElement("img");
+        img.src = button.image;
+        img.alt = button.alt;
+
+        a.appendChild(img);
+        buttonWall.appendChild(a);
+      });
+    } catch (error) {
+      console.error("Failed to load button data:", error);
+      buttonWall.innerHTML = "<p>Failed to load buttons 😢</p>";
+    }
+  });
       function copyCode() {
         var copyText = document.getElementById("buttonCode");
         copyText.select();
