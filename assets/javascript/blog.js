@@ -171,40 +171,59 @@ function renderSinglePostView(postId) {
             <div class="post-content">${post.content ? marked.parse(post.content) : ""}</div>
             ${post.video ? `<iframe src="${post.video}" frameborder="0" allowfullscreen></iframe>` : ""}
             <div class="post-content">${post.content2 ? marked.parse(post.content2) : ""}</div>
-            <hr class="disqus-separator" style="margin: 2em 0; border: none; border-top: 1px solid #ccc;">
-            <div id="disqus_thread" style="margin-top: 2em;"></div>
+            <hr style="margin: 2em 0; border: none; border-top: 1px solid #ccc;">
+            <div id="comments-container" style="margin-top: 2em;"></div>
         </div>
     `;
 
     blogContainer.innerHTML = postHTML;
     document.querySelector('.blog-back-button').addEventListener('click', goBackToList);
 
-    // Disqus config
-    const disqus_config = function () {
-        this.page.url = window.location.href;
-        this.page.identifier = `post-${post.originalIndex}`;
-    };
+    loadGiscus(post.originalIndex);
+}
 
-    function loadDisqus() {
-        if (window.DISQUS) {
-            DISQUS.reset({ reload: true, config: disqus_config });
-        } else {
-            const d = document, s = d.createElement('script');
-            s.src = 'https://codymkw.disqus.com/embed.js';
-            s.setAttribute('data-timestamp', +new Date());
-            (d.head || d.body).appendChild(s);
+// Giscus loader with theme sync
+function loadGiscus(postId) {
+    const container = document.getElementById("comments-container");
+    container.innerHTML = "";
+
+    // Get theme from localStorage (default to light if missing)
+    const currentTheme = localStorage.getItem("theme") === "dark" ? "dark" : "light";
+
+    const giscus = document.createElement("script");
+    giscus.src = "https://giscus.app/client.js";
+    giscus.setAttribute("data-repo", "CodyMKW/blog-comments");
+    giscus.setAttribute("data-repo-id", "R_kgDOQEsfnA");
+    giscus.setAttribute("data-category", "Blog Comments");
+    giscus.setAttribute("data-category-id", "DIC_kwDOQEsfnM4CwyYq");
+    giscus.setAttribute("data-mapping", "specific");
+    giscus.setAttribute("data-term", `post-${postId}`);
+    giscus.setAttribute("data-reactions-enabled", "0");
+    giscus.setAttribute("data-emit-metadata", "0");
+    giscus.setAttribute("data-theme", currentTheme);
+    giscus.setAttribute("data-sort-by", "newest");
+    giscus.setAttribute("crossorigin", "anonymous");
+    giscus.async = true;
+
+    container.appendChild(giscus);
+
+    // Theme update listener for when user toggles theme
+    window.addEventListener("themeChanged", () => {
+        const newTheme = localStorage.getItem("theme") === "dark" ? "dark" : "light";
+        const iframe = document.querySelector("iframe.giscus-frame");
+        if (iframe) {
+            iframe.contentWindow.postMessage(
+                {
+                    giscus: {
+                        setConfig: {
+                            theme: newTheme,
+                        },
+                    },
+                },
+                "https://giscus.app"
+            );
         }
-    }
-
-    function refreshDisqus() {
-        if (window.DISQUS) {
-            DISQUS.reset({ reload: true, config: disqus_config });
-        }
-    }
-
-    loadDisqus();
-    document.removeEventListener('themeChanged', refreshDisqus);
-    document.addEventListener('themeChanged', refreshDisqus);
+    });
 }
 
 function goBackToList(e) {
@@ -254,18 +273,29 @@ function changePage(direction) {
 }
 
 function populateCategories() {
-    const categories = [...new Set(posts.map(post => post.category))].filter(Boolean);
     const categoryFilter = document.getElementById("categoryFilter");
 
+    // Count posts per category
+    const categoryCounts = posts.reduce((counts, post) => {
+        if (post.category) {
+            counts[post.category] = (counts[post.category] || 0) + 1;
+        }
+        return counts;
+    }, {});
+
+    // Get all unique categories sorted alphabetically (optional)
+    const categories = Object.keys(categoryCounts).sort();
+
+    // Clear old options except "All"
     while (categoryFilter.options.length > 1) {
         categoryFilter.remove(1);
     }
 
+    // Add new category options with counts
     categories.forEach(category => {
         const option = document.createElement("option");
         option.value = category;
-        option.textContent = category;
+        option.textContent = `${category} (${categoryCounts[category]})`;
         categoryFilter.appendChild(option);
     });
-} 
-
+}
