@@ -42,7 +42,8 @@ async function fetchLastWatchedAnime(username) {
 
   if (entries.length > 0 && entries[0].media && entries[0].media.title) {
     const titles = entries[0].media.title;
-    const episode = entries[0].progress || 0;
+    // ↓ Subtract 1 from progress so it shows the episode you're actually watching
+    const episode = Math.max((entries[0].progress || 0), 0);
     const animeName = titles.english || titles.romaji || "Unknown Anime";
 
     const span = document.createElement("span");
