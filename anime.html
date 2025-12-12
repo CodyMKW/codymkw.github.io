@@ -66,6 +66,9 @@
         </div>
 
         <div class="content" id="animepageContent">
+            <div class="anime-status-note">
+                Progress is shown up to the next episode (e.g., ‘Episode 7 of 13’ = next to watch: 7).
+            </div>
             <div class="anime-tabs">
                 <button id="tab-watching" class="active">Currently Watching</button>
                 <button id="tab-completed">Completed</button>
@@ -102,6 +105,7 @@
           ) {
             lists {
               entries {
+                score
                 progress
                 repeat
                 status
@@ -164,7 +168,16 @@
         animeCard.className = "anime-card";
 
         const isRewatching =
-          entry.status === "REPEATING" || (entry.repeat && entry.repeat > 0);
+          entry.status === "REPEATING";
+          
+       let ratingText, ratingClass;
+       if (entry.score && entry.score > 0) {
+         ratingText = `Rating: ${entry.score}/10`;
+         ratingClass = "rating";
+       } else {
+         ratingText = `Rating: Not rated yet`;
+         ratingClass = "rating not-rated";
+       }
 
         animeCard.innerHTML = `
           <a href="${anime.siteUrl}" target="_blank" class="anime-link">
@@ -173,6 +186,8 @@
             <div class="anime-info">
               <h3>${anime.title.english || anime.title.romaji}</h3>
               <p>Episode ${progress} of ${anime.episodes || "??"}</p>
+              ${entry.repeat > 0 ? `<p class="rewatch-count">Rewatched ${entry.repeat} time${entry.repeat > 1 ? "s" : ""}</p>` : ""}
+              <p class="${ratingClass}">${ratingText}</p>
             </div>
           </a>
         `;

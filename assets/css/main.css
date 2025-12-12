@@ -16,10 +16,6 @@ body {
   color: green;
 }
 
-.whatpretendo {
-  display: none;
-}
-
 select {
   background-color: #222;
   color: #fff;
@@ -151,6 +147,27 @@ button:hover {
 #preview-image {
   width: 200px;
 }
+
+/* Music Status styles */
+#musicstatusContent {
+  padding: 20px;
+  background-color: #111111c9;
+  border: 2px solid #000;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+#musicstatusContent h3 {
+  margin-bottom: -23px;
+}
+        #musicInfo {
+            background-color: #111111c9;
+            border-radius: 10px;
+            padding: 10px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+            max-width: 400px;
+            margin: 0 auto 15px;
+        }
 
 /* Game Status styles */
 .modal-container img {
@@ -399,6 +416,66 @@ h1.notfoundheading {
 #currently-section .currently-list strong {
   color: #00c900; /* accent highlight */
   font-weight: 600;
+}
+
+.anime-full-link {
+  color: #00c900;
+  font-size: 0.9em;
+  margin-top: 4px;
+  display: inline-block;
+  text-decoration: none;
+  opacity: 0.8;
+  transition: opacity 0.2s ease, color 0.2s ease;
+}
+
+.anime-full-link:hover {
+  opacity: 1;
+  text-decoration: underline;
+}
+
+#status-cafe-block {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(0, 255, 140, 0.25);
+  padding: 18px 20px;
+  border-radius: 16px;
+  margin: 25px 0;
+  box-shadow: 0 0 8px rgba(0, 201, 0, 0.6);
+}
+
+#status-cafe-block h2 {
+  margin-top: 0;
+  margin-bottom: 12px;
+  color: #fff;
+  font-size: 1.4em;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.statuscafe-entry {
+  background: rgba(0, 255, 140, 0.05);
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 255, 140, 0.15);
+}
+
+.statuscafe-entry strong {
+  color: #00c900;
+}
+
+.statuscafe-entry a {
+  color: #8effc8;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.statuscafe-entry a:hover {
+  text-decoration: underline;
+}
+
+.statuscafe-entry p {
+  margin: 10px 0 0 0;
+  line-height: 1.5;
+  color: #d7fff0;
 }
 
 /* Mario Kart 8 Deluxe Randomizer Page styles */
@@ -718,6 +795,19 @@ h1.notfoundheading {
   opacity: 0.9;
 }
 
+.anime-info p.rating {
+  margin-top: 6px;
+  font-size: 0.9em;
+  font-weight: 600;
+  color: #00ff7b !important;
+}
+
+.anime-info p.rating.not-rated {
+  color: #aaa !important;
+  font-style: italic;
+  font-weight: 400;
+}
+
 .anime-link {
   text-decoration: none;
   color: inherit;
@@ -764,6 +854,17 @@ h1.notfoundheading {
 #completed-search {
     background-color: #2f2e34;
     color: #fff;
+}
+
+.anime-status-note {
+    background: rgba(0, 200, 0, 0.12);
+    border-left: 4px solid #00c900;
+    padding: 10px 12px;
+    margin: 10px 0 15px 0;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    color: #008800;
+    font-weight: 600;
 }
 
 /* Buttons page styles */
@@ -879,20 +980,6 @@ h1.notfoundheading {
   max-height: 250px;
   margin-bottom: 20px;
   border-radius: 4px;
-}
-
-.gem-preview {
-  display: block;
-  margin: 10px auto; /* Centers the image */
-  width: 300px; /* Adjust size if needed */
-  height: auto;
-  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.8)); /* White glow effect */
-  transition: transform 0.2s ease-in-out, filter 0.2s ease-in-out;
-}
-
-.gem-preview:hover {
-  transform: scale(1.05);
-  filter: drop-shadow(0 0 15px rgba(255, 255, 255, 1));
 }
 
 /* YouTube Page styles */
@@ -1253,6 +1340,14 @@ p#blogmetadata {
 #friendCodeContent b:hover {
   text-decoration: underline;
   cursor: pointer;
+}
+
+.whatpretendo {
+  padding: 15px;
+  background-color: #222;
+  border-radius: 6px;
+  display: none;
+  margin-top: 10px;
 }
 
 /* Nintendo Facts styles */
