@@ -1,3 +1,4 @@
+// --- Anime Fetcher ---
 async function fetchLastWatchedAnime(username) {
   const query = `
     query ($username: String) {
@@ -6,6 +7,7 @@ async function fetchLastWatchedAnime(username) {
           entries {
             progress
             media {
+              format
               title {
                 english
                 romaji
@@ -18,44 +20,47 @@ async function fetchLastWatchedAnime(username) {
   `;
   const variables = { username };
 
-  const response = await fetch('https://graphql.anilist.co', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ query, variables })
-  });
-
-  const result = await response.json();
-
-  let entries = [];
-  if (
-    result &&
-    result.data &&
-    result.data.MediaListCollection &&
-    Array.isArray(result.data.MediaListCollection.lists)
-  ) {
-    result.data.MediaListCollection.lists.forEach((list) => {
-      if (list && Array.isArray(list.entries)) {
-        entries = entries.concat(list.entries);
-      }
+  try {
+    const response = await fetch("https://graphql.anilist.co", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ query, variables })
     });
+
+    const result = await response.json();
+
+    let entries = [];
+    if (result?.data?.MediaListCollection?.lists) {
+      result.data.MediaListCollection.lists.forEach((list) => {
+        if (list?.entries) entries = entries.concat(list.entries);
+      });
+    }
+
+    if (entries.length > 0) {
+      const entry = entries[0];
+      const titles = entry.media?.title || {};
+      const format = entry.media?.format;
+
+      const animeName = titles.english || titles.romaji || "Unknown Anime";
+      const episode = entry.progress || 0;
+
+      const showEpisode = format !== "MOVIE" && episode > 0;
+
+      const span = document.createElement("span");
+      span.className = "anime-episode";
+      span.textContent = showEpisode ? `(Ep ${episode})` : "";
+
+      return { animeName, span };
+    }
+
+    return { animeName: "Nothing at the moment", span: null };
+  } catch (e) {
+    console.error("Anilist fetch error", e);
+    return { animeName: "Error loading", span: null };
   }
-
-  if (entries.length > 0 && entries[0].media && entries[0].media.title) {
-    const titles = entries[0].media.title;
-    // ↓ Subtract 1 from progress so it shows the episode you're actually watching
-    const episode = Math.max((entries[0].progress || 0), 0);
-    const animeName = titles.english || titles.romaji || "Unknown Anime";
-
-    const span = document.createElement("span");
-    span.className = "anime-episode";
-    span.textContent = episode > 0 ? `(Ep ${episode})` : "";
-
-    return { animeName, span };
-  }
-
-  return { animeName: "Nothing at the moment", span: null };
 }
 
+// --- Style / Color Logic ---
 function applyEpisodeColor() {
   const theme = localStorage.getItem("theme") || "light";
   const color = theme === "dark" ? "#00c900" : "#3B82F6";
@@ -91,14 +96,100 @@ function applyEpisodeColor() {
   `;
 }
 
+// --- Smart time formatter ---
+function formatAgo(uts) {
+  const now = Math.floor(Date.now() / 1000);
+  const diff = now - uts;
+
+  const mins = Math.floor(diff / 60);
+  if (mins < 1) return "- just now";
+  if (mins < 60) return `- ${mins} mins ago`;
+
+  const hrs = Math.floor(mins / 60);
+  if (hrs === 1) return "- 1 hr ago";
+  if (hrs < 24) return `- ${hrs} hrs ago`;
+
+  const days = Math.floor(hrs / 24);
+  if (days === 1) return "- 1 day ago";
+  if (days <= 6) return `- ${days} days ago`;
+
+  const d = new Date(uts * 1000);
+  return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+}
+
+// --- STATUS.CAFE API fetch ---
+async function fetchStatusCafe() {
+  const username = "codymkw";
+
+  try {
+    const res = await fetch(`https://status.cafe/users/${username}/status.json?t=${Date.now()}`);
+    if (!res.ok) throw new Error("status.cafe error");
+
+    const data = await res.json();
+
+    if (!data.content || data.content.length === 0) {
+      return {
+        author: username,
+        content: "No status yet.",
+        face: "",
+        time: ""
+      };
+    }
+
+    return {
+      author: data.author,
+      content: data.content,
+      face: data.face || "",
+      time: data.timeAgo || ""
+    };
+
+  } catch (err) {
+    console.error("StatusCafe error:", err);
+    return {
+      author: username,
+      content: "Unable to load status",
+      face: "",
+      time: ""
+    };
+  }
+}
+
+// --- LastFM ---
+async function fetchLastFmTrack() {
+  const username = "CodyMKW";
+  const url = `https://lastfm-last-played.biancarosa.com.br/${username}/latest-song?t=${Date.now()}`;
+
+  try {
+    const res = await fetch(url);
+    const data = await res.json();
+
+    const track = data?.track;
+    if (!track) return { song: "Nothing recently", link: null, ago: "" };
+
+    const songName = track.name;
+    const songUrl = track.url;
+
+    let ago = "";
+    const isPlaying = track["@attr"] && track["@attr"].nowplaying === "true";
+
+    if (isPlaying) {
+      ago = "- now playing";
+    } else if (track.date?.uts) {
+      ago = formatAgo(parseInt(track.date.uts, 10));
+    }
+
+    return { song: songName, link: songUrl, ago };
+  } catch (err) {
+    console.error("LastFM error:", err);
+    return { song: "Unable to load", link: null, ago: "" };
+  }
+}
+
+// --- MAIN LOAD FUNCTION ---
 async function loadCurrently() {
   try {
-    applyEpisodeColor();
-
-    const response = await fetch('https://api.npoint.io/e48ee20c0a091f1b8963');
-    const data = await response.json();
-
-    const presenceRes = await fetch('https://nxapi-presence.fancy.org.uk/api/presence/644cd5195d154bd5');
+    // Presence fetch
+    const presenceRes = await fetch(`https://nxapi-presence.fancy.org.uk/api/presence/644cd5195d154bd5?t=${Date.now()}`);
     const presenceData = await presenceRes.json();
 
     let playing = "Nothing at the moment";
@@ -112,81 +203,116 @@ async function loadCurrently() {
       playing = presence.game.name;
     }
 
+    // Other fetches
     const { animeName, span } = await fetchLastWatchedAnime('CodyMKW');
-
     const watchingContainer = document.createElement("span");
     watchingContainer.innerHTML = animeName;
     if (span) watchingContainer.appendChild(span);
 
+    const lastFm = await fetchLastFmTrack();
+    const statusCafe = await fetchStatusCafe();
+
+    // --- RENDER STATUS.CAFE STANDALONE ---
+    const cafeBox = document.getElementById("statuscafe-box");
+    if (cafeBox) {
+      cafeBox.innerHTML = `
+        <div class="statuscafe-entry">
+          <a href="https://status.cafe/users/${statusCafe.author}" target="_blank">
+            <strong>${statusCafe.author}</strong>
+          </a>
+          ${statusCafe.face}
+          <span style="opacity:0.7; margin-left:6px;">${statusCafe.time}</span>
+          <p>${statusCafe.content}</p>
+        </div>
+      `;
+    }
+
+    // --- RENDER "CURRENTLY" SECTION (WITHOUT STATUS.CAFE) ---
     const container = document.getElementById('currently-section');
     if (container) {
       container.innerHTML = `
         <ul class="currently-list">
+
           <li><strong>🎮 Playing:</strong><br> ${playing}</li>
-          ${
-            data.currentlysection?.[0]?.working_on
-              ? `<li><strong>🛠 Working On:</strong><br> ${data.currentlysection[0].working_on}</li>`
-              : ""
-          }
+
+          <li><strong>🎵 Listening:</strong><br>
+            ${lastFm.link ? `<a href="${lastFm.link}" target="_blank">${lastFm.song}</a>` : lastFm.song}
+            <span style="opacity:0.7; margin-left:6px;">${lastFm.ago}</span>
+          </li>
+
           <li><strong>📺 Watching:</strong><br></li>
         </ul>
       `;
 
+      // Insert Anime Progress
       const watchItem = container.querySelector("li:last-child");
       watchItem.appendChild(watchingContainer);
+
+      const fullPageLink = document.createElement("a");
+      fullPageLink.href = "/anime";
+      fullPageLink.textContent = "View full anime list →";
+      fullPageLink.className = "anime-full-link";
+
+      watchItem.appendChild(document.createElement("br"));
+      watchItem.appendChild(fullPageLink);
     }
 
-    window.addEventListener("storage", (event) => {
-      if (event.key === "theme") {
-        applyEpisodeColor();
-      }
-    });
-
-    setInterval(applyEpisodeColor, 1000);
   } catch (err) {
     console.error("Error loading currently section:", err);
   }
 }
 
-document.addEventListener("DOMContentLoaded", loadCurrently);
-
+// --- Blog Posts ---
 async function loadLatestPosts() {
   try {
     const response = await fetch("https://api.npoint.io/5ac2ef5dd46fbff62a02");
     const data = await response.json();
 
-    const posts = data.posts.slice(-5).reverse();
+    const posts = data.posts.slice(-6).reverse();
     const list = document.getElementById("latest-posts-list");
     const now = new Date();
 
-    posts.forEach((post) => {
-      const li = document.createElement("li");
-      const link = document.createElement("a");
-      link.href = `/blog?post=${post.index}`;
-      link.textContent = post.title;
+    if(list) {
+        list.innerHTML = "";
+        posts.forEach((post) => {
+          const li = document.createElement("li");
+          const link = document.createElement("a");
+          link.href = `/blog?post=${post.index}`;
+          link.textContent = post.title;
 
-      const postDate = new Date(post.date);
-      const diffTime = Math.abs(now - postDate);
-      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+          const postDate = new Date(post.date);
+          const diffTime = Math.abs(now - postDate);
+          const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
 
-      const timeText =
-        diffDays === 0
-          ? "today"
-          : diffDays === 1
-          ? "1 day ago"
-          : `${diffDays} days ago`;
+          const timeText =
+            diffDays === 0 ? "today" :
+            diffDays === 1 ? "1 day ago" :
+            `${diffDays} days ago`;
 
-      const dateSpan = document.createElement("span");
-      dateSpan.classList.add("post-date");
-      dateSpan.textContent = ` · ${timeText}`;
+          const dateSpan = document.createElement("span");
+          dateSpan.classList.add("post-date");
+          dateSpan.textContent = ` · ${timeText}`;
 
-      li.appendChild(link);
-      li.appendChild(dateSpan);
-      list.appendChild(li);
-    });
+          li.appendChild(link);
+          li.appendChild(dateSpan);
+          list.appendChild(li);
+        });
+    }
   } catch (error) {
     console.error("Error loading latest posts:", error);
   }
 }
 
-document.addEventListener("DOMContentLoaded", loadLatestPosts);
+// --- Initialization ---
+document.addEventListener("DOMContentLoaded", () => {
+  loadCurrently();
+  loadLatestPosts();
+
+  setInterval(loadCurrently, 15000);
+
+  applyEpisodeColor();
+  window.addEventListener("storage", (event) => {
+    if (event.key === "theme") applyEpisodeColor();
+  });
+  setInterval(applyEpisodeColor, 1000);
+});
