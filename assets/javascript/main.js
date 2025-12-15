@@ -174,6 +174,13 @@ if (
   codyHeading.classList.add("shimmer");
   codyHeading2.classList.add("shimmer");
 
+  // --- NEW CODE: Show the background ID ---
+  var headerBg = document.getElementById("cody-header-bg");
+  if (headerBg) {
+      headerBg.classList.add("cody-header-bg-visible");
+  }
+  // ---------------------------------------
+
   // Update age in the HTML code
   var ageElement = document.getElementById('age');
   if (ageElement) {

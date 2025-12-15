@@ -12,7 +12,7 @@
     <meta name="theme-color" content="#00c900">
     <link href="https://social.vivaldi.net/@codymkw" rel="me">
     <meta name="description" content="Add me on the Nintendo Switch, 3DS, or Wii U if you want to play!">
-    <meta name="keywords" content="CodyMKW, Nintendo fan, Animal Crossing, Nintendo Switch, 3DS, Wii U, Pretendo Network, Pretendo, Mario Kart, Pokémon, gaming enthusiast, peaceful gaming, relaxing atmosphere, gaming community, Nintendo Switch gaming, gaming adventures, video games, Nintendo games, gaming journey, social media, gaming community, anime, Clannad, future of Nintendo, QR code, Nintendo news, web apps, social links, gaming fun, Friend Code, gaming enthusiast, gaming community.">
+    <meta name="keywords" content="CodyMKW, Nintendo fan, Animal Crossing, Nintendo Switch, 3DS, Wii U, Pretendo Network, Pretendo, Mario Kart, Pokémon">
     <meta name="author" content="CodyMKW">
     <meta property="og:title" content="Friend Code - CodyMKW">
     <meta property="og:description" content="Add me on the Nintendo Switch, 3DS, or Wii U if you want to play!">
@@ -23,82 +23,155 @@
     <meta name="twitter:title" content="Friend Code - CodyMKW" />
     <meta name="twitter:description" content="Add me on the Nintendo Switch, 3DS, or Wii U if you want to play!" />
     <meta name="twitter:image:src" content="/assets/images/emojis/miiverse.png" />
+
     <link id="theme-style" rel="stylesheet" href="assets/css/main.css">
     <link rel="stylesheet" href="assets/css/emoji.css">
+
     <script defer src="assets/javascript/main.js"></script>
     <script defer src="assets/javascript/backgrounds.js"></script>
     <script defer src="assets/javascript/avatarFramestickyheader.js"></script>
+
     <title>Friend Code - CodyMKW</title>
+
+    <style>
+        .friend-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .friend-tabs button {
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .friend-tabs button.active {
+            outline: 2px solid currentColor;
+        }
+
+        .friend-tab-content {
+            display: none;
+        }
+
+        .friend-tab-content.active {
+            display: block;
+        }
+    </style>
 </head>
 
 <body>
-  <div id="sticky-header" class="sticky-header" style="display: none;">
+<div id="sticky-header" class="sticky-header" style="display: none;">
     <span id="close-button" onclick="toggleHeader()">X</span>
     <a href="" target="_blank" class="important"></a>
-  </div>  
-    <div id="background-image"></div>
-    <div class="container">
-        <div class="header">
-            <p>
-            <div class="cody-header-bg">
-              <h1 id="cody-heading2"></h1>
-              <h1 id="cody-heading">CodyMKW</h1>
-            </div>
-            </p>
-            <div class="avatar-frame" id="avatar-frame" onclick="selectAvatarFrame()">
-               <img src="" alt="Avatar Frame" class="frame-image" style="display: none;">
-               <img src="https://www.gravatar.com/avatar/5127de8a3a295a02ff3fc55bb6b2fabe?s=2048" alt="Cody's Avatar" class="avatar-image">
-            </div>
-            <div class="header-text">
-                <p>🎮 A gamer that likes Nintendo and anime 🍥</p>
-                <div id="status-container"></div>
-            </div>
+</div>
+
+<div id="background-image"></div>
+
+<div class="container">
+    <div class="header">
+        <div id="cody-header-bg">
+            <h1 id="cody-heading2"></h1>
+            <h1 id="cody-heading"></h1>
         </div>
-        <div class="tabs">
-            <button onclick="window.location.href='/'">About</button>
-            <button onclick="window.location.href='blog'">Blog</button>
-            <button onclick="window.location.href='nintendo-news'">Nintendo News</button>
-            <button onclick="window.location.href='chat'">Chat</button>
-            <button onclick="window.location.href='other-stuff'">Other Stuff</button>
-            <button onclick="window.location.href='social-media'">Social Media</button>
+
+        <div class="avatar-frame" id="avatar-frame" onclick="selectAvatarFrame()">
+            <img src="" alt="Avatar Frame" class="frame-image" style="display: none;">
+            <img src="https://www.gravatar.com/avatar/5127de8a3a295a02ff3fc55bb6b2fabe?s=2048" alt="Cody's Avatar" class="avatar-image">
         </div>
-        <div class="content" id="friendCodeContent">   
-                        <h2><i class="emoji ninSwitch"></i></h2>
-                        <h2>Switch Friend Code</h2>
-                        <p><b>SW-2549-4631-6600</b></p>
-                        <p><button onclick="window.open('https://lounge.nintendo.com/friendcode/2549-4631-6600/C49BNlzZDf', '_blank')">Open in the Nintendo Switch Online app or nxapi</button></p>
-                        <p>Or, scan the QR code below to open the Nintendo Switch Online mobile app for <a href="https://play.google.com/store/apps/details?id=com.nintendo.znca&hl=en_US&gl=US" target="_blank">Android</a>/<a href="https://apps.apple.com/app/id1234806557" target="_blank">iOS</a> and send me a friend request! 😊</p>
-                        <p><img src="assets/images/switchqr.webp" alt="Switch QR Code"></p>
-                        <hr>
-                        <h2><i class="emoji pretendo"></i></h2>
-                        <h2>Pretendo 3DS Friend Code</h2>
-                        <p><b>3189-0001-4178</b></p>
-                        <h2>Pretendo Wii U ID</h2>
-                        <p><b>CodyAC</b></p>
-        <button type="button" class="collapsible">What is Pretendo?</button>
-        <div class="whatpretendo">
-           <p>Pretendo is an open source Nintendo Network replacement that aims to build custom servers for the Wii U and 3DS family of consoles. Their goal is to preserve the online functionality of these consoles, to allow players to continue to play their favorite Wii U and 3DS games to their fullest capacity.</p>
-        </div>
-        </div>
+
+        <div class="header-text">
+            <p>🎮 A gamer that likes Nintendo and anime 🍥</p>
+            <div id="status-container"></div>
         </div>
     </div>
-    <button id="theme-toggle" class="theme-toggle-button"><span>☀️</span> Light Mode</button>
-    <footer></footer>
-<script>
-var coll = document.getElementsByClassName("collapsible");
-var i;
 
-for (i = 0; i < coll.length; i++) {
-  coll[i].addEventListener("click", function() {
-    this.classList.toggle("active");
-    var whatpretendo = this.nextElementSibling;
-    if (whatpretendo.style.display === "block") {
-      whatpretendo.style.display = "none";
-    } else {
-      whatpretendo.style.display = "block";
-    }
-  });
+    <div class="tabs">
+        <button onclick="window.location.href='/'">About</button>
+        <button onclick="window.location.href='blog'">Blog</button>
+        <button onclick="window.location.href='nintendo-news'">Nintendo News</button>
+        <button onclick="window.location.href='chat'">Chat</button>
+        <button onclick="window.location.href='other-stuff'">Other Stuff</button>
+        <button onclick="window.location.href='social-media'">Social Media</button>
+    </div>
+
+    <div class="content" id="friendCodeContent">
+
+        <!-- Friend Code Tabs -->
+        <div class="friend-tabs">
+            <button class="active" onclick="switchFriendTab('switch')">Switch</button>
+            <button onclick="switchFriendTab('pretendo')">Pretendo</button>
+        </div>
+
+        <!-- Switch Tab -->
+        <div id="tab-switch" class="friend-tab-content active">
+            <h2><i class="emoji ninSwitch"></i></h2>
+            <h2>Switch Friend Code</h2>
+            <p><b>SW-2549-4631-6600</b></p>
+            <p>
+                <button onclick="window.open('https://lounge.nintendo.com/friendcode/2549-4631-6600/C49BNlzZDf', '_blank')">
+                    Open in the Nintendo Switch Online app or nxapi
+                </button>
+            </p>
+            <p>
+                Or, scan the QR code below to open the Nintendo Switch Online mobile app for
+                <a href="https://play.google.com/store/apps/details?id=com.nintendo.znca&hl=en_US&gl=US" target="_blank">Android</a> /
+                <a href="https://apps.apple.com/app/id1234806557" target="_blank">iOS</a>
+            </p>
+            <p>
+                <img src="assets/images/switchqr.webp" alt="Switch QR Code">
+            </p>
+        </div>
+
+        <!-- Pretendo Tab -->
+        <div id="tab-pretendo" class="friend-tab-content">
+            <h2><i class="emoji pretendo"></i></h2>
+            <h2>Pretendo 3DS Friend Code</h2>
+            <p><b>3189-0001-4178</b></p>
+
+            <h2>Pretendo Wii U ID</h2>
+            <p><b>CodyAC</b></p>
+
+            <button type="button" class="collapsible">What is Pretendo?</button>
+            <div class="whatpretendo">
+                <p>
+                    Pretendo is an open source Nintendo Network replacement that aims to build custom servers
+                    for the Wii U and 3DS family of consoles. Their goal is to preserve the online functionality
+                    of these consoles.
+                </p>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<button id="theme-toggle" class="theme-toggle-button">
+    <span>☀️</span> Light Mode
+</button>
+
+<footer></footer>
+
+<script>
+function switchFriendTab(tab) {
+    document.querySelectorAll('.friend-tab-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.friend-tabs button').forEach(btn => btn.classList.remove('active'));
+
+    document.getElementById('tab-' + tab).classList.add('active');
+    event.target.classList.add('active');
+}
+
+var coll = document.getElementsByClassName("collapsible");
+for (var i = 0; i < coll.length; i++) {
+    coll[i].addEventListener("click", function () {
+        this.classList.toggle("active");
+        var content = this.nextElementSibling;
+        content.style.display = content.style.display === "block" ? "none" : "block";
+    });
 }
 </script>
+
 </body>
 </html>
