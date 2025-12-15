@@ -1,6 +1,28 @@
 document.addEventListener("DOMContentLoaded", () => {
+    // Initialize blog if on the blog page
     if (document.getElementById("BlogContent")) {
         initializeBlog();
+    }
+
+    // Attach listener to the theme toggle button so Disqus reloads to match the theme
+    // (the page already listens for a "themeChanged" event elsewhere; dispatch that event here)
+    const themeToggle = document.getElementById("theme-toggle");
+    if (themeToggle) {
+        themeToggle.addEventListener("click", () => {
+            // Dispatch a global event that your existing handler will pick up and reload Disqus.
+            // Using window.dispatchEvent so window.addEventListener("themeChanged", ...) catches it.
+            try {
+                window.dispatchEvent(new Event("themeChanged"));
+            } catch (err) {
+                // Fallback: if dispatching fails for some reason, still attempt to force reload of Disqus
+                const urlParams = new URLSearchParams(window.location.search);
+                const postId = urlParams.get("post");
+                if (postId !== null) {
+                    const currentPost = posts.find(p => p.originalIndex === parseInt(postId, 10));
+                    if (currentPost) loadDisqus(currentPost.originalIndex, currentPost.title);
+                }
+            }
+        });
     }
 });
 
@@ -9,6 +31,9 @@ let filteredPosts = [];
 let currentPage = 1;
 const postsPerPage = 7;
 let isPaginating = false;
+
+const disqusShortname = 'codymkw'; 
+const disqusBaseUrl = 'https://codymkw.nekoweb.org';
 
 async function initializeBlog() {
     const blogContainer = document.getElementById("blogPosts");
@@ -96,7 +121,6 @@ function renderListView() {
         postElement.className = 'blog-post';
         postElement.dataset.index = post.originalIndex;
 
-        // handle preview
         let previewHTML = "";
         if (post.content) {
             const trimmedContent = post.content.length > 185 
@@ -107,7 +131,6 @@ function renderListView() {
                 <a href="?post=${post.originalIndex}" class="read-more">Read more →</a>
             `;
         } else if (post.video || post.content2) {
-            // show video and/or content2 when no content
             previewHTML = `
                 ${post.video ? `<iframe src="${post.video}" frameborder="0" allowfullscreen></iframe>` : ""}
                 ${post.content2 ? `<div class="post-content">${marked.parse(post.content2)}</div>` : ""}
@@ -121,7 +144,6 @@ function renderListView() {
             ${previewHTML}
         `;
 
-        // link click handlers
         postElement.querySelector('h3 a').addEventListener('click', e => {
             e.preventDefault();
             window.history.pushState({ post: post.originalIndex }, "", `?post=${post.originalIndex}`);
@@ -172,59 +194,78 @@ function renderSinglePostView(postId) {
             ${post.video ? `<iframe src="${post.video}" frameborder="0" allowfullscreen></iframe>` : ""}
             <div class="post-content">${post.content2 ? marked.parse(post.content2) : ""}</div>
             <hr style="margin: 2em 0; border: none; border-top: 1px solid #ccc;">
-            <div id="comments-container" style="margin-top: 2em;"></div>
+            <div id="disqus_thread" style="margin-top: 2em;"></div> 
         </div>
     `;
 
     blogContainer.innerHTML = postHTML;
     document.querySelector('.blog-back-button').addEventListener('click', goBackToList);
 
-    loadGiscus(post.originalIndex);
+    loadDisqus(post.originalIndex, post.title);
 }
 
-// Giscus loader with theme sync
-function loadGiscus(postId) {
-    const container = document.getElementById("comments-container");
-    container.innerHTML = "";
+function loadDisqus(postId, postTitle) {
+    const container = document.getElementById("disqus_thread");
+    
+    if (!container) return;
 
-    // Get theme from localStorage (default to light if missing)
-    const currentTheme = localStorage.getItem("theme") === "dark" ? "dark" : "light";
+    // Clear the container so we "unload" the embed
+    container.innerHTML = ''; 
 
-    const giscus = document.createElement("script");
-    giscus.src = "https://giscus.app/client.js";
-    giscus.setAttribute("data-repo", "CodyMKW/blog-comments");
-    giscus.setAttribute("data-repo-id", "R_kgDOQEsfnA");
-    giscus.setAttribute("data-category", "Blog Comments");
-    giscus.setAttribute("data-category-id", "DIC_kwDOQEsfnM4CwyYq");
-    giscus.setAttribute("data-mapping", "specific");
-    giscus.setAttribute("data-term", `post-${postId}`);
-    giscus.setAttribute("data-reactions-enabled", "0");
-    giscus.setAttribute("data-emit-metadata", "0");
-    giscus.setAttribute("data-theme", currentTheme);
-    giscus.setAttribute("data-sort-by", "newest");
-    giscus.setAttribute("crossorigin", "anonymous");
-    giscus.async = true;
+    // Remove the embed script if present
+    const existingScript = document.getElementById('dsq-embed-js');
+    if (existingScript) {
+        existingScript.remove();
+    }
 
-    container.appendChild(giscus);
-
-    // Theme update listener for when user toggles theme
-    window.addEventListener("themeChanged", () => {
-        const newTheme = localStorage.getItem("theme") === "dark" ? "dark" : "light";
-        const iframe = document.querySelector("iframe.giscus-frame");
-        if (iframe) {
-            iframe.contentWindow.postMessage(
-                {
-                    giscus: {
-                        setConfig: {
-                            theme: newTheme,
-                        },
-                    },
-                },
-                "https://giscus.app"
-            );
+    // If Disqus global exists and has a reset method, prefer using it for a clean reload.
+    if (window.DISQUS && typeof window.DISQUS.reset === 'function') {
+        window.disqus_config = function () {
+            this.page.url = `${disqusBaseUrl}?post=${postId}`; 
+            this.page.identifier = `post-${postId}`; 
+            this.page.title = postTitle;
+        };
+        try {
+            window.DISQUS.reset({
+                reload: true,
+                config: window.disqus_config
+            });
+            return; // reset handled the reload
+        } catch (err) {
+            // if reset fails, fall back to re-injecting the embed script below
+            console.warn("DISQUS.reset failed, falling back to re-injection:", err);
         }
-    });
+    }
+
+    // Fallback: (re)create the embed script which will initialize Disqus for this page
+    window.disqus_config = function () {
+        this.page.url = `${disqusBaseUrl}?post=${postId}`; 
+        this.page.identifier = `post-${postId}`; 
+        this.page.title = postTitle;
+    };
+
+    (function() { 
+        const d = document, s = d.createElement('script');
+        s.src = `https://${disqusShortname}.disqus.com/embed.js`;
+        s.setAttribute('data-timestamp', +new Date());
+        s.id = 'dsq-embed-js'; 
+        (d.head || d.body).appendChild(s);
+    })();
 }
+
+window.addEventListener("themeChanged", () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const postId = urlParams.get("post");
+
+    if (postId !== null) {
+        const currentPost = posts.find(p => p.originalIndex === parseInt(postId, 10));
+        if (currentPost) {
+            // The full reload implemented in loadDisqus should now run correctly 
+            // every time the 'themeChanged' event fires, ensuring theme sync.
+            loadDisqus(currentPost.originalIndex, currentPost.title);
+        }
+    }
+});
 
 function goBackToList(e) {
     e.preventDefault();
@@ -275,7 +316,6 @@ function changePage(direction) {
 function populateCategories() {
     const categoryFilter = document.getElementById("categoryFilter");
 
-    // Count posts per category
     const categoryCounts = posts.reduce((counts, post) => {
         if (post.category) {
             counts[post.category] = (counts[post.category] || 0) + 1;
@@ -283,15 +323,12 @@ function populateCategories() {
         return counts;
     }, {});
 
-    // Get all unique categories sorted alphabetically (optional)
     const categories = Object.keys(categoryCounts).sort();
 
-    // Clear old options except "All"
     while (categoryFilter.options.length > 1) {
         categoryFilter.remove(1);
     }
 
-    // Add new category options with counts
     categories.forEach(category => {
         const option = document.createElement("option");
         option.value = category;
