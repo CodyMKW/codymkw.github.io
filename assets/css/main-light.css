@@ -97,17 +97,18 @@ button:hover {
   border-radius: 50%;
 }
 
-.cody-header-bg {
+#cody-header-bg {
+    display: none; /* Make sure it's hidden normally */
+}
+
+/* This is the class you add on your birthday to apply the style and make it visible */
+#cody-header-bg.cody-header-bg-visible {
   background: rgba(255, 255, 255, 0.7);
   padding: 10px;
   border-radius: 8px;
   display: inline-block;
   margin-top: 10px;
   width: fit-content;
-}
-
-.cody-header-bg {
-  color: #333;
 }
 
 .header-text {

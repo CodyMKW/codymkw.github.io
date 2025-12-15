@@ -36,6 +36,20 @@
       "purpose": "any"
     }
   ],
+  "screenshots": [
+      {
+        "src": "/screenshot.jpg",
+        "sizes": "1920x1080",
+        "type": "image/jpeg",
+        "form_factor": "wide"
+      },
+      {
+        "src": "/screenshot2.jpg",
+        "sizes": "720x1560",
+        "type": "image/jpeg",
+        "form_factor": "narrow"
+      }
+  ],
   "categories": [
     "games",
     "entertainment",
