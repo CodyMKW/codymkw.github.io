@@ -29,7 +29,6 @@
     <link rel="stylesheet" href="assets/css/emoji.css">
     <script defer src="assets/javascript/main.js"></script>
     <script defer src="assets/javascript/currently.js"></script>
-    <script defer src="assets/javascript/backgrounds.js"></script>
     <script defer src="assets/javascript/stickyheader.js"></script>
     <title>CodyMKW</title>
 </head>
@@ -38,7 +37,6 @@
         <span id="close-button" onclick="toggleHeader()">X</span>
         <a href="" target="_blank" class="important"></a>
     </div>
-    <div id="background-image"></div>
     <div class="container">
         <div class="header">
             <p>
@@ -114,7 +112,6 @@ document.addEventListener('DOMContentLoaded', function () {
 function updateAvatarFrame(avatarFrames) {
     const frameContainer = document.getElementById('avatar-frame');
     const avatarImage = frameContainer.querySelector('.avatar-image');
-
     const currentFrame = avatarFrames[0];
 
     let frameURL;
@@ -131,5 +128,4 @@ function updateAvatarFrame(avatarFrames) {
 }
     </script>
 </body>
-
 </html>
