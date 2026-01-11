@@ -27,56 +27,7 @@
     <link rel="stylesheet" href="assets/css/emoji.css">
     <script defer src="assets/javascript/main.js"></script>
     <script defer src="assets/javascript/backgrounds.js"></script>
-    <script defer src="assets/javascript/avatarFramestickyheader.js"></script>
-    <script defer src="assets/javascript/chatstuff.js"></script>
-    <script src="https://chattable.neocities.org/scripts/main.min.js"></script>
-    <script>
-       chattable.commands = {
-        "3ds" : function(){
-           chattable.sendMessage(`Hey *${chattable.user.name}*, If you use Pretendo on the :3ds: Cody's friend code is **3189-0001-4178**`, "Pretendo Bot");
-         },
-        "wiiu" : function(){
-           chattable.sendMessage(`Hey *${chattable.user.name}*, If you use Pretendo on the :wiiu: Cody's ID is **CodyAC**`, "Pretendo Bot");
-         },
-        "switch" : function(){
-           chattable.sendMessage(`Hey *${chattable.user.name}*, If you have a :switch: Cody's friend code is **SW-2549-4631-6600**`, "Nintendo Bot");
-         },
-        "userid" : function(){
-           chattable.sendMessage(`*${chattable.user.name}*'s user ID for Chattable is **${chattable.user.uid}**`, "System");
-         }
-       };
-// Initialize chat with current theme
-function initializeChattable() {
-    const currentTheme = localStorage.getItem('theme') || 
-                        (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-    
-    // Only initialize if not already initialized
-    if (!window.chattableInitialized) {
-        chattable.initialize({
-            stylesheet: `assets/css/chattable${currentTheme === 'light' ? 'light' : ''}.css`
-        });
-        window.chattableInitialized = true;
-    } else {
-        // If already initialized, reload with new theme
-        chattable.reinitialize({
-            stylesheet: `assets/css/chattable${currentTheme === 'light' ? 'light' : ''}.css`
-        });
-    }
-}
-
-// Listen for theme changes
-document.addEventListener('themeChanged', function(e) {
-    const newTheme = e.detail;
-    if (window.chattable && chattable.reinitialize) {
-        chattable.reinitialize({
-            stylesheet: `assets/css/chattable${newTheme === 'light' ? 'light' : ''}.css`
-        });
-    }
-});
-
-// Initial initialization
-initializeChattable();
-    </script>
+    <script defer src="assets/javascript/stickyheader.js"></script>
     <title>Chat - CodyMKW</title>
 </head>
 
@@ -94,10 +45,7 @@ initializeChattable();
               <h1 id="cody-heading"></h1>
             </div>
             </p>
-            <div class="avatar-frame" id="avatar-frame" onclick="selectAvatarFrame()">
-               <img src="" alt="Avatar Frame" class="frame-image" style="display: none;">
-               <img src="https://www.gravatar.com/avatar/5127de8a3a295a02ff3fc55bb6b2fabe?s=2048" alt="Cody's Avatar" class="avatar-image">
-            </div>
+            <p><img id="site-title-image" src="assets/images/Site_Title(dark).png" alt="Site Tite" style="width: 800px; max-width: 100%; border-radius: 0; transform: translateX(-10px);"></p>
             <div class="header-text">
                 <p>🎮 A gamer that likes Nintendo and anime 🍥</p>
                 <div id="status-container"></div>
@@ -107,59 +55,13 @@ initializeChattable();
             <button onclick="window.location.href='/'">About</button>
             <button onclick="window.location.href='blog'">Blog</button>
             <button onclick="window.location.href='nintendo-news'">Nintendo News</button>
-            <button onclick="window.location.href='chat'">Chat</button>
+            <button onclick="window.open('https://codymkw.atabook.org', '_blank')">Guestbook</button>
             <button onclick="window.location.href='other-stuff'">Other Stuff</button>
             <button onclick="window.location.href='social-media'">Social Media</button>
         </div>
         <div class="content" id="chatroomContent">
-                <h2><i class="emoji chat"></i></h2>
                 <h2>Chat</h2>
-                <iframe src='https://iframe.chat/embed/index.html?chat=CodyMKWChatroom' style="width: 100%; height: 600px;" id='chattable' frameborder='none'></iframe>
-<div id="event-message" style="display: none; background: #00C900; padding: 10px; text-align: center; font-weight: bold;">
-    <span id="event-text"></span>
-</div>
-<div id="chat-info" style="margin-top: 20px; margin-bottom: 20px; padding: 15px; border-radius: 8px;">
-    <h3>📝 Basic Rules</h3>
-    <ul>
-        <li>Be respectful to others — no bullying, hate speech, or drama.</li>
-        <li>Keep things friendly and chill. This is a positive space!</li>
-        <li>No spamming or flooding the chat.</li>
-        <li>Don’t share personal info or ask others for it.</li>
-        <li>Have fun and be kind 😄</li>
-    </ul>
-
-    <h3>🛍️ How the Shop Works</h3>
-    <ul>
-        <li>You earn <strong>money</strong> every 3 minutes you're active in chat you get $1 — and during events, you might earn even more!</li>
-        <li>Use that money to buy and equip <strong>flairs</strong> — fun customizations like name colors, message backgrounds, message effects, and little badges next to your name!</li>
-        <li>You can only use one flair at a time — equipping a new one will replace the old one.</li>
-        <li>Items with <strong>gold names</strong> cost more because of tariffs (thanks, Princess Peach 👑).</li>
-        <li>Use promo codes (when available) for bonus money!</li>
-    </ul>
-</div>
-<div id="flair-shop">
-    <h3>Flair Shop</h3>
-    <p>Money: <span id="points-display">0</span></p>
-    <div id="flair-options"></div>
-    <small>*Only one flair can be used at a time applying one will remove another if you have one applied!</small><br>
-    <small>**Items with gold names have tariffs imposed upon them!</small>
-    <p id="flair-message" style="display:none;">Flair set!</p>
-    <p id="flair-message2" style="display:none;">Not Enough Money!</p>
-    <p id="remove-flair-message" style="display:none;">Flair removed!</p>
-    <a href="#" id="remove-flair">Remove Flair</a>
-    <br>
-    <a href="#" id="reset-purchases">Reset Purchases</a>
-    <br>
-    <button id="exportimport-button" onclick="exportShopData()">Export Data</button>
-    <input type="file" id="import-file" style="display: none;" onchange="importShopData(event)">
-    <button id="exportimport-button" onclick="document.getElementById('import-file').click()">Import Data</button>
-</div>
-<div id="promo-section">
-    <h3>Redeem Promo Code</h3>
-    <input type="text" id="promo-input" placeholder="Enter promo code">
-    <button id="redeem-button">Redeem</button>
-    <p id="promo-message" style="display:none;"></p>
-</div>
+                 Yeah a chat used to be here but yeah it was being attacked and it was recommended to remove it so here we are anyway how's your day?
         </div>
     </div>
     <button id="theme-toggle" class="theme-toggle-button"><span>☀️</span> Light Mode</button>

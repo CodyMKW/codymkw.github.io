@@ -217,20 +217,17 @@ async function fetchData() {
     }
 }
 
-// Handle dropdown change
 document.getElementById('accountSelect').addEventListener('change', () => {
   const selected = document.getElementById('accountSelect').value;
   saveSelectedAccount(selected);
-  fetchData(); // Refresh with new account
+  fetchData(); 
 });
 
-// Load saved account on page load
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('accountSelect').value = getSelectedAccount();
   fetchData();
 });
 
-// Keep your refresh interval
 setInterval(() => {
   fetchData();
 }, 180000);

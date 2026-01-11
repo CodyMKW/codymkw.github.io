@@ -30,7 +30,7 @@
     <script defer src="assets/javascript/main.js"></script>
     <script defer src="assets/javascript/currently.js"></script>
     <script defer src="assets/javascript/backgrounds.js"></script>
-    <script defer src="assets/javascript/avatarFramestickyheader.js"></script>
+    <script defer src="assets/javascript/stickyheader.js"></script>
     <title>CodyMKW</title>
 </head>
 <body>
@@ -47,11 +47,7 @@
                 <h1 id="cody-heading"></h1>
             </div>
             </p>
-            <div class="avatar-frame" id="avatar-frame" onclick="selectAvatarFrame()">
-                <img src="" alt="Avatar Frame" class="frame-image" style="display: none;">
-                <img src="https://www.gravatar.com/avatar/5127de8a3a295a02ff3fc55bb6b2fabe?s=2048" alt="Cody's Avatar"
-                    class="avatar-image">
-            </div>
+            <p><img id="site-title-image" src="assets/images/Site_Title(dark).png" alt="Site Tite" style="width: 800px; max-width: 100%; border-radius: 0; transform: translateX(-10px);"></p>
             <div class="header-text">
                 <p>🎮 A gamer that likes Nintendo and anime 🍥</p>
                 <div id="status-container"></div>
@@ -61,7 +57,7 @@
             <button onclick="window.location.href='/'">About</button>
             <button onclick="window.location.href='blog'">Blog</button>
             <button onclick="window.location.href='nintendo-news'">Nintendo News</button>
-            <button onclick="window.location.href='chat'">Chat</button>
+            <button onclick="window.open('https://codymkw.atabook.org', '_blank')">Guestbook</button>
             <button onclick="window.location.href='other-stuff'">Other Stuff</button>
             <button onclick="window.location.href='social-media'">Social Media</button>
         </div>
@@ -70,8 +66,9 @@
       <h2>About Me</h2>
 <section id="about-me-section">
   <div class="about-flex">
-    <div class="about-mii">
-      <img src="assets/images/mii.png" alt="Cody's Mii" />
+    <div class="avatar-frame" id="avatar-frame" onclick="selectAvatarFrame()">
+        <img src="" alt="Avatar Frame" class="frame-image" style="display: none;">
+        <img src="https://www.gravatar.com/avatar/5127de8a3a295a02ff3fc55bb6b2fabe?s=2048" alt="Cody's Avatar" class="avatar-image">
     </div>
     <div class="about-text">
       <p>Hey there! I'm Cody. I love playing Nintendo games and watching anime. My birthday is January 17th, and my favorite color is <font color="#00C900">green</font>.</p>
@@ -97,6 +94,7 @@
             <br>
             <section>
                 <div style="display: flex; flex-direction: column; align-items: center; text-align: center;">
+                    <iframe src="https://nekoweb.org/frame/follow" frameborder="0" width="130" height="55"></iframe>
                     <p>Also you can check <a href="/buttons">here</a> for my site's button and other cool looking sites!</p>
                 </div>
             </section>
@@ -104,5 +102,38 @@
     </div>
     <button id="theme-toggle" class="theme-toggle-button"><span>☀️</span> Light Mode</button>
     <footer></footer>
+    <script>
+document.addEventListener('DOMContentLoaded', function () {
+    fetch('https://api.npoint.io/e48ee20c0a091f1b8963') // Update this path
+        .then(response => response.json())
+        .then(data => {
+            updateAvatarFrame(data.avatarframe);
+            updateStickyHeader(data.stickyheader);
+        });
+});
+
+function updateAvatarFrame(avatarFrames) {
+    const frameContainer = document.getElementById('avatar-frame');
+    const avatarImage = frameContainer.querySelector('.avatar-image');
+
+    // Assuming you only have one avatar frame for now
+    const currentFrame = avatarFrames[0];
+
+    // Determine the frame URL based on grandfestmode
+    let frameURL;
+    if (currentFrame.grandfestmode) {
+        frameURL = `assets/images/splatfest/grandfest/Team_${currentFrame.team}.avif`;
+    } else {
+        frameURL = `assets/images/splatfest/${currentFrame.species}/Team_${currentFrame.team}.avif`;
+    }
+
+    // Update the frame image source
+    const frameImage = frameContainer.querySelector('.frame-image');
+    frameImage.src = frameURL;
+
+    // Update the visibility based on the status property
+    frameImage.style.display = currentFrame.status === 0 ? 'none' : 'block';
+}
+    </script>
 </body>
 </html>

@@ -11,10 +11,9 @@ function updateUrl() {
 }
 
 function extractYouTubeVideoID(input) {
-  // Regular expression to match typical YouTube URL patterns
   const urlPattern = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
   const match = input.match(urlPattern);
-  return match ? match[1] : input; // If match found, return the ID; else return the input as-is
+  return match ? match[1] : input; 
 }
 
 function loadYouTubeVideos() {
@@ -34,10 +33,8 @@ function loadYouTubeVideos() {
     const wrapper = document.createElement("div");
     wrapper.className = "youtube-player-wrapper";
 
-    // Create a unique ID for the player container
     const uniqueId = `youtube-player-${Date.now()}-${videoId}`;
 
-    // Add a close button and a container for the iframe
     wrapper.innerHTML = `
       <button class="stream-close-button" onclick="
           this.parentElement.remove();
@@ -48,7 +45,6 @@ function loadYouTubeVideos() {
     `;
     container.appendChild(wrapper);
 
-    // Create and configure the YouTube iframe
     const iframe = document.createElement("iframe");
     iframe.width = "100%";
     iframe.height = "100%";

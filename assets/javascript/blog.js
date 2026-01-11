@@ -1,20 +1,14 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // Initialize blog if on the blog page
     if (document.getElementById("BlogContent")) {
         initializeBlog();
     }
 
-    // Attach listener to the theme toggle button so Disqus reloads to match the theme
-    // (the page already listens for a "themeChanged" event elsewhere; dispatch that event here)
     const themeToggle = document.getElementById("theme-toggle");
     if (themeToggle) {
         themeToggle.addEventListener("click", () => {
-            // Dispatch a global event that your existing handler will pick up and reload Disqus.
-            // Using window.dispatchEvent so window.addEventListener("themeChanged", ...) catches it.
             try {
                 window.dispatchEvent(new Event("themeChanged"));
             } catch (err) {
-                // Fallback: if dispatching fails for some reason, still attempt to force reload of Disqus
                 const urlParams = new URLSearchParams(window.location.search);
                 const postId = urlParams.get("post");
                 if (postId !== null) {
@@ -209,16 +203,13 @@ function loadDisqus(postId, postTitle) {
     
     if (!container) return;
 
-    // Clear the container so we "unload" the embed
     container.innerHTML = ''; 
 
-    // Remove the embed script if present
     const existingScript = document.getElementById('dsq-embed-js');
     if (existingScript) {
         existingScript.remove();
     }
 
-    // If Disqus global exists and has a reset method, prefer using it for a clean reload.
     if (window.DISQUS && typeof window.DISQUS.reset === 'function') {
         window.disqus_config = function () {
             this.page.url = `${disqusBaseUrl}?post=${postId}`; 
@@ -230,14 +221,12 @@ function loadDisqus(postId, postTitle) {
                 reload: true,
                 config: window.disqus_config
             });
-            return; // reset handled the reload
+            return; 
         } catch (err) {
-            // if reset fails, fall back to re-injecting the embed script below
             console.warn("DISQUS.reset failed, falling back to re-injection:", err);
         }
     }
 
-    // Fallback: (re)create the embed script which will initialize Disqus for this page
     window.disqus_config = function () {
         this.page.url = `${disqusBaseUrl}?post=${postId}`; 
         this.page.identifier = `post-${postId}`; 
@@ -260,8 +249,6 @@ window.addEventListener("themeChanged", () => {
     if (postId !== null) {
         const currentPost = posts.find(p => p.originalIndex === parseInt(postId, 10));
         if (currentPost) {
-            // The full reload implemented in loadDisqus should now run correctly 
-            // every time the 'themeChanged' event fires, ensuring theme sync.
             loadDisqus(currentPost.originalIndex, currentPost.title);
         }
     }
