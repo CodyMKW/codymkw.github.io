@@ -1,4 +1,3 @@
-// --- Anime Fetcher ---
 async function fetchLastWatchedAnime(username) {
   const query = `
     query ($username: String) {
@@ -44,11 +43,12 @@ async function fetchLastWatchedAnime(username) {
       const animeName = titles.english || titles.romaji || "Unknown Anime";
       const episode = entry.progress || 0;
 
+      const displayEpisode = Math.max(episode - 1, 1);
       const showEpisode = format !== "MOVIE" && episode > 0;
 
       const span = document.createElement("span");
       span.className = "anime-episode";
-      span.textContent = showEpisode ? `(Ep ${episode})` : "";
+      span.textContent = showEpisode ? `(Ep ${displayEpisode})` : "";
 
       return { animeName, span };
     }
@@ -60,7 +60,6 @@ async function fetchLastWatchedAnime(username) {
   }
 }
 
-// --- Style / Color Logic ---
 function applyEpisodeColor() {
   const theme = localStorage.getItem("theme") || "light";
   const color = theme === "dark" ? "#00c900" : "#3B82F6";
@@ -96,7 +95,6 @@ function applyEpisodeColor() {
   `;
 }
 
-// --- Smart time formatter ---
 function formatAgo(uts) {
   const now = Math.floor(Date.now() / 1000);
   const diff = now - uts;
@@ -117,7 +115,6 @@ function formatAgo(uts) {
   return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
 }
 
-// --- STATUS.CAFE API fetch ---
 async function fetchStatusCafe() {
   const username = "codymkw";
 
@@ -154,7 +151,6 @@ async function fetchStatusCafe() {
   }
 }
 
-// --- LastFM ---
 async function fetchLastFmTrack() {
   const username = "CodyMKW";
   const url = `https://lastfm-last-played.biancarosa.com.br/${username}/latest-song?t=${Date.now()}`;
@@ -185,10 +181,8 @@ async function fetchLastFmTrack() {
   }
 }
 
-// --- MAIN LOAD FUNCTION ---
 async function loadCurrently() {
   try {
-    // Presence fetch
     const presenceRes = await fetch(`https://nxapi-presence.fancy.org.uk/api/presence/644cd5195d154bd5?t=${Date.now()}`);
     const presenceData = await presenceRes.json();
 
@@ -203,7 +197,6 @@ async function loadCurrently() {
       playing = presence.game.name;
     }
 
-    // Other fetches
     const { animeName, span } = await fetchLastWatchedAnime('CodyMKW');
     const watchingContainer = document.createElement("span");
     watchingContainer.innerHTML = animeName;
@@ -212,7 +205,6 @@ async function loadCurrently() {
     const lastFm = await fetchLastFmTrack();
     const statusCafe = await fetchStatusCafe();
 
-    // --- RENDER STATUS.CAFE STANDALONE ---
     const cafeBox = document.getElementById("statuscafe-box");
     if (cafeBox) {
       cafeBox.innerHTML = `
@@ -227,7 +219,6 @@ async function loadCurrently() {
       `;
     }
 
-    // --- RENDER "CURRENTLY" SECTION (WITHOUT STATUS.CAFE) ---
     const container = document.getElementById('currently-section');
     if (container) {
       container.innerHTML = `
@@ -244,7 +235,6 @@ async function loadCurrently() {
         </ul>
       `;
 
-      // Insert Anime Progress
       const watchItem = container.querySelector("li:last-child");
       watchItem.appendChild(watchingContainer);
 
@@ -262,13 +252,12 @@ async function loadCurrently() {
   }
 }
 
-// --- Blog Posts ---
 async function loadLatestPosts() {
   try {
     const response = await fetch("https://api.npoint.io/5ac2ef5dd46fbff62a02");
     const data = await response.json();
 
-    const posts = data.posts.slice(-6).reverse();
+    const posts = data.posts.slice(-5).reverse();
     const list = document.getElementById("latest-posts-list");
     const now = new Date();
 
@@ -284,10 +273,24 @@ async function loadLatestPosts() {
           const diffTime = Math.abs(now - postDate);
           const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
 
-          const timeText =
-            diffDays === 0 ? "today" :
-            diffDays === 1 ? "1 day ago" :
-            `${diffDays} days ago`;
+          let timeText;
+
+          if (diffDays <= 30) {
+              if (diffDays === 0) {
+                  timeText = "today";
+              } else if (diffDays === 1) {
+                  timeText = "1 day ago";
+              } else {
+                  timeText = `${diffDays} days ago`;
+              }
+          } 
+          else {
+              timeText = postDate.toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "short",
+                  day: "numeric"
+              });
+          }
 
           const dateSpan = document.createElement("span");
           dateSpan.classList.add("post-date");
@@ -303,7 +306,6 @@ async function loadLatestPosts() {
   }
 }
 
-// --- Initialization ---
 document.addEventListener("DOMContentLoaded", () => {
   loadCurrently();
   loadLatestPosts();

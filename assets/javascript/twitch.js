@@ -25,7 +25,6 @@ function loadTwitchStreams() {
         const wrapper = document.createElement('div');
         wrapper.className = 'twitch-player-wrapper';
         
-        // Add close button with proper cleanup
         wrapper.innerHTML = `
             <button class="stream-close-button" onclick="
                 this.parentElement.remove();
@@ -58,7 +57,6 @@ document.addEventListener("DOMContentLoaded", function() {
         .map(c => c.trim())
         .filter(c => c);
     
-    // Initial load with existing channels
     if (channels.length) {
         activeChannels = new Set(channels);
         const container = document.getElementById("twitch-players");
