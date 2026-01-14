@@ -24,7 +24,10 @@ function loadYouTubeVideos() {
     .filter((v) => v && !activeVideos.has(v));
 
 
-  if (newVideos.length === 0) return;
+if (newVideos.length === 0) {
+  alert("Those videos are already loaded.");
+  return;
+}
 
   const container = document.getElementById("youtube-players");
 
@@ -60,6 +63,23 @@ function loadYouTubeVideos() {
   document.getElementById("youtube-video-ids").value = "";
 }
 
+function copyShareLink() {
+  const url = window.location.href;
+
+  navigator.clipboard.writeText(url).then(() => {
+    const btn = document.getElementById("copy-link-btn");
+    const oldText = btn.innerText;
+    btn.innerText = "Copied!";
+    setTimeout(() => (btn.innerText = oldText), 1500);
+  });
+}
+
+function clearAllVideos() {
+  activeVideos.clear();
+  document.getElementById("youtube-players").innerHTML = "";
+  updateUrl();
+}
+
 document.addEventListener("DOMContentLoaded", function () {
   const videos = getVideosParam()
     .split(",")
@@ -93,5 +113,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
       wrapper.querySelector("div").appendChild(iframe);
     });
+  }
+});
+
+document.getElementById("youtube-video-ids").addEventListener("keydown", function (e) {
+  if (e.key === "Enter") {
+    loadYouTubeVideos();
+  }
+});
+
+document.addEventListener("paste", (e) => {
+  const text = (e.clipboardData || window.clipboardData).getData("text");
+
+  if (text.includes("youtube.com") || text.includes("youtu.be")) {
+    document.getElementById("youtube-video-ids").value = text;
+    loadYouTubeVideos();
   }
 });

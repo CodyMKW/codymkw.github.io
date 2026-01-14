@@ -16,7 +16,10 @@ function loadTwitchStreams() {
         .map(c => c.trim())
         .filter(c => c && !activeChannels.has(c));
 
-    if (newChannels.length === 0) return;
+if (newChannels.length === 0) {
+    alert("Those channels are already loaded.");
+    return;
+}
 
     const container = document.getElementById("twitch-players");
     
@@ -52,6 +55,23 @@ function loadTwitchStreams() {
     document.getElementById("twitch-usernames").value = '';
 }
 
+function copyShareLink() {
+    const url = window.location.href;
+
+    navigator.clipboard.writeText(url).then(() => {
+        const btn = document.getElementById("copy-link-btn");
+        const oldText = btn.innerText;
+        btn.innerText = "Copied!";
+        setTimeout(() => (btn.innerText = oldText), 1500);
+    });
+}
+
+function clearAllStreams() {
+    activeChannels.clear();
+    document.getElementById("twitch-players").innerHTML = "";
+    updateUrl();
+}
+
 document.addEventListener("DOMContentLoaded", function() {
     const channels = getChannelsParam().split(',')
         .map(c => c.trim())
@@ -84,5 +104,23 @@ document.addEventListener("DOMContentLoaded", function() {
                 player.getPlayer().setVolume(1.0);
             });
         });
+    }
+});
+
+document.getElementById("twitch-usernames").addEventListener("keydown", function (e) {
+    if (e.key === "Enter") {
+        loadTwitchStreams();
+    }
+});
+
+document.addEventListener("paste", (e) => {
+    const text = (e.clipboardData || window.clipboardData).getData("text");
+
+    if (text.includes("twitch.tv")) {
+        const match = text.match(/twitch\.tv\/([a-zA-Z0-9_]+)/);
+        if (match) {
+            document.getElementById("twitch-usernames").value = match[1];
+            loadTwitchStreams();
+        }
     }
 });
