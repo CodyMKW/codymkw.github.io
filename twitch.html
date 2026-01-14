@@ -64,6 +64,8 @@
                 <div class="input-group">
                     <input type="text" id="twitch-usernames" placeholder="Enter comma-separated usernames">
                     <button onclick="loadTwitchStreams()">Load Streams</button>
+                    <button onclick="copyShareLink()" id="copy-link-btn">Copy Share Link</button>
+                    <button onclick="clearAllStreams()">Clear All</button>
                 </div>
                 <div id="twitch-players" class="players-grid"></div>
             </div>          

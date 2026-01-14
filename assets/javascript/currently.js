@@ -5,6 +5,7 @@ async function fetchLastWatchedAnime(username) {
         lists {
           entries {
             progress
+            score
             media {
               format
               title {
@@ -42,9 +43,15 @@ async function fetchLastWatchedAnime(username) {
 
       const animeName = titles.english || titles.romaji || "Unknown Anime";
       const episode = entry.progress || 0;
+      const score = entry.score || 0;
 
-      const displayEpisode = Math.max(episode - 1, 1);
+      const displayEpisode =
+         score > 0
+         ? episode
+         : Math.max(episode - 1, 1);
+
       const showEpisode = format !== "MOVIE" && episode > 0;
+
 
       const span = document.createElement("span");
       span.className = "anime-episode";

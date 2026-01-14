@@ -64,6 +64,8 @@
         <div class="input-group">
           <input type="text" id="youtube-video-ids" placeholder="Enter comma-separated YouTube video IDs or full URL" />
           <button onclick="loadYouTubeVideos()">Load Videos</button>
+          <button onclick="copyShareLink()" id="copy-link-btn">Copy Share Link</button>
+          <button onclick="clearAllVideos()">Clear All</button>
         </div>
         <div id="youtube-players" class="players-grid"></div>
       </div>
