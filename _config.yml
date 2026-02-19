@@ -1,0 +1,29 @@
+title: CodyMKW
+description: A gamer that likes Nintendo and anime.
+url: "https://codymkw.github.io"
+
+markdown: kramdown
+theme: jekyll-theme-primer
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+
+status:
+  text: "Offline"
+  icon: "💤"
+  acnh_dream_address: "DA-2561-1806-9323"
+  last_updated: "2026-02-13 14:40 PM"
+
+navigation:
+  - title: About
+    url: /about/
+  - title: Blog
+    url: /blog/
+  - title: Nintendo News
+    url: /nintendo-news/
+  - title: Guestbook
+    url: /guestbook/
+  - title: Other Stuff
+    url: /other/
+  - title: Social Media
+    url: /socials/

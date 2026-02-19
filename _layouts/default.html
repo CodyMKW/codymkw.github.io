@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="{{ page.lang | default: site.lang | default: "en" }}">
+  {% include head.html %}
+  <body>
+    <div class="site-background-pattern">
+        {% include header.html %}
+
+        <main class="main-container-glow">
+            {{ content }}
+            {% include footer.html %}
+        </main>
+    </div>
+    <script src="{{ '/assets/js/main.js' | relative_url }}"></script>
+  </body>
+</html>

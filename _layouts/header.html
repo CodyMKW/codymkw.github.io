@@ -1,0 +1,17 @@
+<header class="site-header">
+    <div class="title-banner">
+        <img src="/assets/images/banner.png" alt="Banner">
+    </div>
+
+    <div class="subtitle-bar text-center">
+        <p>A gamer that likes Nintendo and anime 🌸 Currently <span class="status-indicator offline">Offline 💤</span></p>
+    </div>
+
+    <nav class="main-nav">
+        {% for item in site.data.navigation %}
+        <a href="{{ item.url | relative_url }}" class="neon-button {{ item.title | downcase | replace: ' ', '-' }}">
+            {{ item.title }}
+        </a>
+        {% endfor %}
+    </nav>
+</header>
