@@ -1,595 +1,354 @@
----
----
 document.addEventListener("DOMContentLoaded", function () {
-
-    if (document.getElementById("BlogContent") || document.getElementById("blogPosts")) {
-
+    if (document.getElementById("BlogContent")) {
         initializeBlog();
-
     }
 
     var themeToggle = document.getElementById("theme-toggle");
-
     if (themeToggle) {
-
         themeToggle.addEventListener("click", function () {
-
             try {
-
                 window.dispatchEvent(new Event("themeChanged"));
-
             } catch (err) {
-
-                var slug = getSlugFromURL();
-
-                if (slug) {
-
+                var urlParams = new URLSearchParams(window.location.search);
+                var postId = urlParams.get("post");
+                if (postId !== null) {
                     var currentPost = posts.find(function (p) {
-
-                        return p.slug === slug;
-
+                        return p.originalIndex === parseInt(postId, 10);
                     });
-
-                    if (currentPost) {
-
-                        loadDisqus(currentPost.slug, currentPost.title);
-
-                    }
-
+                    if (currentPost) loadDisqus(currentPost.originalIndex, currentPost.title);
                 }
-
             }
-
         });
-
     }
-
 });
 
 var posts = [];
-
 var filteredPosts = [];
-
 var currentPage = 1;
-
 var postsPerPage = 7;
-
 var isPaginating = false;
 
-var disqusShortname = "codymkw";
-
-var disqusBaseUrl = "https://codymkw.github.io";
-
-function getSlugFromURL() {
-
-    var path = window.location.pathname;
-
-    var parts = path.split("/").filter(function (p) {
-
-        return p.length > 0;
-
-    });
-
-    if (parts.length >= 2 && parts[0] === "blog") {
-
-        return parts[1];
-
-    }
-
-    return null;
-
-}
-
-function goToPost(slug) {
-
-    window.history.pushState(
-
-        { post: slug },
-
-        "",
-
-        "/blog/" + slug
-
-    );
-
-    renderSinglePostView(slug);
-
-}
+var disqusShortname = 'codymkw';
+var disqusBaseUrl = 'https://codymkw.nekoweb.org';
 
 function initializeBlog() {
-
     var blogContainer = document.getElementById("blogPosts");
+    var blogHeader = document.querySelector(".blog-header");
+    var pagination = document.querySelector(".pagination");
 
     if (!blogContainer) return;
 
-    posts = [
+    try {
+        blogContainer.innerHTML = '<div class="blog-message">Loading posts...</div>';
+        if (blogHeader) blogHeader.classList.add('hidden');
+        if (pagination) pagination.classList.add('hidden');
 
-        {% for post in site.posts %}
+        return fetch("https://api.npoint.io/5ac2ef5dd46fbff62a02")
+            .then(function (response) {
+                if (!response.ok) throw new Error("HTTP error! status: " + response.status);
+                return response.json();
+            })
+            .then(function (data) {
+                posts = data.posts.map(function (post) {
+                    return {
+                        index: post.index,
+                        title: post.title,
+                        date: post.date,
+                        time: post.time,
+                        author: post.author,
+                        category: post.category,
+                        content: post.content,
+                        content2: post.content2,
+                        image: post.image,
+                        video: post.video,
+                        originalIndex: post.index
+                    };
+                }).sort(function (a, b) {
+                    return new Date(b.date + " " + b.time) - new Date(a.date + " " + a.time);
+                });
 
-        {
+                filteredPosts = posts.slice();
 
-            "title": {{ post.title | jsonify }},
+                var searchBar = document.getElementById('searchBar');
+                var categoryFilter = document.getElementById('categoryFilter');
+                var prevPage = document.getElementById('prevPage');
+                var nextPage = document.getElementById('nextPage');
 
-            "slug": "{{ post.slug }}",
+                if (searchBar) searchBar.addEventListener('input', applyFiltersAndSearch);
+                if (categoryFilter) categoryFilter.addEventListener('change', applyFiltersAndSearch);
+                if (prevPage) prevPage.addEventListener('click', function () { changePage(-1); });
+                if (nextPage) nextPage.addEventListener('click', function () { changePage(1); });
 
-            "date": "{{ post.date | date: '%b %-d, %Y' }}",
+                populateCategories();
+                handleRouting();
+                window.addEventListener("popstate", handleRouting);
+            })
+            .catch(function (error) {
+                console.error("Error loading blog posts:", error);
+                blogContainer.innerHTML = '<div class="blog-message">Could not load blog posts. Please try again later.</div>';
+            });
 
-            "time": "{{ post.date | date: '%I:%M %p' }}",
-
-            "author": "{{ post.author | default: 'CodyMKW' }}",
-
-            "category": "{{ post.category | default: 'Page News/Updates' }}",
-
-            "content": {{ post.content | jsonify }},
-
-            "content2": {{ post.content2 | jsonify }},
-
-            "image": "{{ post.image }}",
-
-            "video": "{{ post.video }}"
-
-        }
-
-        {% unless forloop.last %},{% endunless %}
-
-        {% endfor %}
-
-    ];
-
-    filteredPosts = posts.slice();
-
-    var searchBar = document.getElementById("searchBar");
-
-    var categoryFilter = document.getElementById("categoryFilter");
-
-    var prevPage = document.getElementById("prevPage");
-
-    var nextPage = document.getElementById("nextPage");
-
-    if (searchBar) {
-
-        searchBar.addEventListener("input", applyFiltersAndSearch);
-
+    } catch (error) {
+        console.error("Error loading blog posts:", error);
     }
-
-    if (categoryFilter) {
-
-        categoryFilter.addEventListener("change", applyFiltersAndSearch);
-
-    }
-
-    if (prevPage) {
-
-        prevPage.addEventListener("click", function () {
-
-            changePage(-1);
-
-        });
-
-    }
-
-    if (nextPage) {
-
-        nextPage.addEventListener("click", function () {
-
-            changePage(1);
-
-        });
-
-    }
-
-    populateCategories();
-
-    handleRouting();
-
-    window.addEventListener("popstate", handleRouting);
-
 }
 
 function handleRouting() {
+    var urlParams = new URLSearchParams(window.location.search);
+    var postId = urlParams.get("post");
 
-    var slug = getSlugFromURL();
-
-    if (slug) {
-
-        renderSinglePostView(slug);
-
+    if (postId !== null) {
+        renderSinglePostView(parseInt(postId, 10));
     } else {
-
         renderListView();
-
     }
-
 }
 
 function applyFiltersAndSearch() {
-
     var searchBar = document.getElementById("searchBar");
-
     var categoryFilter = document.getElementById("categoryFilter");
-
     if (!searchBar || !categoryFilter) return;
 
-    var query = searchBar.value.toLowerCase();
-
-    var category = categoryFilter.value;
+    var query = searchBar.value.trim().toLowerCase();
+    var selectedCategory = categoryFilter.value;
 
     filteredPosts = posts.filter(function (post) {
-
-        var matchesCategory = category === "all" || post.category === category;
-
+        var matchesCategory = selectedCategory === "all" || post.category === selectedCategory;
         var matchesSearch =
-
             !query ||
-
-            post.title.toLowerCase().indexOf(query) !== -1 ||
-
+            (post.title && post.title.toLowerCase().indexOf(query) !== -1) ||
             (post.content && post.content.toLowerCase().indexOf(query) !== -1) ||
-
             (post.content2 && post.content2.toLowerCase().indexOf(query) !== -1);
 
         return matchesCategory && matchesSearch;
-
     });
 
     currentPage = 1;
-
     renderListView();
-
 }
 
 function renderListView() {
-
     var blogContainer = document.getElementById("blogPosts");
-
     var blogHeader = document.querySelector(".blog-header");
-
-    var pagination = document.querySelector(".pagination");
-
     if (!blogContainer) return;
 
-    if (blogHeader) blogHeader.classList.remove("hidden");
-
-    if (pagination) pagination.classList.remove("hidden");
-
+    if (blogHeader) blogHeader.classList.remove('hidden');
     blogContainer.innerHTML = "";
 
     if (filteredPosts.length === 0) {
-
-        blogContainer.innerHTML = "<div>No posts found</div>";
-
+        blogContainer.innerHTML = '<div class="blog-message">No posts found.</div>';
         updatePaginationUI();
-
         return;
-
     }
 
-    var start = (currentPage - 1) * postsPerPage;
-
-    var end = start + postsPerPage;
-
-    var pagePosts = filteredPosts.slice(start, end);
+    var startIndex = (currentPage - 1) * postsPerPage;
+    var endIndex = startIndex + postsPerPage;
+    var pagePosts = filteredPosts.slice(startIndex, endIndex);
 
     pagePosts.forEach(function (post) {
+        var postElement = document.createElement('div');
+        postElement.className = 'blog-post';
+        postElement.dataset.index = post.originalIndex;
 
-        var el = document.createElement("div");
-
-        el.className = "blog-post";
-
-        var preview = "";
-
+        var previewHTML = "";
         if (post.content) {
-
-            var trimmed = post.content.length > 185
-
-                ? post.content.slice(0, 185) + "..."
-
-                : post.content;
-
-            preview += '<div class="post-content">' +
-
-                marked.parse(trimmed) +
-
-                "</div>";
-
+            var trimmedContent = post.content.length > 185 ? post.content.slice(0, 185) + "..." : post.content;
+            previewHTML =
+                '<div class="post-content">' + marked.parse(trimmedContent) + '</div>' +
+                '<a href="?post=' + post.originalIndex + '" class="read-more">Read more →</a>';
+        } else if (post.video || post.content2) {
+            previewHTML =
+                (post.video ? '<iframe src="' + post.video + '" frameborder="0" allowfullscreen></iframe>' : "") +
+                (post.content2 ? '<div class="post-content">' + marked.parse(post.content2) + '</div>' : "");
         }
 
-        if (post.image) {
+        postElement.innerHTML =
+            '<h3><a href="?post=' + post.originalIndex + '">' + post.title + '</a></h3>' +
+            '<p class="post-meta" id="blogmetadata">' + post.date + ' • ' + post.time + ' • ' + post.author + ' • ' + post.category + '</p>' +
+            (post.image ? '<img src="' + post.image + '" alt="Post Image">' : "") +
+            previewHTML;
 
-            preview +=
-
-                '<img src="' +
-
-                post.image +
-
-                '" style="max-width:100%; border-radius:8px; margin-top:10px;">';
-
-        }
-
-        if (post.video) {
-
-            preview +=
-
-                '<iframe src="' +
-
-                post.video +
-
-                '" frameborder="0" allowfullscreen style="width:100%; height:315px; margin-top:10px;"></iframe>';
-
-        }
-
-        preview +=
-
-            '<a href="/blog/' +
-
-            post.slug +
-
-            '" class="read-more">Read more →</a>';
-
-        el.innerHTML =
-
-            '<h3><a href="/blog/' +
-
-            post.slug +
-
-            '">' +
-
-            post.title +
-
-            "</a></h3>" +
-
-            '<p class="post-meta">' +
-
-            post.date +
-
-            " • " +
-
-            post.time +
-
-            " • " +
-
-            post.author +
-
-            " • " +
-
-            post.category +
-
-            "</p>" +
-
-            preview;
-
-        var links = el.querySelectorAll("a");
-
-        links.forEach(function (link) {
-
-            link.addEventListener("click", function (e) {
-
+        var titleLink = postElement.querySelector('h3 a');
+        if (titleLink) {
+            titleLink.addEventListener('click', function (e) {
                 e.preventDefault();
-
-                goToPost(post.slug);
-
+                window.history.pushState({ post: post.originalIndex }, "", "?post=" + post.originalIndex);
+                renderSinglePostView(post.originalIndex);
             });
+        }
 
-        });
+        var readMoreLink = postElement.querySelector('.read-more');
+        if (readMoreLink) {
+            readMoreLink.addEventListener('click', function (e) {
+                e.preventDefault();
+                window.history.pushState({ post: post.originalIndex }, "", "?post=" + post.originalIndex);
+                renderSinglePostView(post.originalIndex);
+            });
+        }
 
-        blogContainer.appendChild(el);
-
+        blogContainer.appendChild(postElement);
     });
 
     updatePaginationUI();
-
 }
 
-function renderSinglePostView(slug) {
-
+function renderSinglePostView(postId) {
     var blogContainer = document.getElementById("blogPosts");
-
     var blogHeader = document.querySelector(".blog-header");
-
     var pagination = document.querySelector(".pagination");
-
     if (!blogContainer) return;
 
-    if (blogHeader) blogHeader.classList.add("hidden");
-
-    if (pagination) pagination.classList.add("hidden");
+    if (blogHeader) blogHeader.classList.add('hidden');
+    if (pagination) pagination.classList.add('hidden');
 
     var post = posts.find(function (p) {
-
-        return p.slug === slug;
-
+        return p.originalIndex === postId;
     });
 
     if (!post) {
-
         blogContainer.innerHTML =
-
-            '<a href="/blog" class="blog-back-button">‹ All Posts</a>' +
-
-            "<div>Post not found</div>";
-
+            '<a href="#" class="blog-back-button">‹ All Posts</a>' +
+            '<div class="blog-message">Post not found.</div>';
+        var backBtn1 = document.querySelector('.blog-back-button');
+        if (backBtn1) backBtn1.addEventListener('click', goBackToList);
         return;
-
     }
 
-    blogContainer.innerHTML =
+    var postHTML =
+        '<a href="#" class="blog-back-button">‹ All Posts</a>' +
+        '<div class="blog-post" data-index="' + post.originalIndex + '">' +
+        '<h3>' + post.title + '</h3>' +
+        '<p class="post-meta" id="blogmetadata">' + post.date + ' • ' + post.time + ' • ' + post.author + ' • ' + post.category + '</p>' +
+        (post.image ? '<img src="' + post.image + '" alt="Post Image">' : "") +
+        '<div class="post-content">' + (post.content ? marked.parse(post.content) : "") + '</div>' +
+        (post.video ? '<iframe src="' + post.video + '" frameborder="0" allowfullscreen></iframe>' : "") +
+        '<div class="post-content">' + (post.content2 ? marked.parse(post.content2) : "") + '</div>' +
+        '<hr style="margin: 2em 0; border: none; border-top: 1px solid #ccc;">' +
+        '<div id="disqus_thread" style="margin-top: 2em;"></div>' +
+        '</div>';
 
-        '<a href="/blog" class="blog-back-button">‹ All Posts</a>' +
+    blogContainer.innerHTML = postHTML;
+    var backBtn2 = document.querySelector('.blog-back-button');
+    if (backBtn2) backBtn2.addEventListener('click', goBackToList);
 
-        "<h3>" +
-
-        post.title +
-
-        "</h3>" +
-
-        '<p class="post-meta">' +
-
-        post.date +
-
-        " • " +
-
-        post.time +
-
-        " • " +
-
-        post.author +
-
-        " • " +
-
-        post.category +
-
-        "</p>" +
-
-        (post.image
-
-            ? '<img src="' +
-
-              post.image +
-
-              '" style="max-width:100%; border-radius:8px;">'
-
-            : "") +
-
-        '<div class="post-content">' +
-
-        post.content +
-
-        "</div>" +
-
-        (post.video
-
-            ? '<iframe src="' +
-
-              post.video +
-
-              '" frameborder="0" allowfullscreen style="width:100%; height:315px;"></iframe>'
-
-            : "") +
-
-        '<div class="post-content">' +
-
-        (post.content2 || "") +
-
-        "</div>" +
-
-        '<div id="disqus_thread"></div>';
-
-    document
-
-        .querySelector(".blog-back-button")
-
-        .addEventListener("click", function (e) {
-
-            e.preventDefault();
-
-            window.history.pushState({}, "", "/blog");
-
-            renderListView();
-
-        });
-
-    loadDisqus(post.slug, post.title);
-
+    loadDisqus(post.originalIndex, post.title);
 }
 
-function loadDisqus(slug, title) {
-
+function loadDisqus(postId, postTitle) {
     var container = document.getElementById("disqus_thread");
-
     if (!container) return;
 
-    container.innerHTML = "";
+    container.innerHTML = '';
+
+    var existingScript = document.getElementById('dsq-embed-js');
+    if (existingScript) existingScript.remove();
+
+    if (window.DISQUS && typeof window.DISQUS.reset === 'function') {
+        window.disqus_config = function () {
+            this.page.url = disqusBaseUrl + '?post=' + postId;
+            this.page.identifier = 'post-' + postId;
+            this.page.title = postTitle;
+        };
+        try {
+            window.DISQUS.reset({ reload: true, config: window.disqus_config });
+            return;
+        } catch (err) {}
+    }
 
     window.disqus_config = function () {
-
-        this.page.url = disqusBaseUrl + "/blog/" + slug;
-
-        this.page.identifier = slug;
-
-        this.page.title = title;
-
+        this.page.url = disqusBaseUrl + '?post=' + postId;
+        this.page.identifier = 'post-' + postId;
+        this.page.title = postTitle;
     };
 
-    var d = document;
+    (function () {
+        var d = document, s = d.createElement('script');
+        s.src = 'https://' + disqusShortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        s.id = 'dsq-embed-js';
+        (d.head || d.body).appendChild(s);
+    })();
+}
 
-    var s = d.createElement("script");
+window.addEventListener("themeChanged", function () {
+    var urlParams = new URLSearchParams(window.location.search);
+    var postId = urlParams.get("post");
 
-    s.src = "https://" + disqusShortname + ".disqus.com/embed.js";
+    if (postId !== null) {
+        var currentPost = posts.find(function (p) {
+            return p.originalIndex === parseInt(postId, 10);
+        });
+        if (currentPost) loadDisqus(currentPost.originalIndex, currentPost.title);
+    }
+});
 
-    s.setAttribute("data-timestamp", +new Date());
-
-    (d.head || d.body).appendChild(s);
-
+function goBackToList(e) {
+    e.preventDefault();
+    window.history.pushState({}, "", window.location.pathname);
+    renderListView();
 }
 
 function updatePaginationUI() {
-
     var pageInfo = document.getElementById("pageInfo");
+    var prevPageBtn = document.getElementById("prevPage");
+    var nextPageBtn = document.getElementById("nextPage");
+    var pagination = document.querySelector(".pagination");
 
-    var prev = document.getElementById("prevPage");
+    if (!pagination || !pageInfo || !prevPageBtn || !nextPageBtn) return;
 
-    var next = document.getElementById("nextPage");
+    if (filteredPosts.length === 0) {
+        pagination.classList.add('hidden');
+        return;
+    }
 
-    if (!pageInfo || !prev || !next) return;
+    var totalPages = Math.ceil(filteredPosts.length / postsPerPage);
+    if (totalPages <= 1) {
+        pagination.classList.add('hidden');
+        return;
+    }
 
-    var total = Math.ceil(filteredPosts.length / postsPerPage);
-
-    pageInfo.textContent = "Page " + currentPage + " of " + total;
-
-    prev.disabled = currentPage === 1;
-
-    next.disabled = currentPage >= total;
-
+    pagination.classList.remove('hidden');
+    pageInfo.textContent = 'Page ' + currentPage + ' of ' + totalPages;
+    prevPageBtn.disabled = currentPage === 1;
+    nextPageBtn.disabled = currentPage >= totalPages;
 }
 
 function changePage(direction) {
-
     if (isPaginating) return;
-
     isPaginating = true;
 
-    currentPage += direction;
+    var totalPages = Math.ceil(filteredPosts.length / postsPerPage);
+    var newPage = currentPage + direction;
 
-    renderListView();
-
-    window.scrollTo(0, 0);
+    if (newPage >= 1 && newPage <= totalPages) {
+        currentPage = newPage;
+        renderListView();
+    }
 
     setTimeout(function () {
-
         isPaginating = false;
-
     }, 200);
-
 }
 
 function populateCategories() {
-
     var categoryFilter = document.getElementById("categoryFilter");
-
     if (!categoryFilter) return;
 
-    var counts = {};
+    var categoryCounts = posts.reduce(function (counts, post) {
+        if (post.category) counts[post.category] = (counts[post.category] || 0) + 1;
+        return counts;
+    }, {});
 
-    posts.forEach(function (post) {
+    var categories = Object.keys(categoryCounts).sort();
 
-        counts[post.category] = (counts[post.category] || 0) + 1;
+    while (categoryFilter.options.length > 1) {
+        categoryFilter.remove(1);
+    }
 
+    categories.forEach(function (category) {
+        var option = document.createElement("option");
+        option.value = category;
+        option.textContent = category + " (" + categoryCounts[category] + ")";
+        categoryFilter.appendChild(option);
     });
-
-    Object.keys(counts)
-
-        .sort()
-
-        .forEach(function (cat) {
-
-            var option = document.createElement("option");
-
-            option.value = cat;
-
-            option.textContent = cat + " (" + counts[cat] + ")";
-
-            categoryFilter.appendChild(option);
-
-        });
-
 }
