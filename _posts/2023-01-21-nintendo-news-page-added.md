@@ -1,6 +1,6 @@
 ---
 title: Nintendo News page added
-slug: 2023-01-21-nintendo-news-page-added
+slug: nintendo-news-page-added
 date: 2023-01-21T14:30:00
 author: CodyMKW
 category: Page News/Updates
