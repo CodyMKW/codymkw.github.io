@@ -1,6 +1,6 @@
 ---
 title: "Welcome to my Blog!"
-time: "10:35 AM"
+date: 2023-01-17 10:35:00 -0500
 author: "CodyMKW"
 category: "Page News/Updates"
 image: "https://i.imgur.com/woQGVKl.gif"
