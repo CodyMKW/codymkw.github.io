@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta name="msapplication-TileColor" content="#00c900">
+    <meta name="theme-color" content="#00c900">
+    <link href="https://social.vivaldi.net/@codymkw" rel="me">
+    <meta name="description" content="View news about Nintendo provided by My Nintendo News!">
+    <meta name="keywords" content="Nintendo News, My Nintendo News feed, Nintendo Switch updates, CodyMKW, latest Nintendo rumors, Super Mario, Legend of Zelda, Pokémon news, Nintendo Direct updates, gaming headlines, Nintendo blog, RSS gaming feed, Nintendo Switch 2 news, industry news, CodyMKW Nintendo">    <meta name="author" content="CodyMKW">
+    <meta property="og:title" content="Nintendo News - CodyMKW">
+    <meta property="og:description" content="View news about Nintendo provided by My Nintendo News!">
+    <meta property="og:image" content="/assets/images/emojis/superMushroom.png">
+    <meta property="og:url" content="https://codymkw.github.io">
+    <meta property="og:type" content="website">
+    <meta name="twitter:creator" content="@CodyMKW" />
+    <meta name="twitter:title" content="Nintendo News - CodyMKW" />
+    <meta name="twitter:description" content="View news about Nintendo provided by My Nintendo News!" />
+    <meta name="twitter:image:src" content="/assets/images/emojis/superMushroom.png" />
+    <link id="theme-style" rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/emoji.css">
+    <script defer src="assets/javascript/main.js"></script>
+    <script defer src="assets/javascript/stickyheader.js"></script>
+    <title>Nintendo News - CodyMKW</title>
+</head>
+
+<body>
+  <div id="sticky-header" class="sticky-header" style="display: none;">
+    <span id="close-button" onclick="toggleHeader()">X</span>
+    <a href="" target="_blank" class="important"></a>
+  </div>  
+    <div class="container">
+        <!--# include file="includes/header.html" -->
+        <div class="content" id="nintendoNewsContent">
+                <h2><i class="emoji superMushroom"></i></h2>
+                <h2>Nintendo News</h2>
+                <script src="//rss.bloople.net/?url=https%3A%2F%2Fmynintendonews.com%2Ffeed%2F&limit=10&type=js"></script>
+                 <br>
+                 <small style="display: flex; flex-direction: column; align-items: center; text-align: center;">Page last updated: <!--# flastmod file="nintendo-news.html" fmt="%A, %B %d, %Y at %h:%mm %p" timezone="America/New_York" --></small>
+        </div>
+    </div>
+    <!--# include file="includes/footer.html" -->
+</body>
+</html>

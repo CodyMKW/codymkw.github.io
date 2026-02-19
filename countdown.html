@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta name="msapplication-TileColor" content="#00c900">
+    <meta name="theme-color" content="#00c900">
+    <link href="https://social.vivaldi.net/@codymkw" rel="me">
+    <meta name="description" content="Countdown to events and build up some hype as you wait.">
+    <meta name="keywords" content="CodyMKW, countdown timer, game release countdown, anime premiere countdown, Nintendo hype, event tracker, upcoming games, anime debut, Ula'ula island events, Nintendo Switch releases, countdown clock, gaming hype, anime community events">
+    <meta name="author" content="CodyMKW">
+    <meta property="og:title" content="Countdown – CodyMKW">
+    <meta property="og:description" content="A countdown for hyping up upcoming events like game releases and anime debuts.">
+    <meta property="og:image" content="https://www.gravatar.com/avatar/5127de8a3a295a02ff3fc55bb6b2fabe?s=2048">
+    <meta property="og:url" content="https://codymkw.github.io">
+    <meta property="og:type" content="website">
+    <meta name="twitter:creator" content="@CodyMKW" />
+    <meta name="twitter:title" content="Countdown – CodyMKW" />
+    <meta name="twitter:description" content="A countdown for hyping up upcoming events like game releases and anime debuts." />
+    <meta name="twitter:image:src" content="https://www.gravatar.com/avatar/5127de8a3a295a02ff3fc55bb6b2fabe?s=2048" />
+    <link id="theme-style" rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/emoji.css">
+    <script defer src="assets/javascript/main.js"></script>
+    <script defer src="assets/javascript/stickyheader.js"></script>
+    <title>Countdown – CodyMKW</title>
+</head>
+
+<body>
+    <div id="sticky-header" class="sticky-header" style="display: none;">
+        <span id="close-button" onclick="toggleHeader()">X</span>
+        <a href="" target="_blank" class="important"></a>
+    </div>
+
+    <div class="container">
+        <!--# include file="includes/header.html" -->
+
+        <div class="content" id="countdownContent"></div>
+    </div>
+
+    <!--# include file="includes/footer.html" -->
+    <script>
+        const container = document.getElementById("countdownContent");
+        
+        container.innerHTML = `
+          <div class="countdown-tabs">
+            <button id="tab-active" class="active">Active</button>
+            <button id="tab-archived">Archived</button>
+          </div>
+        
+          <div id="activeView">
+            <div id="featured-warning" style="display:none;"></div>
+            <div id="featured-finished-warning" style="display:none;"></div>
+            <div id="featuredCountdown"></div>
+            <div id="activeCountdowns"></div>
+          </div>
+        
+          <div id="archivedView" style="display:none;">
+            <div id="archivedCountdowns"></div>
+          </div>
+          <br>
+          <small style="display: flex; flex-direction: column; align-items: center; text-align: center;">Page last updated: <!--# flastmod file="countdown.html" fmt="%A, %B %d, %Y at %h:%mm %p" timezone="America/New_York" --></small>
+        `;
+        
+        const featuredContainer = document.getElementById("featuredCountdown");
+        const activeContainer = document.getElementById("activeCountdowns");
+        const archiveContainer = document.getElementById("archivedCountdowns");
+        
+        const activeView = document.getElementById("activeView");
+        const archivedView = document.getElementById("archivedView");
+        const tabActive = document.getElementById("tab-active");
+        const tabArchived = document.getElementById("tab-archived");
+        
+        tabActive.onclick = () => {
+          tabActive.classList.add("active");
+          tabArchived.classList.remove("active");
+          activeView.style.display = "block";
+          archivedView.style.display = "none";
+        };
+        
+        tabArchived.onclick = () => {
+          tabArchived.classList.add("active");
+          tabActive.classList.remove("active");
+          activeView.style.display = "none";
+          archivedView.style.display = "block";
+        };
+        
+        function parseEventDate(dateStr) {
+          if (!dateStr) return new Date(NaN);
+        
+          const native = new Date(dateStr);
+          if (!isNaN(native)) return native;
+        
+          const parts = dateStr.trim().split(" ");
+          if (parts.length < 2) return new Date(dateStr);
+        
+          let datePart = parts[0];
+          let timePart = parts[1];
+          let ampm = parts[2]?.toUpperCase() || null;
+        
+          const d = datePart.split("-");
+          if (d.length === 3) {
+            datePart = `${d[0]}-${d[1].padStart(2,"0")}-${d[2].padStart(2,"0")}`;
+          }
+        
+          let [hours, minutes = 0, seconds = 0] = timePart.split(":").map(Number);
+        
+          if (ampm) {
+            if (ampm === "PM" && hours < 12) hours += 12;
+            if (ampm === "AM" && hours === 12) hours = 0;
+          }
+        
+          return new Date(
+            `${datePart}T${String(hours).padStart(2,"0")}:${String(minutes).padStart(2,"0")}:${String(seconds).padStart(2,"0")}`
+          );
+        }
+        
+        let featuredIsFinished = false;
+        
+        fetch('https://api.npoint.io/2eabb77161bc45752e92')
+          .then(response => response.json())
+          .then(data => {
+            const events = Array.isArray(data) ? data : [data];
+            const featuredEvents = events.filter(e => e.featured);
+            const warningBox = document.getElementById("featured-warning");
+            const finishedWarningBox = document.getElementById("featured-finished-warning");
+        
+            if (featuredEvents.length > 1) {
+              warningBox.style.display = "block";
+              warningBox.innerHTML = `
+                ⚠️ Featured Countdown Configuration Notice<br><br>
+          Multiple countdowns are currently marked as <b>featured</b>. Only one item should have <code>"featured": true</code> at a time to ensure correct highlighting.<br><br>
+          <b>Currently marked as featured:</b><br>
+          ${featuredEvents.map(e => "• " + (e.title || "Untitled Countdown")).join("<br>")}<br><br>
+          Please review your JSON configuration and update the featured flags so that only one active countdown is featured.
+              `;
+            }
+        
+            events.forEach((event, index) => {
+              const section = createCountdownMarkup(event, index);
+        
+              if (event.featured && featuredEvents.length === 1) {
+                featuredContainer.appendChild(section);
+                section.classList.add("featured");
+              } else if (!event.featured) {
+                activeContainer.appendChild(section);
+              }
+        
+              startTimer(parseEventDate(event.date).getTime(), index, section, event, () => {
+                if (event.featured) {
+                  featuredIsFinished = true;
+                  showFeaturedFinishedWarning();
+                }
+              });
+            });
+          });
+        
+        function createCountdownMarkup(event, index) {
+          const section = document.createElement('div');
+          section.className = 'countdown-section';
+          section.style.marginBottom = "50px";
+        
+          section.innerHTML = `
+            ${event.featured ? `<div class="featured-badge">FEATURED</div>` : ""}
+            <h1 id="title-${index}">${event.title || 'Countdown'}</h1>
+            <p id="desc-${index}">${event.description || ''}</p>
+            <div class="countdown" id="timer-${index}">
+              <div class="countdown-item"><h2 id="days-${index}">0</h2><p>Days</p></div>
+              <div class="countdown-item"><h2 id="hours-${index}">0</h2><p>Hours</p></div>
+              <div class="countdown-item"><h2 id="minutes-${index}">0</h2><p>Minutes</p></div>
+              <div class="countdown-item"><h2 id="seconds-${index}">0</h2><p>Seconds</p></div>
+            </div>
+            <div id="finished-${index}" style="display:none;">
+              ${event.finishedMessage || "Countdown Finished! 🎉"}
+            </div>
+            <hr style="border: 0; height: 1px; background: #333; margin-top: 40px; opacity: 0.2;">
+          `;
+        
+          return section;
+        }
+        
+        function startTimer(targetDate, index, section, event, onFinish) {
+          const daysEl = document.getElementById(`days-${index}`);
+          const hoursEl = document.getElementById(`hours-${index}`);
+          const minutesEl = document.getElementById(`minutes-${index}`);
+          const secondsEl = document.getElementById(`seconds-${index}`);
+          const timerEl = document.getElementById(`timer-${index}`);
+          const finishedEl = document.getElementById(`finished-${index}`);
+        
+          function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = targetDate - now;
+        
+            if (distance <= 0) {
+              timerEl.style.display = "none";
+              finishedEl.style.display = "block";
+        
+              if (event.archiveAfterFinish) {
+                archiveContainer.appendChild(section);
+                section.classList.remove("featured");
+              const badge = section.querySelector(".featured-badge");
+              if (badge) badge.remove();
+              }
+        
+              if (typeof onFinish === "function") {
+                onFinish();
+              }
+        
+              return;
+            }
+        
+            daysEl.innerText = Math.floor(distance / (1000*60*60*24));
+            hoursEl.innerText = Math.floor((distance % (1000*60*60*24)) / (1000*60*60));
+            minutesEl.innerText = Math.floor((distance % (1000*60*60)) / (1000*60));
+            secondsEl.innerText = Math.floor((distance % (1000*60)) / 1000);
+          }
+        
+          updateCountdown();
+          setInterval(updateCountdown, 1000);
+        }
+        
+        function showFeaturedFinishedWarning() {
+          const finishedWarningBox = document.getElementById("featured-finished-warning");
+        
+          if (!featuredIsFinished) return;
+        
+          finishedWarningBox.style.display = "block";
+        finishedWarningBox.innerHTML = `
+          ⚠️ Featured Countdown Notice<br><br>
+          The countdown currently marked as <b>featured</b> has ended and has been moved to the <b>Archived</b> section.<br><br>
+          Please update the JSON by either removing <code>"featured": true</code> or setting it to <code>false</code> so only active events are featured.
+        `;
+        }
+    </script>
+</body>
+
+</html>
