@@ -21,4 +21,4 @@ collections:
       - { label: "Image 1", name: "image", widget: "image", required: false }
       - { label: "Video URL", name: "video", widget: "string", required: false }
       - { label: "Body (Content 1)", name: "body", widget: "markdown", required: false }
-      - { label: "Post (Content 2)", name: "content2", widget: "markdown", required: false }
+      - { label: "Body (Content 2)", name: "content2", widget: "markdown", required: false }
