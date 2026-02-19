@@ -1,5 +1,5 @@
 backend:
-  name: GitHub
+  name: github
   repo: CodyMKW/codymkw.github.io
   branch: main
 
