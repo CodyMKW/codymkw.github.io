@@ -150,7 +150,6 @@ function renderListView() {
             (post.image ? '<img src="' + post.image + '" alt="Post Image" style="max-width:100%; border-radius:8px; margin: 10px 0;">' : "") +
             previewHTML;
 
-        // Add event listeners for SPA-style navigation
         var titleLink = postElement.querySelector('h3 a');
         var readMoreLink = postElement.querySelector('.read-more');
         
@@ -191,13 +190,13 @@ function renderSinglePostView(postId) {
         return;
     }
 
-    blogContainer.innerHTML =
+blogContainer.innerHTML =
         '<a href="#" class="blog-back-button">‹ All Posts</a>' +
         '<div class="blog-post" data-index="' + post.originalIndex + '">' +
         '<h3>' + post.title + '</h3>' +
         '<p class="post-meta" id="blogmetadata">' + post.date + ' • ' + post.time + ' • ' + post.author + ' • ' + post.category + '</p>' +
         (post.image ? '<img src="' + post.image + '" alt="Post Image" style="max-width:100%; border-radius:8px;">' : "") +
-        '<div class="post-content">' + post.content + '</div>' +
+        '<div class="post-content">' + (post.content ? post.content : "") + '</div>' + 
         (post.video ? '<iframe src="' + post.video + '" frameborder="0" allowfullscreen style="width:100%; height:315px; margin: 20px 0;"></iframe>' : "") +
         '<div class="post-content">' + (post.content2 ? post.content2 : "") + '</div>' +
         '<hr style="margin: 2em 0; border: none; border-top: 1px solid #39ff14;">' +
