@@ -66,7 +66,7 @@
         <a href="" target="_blank" class="important"></a>
     </div>
     <div class="container">
-        <!--# include file="includes/header.html" -->
+        {% include header.html %}
         <div class="content" id="statusContent">
             <div class="alert warning" style="display: none;">
                 <span class="closebtn">&times;</span>
@@ -106,10 +106,9 @@
             </div>
             <p><strong>Status Last Updated:</strong> <span id="lastUpdated"></span></p>
             <br>
-            <small style="display: flex; flex-direction: column; align-items: center; text-align: center;">Page last updated: <!--# flastmod file="game-status.html" fmt="%A, %B %d, %Y at %h:%mm %p" timezone="America/New_York" --></small>
         </div>
     </div>
-    <!--# include file="includes/footer.html" -->
+    {% include footer.html %}
     <script>
         var close = document.getElementsByClassName("closebtn");
         var i;

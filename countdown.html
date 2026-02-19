@@ -37,12 +37,12 @@
     </div>
 
     <div class="container">
-        <!--# include file="includes/header.html" -->
+        {% include header.html %}
 
         <div class="content" id="countdownContent"></div>
     </div>
 
-    <!--# include file="includes/footer.html" -->
+    {% include footer.html %}
     <script>
         const container = document.getElementById("countdownContent");
         
@@ -63,7 +63,6 @@
             <div id="archivedCountdowns"></div>
           </div>
           <br>
-          <small style="display: flex; flex-direction: column; align-items: center; text-align: center;">Page last updated: <!--# flastmod file="countdown.html" fmt="%A, %B %d, %Y at %h:%mm %p" timezone="America/New_York" --></small>
         `;
         
         const featuredContainer = document.getElementById("featuredCountdown");

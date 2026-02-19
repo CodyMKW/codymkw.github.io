@@ -36,7 +36,7 @@
         <a href="" target="_blank" class="important"></a>
     </div>
     <div class="container">
-        <!--# include file="includes/header.html" -->
+        {% include header.html %}
 
         <div class="content" id="xatchatContent">
             <p style="text-align:center; max-width:700px; margin: 0 auto 15px auto;">
@@ -49,11 +49,10 @@
                 Since this chat is no longer actively moderated, the owner and mods may not be online. You can chat freely, but please be respectful of others.
             </p>
             <br>
-            <small style="display: flex; flex-direction: column; align-items: center; text-align: center;">Page last updated: <!--# flastmod file="chat.html" fmt="%A, %B %d, %Y at %h:%mm %p" timezone="America/New_York" --></small>
         </div>
     </div>
 
-    <!--# include file="includes/footer.html" -->
+    {% include footer.html %}
 </body>
 
 </html>

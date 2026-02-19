@@ -67,7 +67,7 @@
         <a href="" target="_blank" class="important"></a>
     </div>
     <div class="container">
-        <!--# include file="includes/header.html" -->
+        {% include header.html %}
 
         <div class="content" id="friendCodeContent">
 
@@ -112,10 +112,9 @@
             </div>
             
             <br>
-            <small style="display: flex; flex-direction: column; align-items: center; text-align: center;">Page last updated: <!--# flastmod file="friend-code.html" fmt="%A, %B %d, %Y at %h:%mm %p" timezone="America/New_York" --></small>
         </div>
     </div>
-    <!--# include file="includes/footer.html" -->
+    {% include footer.html %}
     <script>
         function switchFriendTab(tab) {
             document.querySelectorAll('.friend-tab-content').forEach(el => el.classList.remove('active'));

@@ -39,7 +39,7 @@
         <a href="" target="_blank" class="important"></a>
     </div>
     <div class="container">
-        <!--# include file="includes/header.html" -->
+        {% include header.html %}
         <div class="content" id="aboutContent">
             <h2><i class="emoji guraWave"></i></h2>
             <h2>About Me</h2>
@@ -77,10 +77,9 @@
                     <p>Also you can check <a href="/buttons">here</a> for my site's button and other cool looking sites!</p>
                 </div>
             </section>
-            <small style="display: flex; flex-direction: column; align-items: center; text-align: center;">Page last updated: <!--# flastmod file="index.html" fmt="%A, %B %d, %Y at %h:%mm %p" timezone="America/New_York" --></small>
         </div>
     </div>
-    <!--# include file="includes/footer.html" -->
+    {% include footer.html %}
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             fetch('https://api.npoint.io/e48ee20c0a091f1b8963')

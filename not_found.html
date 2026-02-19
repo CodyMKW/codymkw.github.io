@@ -36,7 +36,7 @@
     <a href="" target="_blank" class="important"></a>
   </div>  
     <div class="container">
-        <!--# include file="includes/header.html" -->
+        {% include header.html %}
         <div class="content" id="notfound">    
               <h1 class="notfoundheading">Oops! Page Not Found</h1>
               <img src="assets/images/mario_oops.webp" alt="Mario Oops" style="max-width: 300px; max-height: 200px; margin-bottom: 20px; border-radius: 0%;" class="notfoundimg">
@@ -44,10 +44,9 @@
                 <p>It seems that the page you are looking for does not exist in this universe.</p>
                 <p>Don't worry, Mario will keep searching for it!</p>
                 <br>
-                <small style="display: flex; flex-direction: column; align-items: center; text-align: center;">Page last updated: <!--# flastmod file="not_found.html" fmt="%A, %B %d, %Y at %h:%mm %p" timezone="America/New_York" --></small>
         </div>
     </div>
-    <!--# include file="includes/footer.html" -->
+    {% include footer.html %}
 </body>
 </html>
 

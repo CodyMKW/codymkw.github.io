@@ -36,7 +36,7 @@
         <a href="" target="_blank" class="important"></a>
     </div>
     <div class="container">
-        <!--# include file="includes/header.html" -->
+        {% include header.html %}
         <div class="content" id="DreamAddressContent">
             <h2><i class="emoji acLuna"></i></h2>
             <h2>Ula'ula</h2>
@@ -51,10 +51,9 @@
                 <a href="https://en.wikipedia.org/wiki/Satoru_Iwata" target="_blank">Satoru Iwata</a>. 😊
             </p>
             <br>
-            <small style="display: flex; flex-direction: column; align-items: center; text-align: center;">Page last updated: <!--# flastmod file="dream-address.html" fmt="%A, %B %d, %Y at %h:%mm %p" timezone="America/New_York" --></small>
         </div>
     </div>
-    <!--# include file="includes/footer.html" -->
+    {% include footer.html %}
     <script>
         fetch('https://api.npoint.io/c776077c114b32d71a04')
             .then(response => response.json())

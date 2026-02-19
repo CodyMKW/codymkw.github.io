@@ -36,7 +36,7 @@
         <a href="" target="_blank" class="important"></a>
     </div>
     <div class="container">
-        <!--# include file="includes/header.html" -->
+        {% include header.html %}
 
         <div class="content" id="acnhLostItemContent">
             <h2>ACNH Lost Item Hints</h2>
@@ -111,11 +111,10 @@
                 </tbody>
             </table>
             <br>
-            <small style="display: flex; flex-direction: column; align-items: center; text-align: center;">Page last updated: <!--# flastmod file="ac-lost-item.html" fmt="%A, %B %d, %Y at %h:%mm %p" timezone="America/New_York" --></small>
         </div>
     </div>
 
-    <!--# include file="includes/footer.html" -->
+    {% include footer.html %}
 </body>
 
 </html>

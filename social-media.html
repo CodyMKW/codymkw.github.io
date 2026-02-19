@@ -36,7 +36,7 @@
     <a href="" target="_blank" class="important"></a>
   </div>  
     <div class="container">
-        <!--# include file="includes/header.html" -->
+        {% include header.html %}
         <div class="content" id="socialMediaContent">
             <h2><i class="emoji coolDoge"></i></h2>
             <h2>Social Media</h2>
@@ -52,9 +52,8 @@
                 <a href="https://discord.com/users/79738050996862976" target="_blank"><img src="assets/images/discord.webp" alt="Discord Icon"></a>
             </div>
             <br>
-            <small style="display: flex; flex-direction: column; align-items: center; text-align: center;">Page last updated: <!--# flastmod file="social-media.html" fmt="%A, %B %d, %Y at %h:%mm %p" timezone="America/New_York" --></small>
         </div>
     </div>
-    <!--# include file="includes/footer.html" -->
+    {% include footer.html %}
 </body>
 </html>
