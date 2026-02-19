@@ -2,6 +2,7 @@ backend:
   name: github
   repo: CodyMKW/codymkw.github.io
   branch: main
+  auth_type: implicit
 
 media_folder: "assets/images/blog_images"
 public_folder: "/assets/images/blog_images"
