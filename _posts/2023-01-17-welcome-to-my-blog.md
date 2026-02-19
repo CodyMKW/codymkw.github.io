@@ -1,5 +1,4 @@
 ---
-layout: null
 title: "Welcome to my Blog!"
 time: "10:35 AM"
 author: "CodyMKW"
