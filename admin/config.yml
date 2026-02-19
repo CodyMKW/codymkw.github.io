@@ -14,9 +14,11 @@ collections:
     slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
     fields:
       - { label: "Title", name: "title", widget: "string" }
+      - { label: "Custom Slug", name: "slug", widget: "string", hint: "The URL-friendly name (e.g., 'my-new-post'). If left blank, it uses the Title.", required: false }
       - { label: "Publish Date", name: "date", widget: "datetime" }
       - { label: "Author", name: "author", widget: "string", default: "CodyMKW" }
-      - { label: "Category", name: "category", widget: "string", default: "General" }
-      - { label: "Featured Image", name: "image", widget: "image", required: false }
+      - { label: "Category", name: "category", widget: "string", default: "Page News/Updates" }
+      - { label: "Image 1", name: "image", widget: "image", required: false }
+      - { label: "Image 2", name: "image2", widget: "image", required: false }
       - { label: "Video URL", name: "video", widget: "string", required: false }
       - { label: "Body", name: "body", widget: "markdown" }

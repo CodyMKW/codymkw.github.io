@@ -50,6 +50,7 @@ function initializeBlog() {
             "author": "{{ post.author | default: 'CodyMKW' }}",
             "category": "{{ post.category | default: 'Page News/Updates' }}",
             "content": {{ post.content | jsonify }},
+            "content2": {{ post.content2 | jsonify }},
             "image": "{{ post.image }}",
             "video": "{{ post.video }}",
             "originalIndex": {{ forloop.rindex }}
@@ -99,6 +100,7 @@ function applyFiltersAndSearch() {
             !query ||
             (post.title && post.title.toLowerCase().indexOf(query) !== -1) ||
             (post.content && post.content.toLowerCase().indexOf(query) !== -1);
+            (post.content2 && post.content2.toLowerCase().indexOf(query) !== -1);
 
         return matchesCategory && matchesSearch;
     });
@@ -132,11 +134,14 @@ function renderListView() {
 
         var previewHTML = "";
         if (post.content) {
-            var stripped = post.content.replace(/<[^>]*>?/gm, '');
-            var trimmedContent = stripped.length > 185 ? stripped.slice(0, 185) + "..." : stripped;
+            var trimmedContent = post.content.length > 185 ? post.content.slice(0, 185) + "..." : post.content;
             previewHTML =
-                '<div class="post-content">' + trimmedContent + '</div>' +
+                '<div class="post-content">' + marked.parse(trimmedContent) + '</div>' +
                 '<a href="?post=' + post.originalIndex + '" class="read-more">Read more →</a>';
+        } else if (post.video || post.content2) {
+            previewHTML =
+                (post.video ? '<iframe src="' + post.video + '" frameborder="0" allowfullscreen></iframe>' : "") +
+                (post.content2 ? '<div class="post-content">' + marked.parse(post.content2) + '</div>' : "");
         }
 
         postElement.innerHTML =
@@ -194,6 +199,7 @@ function renderSinglePostView(postId) {
         (post.image ? '<img src="' + post.image + '" alt="Post Image" style="max-width:100%; border-radius:8px;">' : "") +
         '<div class="post-content">' + post.content + '</div>' +
         (post.video ? '<iframe src="' + post.video + '" frameborder="0" allowfullscreen style="width:100%; height:315px; margin: 20px 0;"></iframe>' : "") +
+        '<div class="post-content">' + (post.content2 ? post.content2 : "") + '</div>' +
         '<hr style="margin: 2em 0; border: none; border-top: 1px solid #39ff14;">' +
         '<div id="disqus_thread" style="margin-top: 2em;"></div>' +
         '</div>';
