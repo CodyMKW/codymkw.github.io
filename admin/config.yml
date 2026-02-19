@@ -1,8 +1,7 @@
 backend:
-  name: github
+  name: git-gateway
   repo: CodyMKW/codymkw.github.io
   branch: main
-  auth_type: pkce
 
 media_folder: "assets/images/blog_images"
 public_folder: "/assets/images/blog_images"
