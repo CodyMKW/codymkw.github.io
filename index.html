@@ -1,181 +1,113 @@
+---
+---
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NOTICE OF SEIZURE - CodyMKW Operations</title>
-    <meta name="description" content="This domain has been seized by the CodyMKW Operations Authority pursuant to digital seizure warrant 17-01-91. All traffic is monitored.">
-    
-    <!-- Open Graph / Discord Embed Tags -->
-    <meta property="og:title" content="NOTICE OF SEIZURE - CodyMKW Operations">
-    <meta property="og:description" content="This domain has been officially seized by the CodyMKW Directorate. Unauthorized access is prohibited. Proceed to the secure site immediately.">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta name="msapplication-TileColor" content="#00c900">
+    <meta name="theme-color" content="#00c900">
+    <link href="https://social.vivaldi.net/@codymkw" rel="me">
+    <link href="https://nxapi-auth.fancy.org.uk/@CodyMKW" rel="me">
+    <link rel="me" href="https://splashcat.ink/@CodyMKW/" />
+    <meta name="description" content="Just Cody's little page on the interwebz! :)">
+    <meta name="keywords" content="CodyMKW, Nintendo fan, Animal Crossing, Splatoon Octoling, Custom Splattershot Jr, Baby Daisy, Mario Kart, Clannad anime, English dub anime, Nekoweb, personal website, Nintendo Switch gaming, indie web, Cody's blog, gaming status, Nintendo community">
+    <meta name="author" content="CodyMKW">
+    <meta property="og:title" content="CodyMKW">
+    <meta property="og:description" content="Just Cody's little page on the interwebz! :)">
+    <meta property="og:image" content="https://www.gravatar.com/avatar/5127de8a3a295a02ff3fc55bb6b2fabe?s=2048">
+    <meta property="og:url" content="https://codymkw.github.io">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://codymkw.nekoweb.org">
-    <meta property="og:image" content="/mii.png">
-    <meta name="theme-color" content="#22c55e">
-
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Oswald:wght@500;700&display=swap');
-
-        :root {
-            --neon-green: #22c55e;
-            --dark-bg: #0a0a0a;
-        }
-
-        body {
-            background-color: var(--dark-bg);
-            font-family: 'Courier Prime', monospace;
-            overflow-x: hidden;
-        }
-
-        /* Scanline effect overlay */
-        .scanlines {
-            background: linear-gradient(
-                to bottom,
-                rgba(255,255,255,0),
-                rgba(255,255,255,0) 50%,
-                rgba(0,0,0,0.2) 50%,
-                rgba(0,0,0,0.2)
-            );
-            background-size: 100% 4px;
-            position: fixed;
-            pointer-events: none;
-            inset: 0;
-            z-index: 50;
-        }
-
-        /* Flicker animation for text */
-        @keyframes flicker {
-            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
-                opacity: 1;
-                text-shadow: 0 0 5px rgba(34, 197, 94, 0.5);
-            }
-            20%, 24%, 55% {
-                opacity: 0.5;
-                text-shadow: none;
-            }
-        }
-
-        .flicker-text {
-            animation: flicker 4s infinite;
-        }
-
-        /* CRT Screen turn on effect */
-        @keyframes turnOn {
-            0% { transform: scale(1, 0.002); opacity: 0; }
-            35% { transform: scale(1, 0.002); opacity: 1; }
-            60% { transform: scale(1, 1); opacity: 1; }
-            100% { transform: scale(1, 1); opacity: 1; }
-        }
-
-        .crt-container {
-            animation: turnOn 0.4s ease-out forwards;
-        }
-
-        /* Background pattern handling */
-        .bg-pattern {
-            /* Falls back to a subtle grid if bg.png is missing */
-            background-image: 
-                linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.85)),
-                url('bg.png'); 
-            background-repeat: repeat;
-        }
-
-        /* Glitch effect on hover for the seal */
-        .seal-container:hover .seal-icon {
-            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
-            color: #ef4444; /* Turns red on hover */
-        }
-
-        @keyframes shake {
-            10%, 90% { transform: translate3d(-1px, 0, 0); }
-            20%, 80% { transform: translate3d(2px, 0, 0); }
-            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
-            40%, 60% { transform: translate3d(4px, 0, 0); }
-        }
-    </style>
+    <meta name="twitter:creator" content="@CodyMKW" />
+    <meta name="twitter:title" content="CodyMKW" />
+    <meta name="twitter:description" content="Just Cody's little page on the interwebz! :)" />
+    <meta name="twitter:image:src" content="https://www.gravatar.com/avatar/5127de8a3a295a02ff3fc55bb6b2fabe?s=2048" />
+    <link id="theme-style" rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/emoji.css">
+    <script defer src="assets/javascript/main.js"></script>
+    <script defer src="assets/javascript/currently.js"></script>
+    <script defer src="assets/javascript/stickyheader.js"></script>
+    <title>CodyMKW</title>
 </head>
-<body class="bg-pattern min-h-screen flex items-center justify-center p-4 text-green-500 selection:bg-green-900 selection:text-white">
 
-    <!-- Screen Effects -->
-    <div class="scanlines"></div>
-    
-    <!-- Main Container -->
-    <div class="crt-container w-full max-w-3xl relative z-10">
-        
-        <!-- Border Layout -->
-        <div class="bg-black/90 border-2 border-green-800 shadow-[0_0_50px_rgba(22,197,94,0.15)] p-1 md:p-2 backdrop-blur-sm relative">
-            
-            <!-- Corner Decals -->
-            <div class="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-green-500 -mt-1 -ml-1"></div>
-            <div class="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-green-500 -mt-1 -mr-1"></div>
-            <div class="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-green-500 -mb-1 -ml-1"></div>
-            <div class="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-green-500 -mb-1 -mr-1"></div>
-
-            <!-- Inner Content Box -->
-            <div class="border border-green-900/50 p-6 md:p-10 flex flex-col items-center text-center">
-                
-                <!-- Seal / Icon -->
-                <div class="seal-container mb-8 relative group cursor-default">
-                    <div class="absolute inset-0 bg-green-500 blur-2xl opacity-10 rounded-full group-hover:opacity-20 transition-opacity"></div>
-                    <i data-lucide="shield-alert" class="seal-icon w-24 h-24 text-green-600 transition-colors duration-300"></i>
-                </div>
-
-                <!-- Big Seized Header -->
-                <div class="w-full bg-green-700 text-black transform -skew-x-6 mb-8 shadow-lg shadow-green-900/50">
-                    <h1 class="font-['Oswald'] text-4xl md:text-6xl font-black py-2 tracking-widest uppercase transform skew-x-6">
-                        DOMAIN SEIZED
-                    </h1>
-                </div>
-
-                <!-- Official Text -->
-                <div class="space-y-6 max-w-xl">
-                    <p class="text-sm md:text-base text-gray-400 uppercase tracking-widest">
-                        By Order of the CodyMKW Directorate
-                    </p>
-
-                    <p class="text-lg md:text-xl leading-relaxed font-bold text-gray-200">
-                        This domain has been seized by the <span class="text-green-500 flicker-text">CodyMKW Operations Authority</span> in accordance with a seizure warrant issued by the Central Digital Command.
-                    </p>
-
-                    <div class="text-xs md:text-sm text-green-800/80 font-mono text-justify border-t border-b border-green-900/50 py-4 my-6">
-                        <span class="font-bold text-red-500">WARNING: NOTICE CODE 17-01-91</span><br><br>
-                        UNAUTHORIZED ATTEMPTS TO BYPASS THIS NOTICE OR ACCESS THE UNDERLYING SERVER ARCHITECTURE CONSTITUTES A VIOLATION OF FEDERAL NETWORK PROTOCOLS. ALL IP ADDRESSES ARE BEING LOGGED, TRACED, AND FORWARDED TO THE ADMINISTRATION.
+<body>
+    <div id="sticky-header" class="sticky-header" style="display: none;">
+        <span id="close-button" onclick="toggleHeader()">X</span>
+        <a href="" target="_blank" class="important"></a>
+    </div>
+    <div class="container">
+        {% include header.html %}
+        <div class="content" id="aboutContent">
+            <h2><i class="emoji guraWave"></i></h2>
+            <h2>About Me</h2>
+            <section id="about-me-section">
+                <div class="about-flex">
+                    <div class="avatar-frame" id="avatar-frame" onclick="selectAvatarFrame()">
+                        <img src="" alt="Avatar Frame" class="frame-image" style="display: none;">
+                        <img src="https://www.gravatar.com/avatar/5127de8a3a295a02ff3fc55bb6b2fabe?s=2048" alt="Cody's Avatar" class="avatar-image">
+                    </div>
+                    <div class="about-text">
+                        <p>Hey there! I'm Cody. I love playing Nintendo games and watching anime. My birthday is January 17th, and my favorite color is
+                            <font color="#00C900">green</font>.</p>
+                        <p>My favorite game series is Animal Crossing, though I also play Splatoon. I play as an Octoling and prefer using the Custom Splattershot Jr., and I play a little Mario Kart—my favorite character is Baby Daisy. My favorite anime is Clannad. That's really about it for this bio since I don't have much else to say, lol!</p>
                     </div>
                 </div>
-
-                <!-- Action / Redirect -->
-                <div class="mt-8 w-full max-w-md">
-                    <p class="text-gray-400 text-sm mb-4">All traffic must be rerouted to the primary domain immediately:</p>
-                    
-                    <a href="https://codymkw.nekoweb.org" class="group relative block w-full">
-                        <div class="absolute -inset-0.5 bg-gradient-to-r from-green-600 to-green-900 rounded opacity-75 group-hover:opacity-100 transition duration-200 blur"></div>
-                        <button class="relative w-full bg-black text-green-500 border border-green-700 hover:text-white hover:bg-green-800 px-6 py-4 rounded font-mono font-bold uppercase tracking-widest transition-all duration-300 flex items-center justify-center gap-3">
-                            <i data-lucide="external-link" class="w-5 h-5"></i>
-                            PROCEED TO SECURE SITE
-                        </button>
-                    </a>
+            </section>
+            <section id="status-cafe-block">
+                <h2>Status</h2>
+                <div id="statuscafe-box"></div>
+            </section>
+            <section class="info-sections">
+                <div class="currently">
+                    <h2>Currently</h2>
+                    <div id="currently-section"></div>
                 </div>
 
-                <!-- Footer -->
-                <div class="mt-12 text-xs text-gray-600 font-mono">
-                    <p>CASE ID: MKW-SEIZURE-AUTH-01 | AGENT: CodyMKW</p>
-                    <p class="mt-1">OFFICE OF DIGITAL ENFORCEMENT</p>
+                <div class="latest-posts">
+                    <h2>Latest Blog Posts</h2>
+                    <ul id="latest-posts-list"></ul>
                 </div>
-
-            </div>
+            </section>
+            <br>
+            <section>
+                <div style="display: flex; flex-direction: column; align-items: center; text-align: center;">
+                    <p>Also you can check <a href="/buttons">here</a> for my site's button and other cool looking sites!</p>
+                </div>
+            </section>
         </div>
     </div>
-
+    {% include footer.html %}
     <script>
-        // Initialize Lucide Icons
-        lucide.createIcons();
-
-        // Console warning for curious users opening dev tools
-        console.log("%c SECURITY ALERT: YOUR IP ADDRESS HAS BEEN LOGGED.", "color: #ef4444; font-size: 20px; font-weight: bold; background: #000; padding: 10px;");
-        console.log("%c INTERFERENCE WITH CodyMKW SYSTEMS IS PROHIBITED.", "color: #22c55e; font-size: 14px; font-weight: bold;");
+        document.addEventListener('DOMContentLoaded', function () {
+            fetch('https://api.npoint.io/e48ee20c0a091f1b8963')
+                .then(response => response.json())
+                .then(data => {
+                    updateAvatarFrame(data.avatarframe);
+                });
+        });
+        
+        function updateAvatarFrame(avatarFrames) {
+            const frameContainer = document.getElementById('avatar-frame');
+            const avatarImage = frameContainer.querySelector('.avatar-image');
+            const currentFrame = avatarFrames[0];
+        
+            let frameURL;
+            if (currentFrame.grandfestmode) {
+                frameURL = `assets/images/splatfest/grandfest/Team_${currentFrame.team}.avif`;
+            } else {
+                frameURL = `assets/images/splatfest/${currentFrame.species}/Team_${currentFrame.team}.avif`;
+            }
+        
+            const frameImage = frameContainer.querySelector('.frame-image');
+            frameImage.src = frameURL;
+        
+            frameImage.style.display = currentFrame.status === 0 ? 'none' : 'block';
+        }
     </script>
 </body>
 

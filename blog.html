@@ -1,0 +1,66 @@
+---
+---
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta name="msapplication-TileColor" content="#00c900">
+    <meta name="theme-color" content="#00c900">
+    <link href="https://social.vivaldi.net/@codymkw" rel="me">
+    <meta name="description" content="Random blog where Cody will post random shit! lol">
+    <meta name="keywords" content="CodyMKW blog, personal blog, Nintendo gaming updates, Pretendo Network, 3DS homebrew, Wii U revival, Animal Crossing journal, Splatoon gameplay, anime reviews, web development diary, Nekoweb blog, gaming community thoughts, Nintendo fan site, daily life updates">
+    <meta name="author" content="CodyMKW">
+    <meta property="og:title" content="Blog - CodyMKW">
+    <meta property="og:description" content="Random blog where Cody will post random shit! lol">
+    <meta property="og:image" content="/assets/images/blog.png">
+    <meta property="og:url" content="https://codymkw.github.io">
+    <meta property="og:type" content="website">
+    <meta name="twitter:creator" content="@CodyMKW" />
+    <meta name="twitter:title" content="Blog - CodyMKW" />
+    <meta name="twitter:description" content="Random blog where Cody will post random shit! lol" />
+    <meta name="twitter:image:src" content="/assets/images/blog.png" />
+    <link id="theme-style" rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="/assets/css/emoji.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.0.0/marked.min.js"></script>
+    <script defer src="/assets/javascript/main.js"></script>
+    <script defer src="/assets/javascript/blog.js"></script>
+    <script defer src="assets/javascript/stickyheader.js"></script>
+    <title>Blog - CodyMKW</title>
+</head>
+
+<body>
+    <div id="sticky-header" class="sticky-header" style="display: none;">
+        <span id="close-button" onclick="toggleHeader()">X</span>
+        <a href="" target="_blank" class="important"></a>
+    </div>
+    <div class="container">
+        {% include header.html %}
+        <div class="content" id="BlogContent">
+            <h2><i class="emoji codyBlog"></i></h2>
+            <div class="blog-container">
+                <div class="blog-header">
+                    <input type="text" id="searchBar" placeholder="Search posts..." oninput="searchPosts()">
+                    <select id="categoryFilter" onchange="filterByCategory()">
+                        <option value="all">All Categories</option>
+                    </select>
+                </div>
+                <div id="blogPosts"></div>
+                <div class="pagination">
+                    <button id="prevPage" onclick="changePage(-1)">← Prev</button>
+                    <span id="pageInfo"></span>
+                    <button id="nextPage" onclick="changePage(1)">Next →</button>
+                </div>
+            </div>
+            <br>
+        </div>
+    </div>
+    {% include footer.html %}
+</body>
+
+</html>

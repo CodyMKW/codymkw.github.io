@@ -1,0 +1,227 @@
+---
+---
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta name="msapplication-TileColor" content="#00c900">
+    <meta name="theme-color" content="#00c900">
+    <link href="https://social.vivaldi.net/@codymkw" rel="me">
+    <link href="https://nxapi-auth.fancy.org.uk/@CodyMKW" rel="me">
+    <link rel="me" href="https://splashcat.ink/@CodyMKW/" />
+    <meta name="description" content="Get out of your comfort zone and try something new with the Splatoon 3 Randomizer. Get randomized loadouts and experience Splatoon 3 like never before!">
+    <meta name="keywords" content="Splatoon 3 Randomizer, Splatoon 3 weapon generator, random Splatoon loadout, Splatoon gear randomizer, Splatoon 3 challenge, weapon class filter, amiibo gear filter, Splatoon 3 outfits, Splatana randomizer, Stringer loadout, CodyMKW Splatoon tool, Splatoon 3 wiki links, Inkling gear generator">
+    <meta name="author" content="CodyMKW">
+    <meta property="og:title" content="Splatoon 3 Randomizer - CodyMKW">
+    <meta property="og:description" content="Get out of your comfort zone and try something new with the Splatoon 3 Randomizer. Get randomized loadouts and experience Splatoon 3 like never before!">
+    <meta property="og:image" content="https://www.gravatar.com/avatar/5127de8a3a295a02ff3fc55bb6b2fabe?s=2048">
+    <meta property="og:url" content="https://codymkw.github.io">
+    <meta property="og:type" content="website">
+    <meta name="twitter:creator" content="@CodyMKW" />
+    <meta name="twitter:title" content="Splatoon 3 Randomizer - CodyMKW" />
+    <meta name="twitter:description" content="Get out of your comfort zone and try something new with the Splatoon 3 Randomizer. Get randomized loadouts and experience Splatoon 3 like never before!" />
+    <meta name="twitter:image:src" content="https://www.gravatar.com/avatar/5127de8a3a295a02ff3fc55bb6b2fabe?s=2048" />
+    <link id="theme-style" rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/emoji.css">
+    <script defer src="assets/javascript/main.js"></script>
+    <script defer src="assets/javascript/stickyheader.js"></script>
+    <title>Splatoon 3 Randomizer - CodyMKW</title>
+</head>
+
+<body>
+    <div id="sticky-header" class="sticky-header" style="display: none;">
+        <span id="close-button" onclick="toggleHeader()">X</span>
+        <a href="" target="_blank" class="important"></a>
+    </div>
+    <div class="container">
+        {% include header.html %}
+        <div class="content" id="splat3Content">
+            <h2>Splatoon 3 Randomizer</h2>
+            <div class="card-container">
+                <div class="card weapon-card">
+                    <h2>Weapon:</h2>
+                    <p id="weapon" class="randomizedtext"></p>
+                </div>
+                <div class="card">
+                    <h2>Headgear:</h2>
+                    <p id="headgear" class="randomizedtext"></p>
+                </div>
+                <div class="card">
+                    <h2>Shirt:</h2>
+                    <p id="shirt" class="randomizedtext"></p>
+                </div>
+                <div class="card">
+                    <h2>Shoes:</h2>
+                    <p id="shoe" class="randomizedtext"></p>
+                </div>
+            </div>
+            <div class="button-container">
+                <button id="randomize-button">Randomize</button>
+            </div>
+            <div class="button-container">
+                <button id="options-button">Options</button>
+                <button id="tweet-button" disabled>Copy Results</button>
+            </div>
+            <div class="options-overlay" id="options-overlay" style="display: none;">
+                <div class="options-card card">
+                    <h2>Options:</h2>
+                    <label>
+          <input type="checkbox" id="hide-amiibo-gear" /> Hide amiibo gear
+        </label>
+                    <div id="weapon-filters">
+                        <label><input type="radio" name="weapon-type" value="All" checked="checked"> All Weapon Classes</label>
+                        <label><input type="radio" name="weapon-type" value="Shooter"> Only Shooters</label>
+                        <label><input type="radio" name="weapon-type" value="Roller"> Only Rollers</label>
+                        <label><input type="radio" name="weapon-type" value="Charger"> Only Chargers</label>
+                        <label><input type="radio" name="weapon-type" value="Slosher"> Only Sloshers</label>
+                        <label><input type="radio" name="weapon-type" value="Splatling"> Only Splatlings</label>
+                        <label><input type="radio" name="weapon-type" value="Dualies"> Only Dualies</label>
+                        <label><input type="radio" name="weapon-type" value="Brella"> Only Brellas</label>
+                        <label><input type="radio" name="weapon-type" value="Blaster"> Only Blasters</label>
+                        <label><input type="radio" name="weapon-type" value="Brush"> Only Brushes</label>
+                        <label><input type="radio" name="weapon-type" value="Stringer"> Only Stringers</label>
+                        <label><input type="radio" name="weapon-type" value="Splatana"> Only Splatanas</label>
+                    </div>
+                    <div class="button-container">
+                        <button id="splat3-close-button">Close</button>
+                    </div>
+                </div>
+            </div>
+            <br>
+        </div>
+    </div>
+    {% include footer.html %}
+    <script>
+        const apiUrl = "https://api.npoint.io/113578b339e9986960e3";
+        
+        const weaponElement = document.getElementById("weapon");
+        const headgearElement = document.getElementById("headgear");
+        const shirtElement = document.getElementById("shirt");
+        const shoeElement = document.getElementById("shoe");
+        const randomizeButton = document.getElementById("randomize-button");
+        const splat3closeButton = document.getElementById('splat3-close-button');
+        const optionsOverlay = document.getElementById('options-overlay');
+        const optionsButton = document.getElementById('options-button');
+        const hideAmiiboGearCheckbox = document.getElementById("hide-amiibo-gear");
+        const weaponFilters = document.getElementsByName("weapon-type");
+        
+        let weapons = [];
+        let headgears = [];
+        let shirts = [];
+        let shoes = [];
+        let filteredAmiiboGear = {
+          headgears: [],
+          shirts: [],
+          shoes: []
+        };
+        
+        // Fetch data from the JSON file
+        fetch(apiUrl)
+          .then(response => response.json())
+          .then(data => {
+            weapons = data.weapons;
+            headgears = data.headgears;
+            shirts = data.shirts;
+            shoes = data.shoes;
+            filteredAmiiboGear = data.filteredAmiiboGear;
+          })
+          .catch(error => console.error('Error fetching data:', error));
+        
+        // Load the option value from localStorage if it exists
+        const hideAmiiboGearOption = localStorage.getItem("hideAmiiboGearOption");
+        if (hideAmiiboGearOption !== null) {
+          hideAmiiboGearCheckbox.checked = JSON.parse(hideAmiiboGearOption);
+        }
+        
+        // Listen for changes to the checkbox and save the value to localStorage
+        hideAmiiboGearCheckbox.addEventListener("change", () => {
+          localStorage.setItem("hideAmiiboGearOption", hideAmiiboGearCheckbox.checked);
+        });
+        
+        optionsButton.addEventListener("click", function() {
+          optionsOverlay.style.display = "flex";
+        });
+        
+        splat3closeButton.addEventListener('click', function() {
+          optionsOverlay.style.display = "none";
+        });
+        
+        optionsOverlay.addEventListener('click', function(event) {
+          if (event.target === optionsOverlay) {
+            optionsOverlay.style.display = "none";
+          }
+        });
+        
+        function randomize() {
+          let randomweapon, randomheadgear, randomshirt, randomshoe;
+          const selectedFilter = Array.from(weaponFilters).find(filter => filter.checked)?.value || "All";
+          
+          const filteredWeapons = selectedFilter === "All" ? weapons : weapons.filter(weapon => weapon.type === selectedFilter);
+        
+          if (filteredWeapons.length === 0) {
+            weaponElement.textContent = "No weapons found";
+            randomweapon = null;
+          } else {
+            randomweapon = filteredWeapons[Math.floor(Math.random() * filteredWeapons.length)];
+          }
+        
+          // Check if "Hide amiibo gear" is checked and filter out unwanted gear
+          if (hideAmiiboGearCheckbox.checked) {
+            const filteredHeadgears = headgears.filter(gear => !filteredAmiiboGear.headgears.includes(gear));
+            const filteredShirts = shirts.filter(gear => !filteredAmiiboGear.shirts.includes(gear));
+            const filteredShoes = shoes.filter(gear => !filteredAmiiboGear.shoes.includes(gear));
+            randomheadgear = filteredHeadgears[Math.floor(Math.random() * filteredHeadgears.length)];
+            randomshirt = filteredShirts[Math.floor(Math.random() * filteredShirts.length)];
+            randomshoe = filteredShoes[Math.floor(Math.random() * filteredShoes.length)];
+          } else {
+            randomheadgear = headgears[Math.floor(Math.random() * headgears.length)];
+            randomshirt = shirts[Math.floor(Math.random() * shirts.length)];
+            randomshoe = shoes[Math.floor(Math.random() * shoes.length)];
+          }
+        
+          // Logging to see what's selected
+          console.log('Random Weapon:', randomweapon);
+          console.log('Random Headgear:', randomheadgear);
+          console.log('Random Shirt:', randomshirt);
+          console.log('Random Shoe:', randomshoe);
+        
+          // Ensure the gear items are defined before creating links
+          const weaponLink = randomweapon ? `https://splatoonwiki.org/wiki/${randomweapon.name.replace(/ /g, "_")}` : '#';
+          const headgearLink = randomheadgear ? `https://splatoonwiki.org/wiki/${randomheadgear.replace(/ /g, "_")}` : '#';
+          const shirtLink = randomshirt ? `https://splatoonwiki.org/wiki/${randomshirt.replace(/ /g, "_")}` : '#';
+          const shoeLink = randomshoe ? `https://splatoonwiki.org/wiki/${randomshoe.replace(/ /g, "_")}` : '#';
+        
+          // Display the selected gear
+          weaponElement.innerHTML = randomweapon ? `<a href="${weaponLink}" target="_blank">${randomweapon.name}</a>` : 'No weapons found';
+          headgearElement.innerHTML = randomheadgear ? `<a href="${headgearLink}" target="_blank">${randomheadgear}</a>` : 'No headgear found';
+          shirtElement.innerHTML = randomshirt ? `<a href="${shirtLink}" target="_blank">${randomshirt}</a>` : 'No shirt found';
+          shoeElement.innerHTML = randomshoe ? `<a href="${shoeLink}" target="_blank">${randomshoe}</a>` : 'No shoes found';
+        }
+        
+        const tweetButton = document.getElementById("tweet-button");
+        tweetButton.addEventListener("click", function() {
+          const weapon = document.getElementById("weapon").textContent;
+          const headgear = document.getElementById("headgear").textContent;
+          const shirt = document.getElementById("shirt").textContent;
+          const shoe = document.getElementById("shoe").textContent;
+          const tweetMessage = `I just generated a random weapon & outfit using the #Splatoon3 Randomizer!\n\nResults:\nWeapon - ${weapon}\nHeadgear - ${headgear}\nShirt - ${shirt}\nShoes - ${shoe}\nhttps://codymkw.nekoweb.org/splat3`;
+          
+          navigator.clipboard.writeText(tweetMessage);
+          alert("The message was copied to clipboard now you can go to twitter and post it or you can post it somewhere else it's up to you! :D");
+        });
+        
+        randomizeButton.addEventListener('click', () => {
+          tweetButton.removeAttribute('disabled');
+        });
+        
+        randomizeButton.addEventListener("click", randomize);
+    </script>
+</body>
+
+</html>

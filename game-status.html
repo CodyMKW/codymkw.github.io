@@ -1,0 +1,128 @@
+---
+---
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta name="msapplication-TileColor" content="#00c900">
+    <meta name="theme-color" content="#00c900">
+    <link href="https://social.vivaldi.net/@codymkw" rel="me">
+    <meta name="description" content="Check out what I'm currently playing on Nintendo Switch!">
+    <meta name="keywords" content="Nintendo Switch game status, real-time gaming, Splatoon 3 Salmon Run stats, Splatoon 3 stages, Nintendo eShop links, total play time tracker, CodyMKW gaming, Switch profile icon, online status tracker, Nintendo Switch Title ID, Salmon Run boss schedule, gaming presence">
+    <meta name="author" content="CodyMKW">
+    <meta property="og:title" content="Game Status - CodyMKW">
+    <meta property="og:description" content="Check out what I'm currently playing on Nintendo Switch!">
+    <meta property="og:image" content="/assets/images/emojis/ninSwitch.png">
+    <meta property="og:url" content="https://codymkw.github.io">
+    <meta property="og:type" content="website">
+    <meta name="twitter:creator" content="@CodyMKW" />
+    <meta name="twitter:title" content="Game Status - CodyMKW" />
+    <meta name="twitter:description" content="Check out what I'm currently playing on Nintendo Switch!" />
+    <meta name="twitter:image:src" content="/assets/images/emojis/ninSwitch.png" />
+    <link id="theme-style" rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/emoji.css">
+    <script defer src="assets/javascript/main.js"></script>
+    <script defer src="assets/javascript/stickyheader.js"></script>
+    <script defer src="assets/javascript/status.js"></script>
+    <title>Game Status - CodyMKW</title>
+    <style>
+        .alert {
+          padding: 20px;
+          background-color: #f44336;
+          color: white;
+          opacity: 1;
+          transition: opacity 0.6s;
+          margin-bottom: 15px;
+        }
+        
+        .alert.success {background-color: #04AA6D;}
+        .alert.info {background-color: #2196F3;}
+        .alert.warning {background-color: #ff9800;}
+        
+        .closebtn {
+          margin-left: 15px;
+          color: white;
+          font-weight: bold;
+          float: right;
+          font-size: 22px;
+          line-height: 20px;
+          cursor: pointer;
+          transition: 0.3s;
+        }
+        
+        .closebtn:hover {
+          color: black;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="sticky-header" class="sticky-header" style="display: none;">
+        <span id="close-button" onclick="toggleHeader()">X</span>
+        <a href="" target="_blank" class="important"></a>
+    </div>
+    <div class="container">
+        {% include header.html %}
+        <div class="content" id="statusContent">
+            <div class="alert warning" style="display: none;">
+                <span class="closebtn">&times;</span>
+                <strong>Warning:</strong> Due to a change that Nintendo has done the Game Status page is currently broken.
+            </div>
+            <label for="accountSelect"><strong>Select Account:</strong></label>
+            <select id="accountSelect">
+        <option value="us" selected>US Account</option>
+        <option value="uk">UK Account</option>
+      </select>
+            <h3>Current Switch Profile Icon:</h3>
+            <h1><img id="avatarImage" alt="Nintendo Switch Profile Icon"></h1>
+            <h1><span id="playerName"></span></h1>
+            <div id="gameInfo">
+                <p><span id="gameName"></span></p>
+                <p><small><span id="sysDescription"></span></small></p>
+                <p><small><span id="subText"></span></small></p>
+                <p><img id="gameImage" alt="Game Image"></p>
+                <p><strong>Title ID:</strong> <span id="gameID"></span></p>
+                <p><strong>Time Playing Now:</strong> <span id="timePlayingNow"></span></p>
+                <p><strong>Total Play Time:</strong> <span id="totalPlayTime"></span></p>
+                <p><strong>Time First Played:</strong> <span id="firstPlayedTime"></span></p>
+                <p><strong>Get the game:</strong> <a id="gameShopLink" href="#" target="_blank">Visit eShop Page</a></p>
+            </div>
+            <div id="splatoonInfo" style="display: none;">
+                <p id="modeLabel" style="display: none;"><strong>Mode:</strong> <span id="splatoonMode"></span></p>
+                <p id="splatoonStagesLabel" style="display: none;"><strong>Stages:</strong> <span id="splatoonStages"></span></p>
+            </div>
+            <div id="salmonRunInfo" style="display: none;">
+                <p id="SRmodeLabel" style="display: none;"><strong>Mode:</strong> <span id="splatoonSRMode"></span></p>
+                <p><strong>Current Stage:</strong> <span id="salmonRunStage"></span></p>
+                <p><strong>Current Boss:</strong> <span id="salmonRunBoss"></span></p>
+                <p><strong>Current Weapons:</strong> <span id="salmonRunWeapons"></span></p>
+            </div>
+            <div id="onlineStatusContainer">
+                <p><strong>Online Status:</strong> <span id="onlineStatus"></span></p>
+            </div>
+            <p><strong>Status Last Updated:</strong> <span id="lastUpdated"></span></p>
+            <br>
+        </div>
+    </div>
+    {% include footer.html %}
+    <script>
+        var close = document.getElementsByClassName("closebtn");
+        var i;
+        
+        for (i = 0; i < close.length; i++) {
+          close[i].onclick = function(){
+            var div = this.parentElement;
+            div.style.opacity = "0";
+            setTimeout(function(){ div.style.display = "none"; }, 600);
+          }
+        }
+    </script>
+</body>
+
+</html>

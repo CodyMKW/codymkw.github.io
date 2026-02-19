@@ -1,0 +1,110 @@
+---
+---
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta name="msapplication-TileColor" content="#00c900">
+    <meta name="theme-color" content="#00c900">
+    <link href="https://social.vivaldi.net/@codymkw" rel="me">
+
+    <meta name="description" content="See what I'm currently listening to on Last.fm!">
+    <meta name="keywords" content="CodyMKW, Last.fm, currently listening, now playing, music status, real-time music tracker, track artist album, CodyMKW music, Spotify tracker, scrobbling, live music feed, gaming music, music discovery">
+    <meta name="author" content="CodyMKW">
+
+    <meta property="og:title" content="Listening Status - CodyMKW">
+    <meta property="og:description" content="See what I'm currently listening to on Last.fm!">
+    <meta property="og:image" content="/assets/images/emojis/music.png">
+    <meta property="og:url" content="https://codymkw.github.io">
+    <meta property="og:type" content="website">
+
+    <meta name="twitter:creator" content="@CodyMKW" />
+    <meta name="twitter:title" content="Listening Status - CodyMKW" />
+    <meta name="twitter:description" content="See what I'm currently listening to on Last.fm!" />
+    <meta name="twitter:image:src" content="/assets/images/emojis/music.png" />
+
+    <link id="theme-style" rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/emoji.css">
+
+    <script defer src="assets/javascript/main.js"></script>
+    <script defer src="assets/javascript/stickyheader.js"></script>
+
+    <title>Listening Status - CodyMKW</title>
+</head>
+
+<body>
+    <div id="sticky-header" class="sticky-header" style="display: none;">
+        <span id="close-button" onclick="toggleHeader()">X</span>
+        <a href="" target="_blank" class="important"></a>
+    </div>
+    <div class="container">
+        {% include header.html %}
+
+        <div class="content" id="musicstatusContent">
+
+            <h2>Currently Listening To:</h2>
+
+            <div id="musicInfo">
+                <p><strong>Track:</strong> <span id="trackName"></span></p>
+                <p><strong>Artist:</strong> <span id="trackArtist"></span></p>
+                <p><strong>Album:</strong> <span id="trackAlbum"></span></p>
+                <p><img id="trackImage" alt="Album Artwork" style="max-width: 300px; border-radius: 8px;"></p>
+                <p><strong>Now Playing:</strong> <span id="nowPlaying"></span></p>
+                <p><strong>Track Link:</strong> <a id="trackURL" href="#" target="_blank">Open on Last.fm</a></p>
+            </div>
+
+            <p><strong>Last Updated:</strong> <span id="lastUpdated"></span></p>
+
+            <br>
+        </div>
+    </div>
+    {% include footer.html %}
+
+    <script>
+        async function loadListeningStatus() {
+            try {
+                const response = await fetch("https://lastfm-last-played.biancarosa.com.br/codymkw/latest-song");
+                const data = await response.json();
+        
+                const track = data.track;
+        
+                document.getElementById("trackName").textContent = track.name || "Unknown";
+                document.getElementById("trackArtist").textContent = track.artist["#text"] || "Unknown";
+                document.getElementById("trackAlbum").textContent = track.album["#text"] || "Unknown";
+        
+                const largestImage = track.image?.find(img => img.size === "extralarge")?.["#text"];
+                document.getElementById("trackImage").src = largestImage || "";
+        
+                document.getElementById("nowPlaying").textContent =
+                    track["@attr"]?.nowplaying === "true" ? "Yes" : "No";
+        
+                document.getElementById("trackURL").href = track.url || "#";
+        
+                document.getElementById("lastUpdated").textContent = new Date().toLocaleString();
+            } catch (e) {
+                console.error("Error loading music data:", e);
+            }
+        }
+        
+        loadListeningStatus();
+        setInterval(loadListeningStatus, 15000);
+        
+        var close = document.getElementsByClassName("closebtn");
+        for (var i = 0; i < close.length; i++) {
+          close[i].onclick = function(){
+            var div = this.parentElement;
+            div.style.opacity = "0";
+            setTimeout(function(){ div.style.display = "none"; }, 600);
+          }
+        }
+    </script>
+
+</body>
+
+</html>

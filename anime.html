@@ -1,0 +1,241 @@
+---
+---
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta name="msapplication-TileColor" content="#00c900">
+    <meta name="theme-color" content="#00c900">
+    <link href="https://social.vivaldi.net/@codymkw" rel="me">
+    <link href="https://nxapi-auth.fancy.org.uk/@CodyMKW" rel="me">
+    <link rel="me" href="https://splashcat.ink/@CodyMKW/" />
+    <meta name="description" content="Explore all the anime CodyMKW is currently watching or has completed, updated automatically from AniList. See progress, episodes, and links to each show — all in one neat place.">
+    <meta name="keywords" content="CodyMKW anime list, AniList tracker, currently watching anime, completed anime list, anime ratings, English dub anime, Clannad, anime progress tracker, CodyMKW AniList, anime rewatch list, automated anime list, Otaku community">
+    <meta name="author" content="CodyMKW">
+    <meta property="og:title" content="Anime List - CodyMKW">
+    <meta property="og:description" content="Explore all the anime CodyMKW is currently watching or has completed, updated automatically from AniList. See progress, episodes, and links to each show — all in one neat place.">
+    <meta property="og:image" content="https://www.gravatar.com/avatar/5127de8a3a295a02ff3fc55bb6b2fabe?s=2048">
+    <meta property="og:url" content="https://codymkw.github.io">
+    <meta property="og:type" content="website">
+    <meta name="twitter:creator" content="@CodyMKW" />
+    <meta name="twitter:title" content="Anime List - CodyMKW" />
+    <meta name="twitter:description" content="Explore all the anime CodyMKW is currently watching or has completed, updated automatically from AniList. See progress, episodes, and links to each show — all in one neat place." />
+    <meta name="twitter:image:src" content="https://www.gravatar.com/avatar/5127de8a3a295a02ff3fc55bb6b2fabe?s=2048" />
+    <link id="theme-style" rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/emoji.css">
+    <script defer src="assets/javascript/main.js"></script>
+    <script defer src="assets/javascript/stickyheader.js"></script>
+    <title>Anime List - CodyMKW</title>
+</head>
+
+<body>
+    <div id="sticky-header" class="sticky-header" style="display: none;">
+        <span id="close-button" onclick="toggleHeader()">X</span>
+        <a href="" target="_blank" class="important"></a>
+    </div>
+    <div class="container">
+        {% include header.html %}
+
+        <div class="content" id="animepageContent">
+            <div class="anime-status-note">
+                Progress is shown up to the next episode (e.g., ‘Episode 7 of 13’ = next to watch: 7).
+            </div>
+            <div class="anime-tabs">
+                <button id="tab-watching" class="active">Currently Watching</button>
+                <button id="tab-completed">Completed</button>
+            </div>
+
+            <div id="watching-list" class="anime-list">
+                <p>Loading your anime list...</p>
+            </div>
+
+            <div id="completed-list-wrapper" style="display: none;">
+                <input type="text" id="completed-search" placeholder="Search completed anime..." style="width: 96%; padding: 10px; margin: 15px 0; border-radius: 8px; border: 1px solid #ccc;">
+                <div id="completed-list" class="anime-list">
+                    <p>Loading your completed anime...</p>
+                </div>
+            </div>
+            <br>
+        </div>
+    </div>
+
+    <script>
+        async function fetchAnime(username, statuses) {
+          const query = `
+            query ($username: String, $statuses: [MediaListStatus]) {
+              MediaListCollection(
+                userName: $username,
+                type: ANIME,
+                status_in: $statuses,
+                sort: UPDATED_TIME_DESC
+              ) {
+                lists {
+                  entries {
+                    score
+                    progress
+                    repeat
+                    status
+                    media {
+                      title {
+                        english
+                        romaji
+                      }
+                      coverImage {
+                        large
+                        color
+                      }
+                      episodes
+                      siteUrl
+                    }
+                  }
+                }
+              }
+            }
+          `;
+    
+          const variables = { username, statuses };
+    
+          const response = await fetch("https://graphql.anilist.co", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ query, variables }),
+          });
+    
+          const result = await response.json();
+          let entries = [];
+    
+          if (
+            result &&
+            result.data &&
+            result.data.MediaListCollection &&
+            Array.isArray(result.data.MediaListCollection.lists)
+          ) {
+            result.data.MediaListCollection.lists.forEach((list) => {
+              if (list && Array.isArray(list.entries)) {
+                entries = entries.concat(list.entries);
+              }
+            });
+          }
+    
+          return entries;
+        }
+    
+        function renderAnimeList(container, entries) {
+          container.innerHTML = "";
+          if (!entries.length) {
+            container.innerHTML = "<p>No anime found.</p>";
+            return;
+          }
+    
+          entries.forEach((entry) => {
+            const anime = entry.media;
+            const progress = entry.progress || 0;
+            const animeCard = document.createElement("div");
+            animeCard.className = "anime-card";
+    
+            const isRewatching =
+              entry.status === "REPEATING";
+              
+           let ratingText, ratingClass;
+           if (entry.score && entry.score > 0) {
+             ratingText = `Rating: ${entry.score}/10`;
+             ratingClass = "rating";
+           } else {
+             ratingText = `Rating: Not rated yet`;
+             ratingClass = "rating not-rated";
+           }
+    
+            animeCard.innerHTML = `
+              <a href="${anime.siteUrl}" target="_blank" class="anime-link">
+                <img src="${anime.coverImage.large}" alt="${anime.title.romaji}" class="anime-cover">
+                ${isRewatching ? `<span class="rewatch-badge">🔁 Rewatch</span>` : ""}
+                <div class="anime-info">
+                  <h3>${anime.title.english || anime.title.romaji}</h3>
+                  <p>Episode ${progress} of ${anime.episodes || "??"}</p>
+                  ${entry.repeat > 0 ? `<p class="rewatch-count">Rewatched ${entry.repeat} time${entry.repeat > 1 ? "s" : ""}</p>` : ""}
+                  <p class="${ratingClass}">${ratingText}</p>
+                </div>
+              </a>
+            `;
+    
+            container.appendChild(animeCard);
+          });
+        }
+    
+        let completedAnimeData = [];
+    
+        async function loadAnimeLists() {
+          const watchingContainer = document.getElementById("watching-list");
+          const completedContainer = document.getElementById("completed-list");
+    
+          watchingContainer.innerHTML = "<p>Loading...</p>";
+          completedContainer.innerHTML = "<p>Loading...</p>";
+    
+          try {
+            const [watchingEntries, completedEntries] = await Promise.all([
+              fetchAnime("CodyMKW", ["CURRENT", "REPEATING"]),
+              fetchAnime("CodyMKW", ["COMPLETED"]),
+            ]);
+    
+            renderAnimeList(watchingContainer, watchingEntries);
+            renderAnimeList(completedContainer, completedEntries);
+    
+            completedAnimeData = completedEntries;
+          } catch (err) {
+            console.error(err);
+            watchingContainer.innerHTML = "<p>Failed to load watching list.</p>";
+            completedContainer.innerHTML = "<p>Failed to load completed list.</p>";
+          }
+        }
+    
+        document.addEventListener("DOMContentLoaded", () => {
+          loadAnimeLists();
+    
+          const tabWatching = document.getElementById("tab-watching");
+          const tabCompleted = document.getElementById("tab-completed");
+          const watchingList = document.getElementById("watching-list");
+          const completedWrapper = document.getElementById("completed-list-wrapper");
+          const completedList = document.getElementById("completed-list");
+          const searchInput = document.getElementById("completed-search");
+    
+          tabWatching.addEventListener("click", () => {
+            tabWatching.classList.add("active");
+            tabCompleted.classList.remove("active");
+            watchingList.style.display = "grid";
+            completedWrapper.style.display = "none";
+          });
+    
+          tabCompleted.addEventListener("click", () => {
+            tabCompleted.classList.add("active");
+            tabWatching.classList.remove("active");
+            watchingList.style.display = "none";
+            completedWrapper.style.display = "block";
+          });
+    
+          if (searchInput) {
+              
+            function normalizeText(str) {
+               return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+            }
+            searchInput.addEventListener("input", (e) => {
+              const term = normalizeText(e.target.value);
+              const filtered = completedAnimeData.filter(entry => {
+                const title = normalizeText(entry.media.title.english || entry.media.title.romaji || "");
+                return title.includes(term);
+              });
+              renderAnimeList(completedList, filtered);
+            });
+          }
+        });
+    </script>
+
+    {% include footer.html %}
+</body>
+
+</html>
