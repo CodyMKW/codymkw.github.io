@@ -1,0 +1,22 @@
+backend:
+  name: github
+  repo: CodyMKW/codymkw.github.io
+  branch: main
+
+media_folder: "assets/images/blog_images"
+public_folder: "/assets/images/blog_images"
+
+collections:
+  - name: "blog"
+    label: "Blog Posts"
+    folder: "_posts"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Publish Date", name: "date", widget: "datetime" }
+      - { label: "Author", name: "author", widget: "string", default: "CodyMKW" }
+      - { label: "Category", name: "category", widget: "string", default: "General" }
+      - { label: "Featured Image", name: "image", widget: "image", required: false }
+      - { label: "Video URL", name: "video", widget: "string", required: false }
+      - { label: "Body", name: "body", widget: "markdown" }
