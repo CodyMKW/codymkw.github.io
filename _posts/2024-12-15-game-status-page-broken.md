@@ -1,0 +1,13 @@
+---
+title: "Game Status page broken"
+date: 2024-12-15 15:43:00
+author: "CodyMKW"
+category: "Page News/Updates"
+image: "https://i.imgur.com/wFLJWYq.jpg"
+---
+
+![Game Status page broken](https://i.imgur.com/wFLJWYq.jpg)
+
+You may have noticed that the [Game Status page](/game-status) no longer displays my current game status. This is due to a change on Nintendo's end, which has caused the page to break. There is currently no estimated time for a fix.
+
+ RIP seeing what game I'm currently playing for the time being!! :'(
