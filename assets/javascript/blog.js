@@ -9,12 +9,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 window.dispatchEvent(new Event("themeChanged"));
             } catch (err) {
                 var urlParams = new URLSearchParams(window.location.search);
-                var postSlug = urlParams.get("post");
-                if (postSlug !== null) {
+                var postId = urlParams.get("post");
+                if (postId !== null) {
                     var currentPost = posts.find(function (p) {
-                        return p.slug === postSlug;
+                        return p.originalIndex === parseInt(postId, 10);
                     });
-                    if (currentPost) loadDisqus(currentPost.slug, currentPost.title);
+                    if (currentPost) loadDisqus(currentPost.originalIndex, currentPost.title);
                 }
             }
         });
@@ -28,6 +28,9 @@ var postsPerPage = 7;
 var isPaginating = false;
 var disqusShortname = 'codymkw';
 var disqusBaseUrl = 'https://codymkw.nekoweb.org';
+
+// Change this if your _posts folder is somewhere else relative to your HTML page
+var postsFolder = '_posts/';
 
 function parseFrontMatter(raw) {
     var result = { attributes: {}, body: "" };
@@ -62,17 +65,20 @@ function parseFrontMatter(raw) {
     return result;
 }
 
-function slugFromFilename(filename) {
-    return filename.replace(/\.md$/i, "");
-}
-
 function dateFromFilename(filename) {
     var match = filename.match(/^(\d{4}-\d{2}-\d{2})/);
     return match ? match[1] : "";
 }
 
-function loadMarkdownFile(filename) {
-    var url = "_posts/" + filename;
+function titleFromFilename(filename) {
+    var name = filename.replace(/\.md$/i, "");
+    name = name.replace(/^\d{4}-\d{2}-\d{2}-/, "");
+    name = name.replace(/-/g, " ");
+    return name.charAt(0).toUpperCase() + name.slice(1);
+}
+
+function loadMarkdownFile(filename, index) {
+    var url = postsFolder + filename;
     return fetch(url)
         .then(function (response) {
             if (!response.ok) throw new Error("Failed to load " + url + " (status " + response.status + ")");
@@ -96,8 +102,8 @@ function loadMarkdownFile(filename) {
             var timeStr = attrs.time || "12:00 AM";
 
             return {
-                slug: slugFromFilename(filename),
-                title: attrs.title || slugFromFilename(filename).replace(/^\d{4}-\d{2}-\d{2}-/, "").replace(/-/g, " "),
+                originalIndex: index,
+                title: attrs.title || titleFromFilename(filename),
                 date: dateStr,
                 time: timeStr,
                 author: attrs.author || "Unknown",
@@ -107,6 +113,10 @@ function loadMarkdownFile(filename) {
                 image: attrs.image || "",
                 video: attrs.video || ""
             };
+        })
+        .catch(function (err) {
+            console.error("Error loading post file: " + filename, err);
+            return null;
         });
 }
 
@@ -121,19 +131,23 @@ function initializeBlog() {
         if (blogHeader) blogHeader.classList.add('hidden');
         if (pagination) pagination.classList.add('hidden');
 
-        return fetch("_posts/posts.json")
+        return fetch(postsFolder + "posts.json")
             .then(function (response) {
                 if (!response.ok) throw new Error("HTTP error! status: " + response.status);
                 return response.json();
             })
             .then(function (postFiles) {
-                var promises = postFiles.map(function (filename) {
-                    return loadMarkdownFile(filename);
+                var promises = postFiles.map(function (filename, index) {
+                    return loadMarkdownFile(filename, index);
                 });
                 return Promise.all(promises);
             })
             .then(function (loadedPosts) {
-                posts = loadedPosts.sort(function (a, b) {
+                posts = loadedPosts.filter(function (p) {
+                    return p !== null;
+                });
+
+                posts.sort(function (a, b) {
                     return new Date(b.date + " " + b.time) - new Date(a.date + " " + a.time);
                 });
 
@@ -164,9 +178,9 @@ function initializeBlog() {
 
 function handleRouting() {
     var urlParams = new URLSearchParams(window.location.search);
-    var postSlug = urlParams.get("post");
-    if (postSlug !== null) {
-        renderSinglePostView(postSlug);
+    var postId = urlParams.get("post");
+    if (postId !== null) {
+        renderSinglePostView(parseInt(postId, 10));
     } else {
         renderListView();
     }
@@ -215,14 +229,14 @@ function renderListView() {
     pagePosts.forEach(function (post) {
         var postElement = document.createElement('div');
         postElement.className = 'blog-post';
-        postElement.dataset.slug = post.slug;
+        postElement.dataset.index = post.originalIndex;
 
         var previewHTML = "";
         if (post.content) {
             var trimmedContent = post.content.length > 185 ? post.content.slice(0, 185) + "..." : post.content;
             previewHTML =
                 '<div class="post-content">' + marked.parse(trimmedContent) + '</div>' +
-                '<a href="?post=' + encodeURIComponent(post.slug) + '" class="read-more">Read more →</a>';
+                '<a href="?post=' + post.originalIndex + '" class="read-more">Read more →</a>';
         } else if (post.video || post.content2) {
             previewHTML =
                 (post.video ? '<iframe src="' + post.video + '" frameborder="0" allowfullscreen></iframe>' : "") +
@@ -230,7 +244,7 @@ function renderListView() {
         }
 
         postElement.innerHTML =
-            '<h3><a href="?post=' + encodeURIComponent(post.slug) + '">' + post.title + '</a></h3>' +
+            '<h3><a href="?post=' + post.originalIndex + '">' + post.title + '</a></h3>' +
             '<p class="post-meta" id="blogmetadata">' + post.date + ' • ' + post.time + ' • ' + post.author + ' • ' + post.category + '</p>' +
             (post.image ? '<img src="' + post.image + '" alt="Post Image">' : "") +
             previewHTML;
@@ -239,8 +253,8 @@ function renderListView() {
         if (titleLink) {
             titleLink.addEventListener('click', function (e) {
                 e.preventDefault();
-                window.history.pushState({ post: post.slug }, "", "?post=" + encodeURIComponent(post.slug));
-                renderSinglePostView(post.slug);
+                window.history.pushState({ post: post.originalIndex }, "", "?post=" + post.originalIndex);
+                renderSinglePostView(post.originalIndex);
             });
         }
 
@@ -248,8 +262,8 @@ function renderListView() {
         if (readMoreLink) {
             readMoreLink.addEventListener('click', function (e) {
                 e.preventDefault();
-                window.history.pushState({ post: post.slug }, "", "?post=" + encodeURIComponent(post.slug));
-                renderSinglePostView(post.slug);
+                window.history.pushState({ post: post.originalIndex }, "", "?post=" + post.originalIndex);
+                renderSinglePostView(post.originalIndex);
             });
         }
 
@@ -259,7 +273,7 @@ function renderListView() {
     updatePaginationUI();
 }
 
-function renderSinglePostView(postSlug) {
+function renderSinglePostView(postId) {
     var blogContainer = document.getElementById("blogPosts");
     var blogHeader = document.querySelector(".blog-header");
     var pagination = document.querySelector(".pagination");
@@ -268,7 +282,7 @@ function renderSinglePostView(postSlug) {
     if (pagination) pagination.classList.add('hidden');
 
     var post = posts.find(function (p) {
-        return p.slug === postSlug;
+        return p.originalIndex === postId;
     });
 
     if (!post) {
@@ -282,7 +296,7 @@ function renderSinglePostView(postSlug) {
 
     var postHTML =
         '<a href="#" class="blog-back-button">‹ All Posts</a>' +
-        '<div class="blog-post" data-slug="' + post.slug + '">' +
+        '<div class="blog-post" data-index="' + post.originalIndex + '">' +
         '<h3>' + post.title + '</h3>' +
         '<p class="post-meta" id="blogmetadata">' + post.date + ' • ' + post.time + ' • ' + post.author + ' • ' + post.category + '</p>' +
         (post.image ? '<img src="' + post.image + '" alt="Post Image">' : "") +
@@ -298,10 +312,10 @@ function renderSinglePostView(postSlug) {
     var backBtn2 = document.querySelector('.blog-back-button');
     if (backBtn2) backBtn2.addEventListener('click', goBackToList);
 
-    loadDisqus(post.slug, post.title);
+    loadDisqus(post.originalIndex, post.title);
 }
 
-function loadDisqus(postSlug, postTitle) {
+function loadDisqus(postId, postTitle) {
     var container = document.getElementById("disqus_thread");
     if (!container) return;
 
@@ -312,8 +326,8 @@ function loadDisqus(postSlug, postTitle) {
 
     if (window.DISQUS && typeof window.DISQUS.reset === 'function') {
         window.disqus_config = function () {
-            this.page.url = disqusBaseUrl + '?post=' + encodeURIComponent(postSlug);
-            this.page.identifier = 'post-' + postSlug;
+            this.page.url = disqusBaseUrl + '?post=' + postId;
+            this.page.identifier = 'post-' + postId;
             this.page.title = postTitle;
         };
         try {
@@ -323,8 +337,8 @@ function loadDisqus(postSlug, postTitle) {
     }
 
     window.disqus_config = function () {
-        this.page.url = disqusBaseUrl + '?post=' + encodeURIComponent(postSlug);
-        this.page.identifier = 'post-' + postSlug;
+        this.page.url = disqusBaseUrl + '?post=' + postId;
+        this.page.identifier = 'post-' + postId;
         this.page.title = postTitle;
     };
 
@@ -339,12 +353,12 @@ function loadDisqus(postSlug, postTitle) {
 
 window.addEventListener("themeChanged", function () {
     var urlParams = new URLSearchParams(window.location.search);
-    var postSlug = urlParams.get("post");
-    if (postSlug !== null) {
+    var postId = urlParams.get("post");
+    if (postId !== null) {
         var currentPost = posts.find(function (p) {
-            return p.slug === postSlug;
+            return p.originalIndex === parseInt(postId, 10);
         });
-        if (currentPost) loadDisqus(currentPost.slug, currentPost.title);
+        if (currentPost) loadDisqus(currentPost.originalIndex, currentPost.title);
     }
 });
 
