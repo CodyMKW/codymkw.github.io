@@ -29,6 +29,42 @@ var isPaginating = false;
 var disqusShortname = 'codymkw';
 var disqusBaseUrl = 'https://codymkw.nekoweb.org';
 
+var postManifest = [
+  {index:1, filename:"2023-01-17-welcome-to-my-blog.md"},
+  {index:2, filename:"2023-01-18-had-an-idea-for-new-post-but.md"},
+  {index:3, filename:"2023-01-21-nintendo-news-page-added.md"},
+  {index:4, filename:"2023-02-15-game-status-page-added.md"},
+  {index:5, filename:"2023-02-17-new-splatfest-frames-page-now-live.md"},
+  {index:6, filename:"2024-12-15-game-status-page-broken.md"},
+  {index:7, filename:"2025-01-24-3-snes-games-available-for-switch-online-members.md"},
+  {index:8, filename:"2025-01-28-whats-your-favorite-chocolate-splatfest-theme-returns.md"},
+  {index:9, filename:"2025-01-28-shiny-manaphy-shiny-enamorus-added-for-completing-sinnoh-hisui-pokedex-in-pokemon-home.md"},
+  {index:10, filename:"2025-01-29-new-game-trials-for-nintendo-switch-online-members-moving-out-2-dead-cells.md"},
+  {index:11, filename:"2025-01-29-hatsune-miku-joins-rocket-league-on-nintendo-switch.md"},
+  {index:12, filename:"2025-02-12-organize-your-game-library-with-backloggd.md"},
+  {index:13, filename:"2025-02-14-new-twitch-stream-viewer-added.md"},
+  {index:14, filename:"2025-02-14-multi-stream-viewer-update-watch-multiple-twitch-streams-at-once.md"},
+  {index:15, filename:"2025-02-16-new-youtube-video-viewer-added.md"},
+  {index:16, filename:"2025-04-02-game-status-page-fixed.md"},
+  {index:17, filename:"2025-04-10-theme-switcher-added-to-all-pages.md"},
+  {index:18, filename:"2025-05-06-backing-up-my-switch-captures-to-youtube.md"},
+  {index:19, filename:"2025-07-07-blog-improvements.md"},
+  {index:20, filename:"2025-07-12-comments-added-to-blog-posts.md"},
+  {index:21, filename:"2025-10-13-havent-felt-like-playing-nso-online-games.md"},
+  {index:22, filename:"2025-10-14-been-playing-pokemon-rom-hacks.md"},
+  {index:23, filename:"2025-10-15-ctgp-7-16-releasing-october-31.md"},
+  {index:24, filename:"2025-10-16-dont-forget-to-get-splatfest-avatar.md"},
+  {index:25, filename:"2025-10-16-button-page-has-been-updated.md"},
+  {index:26, filename:"2025-10-18-disqus-replaced-with-giscus.md"},
+  {index:27, filename:"2025-10-28-halloween-icons-for-nso-members.md"},
+  {index:28, filename:"2025-11-10-huge-acnh-free-30-update.md"},
+  {index:29, filename:"2025-12-04-listening-status-added-to-homepage.md"},
+  {index:30, filename:"2025-12-06-statuscafe-added-to-homepage.md"},
+  {index:31, filename:"2025-12-15-switched-comments-back-to-disqus.md"},
+  {index:32, filename:"2026-01-08-added-a-site-banner.md"},
+  {index:33, filename:"2026-01-13-added-a-countdown-timer-page.md"}
+];
+
 function parseFrontmatter(mdContent) {
     const match = mdContent.match(/^---\s*([\s\S]*?)\s*---\s*([\s\S]*)$/);
     if (!match) return { metadata: {}, content: mdContent.trim() };
@@ -50,14 +86,10 @@ function parseFrontmatter(mdContent) {
 
 async function loadPostsFromFolder() {
     const blogContainer = document.getElementById("blogPosts");
-    blogContainer.innerHTML = '<div class="blog-message">Loading cute posts from _posts folder... ^_^</div>';
+    if (blogContainer) blogContainer.innerHTML = '<div class="blog-message">Loading your adorable posts... ^_^</div>';
 
-    try {
-        const indexRes = await fetch("_posts/posts-index.json");
-        if (!indexRes.ok) throw new Error("No index");
-        const manifest = await indexRes.json();
-
-        const postPromises = manifest.map(async (item) => {
+    const postPromises = postManifest.map(async (item) => {
+        try {
             const res = await fetch(`_posts/${item.filename}`);
             if (!res.ok) return null;
             const mdText = await res.text();
@@ -78,7 +110,7 @@ async function loadPostsFromFolder() {
             }
 
             return {
-                index: parseInt(item.index),
+                index: item.index,
                 title: metadata.title || "Untitled",
                 date: displayDate,
                 time: displayTime,
@@ -88,19 +120,16 @@ async function loadPostsFromFolder() {
                 content2: "",
                 image: metadata.image || null,
                 video: null,
-                originalIndex: parseInt(item.index)
+                originalIndex: item.index
             };
-        });
+        } catch (e) {
+            return null;
+        }
+    });
 
-        let loaded = (await Promise.all(postPromises)).filter(p => p !== null);
-
-        loaded.sort((a, b) => new Date(b.date.split('/').reverse().join('-')) - new Date(a.date.split('/').reverse().join('-')));
-
-        return loaded;
-    } catch (e) {
-        console.error(e);
-        return [];
-    }
+    let loaded = (await Promise.all(postPromises)).filter(p => p !== null);
+    loaded.sort((a, b) => new Date(b.date.split('/').reverse().join('-')) - new Date(a.date.split('/').reverse().join('-')));
+    return loaded;
 }
 
 function initializeBlog() {
@@ -121,6 +150,10 @@ function initializeBlog() {
         populateCategories();
         handleRouting();
         window.addEventListener("popstate", handleRouting);
+    }).catch(err => {
+        console.error("Failed to load posts:", err);
+        const blogContainer = document.getElementById("blogPosts");
+        if (blogContainer) blogContainer.innerHTML = '<div class="blog-message">Could not load posts. Make sure your .md files are in the _posts folder.</div>';
     });
 }
 
@@ -133,6 +166,7 @@ function handleRouting() {
         renderListView();
     }
 }
+
 function applyFiltersAndSearch() {
     var searchBar = document.getElementById("searchBar");
     var categoryFilter = document.getElementById("categoryFilter");
@@ -150,6 +184,7 @@ function applyFiltersAndSearch() {
     currentPage = 1;
     renderListView();
 }
+
 function renderListView() {
     var blogContainer = document.getElementById("blogPosts");
     var blogHeader = document.querySelector(".blog-header");
@@ -199,6 +234,7 @@ function renderListView() {
     });
     updatePaginationUI();
 }
+
 function renderSinglePostView(postId) {
     var blogContainer = document.getElementById("blogPosts");
     var blogHeader = document.querySelector(".blog-header");
@@ -227,6 +263,7 @@ function renderSinglePostView(postId) {
     document.querySelector('.blog-back-button').addEventListener('click', goBackToList);
     loadDisqus(post.originalIndex, post.title);
 }
+
 function loadDisqus(postId, postTitle) {
     var container = document.getElementById("disqus_thread");
     if (!container) return;
@@ -254,6 +291,7 @@ function loadDisqus(postId, postTitle) {
         (d.head || d.body).appendChild(s);
     })();
 }
+
 window.addEventListener("themeChanged", function () {
     var urlParams = new URLSearchParams(window.location.search);
     var postId = urlParams.get("post");
@@ -264,11 +302,13 @@ window.addEventListener("themeChanged", function () {
         if (currentPost) loadDisqus(currentPost.originalIndex, currentPost.title);
     }
 });
+
 function goBackToList(e) {
     e.preventDefault();
     window.history.pushState({}, "", window.location.pathname);
     renderListView();
 }
+
 function updatePaginationUI() {
     var pageInfo = document.getElementById("pageInfo");
     var prevPageBtn = document.getElementById("prevPage");
@@ -289,6 +329,7 @@ function updatePaginationUI() {
     prevPageBtn.disabled = currentPage === 1;
     nextPageBtn.disabled = currentPage >= totalPages;
 }
+
 function changePage(direction) {
     if (isPaginating) return;
     isPaginating = true;
@@ -300,6 +341,7 @@ function changePage(direction) {
     }
     setTimeout(function () { isPaginating = false; }, 200);
 }
+
 function populateCategories() {
     var categoryFilter = document.getElementById("categoryFilter");
     if (!categoryFilter) return;
