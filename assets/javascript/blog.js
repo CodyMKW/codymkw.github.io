@@ -29,8 +29,7 @@ var isPaginating = false;
 var disqusShortname = 'codymkw';
 var disqusBaseUrl = 'https://codymkw.nekoweb.org';
 
-// Change this if your _posts folder is somewhere else relative to your HTML page
-var postsFolder = '_posts/';
+var postsFolder = 'posts/';
 
 function parseFrontMatter(raw) {
     var result = { attributes: {}, body: "" };
