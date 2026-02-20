@@ -29,6 +29,8 @@ var isPaginating = false;
 var disqusShortname = 'codymkw';
 var disqusBaseUrl = 'https://codymkw.nekoweb.org';
 
+const POSTS_FOLDER = "posts"; 
+
 var postManifest = [
   {index:1, filename:"2023-01-17-welcome-to-my-blog.md"},
   {index:2, filename:"2023-01-18-had-an-idea-for-new-post-but.md"},
@@ -68,11 +70,9 @@ var postManifest = [
 function parseFrontmatter(mdContent) {
     const match = mdContent.match(/^---\s*([\s\S]*?)\s*---\s*([\s\S]*)$/);
     if (!match) return { metadata: {}, content: mdContent.trim() };
-    
     const front = match[1];
     const content = match[2].trim();
     const metadata = {};
-    
     front.split('\n').forEach(line => {
         const colon = line.indexOf(':');
         if (colon === -1) return;
@@ -80,28 +80,31 @@ function parseFrontmatter(mdContent) {
         let val = line.slice(colon + 1).trim().replace(/^["']|["']$/g, '');
         metadata[key] = val;
     });
-    
     return { metadata, content };
 }
 
 async function loadPostsFromFolder() {
     const blogContainer = document.getElementById("blogPosts");
-    if (blogContainer) blogContainer.innerHTML = '<div class="blog-message">Loading your adorable posts... ^_^</div>';
+    if (blogContainer) blogContainer.innerHTML = '<div class="blog-message">Loading your kawaii posts... ^_^</div>';
 
     const postPromises = postManifest.map(async (item) => {
+        const url = `${POSTS_FOLDER}/${item.filename}`;
+        console.log(`[Blog Debug] Trying to load: ${url}`);   // ← this will show in console
+
         try {
-            const res = await fetch(`_posts/${item.filename}`);
-            if (!res.ok) return null;
+            const res = await fetch(url);
+            if (!res.ok) {
+                console.warn(`[Blog Debug] 404 for ${url}`);
+                return null;
+            }
             const mdText = await res.text();
             const { metadata, content } = parseFrontmatter(mdText);
 
-            let displayDate = "";
-            let displayTime = "";
+            let displayDate = "", displayTime = "";
             if (metadata.date) {
                 const [d, t] = metadata.date.split(' ');
                 const [year, mon, day] = d.split('-');
                 displayDate = `${parseInt(mon)}/${parseInt(day)}/${year}`;
-                
                 let hour = parseInt(t.split(':')[0]);
                 const min = t.split(':')[1];
                 const ampm = hour >= 12 ? 'PM' : 'AM';
@@ -123,6 +126,7 @@ async function loadPostsFromFolder() {
                 originalIndex: item.index
             };
         } catch (e) {
+            console.warn(`[Blog Debug] Failed to load ${url}:`, e);
             return null;
         }
     });
@@ -150,21 +154,20 @@ function initializeBlog() {
         populateCategories();
         handleRouting();
         window.addEventListener("popstate", handleRouting);
+
+        console.log(`[Blog Debug] Successfully loaded ${posts.length} posts!`);
     }).catch(err => {
-        console.error("Failed to load posts:", err);
+        console.error("Blog load failed:", err);
         const blogContainer = document.getElementById("blogPosts");
-        if (blogContainer) blogContainer.innerHTML = '<div class="blog-message">Could not load posts. Make sure your .md files are in the _posts folder.</div>';
+        if (blogContainer) blogContainer.innerHTML = `<div class="blog-message">Could not load posts.<br>Make sure folder is named <b>${POSTS_FOLDER}</b> and contains all .md files.</div>`;
     });
 }
 
 function handleRouting() {
     var urlParams = new URLSearchParams(window.location.search);
     var postId = urlParams.get("post");
-    if (postId !== null) {
-        renderSinglePostView(parseInt(postId, 10));
-    } else {
-        renderListView();
-    }
+    if (postId !== null) renderSinglePostView(parseInt(postId, 10));
+    else renderListView();
 }
 
 function applyFiltersAndSearch() {
@@ -215,21 +218,17 @@ function renderListView() {
             (post.image ? '<img src="' + post.image + '" alt="Post Image">' : "") +
             previewHTML;
         var titleLink = postElement.querySelector('h3 a');
-        if (titleLink) {
-            titleLink.addEventListener('click', function (e) {
-                e.preventDefault();
-                window.history.pushState({ post: post.originalIndex }, "", "?post=" + post.originalIndex);
-                renderSinglePostView(post.originalIndex);
-            });
-        }
+        if (titleLink) titleLink.addEventListener('click', function (e) {
+            e.preventDefault();
+            window.history.pushState({ post: post.originalIndex }, "", "?post=" + post.originalIndex);
+            renderSinglePostView(post.originalIndex);
+        });
         var readMoreLink = postElement.querySelector('.read-more');
-        if (readMoreLink) {
-            readMoreLink.addEventListener('click', function (e) {
-                e.preventDefault();
-                window.history.pushState({ post: post.originalIndex }, "", "?post=" + post.originalIndex);
-                renderSinglePostView(post.originalIndex);
-            });
-        }
+        if (readMoreLink) readMoreLink.addEventListener('click', function (e) {
+            e.preventDefault();
+            window.history.pushState({ post: post.originalIndex }, "", "?post=" + post.originalIndex);
+            renderSinglePostView(post.originalIndex);
+        });
         blogContainer.appendChild(postElement);
     });
     updatePaginationUI();
@@ -242,7 +241,7 @@ function renderSinglePostView(postId) {
     if (!blogContainer) return;
     if (blogHeader) blogHeader.classList.add('hidden');
     if (pagination) pagination.classList.add('hidden');
-    var post = posts.find(function (p) { return p.originalIndex === postId; });
+    var post = posts.find(p => p.originalIndex === postId);
     if (!post) {
         blogContainer.innerHTML = '<a href="#" class="blog-back-button">‹ All Posts</a><div class="blog-message">Post not found.</div>';
         document.querySelector('.blog-back-button').addEventListener('click', goBackToList);
@@ -254,8 +253,6 @@ function renderSinglePostView(postId) {
         '<p class="post-meta" id="blogmetadata">' + post.date + ' • ' + post.time + ' • ' + post.author + ' • ' + post.category + '</p>' +
         (post.image ? '<img src="' + post.image + '" alt="Post Image">' : "") +
         '<div class="post-content">' + marked.parse(post.content) + '</div>' +
-        (post.video ? '<iframe src="' + post.video + '" frameborder="0" allowfullscreen></iframe>' : "") +
-        '<div class="post-content">' + (post.content2 ? marked.parse(post.content2) : "") + '</div>' +
         '<hr style="margin: 2em 0; border: none; border-top: 1px solid #ccc;">' +
         '<div id="disqus_thread" style="margin-top: 2em;"></div>' +
         '</div>';
@@ -296,9 +293,7 @@ window.addEventListener("themeChanged", function () {
     var urlParams = new URLSearchParams(window.location.search);
     var postId = urlParams.get("post");
     if (postId !== null) {
-        var currentPost = posts.find(function (p) {
-            return p.originalIndex === parseInt(postId, 10);
-        });
+        var currentPost = posts.find(p => p.originalIndex === parseInt(postId, 10));
         if (currentPost) loadDisqus(currentPost.originalIndex, currentPost.title);
     }
 });
@@ -339,19 +334,19 @@ function changePage(direction) {
         currentPage = newPage;
         renderListView();
     }
-    setTimeout(function () { isPaginating = false; }, 200);
+    setTimeout(() => isPaginating = false, 200);
 }
 
 function populateCategories() {
     var categoryFilter = document.getElementById("categoryFilter");
     if (!categoryFilter) return;
-    var categoryCounts = posts.reduce(function (counts, post) {
+    var categoryCounts = posts.reduce((counts, post) => {
         if (post.category) counts[post.category] = (counts[post.category] || 0) + 1;
         return counts;
     }, {});
     var categories = Object.keys(categoryCounts).sort();
     while (categoryFilter.options.length > 1) categoryFilter.remove(1);
-    categories.forEach(function (category) {
+    categories.forEach(category => {
         var option = document.createElement("option");
         option.value = category;
         option.textContent = category + " (" + categoryCounts[category] + ")";
