@@ -236,20 +236,63 @@ function loadCurrently() {
     .catch(function () {});
 }
 
+function parseFrontmatter(md) {
+  var fm = {};
+  var content = md;
+  if (md.indexOf('---') === 0) {
+    var end = md.indexOf('---', 3);
+    if (end !== -1) {
+      var raw = md.slice(3, end).trim().split('\n');
+      raw.forEach(function (line) {
+        var i = line.indexOf(':');
+        if (i !== -1) {
+          var key = line.slice(0, i).trim();
+          var value = line.slice(i + 1).trim();
+          fm[key] = value;
+        }
+      });
+      content = md.slice(end + 3).trim();
+    }
+  }
+  return { frontmatter: fm, content: content };
+}
+
 function loadLatestPosts() {
-  return fetch("https://api.npoint.io/5ac2ef5dd46fbff62a02")
+  return fetch("/posts/index.json?t=" + Date.now())
     .then(function (response) {
       if (!response.ok) throw new Error("Posts error");
       return response.json();
     })
     .then(function (data) {
-      var posts = data.posts.slice(-5).reverse();
+      return Promise.all(data.posts.map(function (file, i) {
+        return fetch("/posts/" + file + "?t=" + Date.now())
+          .then(function (res) {
+            if (!res.ok) throw new Error("Post load error");
+            return res.text();
+          })
+          .then(function (md) {
+            var parsed = parseFrontmatter(md);
+            var fm = parsed.frontmatter;
+            return {
+              index: i + 1,
+              title: fm.title || file.replace('.md', ''),
+              date: fm.date || ''
+            };
+          });
+      }));
+    })
+    .then(function (posts) {
+      posts.sort(function (a, b) {
+        return new Date(b.date) - new Date(a.date);
+      });
+
+      var latest = posts.slice(0, 5);
       var list = document.getElementById("latest-posts-list");
       var now = new Date();
       if (!list) return;
 
       list.innerHTML = "";
-      posts.forEach(function (post) {
+      latest.forEach(function (post) {
         var li = document.createElement("li");
         var link = document.createElement("a");
         link.href = "/blog?post=" + post.index;
