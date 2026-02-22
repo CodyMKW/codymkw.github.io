@@ -404,3 +404,36 @@ function renderSinglePostView(postId) {
     loadDisqus(post.originalIndex, post.title);
 
 }
+
+function populateCategories() {
+    var categoryFilter = document.getElementById("categoryFilter");
+    if (!categoryFilter) return;
+
+    var categoryCounts = posts.reduce(function(counts, post) {
+
+        if (post.category) {
+            counts[post.category] = (counts[post.category] || 0) + 1;
+        }
+
+        return counts;
+
+    }, {});
+
+    var categories = Object.keys(categoryCounts).sort();
+
+    while (categoryFilter.options.length > 1) {
+        categoryFilter.remove(1);
+    }
+
+    categories.forEach(function(category) {
+
+        var option = document.createElement("option");
+
+        option.value = category;
+        option.textContent = category + " (" + categoryCounts[category] + ")";
+
+        categoryFilter.appendChild(option);
+
+    });
+
+}
