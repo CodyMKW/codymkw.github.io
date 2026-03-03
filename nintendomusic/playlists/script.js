@@ -33,6 +33,10 @@ function createPlaylistCard(playlist) {
     if (playlist.creator.toLowerCase() === 'nintendo') {
         card.classList.add('official-playlist');
     }
+    // Add a special class for page creator playlists
+    if (playlist.creator.toLowerCase() === 'codymkw') {
+        card.classList.add('codymkw-playlist');
+    }
     // Add a special class for Nintendo Music Credits Project playlists
     if (playlist.icon === "https://files.catbox.moe/e4legu.jpg") {
         card.classList.add('nm-credit-project');
