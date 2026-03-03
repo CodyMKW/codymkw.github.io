@@ -1,456 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Nintendo Music Playlists | Discover Iconic Soundtracks</title>
-  <meta name="description" content="A collection of playlists made in the Nintendo Music app. Enjoy curated Nintendo soundtracks from a variety of games!">
-  <meta property="og:image" content="https://files.catbox.moe/zm8wdh.jpg">
-  <link rel="icon" href="https://files.catbox.moe/zm8wdh.jpg" />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --red: #e60012;
-      --dark: #0c0c0c;
-      --gray: #1e1e1e;
-      --light-gray: #c9c9c9;
-      --accent: #00ff99;
-      --font: "Outfit", sans-serif;
-      --transition: all 0.25s ease;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: var(--font);
-      background: radial-gradient(circle at top, #1a1a1a, #0c0c0c);
-      color: #fff;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-height: 100vh;
-      padding: 2rem;
-    }
-
-    #main-container {
-      width: 100%;
-      max-width: 1100px;
-      backdrop-filter: blur(20px);
-      background: rgba(30, 30, 30, 0.6);
-      border: 1px solid rgba(255,255,255,0.08);
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
-      border-radius: 20px;
-      padding: 2rem;
-      animation: fadeIn 0.8s ease;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    #logo-container {
-      text-align: center;
-    }
-
-    #site-logo {
-      width: 130px;
-      border-radius: 50%;
-      box-shadow: 0 0 20px rgba(230, 0, 18, 0.6);
-    }
-
-    .page-title {
-      text-align: center;
-      font-size: 2.4rem;
-      font-weight: 700;
-      color: var(--red);
-      margin-top: 1rem;
-    }
-
-    .page-description {
-      text-align: center;
-      color: var(--light-gray);
-      max-width: 700px;
-      margin: 0.5rem auto 2rem;
-      line-height: 1.5;
-      font-size: 1.1rem;
-    }
-
-    #search-container {
-      text-align: center;
-      margin-bottom: 1.5rem;
-    }
-
-    #search-bar,
-    .sort-dropdown {
-      padding: 0.7rem 1rem;
-      border-radius: 10px;
-      border: 1px solid #333;
-      background-color: #121212;
-      color: white;
-      font-size: 1rem;
-      margin: 0.3rem;
-      transition: var(--transition);
-    }
-
-    #search-bar:focus,
-    .sort-dropdown:focus {
-      outline: none;
-      border-color: var(--red);
-      box-shadow: 0 0 10px rgba(230, 0, 18, 0.5);
-    }
-
-    .notice-container {
-      border-left: 4px solid var(--accent);
-      background-color: rgba(0,255,153,0.08);
-      color: var(--accent);
-      padding: 1rem;
-      border-radius: 10px;
-      margin-bottom: 2rem;
-      text-align: center;
-    }
-
-    .playlist-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 1.2rem;
-      margin-bottom: 2rem;
-    }
-
-    .playlist-card {
-      background-color: var(--gray);
-      border-radius: 15px;
-      padding: 1.2rem;
-      text-align: center;
-      cursor: pointer;
-      transition: var(--transition);
-      border: 1px solid transparent;
-    }
-
-    .playlist-card:hover {
-      transform: translateY(-5px);
-      border-color: var(--red);
-      box-shadow: 0 6px 20px rgba(230, 0, 18, 0.3);
-    }
-
-    .playlist-card img {
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      margin-bottom: 0.8rem;
-      object-fit: cover;
-    }
-
-    .playlist-title {
-      font-size: 1.1rem;
-      color: var(--accent);
-      font-weight: 600;
-      margin-bottom: 0.3rem;
-    }
-
-    .playlist-creator {
-      color: #aaa;
-      font-size: 0.9rem;
-      margin-bottom: 0.8rem;
-    }
-
-    .copy-button {
-      padding: 0.4rem 0.8rem;
-      background-color: var(--red);
-      border: none;
-      border-radius: 6px;
-      color: white;
-      font-weight: 600;
-      cursor: pointer;
-      transition: var(--transition);
-    }
-
-    .copy-button:hover {
-      background-color: #c3000e;
-    }
-
-    .copy-message {
-      display: none;
-      font-size: 0.8rem;
-      color: var(--accent);
-      margin-top: 0.3rem;
-    }
-
-    .form-button {
-      background-color: var(--red);
-      border: none;
-      color: white;
-      font-weight: 700;
-      border-radius: 10px;
-      padding: 0.8rem 1.5rem;
-      cursor: pointer;
-      margin: 0.4rem;
-      text-decoration: none;
-      transition: var(--transition);
-      display: inline-block;
-    }
-
-    .form-button:hover {
-      background-color: #b7000e;
-      transform: scale(1.05);
-    }
-
-    .app-note {
-      text-align: center;
-      margin-top: 2rem;
-      color: var(--light-gray);
-    }
-
-    .app-links {
-      display: flex;
-      justify-content: center;
-      gap: 1rem;
-      margin-top: 0.8rem;
-    }
-
-    .app-button {
-      background-color: var(--red);
-      color: white;
-      font-weight: 600;
-      border: none;
-      border-radius: 8px;
-      padding: 0.6rem 1.2rem;
-      text-decoration: none;
-      transition: var(--transition);
-    }
-
-    .app-button:hover {
-      background-color: #b7000e;
-      transform: translateY(-2px);
-    }
-
-    /* Modal Styling */
-    .modal, .modal2 {
-      display: none;
-      position: fixed;
-      z-index: 999;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.7);
-    }
-
-    .modal-content, .modal-content2 {
-      background-color: var(--gray);
-      color: #fff;
-      border-radius: 15px;
-      padding: 2rem;
-      width: 90%;
-      max-width: 420px;
-      margin: 10% auto;
-      text-align: center;
-      position: relative;
-      animation: fadeIn 0.4s ease;
-    }
-
-    .close-button, .close-button2 {
-      position: absolute;
-      top: 10px;
-      right: 15px;
-      font-size: 1.4rem;
-      color: #aaa;
-      cursor: pointer;
-      transition: var(--transition);
-    }
-
-    .close-button:hover,
-    .close-button2:hover {
-      color: #fff;
-    }
-
-    @media (max-width: 600px) {
-      .playlist-grid {
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nintendo Music Playlists | Discover Iconic Soundtracks</title>
+    <meta name="description" content="A collection of my own and other people's playlists made in the Nintendo Music app. Enjoy curated Nintendo soundtracks from a variety of games!">
+    <meta name="keywords" content="Nintendo Music, playlists, Nintendo Music app, Animal Crossing, Splatoon, video game music, Switch theme">
+    <meta name="author" content="CodyMKW">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="Nintendo Music Playlists | Discover Iconic Soundtracks">
+    <meta property="og:description" content="A collection of my own and other people's playlists made in the Nintendo Music app. Enjoy curated Nintendo soundtracks from a variety of games!">
+    <meta property="og:image" content="https://files.catbox.moe/zm8wdh.jpg">
+    <meta property="og:url" content="https://codymkw.github.io/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Nintendo Music Playlists">
+    <meta property="og:locale" content="en_US">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Nintendo Music Playlists | Discover Iconic Soundtracks">
+    <meta name="twitter:description" content="A collection of my own and other people's playlists made in the Nintendo Music app. Enjoy curated Nintendo soundtracks from a variety of games!">
+    <meta name="twitter:image" content="https://files.catbox.moe/zm8wdh.jpg">
+    <meta name="twitter:site" content="@CodyMKW">
+    <link rel="icon" href="https://files.catbox.moe/zm8wdh.jpg" type="image/x-icon">
+    <link rel="apple-touch-icon" href="https://files.catbox.moe/zm8wdh.jpg">
+    <link rel="icon" type="image/jpg" sizes="192x192" href="https://files.catbox.moe/zm8wdh.jpg">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div id="main-container">
-    <div id="logo-container">
-      <img src="https://files.catbox.moe/zm8wdh.jpg" alt="Nintendo Music Logo" id="site-logo">
+    <div id="main-container">
+        <div id="logo-container">
+           <img src="https://files.catbox.moe/zm8wdh.jpg" alt="Nintendo Music Logo" id="site-logo">
+        </div>
+        <h1 class="page-title">Nintendo Music Playlists</h1>
+        <p class="page-description">
+           A collection of my own and other people's playlists made in the Nintendo Music app. Enjoy curated Nintendo soundtracks from a variety of games!
+        </p>
+        <div id="search-container">
+           <input type="text" id="search-bar" placeholder="Search playlists..." oninput="filterPlaylists()">
+           <select id="sort-options" class="sort-dropdown" onchange="sortPlaylists()">
+             <option value="">Sort by...</option>
+             <option value="alphabetical">Alphabetical (A-Z)</option>
+             <option value="reverse-alphabetical">Alphabetical (Z-A)</option>
+             <option value="creator">Creator (A-Z)</option>
+             <option value="creator-reverse">Creator (Z-A)</option>
+             <option value="newest">Newest First</option>
+             <option value="oldest">Oldest First</option>
+             <option value="featured">Featured First</option>
+           </select>        
+        </div>
+        <div id="featured-playlist-container" class="playlist-grid">
+            <!-- Featured playlist will be injected here -->
+        </div>
+        <div id="form-link-container" style="text-align: center; margin-top: 1.5rem;">
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLScpORLhv_0xbawrnCPQmMRB8OlJR6cHkf7_zav-JStIycPMlQ/viewform" target="_blank" class="form-button">
+                Submit Your Playlist
+            </a>
+        </div>        
+        <div id="playlist-container" class="playlist-grid">
+            <!-- Playlists will be injected here -->
+        </div>
+        <div class="app-note">
+            <p>Note: You must have the <strong>Nintendo Music mobile app</strong> for <strong>iOS</strong> or <strong>Android</strong> installed for playlists to open correctly.</p>
+            <div class="app-links">
+                <a href="https://apps.apple.com/us/app/nintendo-music/id6466376604" class="app-button" target="_blank">Download on iOS</a>
+                <a href="https://play.google.com/store/apps/details?id=com.nintendo.znba" class="app-button" target="_blank">Download on Android</a>
+            </div>
+        </div>
     </div>
-    <h1 class="page-title">Nintendo Music Playlists</h1>
-    <p class="page-description">
-      A collection of my own and others’ playlists made in the Nintendo Music app. Enjoy curated Nintendo soundtracks from across the franchise universe.
-    </p>
 
-    <div id="search-container">
-      <input type="text" id="search-bar" placeholder="Search playlists..." oninput="filterPlaylists()">
-      <select id="sort-options" class="sort-dropdown" onchange="sortPlaylists()">
-        <option value="">Sort by...</option>
-        <option value="alphabetical">A–Z</option>
-        <option value="reverse-alphabetical">Z–A</option>
-        <option value="creator">Creator (A–Z)</option>
-        <option value="creator-reverse">Creator (Z–A)</option>
-        <option value="newest">Newest</option>
-        <option value="oldest">Oldest</option>
-        <option value="featured">Featured</option>
-      </select>
-    </div>
-
-    <div id="featured-playlist-notice" class="notice-container">
-      Featured playlists update periodically — check back for fresh picks!
-    </div>
-
-    <div id="featured-playlist-container" class="playlist-grid"></div>
-
-    <div style="text-align:center;">
-      <a href="https://docs.google.com/forms/d/e/1FAIpQLScpORLhv_0xbawrnCPQmMRB8OlJR6cHkf7_zav-JStIycPMlQ/viewform" target="_blank" class="form-button">Submit Your Playlist</a>
-      <button id="random-playlist-button" class="form-button">🎲 Random Playlist</button>
-      <button id="patch-notes-button" class="form-button">📝 Patch Notes</button>
-    </div>
-
-    <div id="playlist-container" class="playlist-grid"></div>
-
-    <div class="app-note">
-      <p>Note: You need the <strong>Nintendo Music</strong> app installed for playlists to open correctly.</p>
-      <div class="app-links">
-        <a href="https://apps.apple.com/us/app/nintendo-music/id6466376604" class="app-button" target="_blank">iOS</a>
-        <a href="https://play.google.com/store/apps/details?id=com.nintendo.znba" class="app-button" target="_blank">Android</a>
-      </div>
-    </div>
-  </div>
-
-  <!-- Patch Notes Modal -->
-  <div id="patch-notes-modal" class="modal">
-    <div class="modal-content">
-      <span class="close-button" onclick="togglePatchNotes(false)">&times;</span>
-      <h2>Patch Notes</h2>
-      <div id="patch-notes-content"></div>
-    </div>
-  </div>
-
-  <!-- Random Playlist Modal -->
-  <div id="random-playlist-modal" class="modal2">
-    <div class="modal-content2">
-      <span class="close-button2" onclick="closeRandomPlaylistModal()">&times;</span>
-      <img id="random-playlist-icon" style="width:100px;border-radius:50%;margin-bottom:1rem;">
-      <h3 id="random-playlist-name"></h3>
-      <small id="random-playlist-extra-description"></small>
-      <p id="random-playlist-creator">Created by: <span></span></p>
-      <a id="random-playlist-link" href="#" target="_blank" class="form-button">Open Playlist</a>
-      <a id="reroll-button" class="form-button">Reroll</a>
-    </div>
-  </div>
-
-  <script>
-    document.addEventListener('DOMContentLoaded', loadPlaylists);
-
-    function loadPlaylists() {
-      fetch('https://api.npoint.io/28718000abe41036232b')
-        .then(r => r.json())
-        .then(playlists => {
-          const main = document.getElementById('playlist-container');
-          const featured = document.getElementById('featured-playlist-container');
-          let count = 0;
-          playlists.forEach(p => {
-            const c = createPlaylistCard(p);
-            if (p.featured && count < 4) { featured.appendChild(createPlaylistCard(p)); count++; }
-            main.appendChild(c);
-          });
-          document.getElementById('sort-options').value = "newest";
-          sortPlaylists();
-        });
-    }
-
-    function createPlaylistCard(p) {
-      const c = document.createElement('div');
-      c.className = 'playlist-card';
-      c.onclick = () => window.open(p.link, '_blank');
-      const i = document.createElement('img'); i.src = p.icon; i.alt = p.name;
-      const t = document.createElement('div'); t.className = 'playlist-title'; t.textContent = p.name;
-      const cr = document.createElement('div'); cr.className = 'playlist-creator'; cr.textContent = `By: ${p.creator}`;
-      const b = document.createElement('button'); b.className = 'copy-button'; b.textContent = 'Copy Link';
-      b.onclick = (e)=>copyLink(e,p.link);
-      const m = document.createElement('div'); m.className = 'copy-message'; m.textContent = 'Copied!';
-      c.append(i,t,cr,b,m);
-      c.dataset.date = p.dateAdded; c.dataset.featured = p.featured ? "true" : "false";
-      return c;
-    }
-
-    function filterPlaylists() {
-      const q = document.getElementById('search-bar').value.toLowerCase();
-      document.querySelectorAll('.playlist-card').forEach(c=>{
-        const title = c.querySelector('.playlist-title').textContent.toLowerCase();
-        c.style.display = title.includes(q) ? 'block':'none';
-      });
-    }
-
-    function sortPlaylists() {
-      const opt=document.getElementById('sort-options').value;
-      const cont=document.getElementById('playlist-container');
-      const arr=[...cont.getElementsByClassName('playlist-card')];
-      arr.sort((a,b)=>{
-        const nA=a.querySelector('.playlist-title').textContent.toLowerCase();
-        const nB=b.querySelector('.playlist-title').textContent.toLowerCase();
-        switch(opt){
-          case'alphabetical':return nA.localeCompare(nB);
-          case'reverse-alphabetical':return nB.localeCompare(nA);
-          case'newest':return new Date(b.dataset.date)-new Date(a.dataset.date);
-          case'oldest':return new Date(a.dataset.date)-new Date(b.dataset.date);
-          case'featured':return(b.dataset.featured==="true")-(a.dataset.featured==="true");
-          default:return 0;
-        }
-      });
-      cont.innerHTML=''; arr.forEach(e=>cont.appendChild(e));
-    }
-
-    function copyLink(e,link){
-      e.stopPropagation();
-      navigator.clipboard.writeText(link).then(()=>{
-        const m=e.target.nextElementSibling; m.style.display='block';
-        setTimeout(()=>m.style.display='none',1500);
-      });
-    }
-
-    document.getElementById('patch-notes-button').addEventListener('click',()=>togglePatchNotes(true));
-    function togglePatchNotes(s){
-      const m=document.getElementById('patch-notes-modal');
-      m.style.display=s?'block':'none';
-      if(s)fetchPatchNotes();
-    }
-
-    function fetchPatchNotes(){
-      fetch('https://api.npoint.io/e5b4c9dc156a98b08087')
-        .then(r=>r.json()).then(notes=>{
-          const d=document.getElementById('patch-notes-content');
-          d.innerHTML='';
-          notes.forEach(n=>{
-            const div=document.createElement('div');
-            div.innerHTML=`<h3>${n.version}</h3><p>${n.date}</p><ul>${n.changes.map(c=>`<li>${c}</li>`).join('')}</ul>`;
-            d.appendChild(div);
-          });
-        });
-    }
-
-    document.getElementById('random-playlist-button').addEventListener('click',showRandomPlaylist);
-    function showRandomPlaylist(){
-      fetch('https://api.npoint.io/28718000abe41036232b')
-        .then(r=>r.json()).then(list=>{
-          const rand=list[Math.floor(Math.random()*list.length)];
-          document.getElementById('random-playlist-icon').src=rand.icon;
-          document.getElementById('random-playlist-name').textContent=rand.name;
-          document.getElementById('random-playlist-creator').querySelector('span').textContent=rand.creator;
-          document.getElementById('random-playlist-link').href=rand.link;
-          document.getElementById('random-playlist-modal').style.display='block';
-        });
-    }
-    function closeRandomPlaylistModal(){
-      document.getElementById('random-playlist-modal').style.display='none';
-    }
-  </script>
+    <script src="script.js"></script>
 </body>
 </html>
