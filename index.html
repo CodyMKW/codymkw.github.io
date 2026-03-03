@@ -1,114 +1,111 @@
----
----
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-    <link rel="manifest" href="/site.webmanifest">
-    <meta name="msapplication-TileColor" content="#00c900">
-    <meta name="theme-color" content="#00c900">
-    <link href="https://social.vivaldi.net/@codymkw" rel="me">
-    <link href="https://nxapi-auth.fancy.org.uk/@CodyMKW" rel="me">
-    <link rel="me" href="https://splashcat.ink/@CodyMKW/" />
-    <meta name="description" content="Just Cody's little page on the interwebz! :)">
-    <meta name="keywords" content="CodyMKW, Nintendo fan, Animal Crossing, Splatoon Octoling, Custom Splattershot Jr, Baby Daisy, Mario Kart, Clannad anime, English dub anime, Nekoweb, personal website, Nintendo Switch gaming, indie web, Cody's blog, gaming status, Nintendo community">
-    <meta name="author" content="CodyMKW">
-    <meta property="og:title" content="CodyMKW">
-    <meta property="og:description" content="Just Cody's little page on the interwebz! :)">
-    <meta property="og:image" content="https://www.gravatar.com/avatar/5127de8a3a295a02ff3fc55bb6b2fabe?s=2048">
-    <meta property="og:url" content="https://codymkw.github.io">
-    <meta property="og:type" content="website">
-    <meta name="twitter:creator" content="@CodyMKW" />
-    <meta name="twitter:title" content="CodyMKW" />
-    <meta name="twitter:description" content="Just Cody's little page on the interwebz! :)" />
-    <meta name="twitter:image:src" content="https://www.gravatar.com/avatar/5127de8a3a295a02ff3fc55bb6b2fabe?s=2048" />
-    <link id="theme-style" rel="stylesheet" href="assets/css/main.css">
-    <link rel="stylesheet" href="assets/css/emoji.css">
-    <script defer src="assets/javascript/main.js"></script>
-    <script defer src="assets/javascript/currently.js"></script>
-    <script defer src="assets/javascript/stickyheader.js"></script>
-    <title>CodyMKW</title>
-</head>
-
-<body>
-    <div id="sticky-header" class="sticky-header" style="display: none;">
-        <span id="close-button" onclick="toggleHeader()">X</span>
-        <a href="" target="_blank" class="important"></a>
-    </div>
-    <div class="container">
-        {% include header.html %}
-        <div class="content" id="aboutContent">
-            <h2><i class="emoji guraWave"></i></h2>
-            <h2>About Me</h2>
-            <section id="about-me-section">
-                <div class="about-flex">
-                    <div class="avatar-frame" id="avatar-frame" onclick="selectAvatarFrame()">
-                        <img src="" alt="Avatar Frame" class="frame-image" style="display: none;">
-                        <img src="https://www.gravatar.com/avatar/5127de8a3a295a02ff3fc55bb6b2fabe?s=2048" alt="Cody's Avatar" class="avatar-image">
-                    </div>
-                    <div class="about-text">
-                        <p>Hey there! I'm Cody. I love playing Nintendo games and watching anime. My birthday is January 17th, and my favorite color is
-                            <font color="#00C900">green</font>.</p>
-                        <p>My favorite game series is Animal Crossing, though I also play Splatoon. I play as an Octoling and prefer using the Custom Splattershot Jr., and I play a little Mario Kart—my favorite character is Baby Daisy. My favorite anime is Clannad. That's really about it for this bio since I don't have much else to say, lol!</p>
-                    </div>
-                </div>
-            </section>
-            <section id="status-cafe-block">
-                <h2>Status</h2>
-                <div id="statuscafe-box"></div>
-            </section>
-            <section class="info-sections">
-                <div class="currently">
-                    <h2>Currently</h2>
-                    <div id="currently-section"></div>
-                </div>
-
-                <div class="latest-posts">
-                    <h2>Latest Blog Posts</h2>
-                    <ul id="latest-posts-list"></ul>
-                </div>
-            </section>
-            <br>
-            <section>
-                <div style="display: flex; flex-direction: column; align-items: center; text-align: center;">
-                    <p>Also you can check <a href="/buttons">here</a> for my site's button and other cool looking sites!</p>
-                </div>
-            </section>
-        </div>
-    </div>
-    {% include footer.html %}
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            fetch('https://api.npoint.io/e48ee20c0a091f1b8963')
-                .then(response => response.json())
-                .then(data => {
-                    updateAvatarFrame(data.avatarframe);
-                });
-        });
-        
-        function updateAvatarFrame(avatarFrames) {
-            const frameContainer = document.getElementById('avatar-frame');
-            const avatarImage = frameContainer.querySelector('.avatar-image');
-            const currentFrame = avatarFrames[0];
-        
-            let frameURL;
-            if (currentFrame.grandfestmode) {
-                frameURL = `assets/images/splatfest/grandfest/Team_${currentFrame.team}.avif`;
-            } else {
-                frameURL = `assets/images/splatfest/${currentFrame.species}/Team_${currentFrame.team}.avif`;
-            }
-        
-            const frameImage = frameContainer.querySelector('.frame-image');
-            frameImage.src = frameURL;
-        
-            frameImage.style.display = currentFrame.status === 0 ? 'none' : 'block';
+    <title>Cody's Official Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
         }
-    </script>
-</body>
 
+        body {
+            background: linear-gradient(-45deg, #0a0a0a, #1a1a1d, #0d1110, #0a0a0a);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: #ffffff;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(46, 204, 113, 0.15);
+            border-radius: 20px;
+            padding: 50px 40px;
+            text-align: center;
+            max-width: 450px;
+            width: 90%;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+            
+            animation: floatIn 1.2s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        .accent {
+            color: #2ecc71;
+            text-shadow: 0 0 15px rgba(46, 204, 113, 0.4);
+        }
+
+        p {
+            color: #a0a0a0;
+            font-size: 1.1rem;
+            margin-bottom: 35px;
+            line-height: 1.5;
+        }
+
+        .btn {
+            display: inline-block;
+            background: #2ecc71;
+            color: #0a0a0a;
+            text-decoration: none;
+            padding: 14px 32px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(46, 204, 113, 0.5);
+            background: #33e07b;
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+        }
+
+        @keyframes floatIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h1>Welcome to <span class="accent">Cody's</span> Hub</h1>
+        <p>You are about to enter the official website. Click below to continue your journey.</p>
+        <a href="https://codymkw.nekoweb.org" class="btn">Enter Site</a>
+    </div>
+
+</body>
 </html>
