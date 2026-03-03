@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', loadPlaylists);
 
 function loadPlaylists() {
-    fetch('https://api.npoint.io/28718000abe41036232b')
+    fetch('https://api.npoint.io/17efcaacff654b10f356')
         .then(response => response.json())
         .then(playlists => {
             const mainContainer = document.getElementById('playlist-container');
