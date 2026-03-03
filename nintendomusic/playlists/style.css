@@ -143,18 +143,35 @@ body {
 }
 
 .official-playlist {
-    border: 2px solid #e60012; /* Nintendo red border for official playlists */
+    border: 2px solid #e60012;
     position: relative;
 }
 
-/* Optional: Badge for Official Playlists */
 .official-playlist::after {
     content: "Official";
     position: absolute;
     top: 8px;
     right: 8px;
-    background-color: #e60012; /* Nintendo red */
+    background-color: #e60012;
     color: #FFF;
+    font-size: 0.7rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+.codymkw-playlist {
+    border: 2px solid #00C900; 
+    position: relative;
+}
+
+.codymkw-playlist::after {
+    content: "Page Creator";
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background-color: #00C900;
+    color: #000;
     font-size: 0.7rem;
     padding: 2px 6px;
     border-radius: 4px;
