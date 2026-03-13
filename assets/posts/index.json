@@ -1,1 +1,306 @@
-{"posts": ["3-snes-games-available-for-switch-online-members.md.txt","added-a-countdown-timer-page.md.txt","added-a-site-banner.md.txt","backing-up-my-switch-captures-to-youtube.md.txt","been-playing-pokemon-rom-hacks.md.txt","blog-improvements.md.txt","blog-posts-now-loaded-from-MD-files.md.txt","button-page-has-been-updated.md.txt","comments-added-to-blog-posts.md.txt","ctgp-7-1-6-releasing-october-31.md.txt","disqus-replaced-with-giscus.md.txt","dont-forget-to-get-splatfest-avatar.md.txt","game-status-page-added.md.txt","game-status-page-broken.md.txt","game-status-page-fixed.md.txt","had-an-idea-for-new-post-but.md.txt","halloween-icons-for-nso-members.md.txt","hatsune-miku-joins-rocket-league-on-nintendo-switch.md.txt","havent-felt-like-playing-nso-online-games.md.txt","huge-acnh-free-3-0-update.md.txt","listening-status-added-to-homepage.md.txt","multi-stream-viewer-update-watch-multiple-twitch-streams-at-once.md.txt","new-game-trials-for-nintendo-switch-online-members-moving-out-2-dead-cells.md.txt","new-splatfest-frames-page-now-live.md.txt","new-twitch-stream-viewer-added.md.txt","new-youtube-video-viewer-added.md.txt","nintendo-news-page-added.md.txt","organize-your-game-library-with-backloggd.md.txt","pokemon-fire-red-and-pokemon-leaf-green-are-coming-to-nintendo-switch.md.txt","shiny-manaphy-shiny-enamorus-added-for-completing-sinnoh-hisui-pokedex-in-pokemon-home.md.txt","status-cafe-added-to-homepage.md.txt","switched-comments-back-to-disqus.md.txt","theme-switcher-added-to-all-pages.md.txt","totally-professional-fortnite-review.md.txt","totally-professional-pokemon-unbound-review.md.txt","welcome-to-my-blog.md.txt","whats-your-favorite-chocolate-splatfest-theme-returns.md.txt"]} 
+{
+  "posts": [
+    {
+      "file": "3-snes-games-available-for-switch-online-members.txt",
+      "title": "3 SNES games available for Switch Online members",
+      "date": "2025-01-24",
+      "time": "2:00 PM",
+      "author": "CodyMKW",
+      "category": "Switch Online News"
+    },
+    {
+      "file": "added-a-countdown-timer-page.txt",
+      "title": "Added a countdown timer page",
+      "date": "2026-01-13",
+      "time": "1:09 PM",
+      "author": "CodyMKW",
+      "category": "Page News/Updates"
+    },
+    {
+      "file": "added-a-site-banner.txt",
+      "title": "Added a Site banner",
+      "date": "2026-01-08",
+      "time": "11:00 AM",
+      "author": "CodyMKW",
+      "category": "Page News/Updates"
+    },
+    {
+      "file": "backing-up-my-switch-captures-to-youtube.txt",
+      "title": "Backing Up My Switch Captures to YouTube",
+      "date": "2025-05-06",
+      "time": "4:20 PM",
+      "author": "CodyMKW",
+      "category": "Game News"
+    },
+    {
+      "file": "been-playing-pokemon-rom-hacks.txt",
+      "title": "Been playing Pokemon rom hacks!",
+      "date": "2025-10-14",
+      "time": "1:45 PM",
+      "author": "CodyMKW",
+      "category": "Personal"
+    },
+    {
+      "file": "blog-improvements.txt",
+      "title": "Blog Improvements",
+      "date": "2025-07-07",
+      "time": "3:35 AM",
+      "author": "CodyMKW",
+      "category": "Page News/Updates"
+    },
+    {
+      "file": "blog-posts-now-loaded-from-MD-files.txt",
+      "title": "Blog posts now loaded from MD files!",
+      "date": "2026-02-20",
+      "time": "12:46 PM",
+      "author": "CodyMKW",
+      "category": "Page News/Updates",
+      "image": "https://media1.tenor.com/m/A_wcjURiU7sAAAAd/shise-hojo.gif"
+    },
+    {
+      "file": "button-page-has-been-updated.txt",
+      "title": "Button page has been updated!",
+      "date": "2025-10-16",
+      "time": "10:53 PM",
+      "author": "CodyMKW",
+      "category": "Page News/Updates"
+    },
+    {
+      "file": "comments-added-to-blog-posts.txt",
+      "title": "Comments added to blog posts",
+      "date": "2025-07-12",
+      "time": "5:05 PM",
+      "author": "CodyMKW",
+      "category": "Page News/Updates"
+    },
+    {
+      "file": "ctgp-7-1-6-releasing-october-31.txt",
+      "title": "CTGP-7 1.6 releasing October 31",
+      "date": "2025-10-15",
+      "time": "3:30 AM",
+      "author": "CodyMKW",
+      "category": "Game News"
+    },
+    {
+      "file": "disqus-replaced-with-giscus.txt",
+      "title": "Disqus replaced with Giscus",
+      "date": "2025-10-18",
+      "time": "3:21 AM",
+      "author": "CodyMKW",
+      "category": "Page News/Updates"
+    },
+    {
+      "file": "dont-forget-to-get-splatfest-avatar.txt",
+      "title": "Don't forget to get splatfest avatar",
+      "date": "2025-10-16",
+      "time": "1:33 PM",
+      "author": "CodyMKW",
+      "category": "Page News/Updates"
+    },
+    {
+      "file": "game-status-page-added.txt",
+      "title": "Game Status page added",
+      "date": "2023-02-15",
+      "time": "8:45 PM",
+      "author": "CodyMKW",
+      "category": "Page News/Updates"
+    },
+    {
+      "file": "game-status-page-broken.txt",
+      "title": "Game Status page broken",
+      "date": "2024-12-15",
+      "time": "3:43 PM",
+      "author": "CodyMKW",
+      "category": "Page News/Updates"
+    },
+    {
+      "file": "game-status-page-fixed.txt",
+      "title": "Game Status page fixed",
+      "date": "2025-04-02",
+      "time": "3:00 PM",
+      "author": "CodyMKW",
+      "category": "Page News/Updates"
+    },
+    {
+      "file": "had-an-idea-for-new-post-but.txt",
+      "title": "Had an idea for new post but...",
+      "date": "2023-01-18",
+      "time": "1:01 PM",
+      "author": "CodyMKW",
+      "category": "Page News/Updates"
+    },
+    {
+      "file": "halloween-icons-for-nso-members.txt",
+      "title": "Halloween Icons for NSO members!",
+      "date": "2025-10-28",
+      "time": "12:40 AM",
+      "author": "CodyMKW",
+      "category": "Switch Online News"
+    },
+    {
+      "file": "hatsune-miku-joins-rocket-league-on-nintendo-switch.txt",
+      "title": "Hatsune Miku Joins Rocket League on Nintendo Switch",
+      "date": "2025-01-29",
+      "time": "6:21 PM",
+      "author": "CodyMKW",
+      "category": "Game News"
+    },
+    {
+      "file": "havent-felt-like-playing-nso-online-games.txt",
+      "title": "Haven't felt like playing NSO online games!",
+      "date": "2025-10-13",
+      "time": "6:30 PM",
+      "author": "CodyMKW",
+      "category": "Personal"
+    },
+    {
+      "file": "huge-acnh-free-3-0-update.txt",
+      "title": "Huge ACNH Free 3.0 Update!",
+      "date": "2025-11-10",
+      "time": "11:15 AM",
+      "author": "CodyMKW",
+      "category": "Game News"
+    },
+    {
+      "file": "listening-status-added-to-homepage.txt",
+      "title": "Listening Status added to homepage",
+      "date": "2025-12-04",
+      "time": "11:46 PM",
+      "author": "CodyMKW",
+      "category": "Page News/Updates"
+    },
+    {
+      "file": "multi-stream-viewer-update-watch-multiple-twitch-streams-at-once.txt",
+      "title": "Multi-Stream Viewer Update! Watch Multiple Twitch Streams at Once",
+      "date": "2025-02-14",
+      "time": "5:57 PM",
+      "author": "CodyMKW",
+      "category": "Page News/Updates"
+    },
+    {
+      "file": "new-game-trials-for-nintendo-switch-online-members-moving-out-2-dead-cells.txt",
+      "title": "\"New Game Trials for Nintendo Switch Online Members: Moving Out 2 & Dead Cells\"",
+      "date": "2025-01-29",
+      "time": "2:53 PM",
+      "author": "CodyMKW",
+      "category": "Switch Online News"
+    },
+    {
+      "file": "new-splatfest-frames-page-now-live.txt",
+      "title": "New Splatfest Frames Page Now Live!",
+      "date": "2023-02-17",
+      "time": "9:30 PM",
+      "author": "CodyMKW",
+      "category": "Page News/Updates"
+    },
+    {
+      "file": "new-twitch-stream-viewer-added.txt",
+      "title": "New Twitch Stream Viewer Added!",
+      "date": "2025-02-14",
+      "time": "2:00 AM",
+      "author": "CodyMKW",
+      "category": "Page News/Updates"
+    },
+    {
+      "file": "new-youtube-video-viewer-added.txt",
+      "title": "New YouTube Video Viewer Added!",
+      "date": "2025-02-16",
+      "time": "3:23 PM",
+      "author": "CodyMKW",
+      "category": "Page News/Updates"
+    },
+    {
+      "file": "nintendo-news-page-added.txt",
+      "title": "Nintendo News page added",
+      "date": "2023-01-21",
+      "time": "2:30 PM",
+      "author": "CodyMKW",
+      "category": "Page News/Updates"
+    },
+    {
+      "file": "organize-your-game-library-with-backloggd.txt",
+      "title": "Organize Your Game Library with Backloggd",
+      "date": "2025-02-12",
+      "time": "5:48 PM",
+      "author": "CodyMKW",
+      "category": "Game News"
+    },
+    {
+      "file": "pokemon-fire-red-and-pokemon-leaf-green-are-coming-to-nintendo-switch.txt",
+      "title": "\"Pok\u00e9mon Fire Red and Pok\u00e9mon Leaf Green are coming to Nintendo Switch\"",
+      "date": "2026-02-20",
+      "time": "1:43 PM",
+      "author": "CodyMKW",
+      "category": "Game News",
+      "image": "https://www.pokemon.com/static-assets/content-assets/cms2/img/video-games/_tiles/2026/firered-version-leafgreen-version/announce/firered-version-leafgreen-version-169-en.png"
+    },
+    {
+      "file": "shiny-manaphy-shiny-enamorus-added-for-completing-sinnoh-hisui-pokedex-in-pokemon-home.txt",
+      "title": "Shiny Manaphy & Shiny Enamorus added for completing Sinnoh & Hisui Pokedex in Pokemon Home",
+      "date": "2025-01-28",
+      "time": "12:11 PM",
+      "author": "CodyMKW",
+      "category": "Game News"
+    },
+    {
+      "file": "status-cafe-added-to-homepage.txt",
+      "title": "Status.Cafe added to homepage",
+      "date": "2025-12-06",
+      "time": "9:00 PM",
+      "author": "CodyMKW",
+      "category": "Page News/Updates"
+    },
+    {
+      "file": "switched-comments-back-to-disqus.txt",
+      "title": "Switched comments back to Disqus",
+      "date": "2025-12-15",
+      "time": "12:00 PM",
+      "author": "CodyMKW",
+      "category": "Page News/Updates"
+    },
+    {
+      "file": "theme-switcher-added-to-all-pages.txt",
+      "title": "Theme Switcher added to all pages",
+      "date": "2025-04-10",
+      "time": "10:18 PM",
+      "author": "CodyMKW",
+      "category": "Page News/Updates"
+    },
+    {
+      "file": "totally-professional-fortnite-review.txt",
+      "title": "Totally Professional Fortnite Review",
+      "date": "2026-02-24",
+      "time": "12:02 PM",
+      "author": "CodyMKW",
+      "category": "Review",
+      "image": "https://files.catbox.moe/zmuy3g.jpg",
+      "rating": "2.3"
+    },
+    {
+      "file": "totally-professional-pokemon-unbound-review.txt",
+      "title": "Totally Professional Pokemon Unbound Review",
+      "date": "2026-02-25",
+      "time": "9:09 PM",
+      "author": "CodyMKW",
+      "category": "Review",
+      "image": "https://images.immediate.co.uk/production/volatile/sites/3/2024/04/Pokemon-Unbound-cheats-d5bd74a.jpg",
+      "rating": "4.6"
+    },
+    {
+      "file": "welcome-to-my-blog.txt",
+      "title": "Welcome to my Blog!",
+      "date": "2023-01-17",
+      "time": "10:35 AM",
+      "author": "CodyMKW",
+      "category": "Page News/Updates"
+    },
+    {
+      "file": "whats-your-favorite-chocolate-splatfest-theme-returns.txt",
+      "title": "What's your favorite chocolate Splatfest theme returns",
+      "date": "2025-01-28",
+      "time": "8:34 AM",
+      "author": "CodyMKW",
+      "category": "Game News"
+    }
+  ]
+}

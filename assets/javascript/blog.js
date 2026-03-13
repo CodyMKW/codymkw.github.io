@@ -68,7 +68,11 @@ function initializeBlog() {
                 return response.json();
             })
             .then(function(data) {
-                return Promise.all(data.posts.map(function(file, i) {
+                var postsList = Array.isArray(data.posts) ? data.posts : [];
+                return Promise.all(postsList.map(function(item, i) {
+                    var metadata = typeof item === 'string' ? { file: item } : item || {};
+                    var file = metadata.file || metadata.filename || "";
+                    if (!file) return Promise.resolve(null);
                     return fetch("assets/posts/" + file)
                         .then(function(res) {
                             if (!res.ok) throw new Error("HTTP error! status: " + res.status);
@@ -77,26 +81,36 @@ function initializeBlog() {
                         .then(function(md) {
                             var parsed = parseFrontmatter(md);
                             var fm = parsed.frontmatter;
+                            var content = parsed.content;
+                            var title = metadata.title || fm.title || file.replace(/\.md$|\.txt$/g, '');
+                            var date = metadata.date || fm.date || '';
+                            var time = metadata.time || fm.time || '';
+                            var author = metadata.author || fm.author || '';
+                            var category = metadata.category || fm.category || '';
                             return {
                                 index: i + 1,
-                                title: fm.title || file.replace('.md', ''),
-                                date: fm.date || '',
-                                time: fm.time || '',
-                                author: fm.author || '',
-                                category: fm.category || '',
-                                image: fm.image || '',
-                                video: fm.video || '',
-                                rating: fm.rating || '',
-                                content: parsed.content,
-                                content2: fm.content2 || '',
+                                title: title,
+                                date: date,
+                                time: time,
+                                author: author,
+                                category: category,
+                                image: metadata.image || fm.image || '',
+                                video: metadata.video || fm.video || '',
+                                rating: metadata.rating || fm.rating || '',
+                                content: content,
+                                content2: metadata.content2 || fm.content2 || '',
                                 originalIndex: i + 1
                             };
                         });
-                }));
+                })).then(function(results) {
+                    return results.filter(function(p) { return p !== null; });
+                });
             })
             .then(function(loadedPosts) {
                 posts = loadedPosts.sort(function(a, b) {
-                    return new Date(b.date + " " + b.time) - new Date(a.date + " " + a.time);
+                    var ad = new Date(a.date + " " + a.time).getTime() || 0;
+                    var bd = new Date(b.date + " " + b.time).getTime() || 0;
+                    return bd - ad;
                 });
                 filteredPosts = posts.slice();
                 var searchBar = document.getElementById('searchBar');

@@ -236,28 +236,6 @@ function loadCurrently() {
     .catch(function () {});
 }
 
-function parseFrontmatter(md) {
-  md = md.replace(/^\uFEFF/, ''); // Remove BOM if present
-  var fm = {};
-  var content = md;
-  if (md.indexOf('---') === 0) {
-    var end = md.indexOf('---', 3);
-    if (end !== -1) {
-      var raw = md.slice(3, end).trim().split('\n');
-      raw.forEach(function (line) {
-        var i = line.indexOf(':');
-        if (i !== -1) {
-          var key = line.slice(0, i).trim();
-          var value = line.slice(i + 1).trim();
-          fm[key] = value;
-        }
-      });
-      content = md.slice(end + 3).trim();
-    }
-  }
-  return { frontmatter: fm, content: content };
-}
-
 function loadLatestPosts() {
   return fetch("assets/posts/index.json?t=" + Date.now())
     .then(function (response) {
@@ -265,33 +243,23 @@ function loadLatestPosts() {
       return response.json();
     })
     .then(function (data) {
-      return Promise.all(data.posts.map(function (file, i) {
-        return fetch("assets/posts/" + file + "?t=" + Date.now())
-          .then(function (res) {
-            if (!res.ok) throw new Error("Post load error");
-            return res.text();
-          })
-          .then(function (md) {
-            var parsed = parseFrontmatter(md);
-            var fm = parsed.frontmatter;
-            var dateValue = "";
-            if (fm.datetime) dateValue = fm.datetime;
-            else if (fm.date && fm.time) dateValue = fm.date + " " + fm.time;
-            else dateValue = fm.date || "";
-            return {
-              index: i + 1,
-              title: fm.title || file.replace('.md', ''),
-              date: dateValue
-            };
-          });
-      }));
-    })
-    .then(function (posts) {
-      posts.sort(function (a, b) {
+      var postsData = Array.isArray(data.posts) ? data.posts : [];
+      var latestPosts = postsData.map(function (item, i) {
+        var metadata = typeof item === 'string' ? { file: item } : item || {};
+        var title = metadata.title || (metadata.file || '').replace(/\.md\.txt$|\.txt$/g, '');
+        var date = metadata.datetime || ((metadata.date || '') + (metadata.time ? ' ' + metadata.time : ''));
+        return {
+          index: i + 1,
+          title: title,
+          date: date,
+          file: metadata.file || ''
+        };
+      });
+      latestPosts.sort(function (a, b) {
         return new Date(b.date) - new Date(a.date);
       });
 
-      var latest = posts.slice(0, 5);
+      var latest = latestPosts.slice(0, 5);
       var list = document.getElementById("latest-posts-list");
       var now = new Date();
       if (!list) return;
@@ -307,12 +275,14 @@ function loadLatestPosts() {
         var diffDays = Math.floor(Math.abs(now - postDate) / 86400000);
 
         var timeText;
-        if (diffDays <= 30) {
+        if (!isNaN(postDate.getTime()) && diffDays <= 30) {
           if (diffDays === 0) timeText = "today";
           else if (diffDays === 1) timeText = "1 day ago";
           else timeText = diffDays + " days ago";
-        } else {
+        } else if (!isNaN(postDate.getTime())) {
           timeText = postDate.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
+        } else {
+          timeText = "Unknown date";
         }
 
         var dateSpan = document.createElement("span");
