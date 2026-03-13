@@ -238,15 +238,12 @@ function loadCurrently() {
 
 function parseFrontmatter(md) {
   md = md.replace(/^\uFEFF/, ''); // Remove BOM if present
-  console.log('Parsing frontmatter for:', md.substring(0, 50)); // Debug
   var fm = {};
   var content = md;
   if (md.indexOf('---') === 0) {
     var end = md.indexOf('---', 3);
-    console.log('End of frontmatter at:', end); // Debug
     if (end !== -1) {
       var raw = md.slice(3, end).trim().split('\n');
-      console.log('Raw frontmatter lines:', raw); // Debug
       raw.forEach(function (line) {
         var i = line.indexOf(':');
         if (i !== -1) {
@@ -257,22 +254,19 @@ function parseFrontmatter(md) {
       });
       content = md.slice(end + 3).trim();
     }
-  } else {
-    console.log('No frontmatter found, md starts with:', md.substring(0, 10)); // Debug
   }
-  console.log('Parsed fm:', fm); // Debug
   return { frontmatter: fm, content: content };
 }
 
 function loadLatestPosts() {
-  return fetch("/assets/posts/index.json?t=" + Date.now())
+  return fetch("assets/posts/index.json?t=" + Date.now())
     .then(function (response) {
       if (!response.ok) throw new Error("Posts error");
       return response.json();
     })
     .then(function (data) {
       return Promise.all(data.posts.map(function (file, i) {
-        return fetch("/assets/posts/" + file + "?t=" + Date.now())
+        return fetch("assets/posts/" + file + "?t=" + Date.now())
           .then(function (res) {
             if (!res.ok) throw new Error("Post load error");
             return res.text();
