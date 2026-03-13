@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta name="msapplication-TileColor" content="#00c900">
+    <meta name="theme-color" content="#00c900">
+    <link href="https://social.vivaldi.net/@codymkw" rel="me">
+    <meta name="description" content="Add a Splatfest Frame to your avatar! Splatfest Frames crafted by the talented GabsJpeg.">
+    <meta name="keywords" content="Splatfest Frames, Splatoon 3 profile picture, GabsJpeg, Kas_L05, Splatoon avatar generator, Grandfest frames, Splatoon_BR, octopus frame, squid frame, Team Aliens, Splatoon custom PFP, Nintendo avatar tool, Splatfest team support, profile picture editor">
+    <meta name="author" content="CodyMKW">
+    <meta property="og:title" content="Splatfest Frames - CodyMKW">
+    <meta property="og:description" content="Add a Splatfest Frame to your avatar! Splatfest Frames crafted by the talented GabsJpeg. Also Grandfest frames by Splatoon_BR">
+    <meta property="og:image" content="/assets/images/emojis/ninSplat.png">
+    <meta property="og:url" content="https://codymkw.github.io">
+    <meta property="og:type" content="website">
+    <meta name="twitter:creator" content="@CodyMKW" />
+    <meta name="twitter:title" content="Splatfest Frames - CodyMKW" />
+    <meta name="twitter:description" content="Add a Splatfest Frame to your avatar! Splatfest Frames crafted by the talented GabsJpeg. Also Grandfest frames by Splatoon_BR" />
+    <meta name="twitter:image:src" content="/assets/images/emojis/ninSplat.png" />
+    <link id="theme-style" rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/emoji.css">
+    <script defer src="assets/javascript/main.js"></script>
+    <script defer src="assets/javascript/stickyheader.js"></script>
+    <script defer src="assets/javascript/splatfestframes.js"></script>
+    <title>Splatfest Frames - CodyMKW</title>
+</head>
+
+<body>
+    <div id="sticky-header" class="sticky-header" style="display: none;">
+        <span id="close-button" onclick="toggleHeader()">X</span>
+        <a href="" target="_blank" class="important"></a>
+    </div>
+    <div class="container">
+        <!--# include file="includes/header.html" -->
+        <div class="content" id="SplatfestFramesContent">
+            <h2><i class="emoji ninSplat"></i></h2>
+            <h2>Splatfest Frames</h2><small>by <a href="https://twitter.com/GabsJpeg" target="_blank">GabsJpeg</a> and <a href="https://bsky.app/profile/kasl05.bsky.social" target="_blank">Kas_L05</a></small>
+            <div id="framePreviewContainer">
+                <p><label for="framePreview">Frame Preview:</label></p>
+                <img id="framePreview" src="/assets/images/splatfest/octopus/Team_Aliens.avif" alt="Frame Preview" class="preview-image" />
+            </div>
+            <div>
+                <label for="grandfestToggle">Enable Grandfest Mode:</label>
+                <input type="checkbox" id="grandfestToggle" onchange="toggleGrandfestMode()">
+            </div>
+            <div id="frameTypeSelection">
+                <label for="frameTypeSelection">Which do you prefer:</label>
+                <label>
+                    <input type="radio" name="frameType" value="octopus" checked="checked" onchange="updateFrameOptions()"> Octopus
+                </label>
+                <label>
+                    <input type="radio" name="frameType" value="squid" onchange="updateFrameOptions()"> Squid
+                </label>
+            </div>
+            <div>
+                <label for="frameSelection">Select a frame:</label>
+                <select id="frameSelection" onchange="displayFramePreview()">
+                              <!-- See Splatfestframes.js for options -->
+                          </select>
+            </div>
+            <div>
+                <label for="imageSelection">Your avatar image:</label>
+                <input type="file" id="imageSelection" accept="image/*">
+            </div>
+            <p><button onclick="mergeImages()">Download</button></p>
+            <a id="downloadLink" style="display: none" download="splatfest_avatar.png">Download Splatfest Avatar</a>
+            <br>
+            <small style="display: flex; flex-direction: column; align-items: center; text-align: center;">Page last updated: <!--# flastmod file="splatfest-frames.html" fmt="%A, %B %d, %Y at %h:%mm %p" timezone="America/New_York" --></small>
+        </div>
+    </div>
+    <!--# include file="includes/footer.html" -->
+</body>
+
+</html>
