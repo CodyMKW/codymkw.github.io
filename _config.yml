@@ -12,20 +12,4 @@ plugins:
 # Include files
 include:
   - _pages
-  - posts
-
-# Exclude from processing
-exclude:
-  - Gemfile
-  - Gemfile.lock
-  - vendor/
-  - .bundle/
-  - .sass-cache/
-  - .jekyll-cache/
-  - posts/*.md
-  - gemfiles/
-
-# Include files
-include:
-  - _pages
   - blogdata

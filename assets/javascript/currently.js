@@ -258,14 +258,14 @@ function parseFrontmatter(md) {
 }
 
 function loadLatestPosts() {
-  return fetch("/posts/index.json?t=" + Date.now())
+  return fetch("/assets/posts/index.json?t=" + Date.now())
     .then(function (response) {
       if (!response.ok) throw new Error("Posts error");
       return response.json();
     })
     .then(function (data) {
       return Promise.all(data.posts.map(function (file, i) {
-        return fetch("/posts/" + file + "?t=" + Date.now())
+        return fetch("/assets/posts/" + file + "?t=" + Date.now())
           .then(function (res) {
             if (!res.ok) throw new Error("Post load error");
             return res.text();

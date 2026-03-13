@@ -61,14 +61,14 @@ function initializeBlog() {
         blogContainer.innerHTML = '<div class="blog-message">Loading posts...</div>';
         if (blogHeader) blogHeader.classList.add('hidden');
         if (pagination) pagination.classList.add('hidden');
-        return fetch("posts/index.json")
+        return fetch("assets/posts/index.json")
             .then(function(response) {
                 if (!response.ok) throw new Error("HTTP error! status: " + response.status);
                 return response.json();
             })
             .then(function(data) {
                 return Promise.all(data.posts.map(function(file, i) {
-                    return fetch("posts/" + file)
+                    return fetch("assets/posts/" + file)
                         .then(function(res) {
                             if (!res.ok) throw new Error("HTTP error! status: " + res.status);
                             return res.text();
