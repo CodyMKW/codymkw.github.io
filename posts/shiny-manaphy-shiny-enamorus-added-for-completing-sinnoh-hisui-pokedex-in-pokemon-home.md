@@ -1,6 +1,6 @@
 ---
 title: Shiny Manaphy & Shiny Enamorus added for completing Sinnoh & Hisui Pokedex in Pokemon Home
-date: 1/28/2025
+date: 2025-01-28
 time: 12:11 PM
 author: CodyMKW
 category: Game News

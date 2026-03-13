@@ -1,6 +1,6 @@
 ---
 title: Haven't felt like playing NSO online games!
-date: 10/13/2025
+date: 2025-10-13
 time: 6:30 PM
 author: CodyMKW
 category: Personal

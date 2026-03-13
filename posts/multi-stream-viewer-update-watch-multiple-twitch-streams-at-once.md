@@ -1,6 +1,6 @@
 ---
 title: Multi-Stream Viewer Update! Watch Multiple Twitch Streams at Once
-date: 2/14/2025
+date: 2025-02-14
 time: 5:57 PM
 author: CodyMKW
 category: Page News/Updates

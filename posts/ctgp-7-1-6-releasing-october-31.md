@@ -1,6 +1,6 @@
 ---
 title: CTGP-7 1.6 releasing October 31
-date: 10/15/2025
+date: 2025-10-15
 time: 3:30 AM
 author: CodyMKW
 category: Game News

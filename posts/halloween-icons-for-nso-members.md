@@ -1,6 +1,6 @@
 ---
 title: Halloween Icons for NSO members!
-date: 10/28/2025
+date: 2025-10-28
 time: 12:40 AM
 author: CodyMKW
 category: Switch Online News

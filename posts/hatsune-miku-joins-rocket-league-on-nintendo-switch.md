@@ -1,6 +1,6 @@
 ---
 title: Hatsune Miku Joins Rocket League on Nintendo Switch
-date: 1/29/2025
+date: 2025-01-29
 time: 6:21 PM
 author: CodyMKW
 category: Game News

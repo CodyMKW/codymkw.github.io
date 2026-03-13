@@ -1,6 +1,6 @@
 ---
 title: Been playing Pokemon rom hacks!
-date: 10/14/2025
+date: 2025-10-14
 time: 1:45 PM
 author: CodyMKW
 category: Personal

@@ -1,6 +1,6 @@
 ---
 title: Added a countdown timer page
-date: 1/13/2026
+date: 2026-01-13
 time: 1:09 PM
 author: CodyMKW
 category: Page News/Updates

@@ -1,6 +1,6 @@
 ---
 title: Nintendo News page added
-date: 1/21/2023
+date: 2023-01-21
 time: 2:30 PM
 author: CodyMKW
 category: Page News/Updates

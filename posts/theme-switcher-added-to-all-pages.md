@@ -1,6 +1,6 @@
 ---
 title: Theme Switcher added to all pages
-date: 4/10/2025
+date: 2025-04-10
 time: 10:18 PM
 author: CodyMKW
 category: Page News/Updates

@@ -1,6 +1,6 @@
 ---
 title: Status.Cafe added to homepage
-date: 12/6/2025
+date: 2025-12-06
 time: 9:00 PM
 author: CodyMKW
 category: Page News/Updates

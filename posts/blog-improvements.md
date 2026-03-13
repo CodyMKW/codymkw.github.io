@@ -1,6 +1,6 @@
 ---
 title: Blog Improvements
-date: 7/7/2025
+date: 2025-07-07
 time: 3:35 AM
 author: CodyMKW
 category: Page News/Updates

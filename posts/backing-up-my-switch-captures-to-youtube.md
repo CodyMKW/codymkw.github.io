@@ -1,6 +1,6 @@
 ---
 title: Backing Up My Switch Captures to YouTube
-date: 5/6/2025
+date: 2025-05-06
 time: 4:20 PM
 author: CodyMKW
 category: Game News

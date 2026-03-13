@@ -1,6 +1,6 @@
 ---
 title: Welcome to my Blog!
-date: 1/17/2023
+date: 2023-01-17
 time: 10:35 AM
 author: CodyMKW
 category: Page News/Updates

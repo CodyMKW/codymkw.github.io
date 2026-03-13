@@ -1,6 +1,6 @@
 ---
 title: New Splatfest Frames Page Now Live!
-date: 2/17/2023
+date: 2023-02-17
 time: 9:30 PM
 author: CodyMKW
 category: Page News/Updates

@@ -1,6 +1,6 @@
 ---
 title: Added a Site banner
-date: 1/8/2026
+date: 2026-01-08
 time: 11:00 AM
 author: CodyMKW
 category: Page News/Updates

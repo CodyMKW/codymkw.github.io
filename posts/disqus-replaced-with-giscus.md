@@ -1,6 +1,6 @@
 ---
 title: Disqus replaced with Giscus
-date: 10/18/2025
+date: 2025-10-18
 time: 3:21 AM
 author: CodyMKW
 category: Page News/Updates

@@ -1,6 +1,6 @@
 ---
 title: Had an idea for new post but...
-date: 1/18/2023
+date: 2023-01-18
 time: 1:01 PM
 author: CodyMKW
 category: Page News/Updates

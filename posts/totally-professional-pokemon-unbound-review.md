@@ -1,6 +1,6 @@
 ---
 title: Totally Professional Pokemon Unbound Review
-date: 2/25/2026
+date: 2026-02-25
 time: 9:09 PM
 author: CodyMKW
 category: Review

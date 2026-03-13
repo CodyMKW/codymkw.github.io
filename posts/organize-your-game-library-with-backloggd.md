@@ -1,6 +1,6 @@
 ---
 title: Organize Your Game Library with Backloggd
-date: 2/12/2025
+date: 2025-02-12
 time: 5:48 PM
 author: CodyMKW
 category: Game News

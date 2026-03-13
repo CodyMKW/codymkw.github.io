@@ -1,6 +1,6 @@
 ---
 title: Huge ACNH Free 3.0 Update!
-date: 11/10/2025
+date: 2025-11-10
 time: 11:15 AM
 author: CodyMKW
 category: Game News

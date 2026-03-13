@@ -1,6 +1,6 @@
 ---
 title: Don't forget to get splatfest avatar
-date: 10/16/2025
+date: 2025-10-16
 time: 1:33 PM
 author: CodyMKW
 category: Page News/Updates

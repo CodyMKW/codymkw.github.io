@@ -1,6 +1,6 @@
 ---
 title: Comments added to blog posts
-date: 7/12/2025
+date: 2025-07-12
 time: 5:05 PM
 author: CodyMKW
 category: Page News/Updates

@@ -1,6 +1,6 @@
 ---
 title: New Game Trials for Nintendo Switch Online Members: Moving Out 2 & Dead Cells
-date: 1/29/2025
+date: 2025-01-29
 time: 2:53 PM
 author: CodyMKW
 category: Switch Online News

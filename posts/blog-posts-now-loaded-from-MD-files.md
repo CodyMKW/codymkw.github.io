@@ -1,6 +1,6 @@
 ---
 title: Blog posts now loaded from MD files!
-date: 2/20/2026
+date: 2026-02-20
 time: 12:46 PM
 author: CodyMKW
 category: Page News/Updates

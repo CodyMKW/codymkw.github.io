@@ -1,6 +1,6 @@
 ---
 title: Game Status page added
-date: 2/15/2023
+date: 2023-02-15
 time: 8:45 PM
 author: CodyMKW
 category: Page News/Updates

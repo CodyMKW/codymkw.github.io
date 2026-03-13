@@ -1,6 +1,6 @@
 ---
 title: What's your favorite chocolate Splatfest theme returns
-date: 1/28/2025
+date: 2025-01-28
 time: 8:34 AM
 author: CodyMKW
 category: Game News

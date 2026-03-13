@@ -1,6 +1,6 @@
 ---
 title: 3 SNES games available for Switch Online members
-date: 1/24/2025
+date: 2025-01-24
 time: 2:00 PM
 author: CodyMKW
 category: Switch Online News

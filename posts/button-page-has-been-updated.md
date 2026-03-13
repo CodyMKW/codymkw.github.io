@@ -1,6 +1,6 @@
 ---
 title: Button page has been updated!
-date: 10/16/2025
+date: 2025-10-16
 time: 10:53 PM
 author: CodyMKW
 category: Page News/Updates
