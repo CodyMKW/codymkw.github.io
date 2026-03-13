@@ -12,9 +12,9 @@ document.addEventListener("DOMContentLoaded", function() {
                 var postId = urlParams.get("post");
                 if (postId !== null) {
                     var currentPost = posts.find(function(p) {
-                        return p.originalIndex === parseInt(postId, 10);
+                        return p.index === parseInt(postId, 10);
                     });
-                    if (currentPost) loadDisqus(currentPost.originalIndex, currentPost.title);
+                    if (currentPost) loadDisqus(currentPost.index, currentPost.title);
                 }
             }
         });
@@ -87,8 +87,13 @@ function initializeBlog() {
                             var time = metadata.time || fm.time || '';
                             var author = metadata.author || fm.author || '';
                             var category = metadata.category || fm.category || '';
-                            return {
-                                index: i + 1,
+                            var parsedIndex = null;
+                    if (metadata.index !== undefined) {
+                        var parsed = parseInt(metadata.index, 10);
+                        if (!isNaN(parsed) && parsed > 0) parsedIndex = parsed;
+                    }
+                    return {
+                                index: parsedIndex,
                                 title: title,
                                 date: date,
                                 time: time,
@@ -98,8 +103,7 @@ function initializeBlog() {
                                 video: metadata.video || fm.video || '',
                                 rating: metadata.rating || fm.rating || '',
                                 content: content,
-                                content2: metadata.content2 || fm.content2 || '',
-                                originalIndex: i + 1
+                                content2: metadata.content2 || fm.content2 || ''
                             };
                         });
                 })).then(function(results) {
@@ -111,6 +115,22 @@ function initializeBlog() {
                     var ad = new Date(a.date + " " + a.time).getTime() || 0;
                     var bd = new Date(b.date + " " + b.time).getTime() || 0;
                     return bd - ad;
+                });
+                // Assign fallback indexes (oldest -> newest) for any post without an explicit index
+                var oldestFirst = posts.slice().sort(function(a, b) {
+                    var ad = new Date(a.date + " " + a.time).getTime() || 0;
+                    var bd = new Date(b.date + " " + b.time).getTime() || 0;
+                    if (ad !== bd) return ad - bd;
+                    return (a.title || '').localeCompare(b.title || '');
+                });
+                var nextIndex = 1;
+                oldestFirst.forEach(function(post) {
+                    if (post.index && post.index > 0) {
+                        nextIndex = Math.max(nextIndex, post.index + 1);
+                        return;
+                    }
+                    post.index = nextIndex;
+                    nextIndex++;
                 });
                 filteredPosts = posts.slice();
                 var searchBar = document.getElementById('searchBar');
@@ -210,20 +230,20 @@ function renderListView() {
     pagePosts.forEach(function(post) {
         var postElement = document.createElement('div');
         postElement.className = 'blog-post';
-        postElement.dataset.index = post.originalIndex;
+        postElement.dataset.index = post.index;
         var previewHTML = "";
         if (post.content) {
             var trimmedContent = post.content.length > 185 ? post.content.slice(0, 185) + "..." : post.content;
             previewHTML =
                 '<div class="post-content">' + marked.parse(trimmedContent) + '</div>' +
-                '<a href="?post=' + post.originalIndex + '" class="read-more">Read more →</a>';
+                '<a href="?post=' + post.index + '" class="read-more">Read more →</a>';
         } else if (post.video || post.content2) {
             previewHTML =
                 (post.video ? '<div style="text-align:center;"><iframe src="' + post.video + '" frameborder="0" allowfullscreen></iframe></div>' : "") +
                 (post.content2 ? '<div class="post-content">' + marked.parse(post.content2) + '</div>' : "");
         }
         postElement.innerHTML =
-            '<h3><a href="?post=' + post.originalIndex + '">' + post.title + '</a></h3>' +
+            '<h3><a href="?post=' + post.index + '">' + post.title + '</a></h3>' +
             '<p class="post-meta" id="blogmetadata">' + post.date + ' • ' + post.time + ' • ' + post.author + ' • ' + post.category + '</p>' +
             (post.image ? '<div style="text-align:center;"><img src="' + post.image + '" alt="Post Image"></div>' : "") +
             previewHTML;
@@ -232,11 +252,11 @@ function renderListView() {
             titleLink.addEventListener('click', function(e) {
                 e.preventDefault();
                 var urlParams = new URLSearchParams(window.location.search);
-                urlParams.set("post", post.originalIndex);
+                urlParams.set("post", post.index);
                 window.history.pushState({
-                    post: post.originalIndex
+                    post: post.index
                 }, "", "?" + urlParams.toString());
-                renderSinglePostView(post.originalIndex);
+                renderSinglePostView(post.index);
             });
         }
         var readMoreLink = postElement.querySelector('.read-more');
@@ -244,11 +264,11 @@ function renderListView() {
             readMoreLink.addEventListener('click', function(e) {
                 e.preventDefault();
                 var urlParams = new URLSearchParams(window.location.search);
-                urlParams.set("post", post.originalIndex);
+                urlParams.set("post", post.index);
                 window.history.pushState({
-                    post: post.originalIndex
+                    post: post.index
                 }, "", "?" + urlParams.toString());
-                renderSinglePostView(post.originalIndex);
+                renderSinglePostView(post.index);
             });
         }
         blogContainer.appendChild(postElement);
@@ -299,7 +319,7 @@ function renderSinglePostView(postId) {
     if (blogHeader) blogHeader.classList.add('hidden');
     if (pagination) pagination.classList.add('hidden');
     var post = posts.find(function(p) {
-        return p.originalIndex === postId;
+        return p.index === postId;
     });
     if (!post) {
         blogContainer.innerHTML =
@@ -311,7 +331,7 @@ function renderSinglePostView(postId) {
     }
     var postHTML =
         '<a href="#" class="blog-back-button">‹ All Posts</a>' +
-        '<div class="blog-post" data-index="' + post.originalIndex + '">' +
+        '<div class="blog-post" data-index="' + post.index + '">' +
         '<h3>' + post.title + '</h3>' +
         '<p class="post-meta" id="blogmetadata">' + post.date + ' • ' + post.time + ' • ' + post.author + ' • ' + post.category + '</p>' +
         (post.image ? '<div style="text-align:center;"><img src="' + post.image + '" alt="Post Image"></div>' : "") +
@@ -325,7 +345,7 @@ function renderSinglePostView(postId) {
     blogContainer.innerHTML = postHTML;
     var backBtn2 = document.querySelector('.blog-back-button');
     if (backBtn2) backBtn2.addEventListener('click', goBackToList);
-    loadDisqus(post.originalIndex, post.title);
+    loadDisqus(post.index, post.title);
 }
 
 function loadDisqus(postId, postTitle) {
@@ -367,9 +387,9 @@ window.addEventListener("themeChanged", function() {
     var postId = urlParams.get("post");
     if (postId !== null) {
         var currentPost = posts.find(function(p) {
-            return p.originalIndex === parseInt(postId, 10);
+            return p.index === parseInt(postId, 10);
         });
-        if (currentPost) loadDisqus(currentPost.originalIndex, currentPost.title);
+        if (currentPost) loadDisqus(currentPost.index, currentPost.title);
     }
 });
 

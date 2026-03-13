@@ -248,8 +248,13 @@ function loadLatestPosts() {
         var metadata = typeof item === 'string' ? { file: item } : item || {};
         var title = metadata.title || (metadata.file || '').replace(/\.md\.txt$|\.txt$/g, '');
         var date = metadata.datetime || ((metadata.date || '') + (metadata.time ? ' ' + metadata.time : ''));
-        return {
-          index: i + 1,
+        var parsedIndex = null;
+      if (metadata.index !== undefined) {
+        var parsed = parseInt(metadata.index, 10);
+        if (!isNaN(parsed) && parsed > 0) parsedIndex = parsed;
+      }
+      return {
+          index: parsedIndex || i + 1,
           title: title,
           date: date,
           file: metadata.file || ''

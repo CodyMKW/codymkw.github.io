@@ -6,7 +6,8 @@
       "date": "2025-01-24",
       "time": "2:00 PM",
       "author": "CodyMKW",
-      "category": "Switch Online News"
+      "category": "Switch Online News",
+      "index": 7
     },
     {
       "file": "added-a-countdown-timer-page.txt",
@@ -14,7 +15,8 @@
       "date": "2026-01-13",
       "time": "1:09 PM",
       "author": "CodyMKW",
-      "category": "Page News/Updates"
+      "category": "Page News/Updates",
+      "index": 33
     },
     {
       "file": "added-a-site-banner.txt",
@@ -22,7 +24,8 @@
       "date": "2026-01-08",
       "time": "11:00 AM",
       "author": "CodyMKW",
-      "category": "Page News/Updates"
+      "category": "Page News/Updates",
+      "index": 32
     },
     {
       "file": "backing-up-my-switch-captures-to-youtube.txt",
@@ -30,7 +33,8 @@
       "date": "2025-05-06",
       "time": "4:20 PM",
       "author": "CodyMKW",
-      "category": "Game News"
+      "category": "Game News",
+      "index": 18
     },
     {
       "file": "been-playing-pokemon-rom-hacks.txt",
@@ -38,7 +42,8 @@
       "date": "2025-10-14",
       "time": "1:45 PM",
       "author": "CodyMKW",
-      "category": "Personal"
+      "category": "Personal",
+      "index": 22
     },
     {
       "file": "blog-improvements.txt",
@@ -46,7 +51,8 @@
       "date": "2025-07-07",
       "time": "3:35 AM",
       "author": "CodyMKW",
-      "category": "Page News/Updates"
+      "category": "Page News/Updates",
+      "index": 19
     },
     {
       "file": "blog-posts-now-loaded-from-MD-files.txt",
@@ -55,7 +61,8 @@
       "time": "12:46 PM",
       "author": "CodyMKW",
       "category": "Page News/Updates",
-      "image": "https://media1.tenor.com/m/A_wcjURiU7sAAAAd/shise-hojo.gif"
+      "image": "https://media1.tenor.com/m/A_wcjURiU7sAAAAd/shise-hojo.gif",
+      "index": 34
     },
     {
       "file": "button-page-has-been-updated.txt",
@@ -63,7 +70,8 @@
       "date": "2025-10-16",
       "time": "10:53 PM",
       "author": "CodyMKW",
-      "category": "Page News/Updates"
+      "category": "Page News/Updates",
+      "index": 25
     },
     {
       "file": "comments-added-to-blog-posts.txt",
@@ -71,7 +79,8 @@
       "date": "2025-07-12",
       "time": "5:05 PM",
       "author": "CodyMKW",
-      "category": "Page News/Updates"
+      "category": "Page News/Updates",
+      "index": 20
     },
     {
       "file": "ctgp-7-1-6-releasing-october-31.txt",
@@ -79,7 +88,8 @@
       "date": "2025-10-15",
       "time": "3:30 AM",
       "author": "CodyMKW",
-      "category": "Game News"
+      "category": "Game News",
+      "index": 23
     },
     {
       "file": "disqus-replaced-with-giscus.txt",
@@ -87,7 +97,8 @@
       "date": "2025-10-18",
       "time": "3:21 AM",
       "author": "CodyMKW",
-      "category": "Page News/Updates"
+      "category": "Page News/Updates",
+      "index": 26
     },
     {
       "file": "dont-forget-to-get-splatfest-avatar.txt",
@@ -95,7 +106,8 @@
       "date": "2025-10-16",
       "time": "1:33 PM",
       "author": "CodyMKW",
-      "category": "Page News/Updates"
+      "category": "Page News/Updates",
+      "index": 24
     },
     {
       "file": "game-status-page-added.txt",
@@ -103,7 +115,8 @@
       "date": "2023-02-15",
       "time": "8:45 PM",
       "author": "CodyMKW",
-      "category": "Page News/Updates"
+      "category": "Page News/Updates",
+      "index": 4
     },
     {
       "file": "game-status-page-broken.txt",
@@ -111,7 +124,8 @@
       "date": "2024-12-15",
       "time": "3:43 PM",
       "author": "CodyMKW",
-      "category": "Page News/Updates"
+      "category": "Page News/Updates",
+      "index": 6
     },
     {
       "file": "game-status-page-fixed.txt",
@@ -119,7 +133,8 @@
       "date": "2025-04-02",
       "time": "3:00 PM",
       "author": "CodyMKW",
-      "category": "Page News/Updates"
+      "category": "Page News/Updates",
+      "index": 16
     },
     {
       "file": "had-an-idea-for-new-post-but.txt",
@@ -127,7 +142,8 @@
       "date": "2023-01-18",
       "time": "1:01 PM",
       "author": "CodyMKW",
-      "category": "Page News/Updates"
+      "category": "Page News/Updates",
+      "index": 2
     },
     {
       "file": "halloween-icons-for-nso-members.txt",
@@ -135,7 +151,8 @@
       "date": "2025-10-28",
       "time": "12:40 AM",
       "author": "CodyMKW",
-      "category": "Switch Online News"
+      "category": "Switch Online News",
+      "index": 27
     },
     {
       "file": "hatsune-miku-joins-rocket-league-on-nintendo-switch.txt",
@@ -143,7 +160,8 @@
       "date": "2025-01-29",
       "time": "6:21 PM",
       "author": "CodyMKW",
-      "category": "Game News"
+      "category": "Game News",
+      "index": 11
     },
     {
       "file": "havent-felt-like-playing-nso-online-games.txt",
@@ -151,7 +169,8 @@
       "date": "2025-10-13",
       "time": "6:30 PM",
       "author": "CodyMKW",
-      "category": "Personal"
+      "category": "Personal",
+      "index": 21
     },
     {
       "file": "huge-acnh-free-3-0-update.txt",
@@ -159,7 +178,8 @@
       "date": "2025-11-10",
       "time": "11:15 AM",
       "author": "CodyMKW",
-      "category": "Game News"
+      "category": "Game News",
+      "index": 28
     },
     {
       "file": "listening-status-added-to-homepage.txt",
@@ -167,7 +187,8 @@
       "date": "2025-12-04",
       "time": "11:46 PM",
       "author": "CodyMKW",
-      "category": "Page News/Updates"
+      "category": "Page News/Updates",
+      "index": 29
     },
     {
       "file": "multi-stream-viewer-update-watch-multiple-twitch-streams-at-once.txt",
@@ -175,7 +196,8 @@
       "date": "2025-02-14",
       "time": "5:57 PM",
       "author": "CodyMKW",
-      "category": "Page News/Updates"
+      "category": "Page News/Updates",
+      "index": 14
     },
     {
       "file": "new-game-trials-for-nintendo-switch-online-members-moving-out-2-dead-cells.txt",
@@ -183,7 +205,8 @@
       "date": "2025-01-29",
       "time": "2:53 PM",
       "author": "CodyMKW",
-      "category": "Switch Online News"
+      "category": "Switch Online News",
+      "index": 10
     },
     {
       "file": "new-splatfest-frames-page-now-live.txt",
@@ -191,7 +214,8 @@
       "date": "2023-02-17",
       "time": "9:30 PM",
       "author": "CodyMKW",
-      "category": "Page News/Updates"
+      "category": "Page News/Updates",
+      "index": 5
     },
     {
       "file": "new-twitch-stream-viewer-added.txt",
@@ -199,7 +223,8 @@
       "date": "2025-02-14",
       "time": "2:00 AM",
       "author": "CodyMKW",
-      "category": "Page News/Updates"
+      "category": "Page News/Updates",
+      "index": 13
     },
     {
       "file": "new-youtube-video-viewer-added.txt",
@@ -207,7 +232,8 @@
       "date": "2025-02-16",
       "time": "3:23 PM",
       "author": "CodyMKW",
-      "category": "Page News/Updates"
+      "category": "Page News/Updates",
+      "index": 15
     },
     {
       "file": "nintendo-news-page-added.txt",
@@ -215,7 +241,8 @@
       "date": "2023-01-21",
       "time": "2:30 PM",
       "author": "CodyMKW",
-      "category": "Page News/Updates"
+      "category": "Page News/Updates",
+      "index": 3
     },
     {
       "file": "organize-your-game-library-with-backloggd.txt",
@@ -223,16 +250,18 @@
       "date": "2025-02-12",
       "time": "5:48 PM",
       "author": "CodyMKW",
-      "category": "Game News"
+      "category": "Game News",
+      "index": 12
     },
     {
       "file": "pokemon-fire-red-and-pokemon-leaf-green-are-coming-to-nintendo-switch.txt",
-      "title": "\"Pok\u00e9mon Fire Red and Pok\u00e9mon Leaf Green are coming to Nintendo Switch\"",
+      "title": "\"Pokémon Fire Red and Pokémon Leaf Green are coming to Nintendo Switch\"",
       "date": "2026-02-20",
       "time": "1:43 PM",
       "author": "CodyMKW",
       "category": "Game News",
-      "image": "https://www.pokemon.com/static-assets/content-assets/cms2/img/video-games/_tiles/2026/firered-version-leafgreen-version/announce/firered-version-leafgreen-version-169-en.png"
+      "image": "https://www.pokemon.com/static-assets/content-assets/cms2/img/video-games/_tiles/2026/firered-version-leafgreen-version/announce/firered-version-leafgreen-version-169-en.png",
+      "index": 35
     },
     {
       "file": "shiny-manaphy-shiny-enamorus-added-for-completing-sinnoh-hisui-pokedex-in-pokemon-home.txt",
@@ -240,7 +269,8 @@
       "date": "2025-01-28",
       "time": "12:11 PM",
       "author": "CodyMKW",
-      "category": "Game News"
+      "category": "Game News",
+      "index": 9
     },
     {
       "file": "status-cafe-added-to-homepage.txt",
@@ -248,7 +278,8 @@
       "date": "2025-12-06",
       "time": "9:00 PM",
       "author": "CodyMKW",
-      "category": "Page News/Updates"
+      "category": "Page News/Updates",
+      "index": 30
     },
     {
       "file": "switched-comments-back-to-disqus.txt",
@@ -256,7 +287,8 @@
       "date": "2025-12-15",
       "time": "12:00 PM",
       "author": "CodyMKW",
-      "category": "Page News/Updates"
+      "category": "Page News/Updates",
+      "index": 31
     },
     {
       "file": "theme-switcher-added-to-all-pages.txt",
@@ -264,7 +296,8 @@
       "date": "2025-04-10",
       "time": "10:18 PM",
       "author": "CodyMKW",
-      "category": "Page News/Updates"
+      "category": "Page News/Updates",
+      "index": 17
     },
     {
       "file": "totally-professional-fortnite-review.txt",
@@ -274,7 +307,8 @@
       "author": "CodyMKW",
       "category": "Review",
       "image": "https://files.catbox.moe/zmuy3g.jpg",
-      "rating": "2.3"
+      "rating": "2.3",
+      "index": 36
     },
     {
       "file": "totally-professional-pokemon-unbound-review.txt",
@@ -284,7 +318,8 @@
       "author": "CodyMKW",
       "category": "Review",
       "image": "https://images.immediate.co.uk/production/volatile/sites/3/2024/04/Pokemon-Unbound-cheats-d5bd74a.jpg",
-      "rating": "4.6"
+      "rating": "4.6",
+      "index": 37
     },
     {
       "file": "welcome-to-my-blog.txt",
@@ -292,7 +327,8 @@
       "date": "2023-01-17",
       "time": "10:35 AM",
       "author": "CodyMKW",
-      "category": "Page News/Updates"
+      "category": "Page News/Updates",
+      "index": 1
     },
     {
       "file": "whats-your-favorite-chocolate-splatfest-theme-returns.txt",
@@ -300,7 +336,8 @@
       "date": "2025-01-28",
       "time": "8:34 AM",
       "author": "CodyMKW",
-      "category": "Game News"
+      "category": "Game News",
+      "index": 8
     }
   ]
 }
