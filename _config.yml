@@ -1,0 +1,31 @@
+title: "CodyMKW"
+description: "Just Cody's little page on the interwebz! :)"
+url: "https://codymkw.github.io"
+baseurl: ""
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+
+# Exclude from processing
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - vendor/
+  - .bundle/
+  - .sass-cache/
+  - .jekyll-cache/
+  - gemfiles/
+
+# Include files
+include:
+  - _pages
+
+# Collections
+collections:
+  posts:
+    output: true
+    permalink: /blog/:name/

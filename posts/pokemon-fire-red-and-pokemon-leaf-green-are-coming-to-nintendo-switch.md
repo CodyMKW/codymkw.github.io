@@ -1,5 +1,5 @@
 ---
-title: Pokémon Fire Red and Pokémon Leaf Green are coming to Nintendo Switch
+title: "Pokémon Fire Red and Pokémon Leaf Green are coming to Nintendo Switch"
 date: 2026-02-20
 time: 1:43 PM
 author: CodyMKW

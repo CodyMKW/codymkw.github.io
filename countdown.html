@@ -1,3 +1,6 @@
+---
+layout: none
+---
 <!DOCTYPE html>
 <html lang="en">
 
@@ -37,12 +40,12 @@
     </div>
 
     <div class="container">
-        <!--# include file="includes/header.html" -->
+        {% include header.html %}
 
         <div class="content" id="countdownContent"></div>
     </div>
 
-    <!--# include file="includes/footer.html" -->
+    {% include footer.html %}
     <script>
         const container = document.getElementById("countdownContent");
         
