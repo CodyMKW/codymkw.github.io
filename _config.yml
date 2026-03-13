@@ -7,8 +7,12 @@ baseurl: ""
 markdown: kramdown
 highlighter: rouge
 plugins:
-  - jekyll-feed
   - jekyll-sitemap
+
+# Include files
+include:
+  - _pages
+  - posts
 
 # Exclude from processing
 exclude:
@@ -18,14 +22,10 @@ exclude:
   - .bundle/
   - .sass-cache/
   - .jekyll-cache/
+  - posts/*.md
   - gemfiles/
 
 # Include files
 include:
   - _pages
-
-# Collections
-collections:
-  posts:
-    output: true
-    permalink: /blog/:name/
+  - blogdata
