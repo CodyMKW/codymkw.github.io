@@ -238,12 +238,15 @@ function loadCurrently() {
 
 function parseFrontmatter(md) {
   md = md.replace(/^\uFEFF/, ''); // Remove BOM if present
+  console.log('Parsing frontmatter for:', md.substring(0, 50)); // Debug
   var fm = {};
   var content = md;
   if (md.indexOf('---') === 0) {
     var end = md.indexOf('---', 3);
+    console.log('End of frontmatter at:', end); // Debug
     if (end !== -1) {
       var raw = md.slice(3, end).trim().split('\n');
+      console.log('Raw frontmatter lines:', raw); // Debug
       raw.forEach(function (line) {
         var i = line.indexOf(':');
         if (i !== -1) {
@@ -254,7 +257,10 @@ function parseFrontmatter(md) {
       });
       content = md.slice(end + 3).trim();
     }
+  } else {
+    console.log('No frontmatter found, md starts with:', md.substring(0, 10)); // Debug
   }
+  console.log('Parsed fm:', fm); // Debug
   return { frontmatter: fm, content: content };
 }
 
