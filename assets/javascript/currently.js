@@ -237,6 +237,7 @@ function loadCurrently() {
 }
 
 function parseFrontmatter(md) {
+  md = md.replace(/^\uFEFF/, ''); // Remove BOM if present
   var fm = {};
   var content = md;
   if (md.indexOf('---') === 0) {

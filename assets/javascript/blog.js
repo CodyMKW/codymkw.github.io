@@ -29,6 +29,7 @@ var disqusShortname = 'codymkw';
 var disqusBaseUrl = 'https://codymkw.nekoweb.org';
 
 function parseFrontmatter(md) {
+    md = md.replace(/^\uFEFF/, ''); // Remove BOM if present
     var fm = {};
     var content = md;
     if (md.indexOf('---') === 0) {
