@@ -56,6 +56,7 @@ layout: none
                         <p>Hey there! I'm Cody. I love playing Nintendo games and watching anime. My birthday is January 17th, and my favorite color is
                             <font color="#00C900">green</font>.</p>
                         <p>My favorite game series is Animal Crossing, though I also play Splatoon. I play as an Octoling and prefer using the Custom Splattershot Jr., and I play a little Mario Kart—my favorite character is Baby Daisy. My favorite anime is Clannad. That's really about it for this bio since I don't have much else to say, lol!</p>
+                        <p class="preferredtimemessage">I'll play whenever but prefer <span class="discord-time" data-time="1775426400" data-style="t"></span> to <span class="discord-time" data-time="1775446200" data-style="t"></span> but can also do around <span class="discord-time" data-time="1775415600" data-style="t"></span> the times I mentioned all match whatever time zone you are in so no need to convert the times to your own time zone the page does that for you :)</p>
                     </div>
                 </div>
             </section>
@@ -84,31 +85,76 @@ layout: none
     </div>
     {% include footer.html %}
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             fetch('https://api.npoint.io/e48ee20c0a091f1b8963')
                 .then(response => response.json())
                 .then(data => {
                     updateAvatarFrame(data.avatarframe);
                 });
         });
-        
+
         function updateAvatarFrame(avatarFrames) {
             const frameContainer = document.getElementById('avatar-frame');
             const avatarImage = frameContainer.querySelector('.avatar-image');
             const currentFrame = avatarFrames[0];
-        
+
             let frameURL;
             if (currentFrame.grandfestmode) {
                 frameURL = `assets/images/splatfest/grandfest/Team_${currentFrame.team}.avif`;
             } else {
                 frameURL = `assets/images/splatfest/${currentFrame.species}/Team_${currentFrame.team}.avif`;
             }
-        
+
             const frameImage = frameContainer.querySelector('.frame-image');
             frameImage.src = frameURL;
-        
+
             frameImage.style.display = currentFrame.status === 0 ? 'none' : 'block';
         }
+
+        function getRelativeTime(ts) {
+            var now = new Date().getTime();
+            var diff = Math.floor((ts - now) / 1000);
+
+            var units = [
+                { name: "year", secs: 31536000 },
+                { name: "month", secs: 2592000 },
+                { name: "day", secs: 86400 },
+                { name: "hour", secs: 3600 },
+                { name: "minute", secs: 60 }
+            ];
+
+            for (var i = 0; i < units.length; i++) {
+                var val = Math.floor(Math.abs(diff) / units[i].secs);
+                if (val >= 1) {
+                    return diff > 0
+                        ? "in " + val + " " + units[i].name + (val > 1 ? "s" : "")
+                        : val + " " + units[i].name + (val > 1 ? "s" : "") + " ago";
+                }
+            }
+
+            return "just now";
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            var elements = document.getElementsByClassName("discord-time");
+
+            for (var i = 0; i < elements.length; i++) {
+                var el = elements[i];
+                var ts = parseInt(el.getAttribute("data-time"), 10);
+                var style = el.getAttribute("data-style");
+
+                var date = new Date(ts * 1000);
+
+                if (style === "t") el.innerText = date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+                else if (style === "T") el.innerText = date.toLocaleTimeString();
+                else if (style === "d") el.innerText = date.toLocaleDateString();
+                else if (style === "D") el.innerText = date.toLocaleDateString([], { year: 'numeric', month: 'long', day: 'numeric' });
+                else if (style === "f") el.innerText = date.toLocaleString();
+                else if (style === "F") el.innerText = date.toLocaleString([], { dateStyle: 'full', timeStyle: 'short' });
+                else if (style === "R") el.innerText = getRelativeTime(ts * 1000);
+                else el.innerText = date.toLocaleString();
+            }
+        });
     </script>
 </body>
 
