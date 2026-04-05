@@ -41,20 +41,38 @@ layout: none
     <div class="container">
         {% include header.html %}
         <div class="content" id="DreamAddressContent">
-            <h2><i class="emoji acLuna"></i></h2>
-            <h2>Ula'ula</h2>
-            <h2 id="dream-address"></h2>
-            <small id="dream-update-date"></small>
-            <p><img src="assets/images/ACNHWelcome.webp" alt="ACNH Screenshot"></p>
-            <p id="visitor-count"></p>
-            <p align="left">
-                Welcome to Ula'ula! Explore and talk to our lovely residents:
-                <span id="villager-list"></span>. Also, pay a visit to the memorial for
-                <a href="https://en.wikipedia.org/wiki/Etika" target="_blank">Etika</a> and
+            
+            <header class="island-header">
+                <h1 class="island-name"><i class="emoji acLuna"></i><br> Ula'ula</h1>
+                
+                <div class="dream-address-container">
+                    <small class="label">DREAM ADDRESS</small>
+                    <h2 id="dream-address"></h2>
+                </div>
+                
+                <small id="dream-update-date" class="update-date"></small>
+            </header>
+
+            <figure class="featured-image">
+                <img src="assets/images/ACNHWelcome.webp" alt="Welcome to Ula'ula - Animal Crossing: New Horizons">
+                <figcaption>Welcome to my peaceful island paradise!</figcaption>
+            </figure>
+
+            <div id="visitor-count" class="visitor-info"></div>
+
+            <p class="welcome-text">
+                Welcome to Ula'ula! Explore and talk to our lovely residents: 
+                <span id="villager-list"></span>. 
+                Also, pay a visit to the memorial for 
+                <a href="https://en.wikipedia.org/wiki/Etika" target="_blank">Etika</a> and 
                 <a href="https://en.wikipedia.org/wiki/Satoru_Iwata" target="_blank">Satoru Iwata</a>. 😊
             </p>
-            <br>
-            
+
+            <figure class="island-map">
+                <img src="assets/images/ulaula-island-map.webp" alt="Ula'ula Island Map - Full layout of CodyMKW's Animal Crossing island">
+                <figcaption>Complete Map of Ula'ula Island</figcaption>
+            </figure>
+            <small class="last-updated">Page last updated: <!--# flastmod file="dream-address.html" fmt="%A, %B %d, %Y at %h:%mm %p" timezone="America/New_York" --></small>
         </div>
     </div>
     {% include footer.html %}
@@ -77,7 +95,7 @@ layout: none
               const villagerEl = document.getElementById('villager-list');
               if (villagerEl && Array.isArray(data.villagers)) {
                const villagers = data.villagers;
-        
+       
                if (villagers.length === 1) {
                  villagerEl.textContent = villagers[0];
              } else if (villagers.length === 2) {
