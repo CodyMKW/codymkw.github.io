@@ -1,0 +1,88 @@
+{
+  "maintenance": {
+    "enabled": true,
+    "bypass_key": "codyaccess" // add ?key=bypass_key at the end of your URL
+  },
+
+  "branding": {
+    "site_name": "CodyMKW",
+    "logo_url": "https://codymkw.nekoweb.org/android-chrome-512x512.png",
+    "logo_text": "CodyMKW",
+    "favicon_url": "https://i.imgur.com/nmr1zlb.png"
+  },
+
+  "content": {
+    "headline": "Site will Be Right Back",
+    "subheadline": "Site Maintenance",
+    "body": "Site is currently undergoing maintenance, Everything will be back later so check back at another time — thank you for your patience.",
+    "footer_note": "I apologize for any inconvenience."
+  },
+
+  "eta": {
+    "enabled": false,
+    "mode": "countdown",
+    "target_datetime": "2026-04-30T12:00:00Z",
+    "timezone_label": "UTC",
+    "label": "Estimated completion in",
+    "fallback_text": "We'll be back soon"
+  },
+
+  "status": {
+    "show_status_items": true,
+    "items": [
+      { "label": "Switch Status",      "state": "operational",         "icon": "✅" },
+      { "label": "3ds Status",   "state": "operational",  "icon": "✅" },
+      { "label": "MK8 Deluxe Randomizer",     "state": "operational",  "icon": "✅" },
+      { "label": "Splatoon 3 Randomizer",     "state": "operational",  "icon": "✅" },
+      { "label": "Blog",     "state": "operational",  "icon": "✅" },
+      { "label": "Anilist API",     "state": "operational",  "icon": "✅" },
+      { "label": "Status.Cafe API",     "state": "operational",  "icon": "✅" },
+      { "label": "Blog",     "state": "operational",  "icon": "✅" },
+      { "label": "FalconXD Tournament Database",     "state": "maintenance",  "icon": "⚙️" },
+      { "label": "Joseph's secret banana",     "state": "down",  "icon": "❌" },
+    ]
+  },
+
+  "progress": {
+    "show": false,
+    "percent": 0,
+    "label": "Upgrade progress"
+  },
+
+  "contact": {
+    "show": true,
+    "label": "Need urgent help?",
+    "links": [
+      { "text": "Blue Sky", "url": "https://bsky.app/profile/codymkw.nekoweb.org", "icon": "🦋" },
+      { "text": "Twitter / X",   "url": "https://twitter.com/CodyMKW", "icon": "🐦" }
+    ]
+  },
+
+  "updates": {
+    "show": true,
+    "label": "Latest Updates",
+    "items": [
+      { "time": "10:00 PM", "message": "Maintenance window has begun." }
+    ]
+  },
+
+  "appearance": {
+    "theme": "dark", // dark or light
+    "accent_color": "#00C900",  // Default: #00C900
+    "background_style": "mesh",
+    "particle_effect": true, // true or false
+    "particle_count": 50, // Default: 40
+    "noise_overlay": true, // true or false
+    "animated_logo": true, // true or false
+    "clock": {
+      "show": true, // true or false
+      "show_timezone": true // true or false
+    }
+  },
+
+  "meta": {
+    "page_title": "Maintenance — CodyMKW",
+    "refresh_interval_seconds": 350,
+    "auto_redirect_on_disable": true
+  }
+}
