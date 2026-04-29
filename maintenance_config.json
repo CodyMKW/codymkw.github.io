@@ -28,7 +28,7 @@
   },
 
   "status": {
-    "show_status_items": true,
+    "show_status_items": false,
     "items": [
       { "label": "Switch Status", "state": "operational", "icon": "✅" },
       { "label": "3ds Status", "state": "operational", "icon": "✅" },
