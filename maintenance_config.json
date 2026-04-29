@@ -1,7 +1,7 @@
 {
   "maintenance": {
     "enabled": true,
-    "bypass_key": "codyaccess" // add ?key=bypass_key at the end of your URL
+    "bypass_key": "codyaccess"
   },
 
   "branding": {
@@ -30,16 +30,15 @@
   "status": {
     "show_status_items": true,
     "items": [
-      { "label": "Switch Status",      "state": "operational",         "icon": "✅" },
-      { "label": "3ds Status",   "state": "operational",  "icon": "✅" },
-      { "label": "MK8 Deluxe Randomizer",     "state": "operational",  "icon": "✅" },
-      { "label": "Splatoon 3 Randomizer",     "state": "operational",  "icon": "✅" },
-      { "label": "Blog",     "state": "operational",  "icon": "✅" },
-      { "label": "Anilist API",     "state": "operational",  "icon": "✅" },
-      { "label": "Status.Cafe API",     "state": "operational",  "icon": "✅" },
-      { "label": "Blog",     "state": "operational",  "icon": "✅" },
-      { "label": "FalconXD Tournament Database",     "state": "maintenance",  "icon": "⚙️" },
-      { "label": "Joseph's secret banana",     "state": "down",  "icon": "❌" },
+      { "label": "Switch Status", "state": "operational", "icon": "✅" },
+      { "label": "3ds Status", "state": "operational", "icon": "✅" },
+      { "label": "MK8 Deluxe Randomizer", "state": "operational", "icon": "✅" },
+      { "label": "Splatoon 3 Randomizer", "state": "operational", "icon": "✅" },
+      { "label": "Blog", "state": "operational", "icon": "✅" },
+      { "label": "Anilist API", "state": "operational", "icon": "✅" },
+      { "label": "Status.Cafe API", "state": "operational", "icon": "✅" },
+      { "label": "FalconXD Tournament Database", "state": "maintenance", "icon": "⚙️" },
+      { "label": "Joseph's secret banana", "state": "down", "icon": "❌" }
     ]
   },
 
@@ -54,7 +53,7 @@
     "label": "Need urgent help?",
     "links": [
       { "text": "Blue Sky", "url": "https://bsky.app/profile/codymkw.nekoweb.org", "icon": "🦋" },
-      { "text": "Twitter / X",   "url": "https://twitter.com/CodyMKW", "icon": "🐦" }
+      { "text": "Twitter / X", "url": "https://twitter.com/CodyMKW", "icon": "🐦" }
     ]
   },
 
@@ -67,16 +66,16 @@
   },
 
   "appearance": {
-    "theme": "dark", // dark or light
-    "accent_color": "#00C900",  // Default: #00C900
+    "theme": "dark",
+    "accent_color": "#00C900",
     "background_style": "mesh",
-    "particle_effect": true, // true or false
-    "particle_count": 50, // Default: 40
-    "noise_overlay": true, // true or false
-    "animated_logo": true, // true or false
+    "particle_effect": true,
+    "particle_count": 50,
+    "noise_overlay": true,
+    "animated_logo": true,
     "clock": {
-      "show": true, // true or false
-      "show_timezone": true // true or false
+      "show": true,
+      "show_timezone": true
     }
   },
 
