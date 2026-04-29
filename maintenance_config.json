@@ -1,6 +1,6 @@
 {
   "maintenance": {
-    "enabled": true,
+    "enabled": false,
     "bypass_key": "codyaccess"
   },
 
