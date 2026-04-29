@@ -19,16 +19,16 @@
   },
 
   "eta": {
-    "enabled": false,
+    "enabled": true,
     "mode": "countdown",
-    "target_datetime": "2026-04-30T12:00:00Z",
+    "target_datetime": "2026-04-30T04:00:00.000Z",
     "timezone_label": "UTC",
     "label": "Estimated completion in",
     "fallback_text": "We'll be back soon"
   },
 
   "status": {
-    "show_status_items": false,
+    "show_status_items": true,
     "items": [
       { "label": "Switch Status", "state": "operational", "icon": "✅" },
       { "label": "3ds Status", "state": "operational", "icon": "✅" },
@@ -43,8 +43,8 @@
   },
 
   "progress": {
-    "show": false,
-    "percent": 0,
+    "show": true,
+    "percent": 50,
     "label": "Upgrade progress"
   },
 
