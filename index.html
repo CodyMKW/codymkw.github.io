@@ -3,19 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CodyMKW | Home</title>
+    <title>CodyMKW | Hub</title>
     <style>
         :root {
-            --accent: #4ade80;
+            --accent: #4ade80; 
             --bg: #0d1117;
             --glass: rgba(22, 27, 34, 0.7);
             --border: rgba(255, 255, 255, 0.1);
+            --text: #c9d1d9;
+            --muted: #8b949e;
         }
 
         body {
             margin: 0;
-            background: radial-gradient(circle at 50% 50%, #1a202c, #0d1117);
-            color: #c9d1d9;
+            background: #0d1117;
+            background-image: 
+                radial-gradient(at 0% 0%, hsla(145,100%,20%,0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, hsla(145,100%,20%,0.15) 0px, transparent 50%);
+            color: var(--text);
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             display: flex;
             align-items: center;
@@ -23,90 +28,292 @@
             min-height: 100vh;
         }
 
+        .container {
+            width: 90%;
+            max-width: 450px;
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
         .card {
             background: var(--glass);
             backdrop-filter: blur(15px);
             border: 1px solid var(--border);
-            padding: 2rem;
-            border-radius: 20px;
-            width: 90%;
-            max-width: 400px;
-            text-align: center;
+            padding: 1.5rem;
+            border-radius: 16px;
             box-shadow: 0 8px 32px rgba(0,0,0,0.3);
         }
 
-        h1 { margin: 0 0 0.5rem; color: #fff; }
-        p { color: #8b949e; font-size: 0.9rem; margin-bottom: 2rem; }
+        /* Profile Header */
+        .profile {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .profile h1 {
+            margin: 0;
+            font-size: 1.8rem;
+            color: #fff;
+        }
 
+        .level-badge {
+            background: rgba(74, 222, 128, 0.1);
+            color: var(--accent);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            border: 1px solid rgba(74, 222, 128, 0.2);
+        }
+
+        /* Button */
         .btn {
             display: block;
             background: var(--accent);
             color: #000;
+            text-align: center;
             text-decoration: none;
             font-weight: 700;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 2rem;
-            transition: transform 0.2s;
+            padding: 14px;
+            border-radius: 10px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-bottom: 0.5rem;
         }
-        .btn:hover { transform: scale(1.02); }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(74, 222, 128, 0.3);
+        }
 
-        #anilist-box {
-            border-top: 1px solid var(--border);
-            padding-top: 1.5rem;
-            text-align: left;
+        /* Data Sections */
+        .section-title {
             font-size: 0.85rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
-        .anime-item { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
-        .anime-item img { width: 40px; height: 55px; border-radius: 4px; object-fit: cover; }
+
+        .data-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(0,0,0,0.2);
+            padding: 10px;
+            border-radius: 10px;
+            text-decoration: none;
+            color: inherit;
+            transition: background 0.2s;
+        }
+
+        .data-row:hover {
+            background: rgba(255,255,255,0.05);
+        }
+
+        .data-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            object-fit: cover;
+            background: #21262d;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .data-info {
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .data-title {
+            font-weight: 600;
+            color: #fff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-size: 0.95rem;
+            margin-bottom: 3px;
+        }
+
+        .data-sub {
+            font-size: 0.8rem;
+            color: var(--muted);
+        }
+
+        /* Tags */
+        .tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            background: #21262d;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        /* Loading Animation */
+        .pulse {
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 0.5; }
+            50% { opacity: 1; }
+            100% { opacity: 0.5; }
+        }
     </style>
 </head>
 <body>
 
+<div class="container">
     <div class="card">
-        <h1>CodyMKW</h1>
-        <p>Developer & Gamer. You've reached my hub.</p>
-        
-        <a href="https://codymkw.nekoweb.org" class="btn">Enter Main Site</a>
-
-        <div id="anilist-box">
-            <div id="status">Checking what I'm watching...</div>
+        <div class="profile">
+            <h1>CodyMKW</h1>
+            <div class="level-badge">Lv. 35</div>
         </div>
+        <p style="color: var(--muted); font-size: 0.9rem; margin-top: 0; margin-bottom: 1.5rem;">
+            Developer, Gamer, & Anime Fan. Welcome to my hub.
+        </p>
+        
+        <a href="https://codymkw.nekoweb.org" class="btn">Go to Main Site</a>
     </div>
 
-    <script>
-        const query = `
-        query {
-            MediaListCollection(userName: "CodyMKW", type: ANIME, status: CURRENT) {
-                lists { entries { media { title { romaji } coverImage { large } siteUrl } } }
-            }
-        }`;
+    <!-- Live Data Card -->
+    <div class="card">
+        <!-- GitHub Activity -->
+        <div style="margin-bottom: 1.5rem;">
+            <div class="section-title">
+                <span style="color: var(--accent)">●</span> Latest Code Activity
+            </div>
+            <a href="https://github.com/CodyMKW" target="_blank" class="data-row" id="gh-container">
+                <div class="data-icon">🐙</div>
+                <div class="data-info">
+                    <div class="data-title pulse" id="gh-title">Fetching GitHub...</div>
+                    <div class="data-sub" id="gh-sub">Please wait</div>
+                </div>
+            </a>
+        </div>
 
-        fetch('https://graphql.anilist.co', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ query })
-        })
+        <!-- AniList Activity -->
+        <div style="margin-bottom: 1.5rem;">
+            <div class="section-title">
+                <span style="color: var(--accent)">●</span> Last Watched Anime
+            </div>
+            <a href="https://anilist.co/user/CodyMKW/" target="_blank" class="data-row" id="al-container">
+                <div class="data-icon" id="al-icon">📺</div>
+                <div class="data-info">
+                    <div class="data-title pulse" id="al-title">Fetching AniList...</div>
+                    <div class="data-sub" id="al-sub">Please wait</div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Static Tags -->
+        <div>
+            <div class="section-title">
+                <span style="color: var(--accent)">●</span> Current Rotation
+            </div>
+            <div class="tags">
+                <span class="tag">🦑 Splatoon</span>
+                <span class="tag">🏕️ Animal Crossing</span>
+                <span class="tag">🎧 English Dubs</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 1. Fetch Latest GitHub Activity (No API Key needed for public events)
+    fetch('https://api.github.com/users/CodyMKW/events/public')
         .then(res => res.json())
         .then(data => {
-            const list = data.data.MediaListCollection.lists[0].entries;
-            const container = document.getElementById('status');
-            if (list.length > 0) {
-                const anime = list[0].media;
-                container.innerHTML = `
-                    <div style="color: #8b949e; margin-bottom: 5px;">Currently Watching:</div>
-                    <a href="${anime.siteUrl}" style="text-decoration:none; color:inherit" target="_blank" class="anime-item">
-                        <img src="${anime.coverImage.large}">
-                        <span>${anime.title.romaji}</span>
-                    </a>
-                `;
+            if (data && data.length > 0) {
+                const latest = data[0];
+                let action = "Active in";
+                if (latest.type === "PushEvent") action = "Pushed to";
+                if (latest.type === "WatchEvent") action = "Starred";
+                if (latest.type === "CreateEvent") action = "Created";
+                
+                document.getElementById('gh-title').innerText = latest.repo.name;
+                document.getElementById('gh-title').classList.remove('pulse');
+                document.getElementById('gh-sub').innerText = `${action} repository`;
+                document.getElementById('gh-container').href = `https://github.com/${latest.repo.name}`;
             } else {
-                container.innerHTML = "Not currently watching anything.";
+                throw new Error("No events");
             }
         })
         .catch(() => {
-            document.getElementById('status').innerText = "AniList stats currently unavailable.";
+            document.getElementById('gh-title').innerText = "GitHub Profile";
+            document.getElementById('gh-title').classList.remove('pulse');
+            document.getElementById('gh-sub').innerText = "Check out my repositories";
         });
-    </script>
+
+    // 2. Fetch Last Updated Anime from AniList (Sorted by most recent edit)
+    const query = `
+    query {
+        Page(page: 1, perPage: 1) {
+            mediaList(userName: "CodyMKW", sort: UPDATED_TIME_DESC) {
+                status
+                progress
+                media {
+                    title { english romaji }
+                    coverImage { large }
+                    siteUrl
+                }
+            }
+        }
+    }`;
+
+    fetch('https://graphql.anilist.co', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query })
+    })
+    .then(res => res.json())
+    .then(data => {
+        const list = data.data.Page.mediaList;
+        if (list && list.length > 0) {
+            const entry = list[0];
+            const anime = entry.media;
+            
+            // Prefer English title, fallback to romaji
+            const title = anime.title.english || anime.title.romaji;
+            
+            const statusMap = { CURRENT: "Watching", COMPLETED: "Completed", DROPPED: "Dropped", PAUSED: "Paused", PLANNING: "Planning to watch" };
+            const statusStr = statusMap[entry.status] || entry.status;
+            
+            let progressStr = statusStr;
+            if (entry.status === 'CURRENT' && entry.progress) {
+                progressStr += ` • Ep ${entry.progress}`;
+            }
+
+            document.getElementById('al-icon').innerHTML = `<img src="${anime.coverImage.large}" style="width:100%; height:100%; border-radius:8px; object-fit:cover;">`;
+            document.getElementById('al-title').innerText = title;
+            document.getElementById('al-title').classList.remove('pulse');
+            document.getElementById('al-sub').innerText = progressStr;
+            document.getElementById('al-container').href = anime.siteUrl;
+        } else {
+            throw new Error("No anime found");
+        }
+    })
+    .catch(() => {
+        document.getElementById('al-title').innerText = "AniList Profile";
+        document.getElementById('al-title').classList.remove('pulse');
+        document.getElementById('al-sub').innerText = "Check out my anime stats";
+    });
+</script>
+
 </body>
 </html>
