@@ -19,19 +19,6 @@ A real-time personal dashboard aggregating my gaming statistics, coding activity
   * [GitHub REST API](https://docs.github.com/en/rest).
   * Custom `3dsrpc` & `nxapi` integrations.
 
-## 📦 Setup & Deployment
-
-1. **Clone the repository:**
-   ```bash
-   git clone [https://github.com/CodyMKW/hub-repo-name.git](https://github.com/CodyMKW/hub-repo-name.git)
-   ```
-
-2. **Configuration:**
-   The dashboard relies on live API endpoints. Ensure your Cloudflare Workers are configured correctly for the `3dsrpc` and `Ultra Rumble` endpoints.
-
-3. **Deploy:**
-   This project is designed to be hosted via [Nekoweb](https://nekoweb.org/) or [GitHub Pages](https://pages.github.com/). Simply upload the `index.html` file to your server.
-
 ## 📝 API Credits
 
 * **3DS Rich Presence:** Powered by my custom [3dsrpc](https://3dsrpc.codymkw.workers.dev/) worker.
