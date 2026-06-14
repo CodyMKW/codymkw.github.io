@@ -3,304 +3,485 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CodyMKW | Hub</title>
+    <title>CodyMKW // Executive Hub</title>
     <style>
         :root {
-            --accent: #4ade80; 
-            --bg: #0d1117;
-            --glass: rgba(22, 27, 34, 0.75);
-            --border: rgba(255, 255, 255, 0.08);
-            --text: #c9d1d9;
-            --muted: #8b949e;
+            --bg-main: #060913;
+            --bg-card: rgba(10, 15, 30, 0.7);
+            --bg-card-hover: rgba(16, 24, 48, 0.85);
+            --border-glow: rgba(0, 255, 135, 0.15);
+            --border-line: rgba(255, 255, 255, 0.05);
+            --text-primary: #f0f4f8;
+            --text-muted: #7e8c9a;
+            --accent-green: #00ff87;
+            --accent-cyan: #60efff;
+            --font-stack: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         body {
             margin: 0;
-            background: #05070a;
+            background-color: var(--bg-main);
             background-image: 
-                radial-gradient(at 0% 0%, hsla(145,100%,20%,0.12) 0px, transparent 50%),
-                radial-gradient(at 100% 100%, hsla(145,100%,20%,0.12) 0px, transparent 50%);
-            color: var(--text);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+                radial-gradient(circle at 10% 20%, rgba(0, 255, 135, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(96, 239, 255, 0.05) 0%, transparent 40%),
+                linear-gradient(to bottom, #060913, #02040a);
+            background-attachment: fixed;
+            color: var(--text-primary);
+            font-family: var(--font-stack);
+            min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            min-height: 100vh;
-            padding: 40px 0;
-            box-sizing: border-box;
+            padding: 40px 20px;
+            overflow-x: hidden;
         }
 
-        .container {
-            width: 90%;
-            max-width: 460px;
+        /* Custom Modern Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-main);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-green);
+        }
+
+        .dashboard {
+            width: 100%;
+            max-width: 960px;
+            display: grid;
+            grid-template-columns: 1fr 1.3fr;
+            gap: 24px;
+            align-items: start;
+        }
+
+        @media (max-width: 820px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Reusable Card Styling */
+        .card {
+            background: var(--bg-card);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid var(--border-line);
+            border-radius: 24px;
+            padding: 32px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135px, transparent 0%, rgba(255,255,255,0.02) 100%);
+            pointer-events: none;
+        }
+
+        /* Profile Block (Left Column) */
+        .profile-panel {
             display: flex;
             flex-direction: column;
-            gap: 1.2rem;
+            gap: 24px;
+            position: sticky;
+            top: 40px;
         }
 
-        .card {
-            background: var(--glass);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            padding: 1.6rem;
-            border-radius: 20px;
-            border: 1px solid var(--border);
-            box-shadow: 0 10px 40px rgba(0,0,0,0.4);
-            transition: border-color 0.3s, box-shadow 0.3s;
+        .identity-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
 
-        /* Profile Header */
-        .profile {
+        .identity-title h1 {
+            margin: 0;
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            background: linear-gradient(to right, #fff 40%, var(--text-muted));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .identity-title p {
+            margin: 6px 0 0 0;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        .rank-badge {
+            background: linear-gradient(135deg, rgba(0, 255, 135, 0.1), rgba(96, 239, 255, 0.1));
+            border: 1px solid rgba(0, 255, 135, 0.3);
+            color: var(--accent-green);
+            padding: 6px 16px;
+            border-radius: 14px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            box-shadow: 0 0 20px rgba(0, 255, 135, 0.15);
+        }
+
+        /* Utility System Analytics Widgets */
+        .system-widget {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border-line);
+            border-radius: 16px;
+            padding: 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 0.8rem;
-        }
-        
-        .profile h1 {
-            margin: 0;
-            font-size: 1.9rem;
-            font-weight: 800;
-            letter-spacing: -0.5px;
-            color: #fff;
+            font-size: 0.85rem;
         }
 
-        .level-badge {
-            background: rgba(74, 222, 128, 0.08);
-            color: var(--accent);
-            padding: 5px 12px;
-            border-radius: 30px;
-            font-size: 0.8rem;
-            font-weight: 700;
-            border: 1px solid rgba(74, 222, 128, 0.2);
-            letter-spacing: 0.5px;
-        }
-
-        /* Personalized Tags */
-        .tag-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            margin-bottom: 1.5rem;
-        }
-
-        .tag {
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            padding: 4px 10px;
-            border-radius: 8px;
-            font-size: 0.75rem;
-            color: #aeafb4;
-            font-weight: 500;
-        }
-
-        /* Button */
-        .btn {
-            display: block;
-            background: var(--accent);
-            color: #070a0e;
-            text-align: center;
-            text-decoration: none;
-            font-weight: 700;
-            padding: 14px;
-            border-radius: 12px;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(74, 222, 128, 0.35);
-        }
-
-        /* Data Layout */
-        .section-title {
-            font-size: 0.8rem;
-            color: var(--muted);
-            text-transform: uppercase;
-            letter-spacing: 1.2px;
-            margin-bottom: 0.8rem;
+        .widget-label {
+            color: var(--text-muted);
             display: flex;
             align-items: center;
             gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .widget-value {
+            font-family: monospace;
+            color: var(--accent-cyan);
             font-weight: 700;
         }
 
-        .data-row {
+        /* Modern Matrix Tags */
+        .matrix-tags {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .matrix-badge {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-line);
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-primary);
             display: flex;
             align-items: center;
-            gap: 14px;
-            background: rgba(0, 0, 0, 0.25);
-            border: 1px solid transparent;
-            padding: 12px;
+            gap: 10px;
+        }
+
+        .matrix-badge span {
+            font-size: 1.1rem;
+        }
+
+        .matrix-badge:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255,255,255,0.15);
+            transform: translateY(-2px);
+        }
+
+        /* Primary Action Buttons */
+        .action-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn-prime {
+            background: linear-gradient(90deg, var(--accent-green), var(--accent-cyan));
+            color: #04060c;
+            border: none;
             border-radius: 14px;
+            padding: 16px;
+            font-weight: 700;
+            font-size: 1rem;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(0, 255, 135, 0.2);
+        }
+
+        .btn-prime:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(0, 255, 135, 0.4);
+        }
+
+        .btn-sub {
+            background: rgba(255,255,255,0.03);
+            color: var(--text-primary);
+            border: 1px solid var(--border-line);
+            border-radius: 14px;
+            padding: 14px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .btn-sub:hover {
+            background: rgba(255,255,255,0.07);
+            border-color: rgba(255,255,255,0.2);
+        }
+
+        /* Telemetry Feed Items (Right Column) */
+        .telemetry-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .panel-heading {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin: 0 0 8px 4px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .panel-heading::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border-line);
+        }
+
+        .feed-row {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            background: rgba(5, 8, 16, 0.4);
+            border: 1px solid var(--border-line);
+            padding: 16px 20px;
+            border-radius: 18px;
             text-decoration: none;
             color: inherit;
-            transition: background 0.2s, border-color 0.3s, box-shadow 0.3s;
+            position: relative;
         }
 
-        .data-row:hover {
-            background: rgba(255, 255, 255, 0.04);
-            border-color: rgba(255, 255, 255, 0.1);
+        .feed-row:hover {
+            background: var(--bg-card-hover);
+            border-color: rgba(255,255,255,0.15);
+            transform: scale(1.015) translateX(4px);
         }
 
-        .online-glow {
-            border-color: rgba(74, 222, 128, 0.25) !important;
-            box-shadow: 0 0 15px rgba(74, 222, 128, 0.08);
-            background: rgba(74, 222, 128, 0.02) !important;
+        /* Live online status glow configuration */
+        .live-active {
+            border-color: rgba(0, 255, 135, 0.3) !important;
+            box-shadow: 0 10px 30px rgba(0, 255, 135, 0.06);
+            background: linear-gradient(90deg, rgba(0, 255, 135, 0.02), rgba(5, 8, 16, 0.4)) !important;
         }
 
-        .data-icon {
-            width: 44px;
-            height: 44px;
-            border-radius: 10px;
-            object-fit: cover;
-            background: #161b22;
-            border: 1px solid rgba(255,255,255,0.05);
+        .status-node {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--text-muted);
+            display: inline-block;
+        }
+
+        .feed-row.live-active .status-node {
+            background: var(--accent-green);
+            box-shadow: 0 0 12px var(--accent-green);
+            animation: beacon 2s infinite;
+        }
+
+        @keyframes beacon {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.4); opacity: 0.6; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .feed-media {
+            width: 52px;
+            height: 52px;
+            border-radius: 12px;
+            background: #111625;
+            border: 1px solid rgba(255,255,255,0.06);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.3rem;
+            font-size: 1.5rem;
             overflow: hidden;
             flex-shrink: 0;
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.5);
         }
 
-        .data-info {
+        .feed-media img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .feed-content {
             flex: 1;
             overflow: hidden;
         }
 
-        .data-title {
-            font-weight: 600;
+        .feed-title {
+            font-weight: 700;
             color: #fff;
+            font-size: 1.05rem;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            font-size: 0.95rem;
-            margin-bottom: 3px;
+            margin-bottom: 4px;
         }
 
-        .data-sub {
-            font-size: 0.8rem;
-            color: var(--muted);
+        .feed-subtitle {
+            font-size: 0.85rem;
+            color: var(--text-muted);
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
 
-        .footer-credit {
-            text-align: center;
+        .feed-meta {
+            font-family: monospace;
             font-size: 0.75rem;
             color: rgba(255,255,255,0.2);
-            margin-top: 0.5rem;
+            text-transform: uppercase;
             letter-spacing: 0.5px;
+            padding: 4px 8px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 6px;
+            border: 1px solid var(--border-line);
         }
 
-        /* Loading Animation */
         .pulse {
-            animation: pulse 1.6s infinite;
+            animation: overlayPulse 1.5s infinite ease-in-out;
         }
-        @keyframes pulse {
-            0% { opacity: 0.4; }
+        @keyframes overlayPulse {
+            0% { opacity: 0.3; }
             50% { opacity: 1; }
-            100% { opacity: 0.4; }
+            100% { opacity: 0.3; }
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="card">
-        <div class="profile">
-            <h1>CodyMKW</h1>
-            <div class="level-badge" id="level-badge">Lv. --</div>
+<div class="dashboard">
+    <!-- Profile & Information Panel -->
+    <div class="profile-panel">
+        <div class="card">
+            <div class="identity-header">
+                <div class="identity-title">
+                    <h1>CodyMKW</h1>
+                    <p id="dynamic-greet">Loading system configuration...</p>
+                </div>
+                <div class="rank-badge" id="level-badge">Lv. --</div>
+            </div>
         </div>
-        <p id="dynamic-greet" style="color: var(--muted); font-size: 0.9rem; margin-top: 0; margin-bottom: 1rem; line-height: 1.4;">
-            Developer, Gamer, & Anime Fan. Loading space...
-        </p>
 
-        <div class="tag-container">
-            <span class="tag">🐙 Splatoon</span>
-            <span class="tag">🍃 Animal Crossing</span>
-            <span class="tag">💥 Ultra Rumble</span>
-            <span class="tag">🛠️ Web Dev</span>
+        <div class="matrix-tags">
+            <div class="matrix-badge"><span>🐙</span> Splatoon</div>
+            <div class="matrix-badge"><span>🍃</span> Animal Crossing</div>
+            <div class="matrix-badge"><span>💥</span> Ultra Rumble</div>
+            <div class="matrix-badge"><span>🛠️</span> Development</div>
         </div>
-        
-        <a href="https://codymkw.nekoweb.org" class="btn">Go to Main Site</a>
+
+        <!-- Infrastructure Diagnostics Widgets -->
+        <div class="card" style="padding: 20px; display: flex; flex-direction: column; gap: 10px;">
+            <div class="system-widget">
+                <div class="widget-label"><span style="color:var(--accent-green)">⚡</span> Core System</div>
+                <div class="widget-value" style="color:var(--accent-green)">ONLINE</div>
+            </div>
+            <div class="system-widget">
+                <div class="widget-label">🕒 Session Clock</div>
+                <div class="widget-value" id="runtime-clock">00:00:00</div>
+            </div>
+            <div class="system-widget">
+                <div class="widget-label">📡 Sync Latency</div>
+                <div class="widget-value" id="ping-tracker">-- ms</div>
+            </div>
+        </div>
+
+        <div class="action-group">
+            <a href="https://codymkw.nekoweb.org" class="btn-prime">Launch Root Domain</a>
+            <button class="btn-sub" id="share-hub-btn">Copy Matrix Link</button>
+        </div>
     </div>
 
-    <div class="card">
-        <div style="margin-bottom: 1.5rem;">
-            <div class="section-title">
-                <span style="color: var(--accent)">●</span> Latest Code Activity
-            </div>
-            <a href="https://github.com/CodyMKW" target="_blank" class="data-row" id="gh-container">
-                <div class="data-icon">🐙</div>
-                <div class="data-info">
-                    <div class="data-title pulse" id="gh-title">Fetching GitHub...</div>
-                    <div class="data-sub" id="gh-sub">Please wait</div>
-                </div>
-            </a>
-        </div>
+    <!-- Live Telemetry Data Feed Deck -->
+    <div class="telemetry-panel">
+        <div class="panel-heading">Real-Time Operations</div>
 
-        <div style="margin-bottom: 1.5rem;">
-            <div class="section-title">
-                <span style="color: #8b949e" id="switch-dot">●</span> Switch Presence
+        <!-- GitHub Activity -->
+        <a href="https://github.com/CodyMKW" target="_blank" class="feed-row" id="gh-container">
+            <div class="feed-media">🐙</div>
+            <div class="feed-content">
+                <div class="feed-title pulse" id="gh-title">Polling GitHub Endpoint...</div>
+                <div class="feed-subtitle" id="gh-sub">Establishing link connection</div>
             </div>
-            <a href="https://github.com/samuelthomas2774/nxapi" target="_blank" class="data-row" id="switch-container">
-                <div class="data-icon" id="switch-icon">🎮</div>
-                <div class="data-info">
-                    <div class="data-title pulse" id="switch-title">Connecting to Switch API...</div>
-                    <div class="data-sub" id="switch-sub">Checking status</div>
-                </div>
-            </a>
-        </div>
+            <div class="feed-meta">Repository</div>
+        </a>
 
-        <div style="margin-bottom: 1.5rem;">
-            <div class="section-title">
-                <span style="color: #8b949e" id="rpc-dot">●</span> 3DS Presence
+        <!-- Nintendo Switch Status -->
+        <a href="https://github.com/samuelthomas2774/nxapi" target="_blank" class="feed-row" id="switch-container">
+            <div class="feed-media" id="switch-icon">🎮</div>
+            <div class="feed-content">
+                <div class="feed-title pulse" id="switch-title">Connecting Switch Node...</div>
+                <div class="feed-subtitle" id="switch-sub">Verifying account context</div>
             </div>
-            <a href="#" target="_blank" class="data-row" id="rpc-container">
-                <div class="data-icon" id="rpc-icon">🎮</div>
-                <div class="data-info">
-                    <div class="data-title pulse" id="rpc-title">Connecting to 3DSRPC...</div>
-                    <div class="data-sub" id="rpc-sub">Checking console status</div>
-                </div>
-            </a>
-        </div>
+            <div class="status-node" id="switch-dot"></div>
+        </a>
 
-        <div style="margin-bottom: 1.5rem;">
-            <div class="section-title">
-                <span style="color: var(--accent)">●</span> Last Watched Anime
+        <!-- Nintendo 3DS Status -->
+        <a href="https://3dsrpc.com" target="_blank" class="feed-row" id="rpc-container">
+            <div class="feed-media" id="rpc-icon">🎮</div>
+            <div class="feed-content">
+                <div class="feed-title pulse" id="rpc-title">Listening For 3DS...</div>
+                <div class="feed-subtitle" id="rpc-sub">Waiting for handshake</div>
             </div>
-            <a href="https://anilist.co/user/CodyMKW/" target="_blank" class="data-row" id="al-container">
-                <div class="data-icon" id="al-icon">📺</div>
-                <div class="data-info">
-                    <div class="data-title pulse" id="al-title">Fetching AniList...</div>
-                    <div class="data-sub" id="al-sub">Please wait</div>
-                </div>
-            </a>
-        </div>
+            <div class="status-node" id="rpc-dot"></div>
+        </a>
 
-        <div>
-            <div class="section-title">
-                <span style="color: var(--accent)">●</span> Ultra Rumble Active Map
+        <!-- AniList Activity -->
+        <a href="https://anilist.co/user/CodyMKW/" target="_blank" class="feed-row" id="al-container">
+            <div class="feed-media" id="al-icon">📺</div>
+            <div class="feed-content">
+                <div class="feed-title pulse" id="al-title">Fetching AniList Logs...</div>
+                <div class="feed-subtitle" id="al-sub">Reading media streams</div>
             </div>
-            <a href="https://ultrarumble.com" target="_blank" class="data-row" id="ur-container">
-                <div class="data-icon" id="ur-icon">🎮</div>
-                <div class="data-info">
-                    <div class="data-title pulse" id="ur-title">Fetching Map Rotation...</div>
-                    <div class="data-sub" id="ur-sub">Connecting to API</div>
-                </div>
-            </a>
-        </div>
+            <div class="feed-meta">Anime</div>
+        </a>
+
+        <!-- My Hero Ultra Rumble Rotations -->
+        <a href="https://ultrarumble.com" target="_blank" class="feed-row" id="ur-container">
+            <div class="feed-media" id="ur-icon">💥</div>
+            <div class="feed-content">
+                <div class="feed-title pulse" id="ur-title">Parsing Arena Data...</div>
+                <div class="feed-subtitle" id="ur-sub">Connecting rotation arrays</div>
+            </div>
+            <div class="feed-meta">Map Rotation</div>
+        </a>
     </div>
-    
-    <div class="footer-credit">SYSTEM STATUS: OPERATIONAL</div>
 </div>
 
 <script>
-    // 0. Temporal Tracking Engine
-    function initializeCoreEngine() {
+    // 0. Dashboard Internal Time & Calibration Engine
+    function launchDashboardCore() {
+        // Precise Age Computation Loop
         const birthday = new Date('1991-01-17T00:00:00');
         const today = new Date();
         let age = today.getFullYear() - birthday.getFullYear();
@@ -308,16 +489,41 @@
         if (m < 0 || (m === 0 && today.getDate() < birthday.getDate())) { age--; }
         document.getElementById('level-badge').innerText = `Lv. ${age}`;
 
+        // Dynamic System Greeting
         const hrs = today.getHours();
-        let greeting = "Welcome to my hub.";
-        if (hrs < 12) greeting = "Good morning! Welcome to my hub.";
-        else if (hrs < 18) greeting = "Good afternoon! Welcome to my hub.";
-        else greeting = "Good evening! Welcome to my hub.";
-        document.getElementById('dynamic-greet').innerText = `Developer, Gamer, & Anime Fan. ${greeting}`;
-    }
-    initializeCoreEngine();
+        let greeting = "Welcome to the terminal interface.";
+        if (hrs < 12) greeting = "Good morning. Systems clear.";
+        else if (hrs < 18) greeting = "Good afternoon. Diagnostics stable.";
+        else greeting = "Good evening. Node monitoring active.";
+        document.getElementById('dynamic-greet').innerText = greeting;
 
-    // 1. Fetch Latest GitHub Activity
+        // Running Live Operational Clock
+        setInterval(() => {
+            const now = new Date();
+            document.getElementById('runtime-clock').innerText = now.toTimeString().split(' ')[0];
+        }, 1000);
+
+        // Simulated Sync Latency Cycle (Visual Polish)
+        setInterval(() => {
+            const simulatedPing = Math.floor(Math.random() * 25) + 12;
+            document.getElementById('ping-tracker').innerText = `${simulatedPing} ms`;
+        }, 4000);
+    }
+    launchDashboardCore();
+
+    // Clipboard Copy Event Configuration
+    document.getElementById('share-hub-btn').addEventListener('click', function() {
+        navigator.clipboard.writeText(window.location.href);
+        const originalText = this.innerText;
+        this.innerText = "Link Secured!";
+        this.style.color = "var(--accent-green)";
+        setTimeout(() => {
+            this.innerText = originalText;
+            this.style.color = "";
+        }, 2000);
+    });
+
+    // 1. Telemetry Pipeline: GitHub Activity
     fetch('https://api.github.com/users/CodyMKW/events/public')
         .then(res => res.json())
         .then(data => {
@@ -330,19 +536,17 @@
                 
                 document.getElementById('gh-title').innerText = latest.repo.name;
                 document.getElementById('gh-title').classList.remove('pulse');
-                document.getElementById('gh-sub').innerText = `${action} repository`;
+                document.getElementById('gh-sub').innerText = `${action} code repository`;
                 document.getElementById('gh-container').href = `https://github.com/${latest.repo.name}`;
-            } else {
-                throw new Error();
-            }
+            } else { throw new Error(); }
         })
         .catch(() => {
-            document.getElementById('gh-title').innerText = "GitHub Profile";
+            document.getElementById('gh-title').innerText = "GitHub Repositories";
             document.getElementById('gh-title').classList.remove('pulse');
-            document.getElementById('gh-sub').innerText = "Check out my repositories";
+            document.getElementById('gh-sub').innerText = "View code production pipelines";
         });
 
-    // 2. Fetch Nintendo Switch Status (nxapi)
+    // 2. Telemetry Pipeline: Nintendo Switch Matrix (nxapi)
     fetch('https://nxapi-presence.fancy.org.uk/api/presence/644cd5195d154bd5?include-splatoon3=1')
         .then(res => res.json())
         .then(data => {
@@ -353,41 +557,32 @@
                 const titleEl = document.getElementById('switch-title');
                 const subEl = document.getElementById('switch-sub');
                 const containerEl = document.getElementById('switch-container');
-                const dotEl = document.getElementById('switch-dot');
 
                 let imgUrl = f.imageUri; 
 
                 if (p && p.state === "ONLINE" && p.game) {
-                    titleEl.innerText = p.game.name || "Playing Switch";
+                    titleEl.innerText = p.game.name || "Switch Active Session";
                     if (p.game.imageUri) imgUrl = p.game.imageUri;
-                    
                     const hours = Math.floor(p.game.totalPlayTime / 60);
-                    subEl.innerText = `Online Now • ${hours.toLocaleString()}+ hrs played`;
-                    dotEl.style.color = "#4ade80"; 
-                    containerEl.classList.add('online-glow');
+                    subEl.innerText = `Live System Online • Over ${hours.toLocaleString()} hrs logged`;
+                    containerEl.classList.add('live-active');
                 } else {
-                    titleEl.innerText = "Currently Offline";
-                    subEl.innerText = "Nintendo Switch";
-                    dotEl.style.color = "#8b949e";
-                    containerEl.classList.remove('online-glow');
+                    titleEl.innerText = "Switch System Standby";
+                    subEl.innerText = "Console link is offline";
+                    containerEl.classList.remove('live-active');
                 }
 
-                if (imgUrl) {
-                    iconEl.innerHTML = `<img src="${imgUrl}" style="width:100%; height:100%; object-fit:cover;">`;
-                }
+                if (imgUrl) iconEl.innerHTML = `<img src="${imgUrl}">`;
                 titleEl.classList.remove('pulse');
-            } else {
-                throw new Error();
-            }
+            } else { throw new Error(); }
         })
         .catch(() => {
-            document.getElementById('switch-title').innerText = "Switch Status Offline";
+            document.getElementById('switch-title').innerText = "Switch Link Closed";
             document.getElementById('switch-title').classList.remove('pulse');
-            document.getElementById('switch-sub').innerText = "Service connection issue";
-            document.getElementById('switch-dot').style.color = "#ff6b6b";
+            document.getElementById('switch-sub').innerText = "Telemetry synchronization failure";
         });
 
-    // 3. Fetch Nintendo 3DS Status (3DSRPC)
+    // 3. Telemetry Pipeline: Nintendo 3DS Stream
     fetch('https://3dsrpc.codymkw.workers.dev/?fc=0645-5821-2438&network=nintendo')
         .then(res => res.json())
         .then(data => {
@@ -396,45 +591,35 @@
                 const titleEl = document.getElementById('rpc-title');
                 const subEl = document.getElementById('rpc-sub');
                 const containerEl = document.getElementById('rpc-container');
-                const dotEl = document.getElementById('rpc-dot');
 
                 const imgUrl = (data.isOnline && data.currentGameImage) ? data.currentGameImage : data.miiImage;
-                if (imgUrl) {
-                    iconEl.innerHTML = `<img src="${imgUrl}" style="width:100%; height:100%; object-fit:cover;">`;
-                }
+                if (imgUrl) iconEl.innerHTML = `<img src="${imgUrl}">`;
 
                 if (data.isOnline) {
-                    titleEl.innerText = data.currentGame || "Playing on 3DS";
-                    subEl.innerText = data.currentGameActivity || "Online Now";
-                    dotEl.style.color = "#4ade80";
-                    containerEl.classList.add('online-glow');
+                    titleEl.innerText = data.currentGame || "3DS Active Session";
+                    subEl.innerText = data.currentGameActivity || "Live Network Communication";
+                    containerEl.classList.add('live-active');
                 } else {
-                    titleEl.innerText = data.statusMessage || "Currently Offline";
-                    subEl.innerText = data.favoriteGame ? `Favorite: ${data.favoriteGame}` : "Offline";
-                    dotEl.style.color = "#8b949e";
-                    containerEl.classList.remove('online-glow');
+                    titleEl.innerText = data.statusMessage || "3DS System Standby";
+                    subEl.innerText = data.favoriteGame ? `Preferred Stack: ${data.favoriteGame}` : "Offline";
+                    containerEl.classList.remove('live-active');
                 }
-
                 titleEl.classList.remove('pulse');
                 containerEl.href = data.profileUrl || "https://3dsrpc.com";
-            } else {
-                throw new Error();
-            }
+            } else { throw new Error(); }
         })
         .catch(() => {
-            document.getElementById('rpc-title').innerText = "3DS Status Offline";
+            document.getElementById('rpc-title').innerText = "3DS Link Closed";
             document.getElementById('rpc-title').classList.remove('pulse');
-            document.getElementById('rpc-sub').innerText = "Unable to connect to service";
-            document.getElementById('rpc-dot').style.color = "#ff6b6b";
+            document.getElementById('rpc-sub').innerText = "Telemetry configuration offline";
         });
 
-    // 4. Fetch Last Watched Anime from AniList
+    // 4. Telemetry Pipeline: AniList Verification
     const aniListQuery = `
     query {
         Page(page: 1, perPage: 1) {
             mediaList(userName: "CodyMKW", sort: UPDATED_TIME_DESC) {
-                status
-                progress
+                status progress
                 media {
                     title { english romaji }
                     coverImage { large }
@@ -456,44 +641,37 @@
             const entry = list[0];
             const anime = entry.media;
             const title = anime.title.english || anime.title.romaji;
+            const statusMap = { CURRENT: "Streaming Now", COMPLETED: "Archived Entirety", DROPPED: "Data Dropped", PAUSED: "Hold State", PLANNING: "Queued" };
             
-            const statusMap = { CURRENT: "Watching", COMPLETED: "Completed", DROPPED: "Dropped", PAUSED: "Paused", PLANNING: "Planning to watch" };
-            const statusStr = statusMap[entry.status] || entry.status;
-            
-            let progressStr = statusStr;
+            let progressStr = statusMap[entry.status] || entry.status;
             if (entry.status === 'CURRENT' && entry.progress) {
-                progressStr += ` • Ep ${entry.progress}`;
+                progressStr += ` • Episode ${entry.progress}`;
             }
 
-            document.getElementById('al-icon').innerHTML = `<img src="${anime.coverImage.large}" style="width:100%; height:100%; object-fit:cover;">`;
+            document.getElementById('al-icon').innerHTML = `<img src="${anime.coverImage.large}">`;
             document.getElementById('al-title').innerText = title;
             document.getElementById('al-title').classList.remove('pulse');
             document.getElementById('al-sub').innerText = progressStr;
             document.getElementById('al-container').href = anime.siteUrl;
-        } else {
-            throw new Error();
-        }
+        } else { throw new Error(); }
     })
     .catch(() => {
-        document.getElementById('al-title').innerText = "AniList Profile";
+        document.getElementById('al-title').innerText = "AniList Media Tracking";
         document.getElementById('al-title').classList.remove('pulse');
-        document.getElementById('al-sub').innerText = "Check out my anime stats";
+        document.getElementById('al-sub').innerText = "View tracking indexing profile";
     });
 
-    // 5. Enhanced Ultra Rumble Multi-Data Parser
+    // 5. Telemetry Pipeline: My Hero Ultra Rumble Engine Parse
     fetch('https://ultrarumble-api.codymkw.workers.dev')
         .then(res => res.json())
         .then(data => {
             if (data && data.maps) {
-                // Parse distinct modes if they are split up in your API structure
                 const ranked = data.maps.find(m => m.mode === "Ranked Match") || data.maps[0];
                 const casual = data.maps.find(m => m.mode === "Standard Match" || m.mode === "Casual Match");
                 const season = data.season ? data.season.name : "Active Season";
 
-                // Set image preview from current primary map
-                document.getElementById('ur-icon').innerHTML = `<img src="${ranked.image}" style="width:100%; height:100%; object-fit:cover;">`;
+                document.getElementById('ur-icon').innerHTML = `<img src="${ranked.image}">`;
                 
-                // Upgrade 1: Dual Map Mode Displaying
                 if (casual && casual.map !== ranked.map) {
                     document.getElementById('ur-title').innerText = `R: ${ranked.map} | C: ${casual.map}`;
                 } else {
@@ -501,25 +679,21 @@
                 }
                 document.getElementById('ur-title').classList.remove('pulse');
 
-                // Upgrade 2: Look for active event trackers or loop timers
-                let structuralSubtext = `${season}`;
+                let subtext = `${season}`;
                 if (data.timeLeft || data.rotation_left) {
-                    structuralSubtext += ` • ${data.timeLeft || data.rotation_left} left`;
+                    subtext += ` • Cycle remaining: ${data.timeLeft || data.rotation_left}`;
                 } else if (data.event) {
-                    structuralSubtext += ` • ${data.event.name || data.event}`;
+                    subtext += ` • ${data.event.name || data.event}`;
                 } else {
-                    structuralSubtext += ` • Rotation Live`;
+                    subtext += ` • Rotations active`;
                 }
-                
-                document.getElementById('ur-sub').innerText = structuralSubtext;
-            } else {
-                throw new Error();
-            }
+                document.getElementById('ur-sub').innerText = subtext;
+            } else { throw new Error(); }
         })
         .catch(() => {
-            document.getElementById('ur-title').innerText = "Ultra Rumble Rotation";
+            document.getElementById('ur-title').innerText = "Ultra Rumble Maps";
             document.getElementById('ur-title').classList.remove('pulse');
-            document.getElementById('ur-sub').innerText = "API feed currently offline";
+            document.getElementById('ur-sub').innerText = "Arena feed mapping metrics disconnected";
         });
 </script>
 
