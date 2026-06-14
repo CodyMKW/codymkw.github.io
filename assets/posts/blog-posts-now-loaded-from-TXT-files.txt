@@ -1,1 +1,0 @@
-I have updated the blog posts to load from TXT files blog works exactly the same as before but each post is it's own file instead of them all being on a single json file which is what I was doing before this seems to be the standard so  doing it this way now :)

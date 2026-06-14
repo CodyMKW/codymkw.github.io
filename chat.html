@@ -1,65 +1,1513 @@
----
-layout: none
----
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-    <link rel="manifest" href="/site.webmanifest">
-    <meta name="msapplication-TileColor" content="#00c900">
-    <meta name="theme-color" content="#00c900">
-    <link href="https://social.vivaldi.net/@codymkw" rel="me">
-    <meta name="description" content="An archived Wii-era xat chatroom preserved for historical and nostalgic purposes — a functioning snapshot of early internet community culture.">
-    <meta name="keywords" content="xat chat archive, Wii era chatroom, internet history, archived chat, Nintendo community, retro web, classic internet culture">
-    <meta name="author" content="CodyMKW">
-    <meta property="og:title" content="Chat Archive - CodyMKW">
-    <meta property="og:description" content="An archived Wii-era xat chatroom preserved for historical and nostalgic purposes — a functioning snapshot of early internet community culture.">
-    <meta property="og:image" content="https://www.gravatar.com/avatar/5127de8a3a295a02ff3fc55bb6b2fabe?s=2048">
-    <meta property="og:url" content="https://codymkw.github.io">
-    <meta property="og:type" content="website">
-    <meta name="twitter:creator" content="@CodyMKW" />
-    <meta name="twitter:title" content="Chat Archive - CodyMKW" />
-    <meta name="twitter:description" content="An archived Wii-era xat chatroom preserved for historical and nostalgic purposes — a functioning snapshot of early internet community culture." />
-    <meta name="twitter:image:src" content="https://www.gravatar.com/avatar/5127de8a3a295a02ff3fc55bb6b2fabe?s=2048" />
-    <link id="theme-style" rel="stylesheet" href="assets/css/main.css">
-    <link rel="stylesheet" href="assets/css/emoji.css">
-    <script defer src="assets/javascript/main.js"></script>
-    <script defer src="assets/javascript/stickyheader.js"></script>
-    <title>Chat Archive - CodyMKW</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nexus Chat</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* ── Reset & Base ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:         #0d1117;
+  --surface:    #161b22;
+  --surface2:   #21262d;
+  --surface3:   #30363d;
+  --border:     #30363d;
+  --border2:    #484f58;
+  --accent:     #58a6ff;
+  --accent-dim: #1f3a5c;
+  --green:      #3fb950;
+  --red:        #f85149;
+  --amber:      #d29922;
+  --text:       #e6edf3;
+  --text-muted: #8b949e;
+  --text-dim:   #484f58;
+  --radius:     10px;
+  --radius-sm:  6px;
+  --sidebar-w:  240px;
+  font-size: 14px;
+  font-family: 'Inter', system-ui, sans-serif;
+  color: var(--text);
+  background: var(--bg);
+}
+
+html, body { height: 100%; overflow: hidden; }
+
+/* ── Layout Shell ── */
+#app {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ── Sidebar ── */
+#sidebar {
+  width: var(--sidebar-w);
+  flex-shrink: 0;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: transform 0.25s ease;
+}
+
+#sidebar-header {
+  padding: 18px 16px 14px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+#sidebar-header h1 {
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.3px;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#sidebar-header h1 .logo-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  display: inline-block;
+  box-shadow: 0 0 6px var(--accent);
+}
+
+.sidebar-section { padding: 12px 8px 6px; }
+
+.sidebar-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-dim);
+  padding: 0 8px 6px;
+}
+
+.room-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 13.5px;
+  font-family: inherit;
+  text-align: left;
+  transition: background 0.12s, color 0.12s;
+}
+
+.room-btn:hover { background: var(--surface2); color: var(--text); }
+.room-btn.active { background: var(--accent-dim); color: var(--accent); font-weight: 500; }
+
+.room-btn .hash {
+  font-size: 15px;
+  color: var(--text-dim);
+  line-height: 1;
+}
+.room-btn.active .hash { color: var(--accent); }
+
+/* Users list */
+#users-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+}
+
+.user-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 8px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.user-avatar {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 600;
+  flex-shrink: 0;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.user-status-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--green);
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+/* Bottom profile */
+#sidebar-profile {
+  padding: 12px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+#my-avatar {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  flex-shrink: 0;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+#sidebar-profile .profile-info { flex: 1; min-width: 0; }
+#sidebar-profile .profile-name {
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+#sidebar-profile .profile-status {
+  font-size: 11px;
+  color: var(--green);
+}
+
+/* ── Main Panel ── */
+#main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-width: 0;
+}
+
+/* ── Chat Header ── */
+#chat-header {
+  padding: 0 20px;
+  height: 56px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+  background: var(--surface);
+}
+
+#chat-header .room-name {
+  font-size: 15px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+#chat-header .room-name .hash { color: var(--text-muted); font-size: 16px; }
+
+#chat-header .divider {
+  width: 1px; height: 20px;
+  background: var(--border);
+}
+
+#chat-header .topic {
+  font-size: 13px;
+  color: var(--text-muted);
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#online-count {
+  font-size: 12px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+}
+
+#online-count::before {
+  content: '';
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--green);
+  display: inline-block;
+}
+
+/* ── Messages ── */
+#messages-wrap {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 20px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  scroll-behavior: smooth;
+}
+
+#messages-wrap::-webkit-scrollbar { width: 6px; }
+#messages-wrap::-webkit-scrollbar-track { background: transparent; }
+#messages-wrap::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 3px; }
+
+/* Date divider */
+.date-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 18px 0 10px;
+  color: var(--text-dim);
+  font-size: 11.5px;
+  font-weight: 500;
+}
+.date-divider::before, .date-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* Message row */
+.msg-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+  transition: background 0.08s;
+  position: relative;
+  animation: msg-in 0.18s ease-out both;
+}
+
+@keyframes msg-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.msg-row:hover { background: var(--surface2); }
+.msg-row.own { flex-direction: row; }
+
+.msg-row .msg-avatar {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  flex-shrink: 0;
+  margin-top: 1px;
+  font-family: 'JetBrains Mono', monospace;
+  cursor: pointer;
+  transition: opacity 0.12s;
+}
+.msg-row .msg-avatar:hover { opacity: 0.8; }
+
+/* consecutive messages — hide avatar */
+.msg-row.consecutive .msg-avatar { visibility: hidden; }
+.msg-row.consecutive { margin-top: -2px; }
+
+.msg-body { flex: 1; min-width: 0; }
+
+.msg-header {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 2px;
+}
+
+.msg-row.consecutive .msg-header { display: none; }
+
+.msg-username {
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.msg-username:hover { text-decoration: underline; }
+
+.msg-time {
+  font-size: 11px;
+  color: var(--text-dim);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.msg-text {
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--text);
+  word-break: break-word;
+  white-space: pre-wrap;
+}
+
+.msg-text a {
+  color: var(--accent);
+  text-decoration: none;
+}
+.msg-text a:hover { text-decoration: underline; }
+
+/* Emote messages */
+.msg-row.emote .msg-text {
+  color: var(--text-muted);
+  font-style: italic;
+}
+.msg-row.emote .msg-text::before {
+  content: attr(data-user) " ";
+  color: var(--text);
+  font-style: normal;
+  font-weight: 500;
+}
+
+/* Reply reference */
+.msg-reply {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+  padding: 4px 8px;
+  border-left: 2px solid var(--border2);
+  border-radius: 0 4px 4px 0;
+  background: var(--surface2);
+  font-size: 12px;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+.msg-reply:hover { background: var(--surface3); }
+.msg-reply .reply-name { font-weight: 600; }
+
+/* Reactions */
+.msg-reactions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.reaction-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 7px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--surface2);
+  color: var(--text-muted);
+  font-size: 13px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.1s, border-color 0.1s;
+}
+.reaction-btn:hover { background: var(--surface3); border-color: var(--border2); }
+.reaction-btn.mine { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+
+.reaction-count { font-size: 12px; font-family: 'JetBrains Mono', monospace; }
+
+/* Message action bar */
+.msg-actions {
+  position: absolute;
+  right: 10px;
+  top: 3px;
+  display: none;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.msg-row:hover .msg-actions { display: flex; }
+
+.msg-action-btn {
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  padding: 5px 8px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.1s, color 0.1s;
+  display: flex;
+  align-items: center;
+}
+.msg-action-btn:hover { background: var(--surface2); color: var(--text); }
+
+/* Emoji picker */
+.emoji-picker {
+  position: absolute;
+  right: 10px;
+  top: 32px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 8px;
+  display: flex;
+  gap: 4px;
+  z-index: 100;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+}
+
+.emoji-picker button {
+  border: none;
+  background: transparent;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: var(--radius-sm);
+  transition: background 0.1s;
+  line-height: 1;
+}
+.emoji-picker button:hover { background: var(--surface2); }
+
+/* System messages */
+.msg-system {
+  text-align: center;
+  font-size: 12px;
+  color: var(--text-dim);
+  padding: 4px 0;
+  margin: 4px 0;
+}
+
+.msg-system.help-msg {
+  text-align: left;
+  background: var(--surface2);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  padding: 8px 12px;
+  color: var(--text-muted);
+  white-space: pre-wrap;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12.5px;
+  margin: 6px 0;
+}
+
+/* ── Typing Indicator ── */
+#typing-bar {
+  height: 22px;
+  padding: 0 24px;
+  font-size: 12px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.typing-dots {
+  display: inline-flex;
+  gap: 3px;
+  align-items: center;
+}
+.typing-dots span {
+  width: 4px; height: 4px;
+  background: var(--text-muted);
+  border-radius: 50%;
+  animation: bounce 1.2s infinite;
+}
+.typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+.typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes bounce {
+  0%, 80%, 100% { transform: translateY(0); }
+  40%           { transform: translateY(-4px); }
+}
+
+/* ── Reply Banner ── */
+#reply-banner {
+  display: none;
+  padding: 8px 16px;
+  background: var(--surface2);
+  border-top: 1px solid var(--border);
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+#reply-banner .reply-info { flex: 1; }
+#reply-banner .reply-to-name { font-weight: 600; color: var(--text); }
+
+#reply-banner button {
+  border: none;
+  background: transparent;
+  color: var(--text-dim);
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+  padding: 2px;
+  border-radius: 4px;
+  transition: background 0.1s, color 0.1s;
+}
+#reply-banner button:hover { background: var(--surface3); color: var(--text); }
+
+/* ── Input Area ── */
+#input-area {
+  padding: 12px 20px 16px;
+  flex-shrink: 0;
+  background: var(--bg);
+}
+
+#input-box {
+  display: flex;
+  align-items: flex-end;
+  gap: 0;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: border-color 0.15s;
+}
+
+#input-box:focus-within { border-color: var(--border2); }
+
+#msg-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 11px 14px;
+  font-size: 14px;
+  font-family: 'Inter', system-ui, sans-serif;
+  color: var(--text);
+  resize: none;
+  max-height: 120px;
+  line-height: 1.5;
+}
+
+#msg-input::placeholder { color: var(--text-dim); }
+
+.input-btn {
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  padding: 10px 12px;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+  transition: color 0.12s, background 0.12s;
+  display: flex;
+  align-items: center;
+  align-self: flex-end;
+  flex-shrink: 0;
+}
+.input-btn:hover { color: var(--text); background: var(--surface3); }
+
+#send-btn {
+  color: var(--accent);
+  padding: 10px 14px;
+}
+#send-btn:hover { background: var(--accent-dim); color: var(--accent); }
+#send-btn:disabled { color: var(--text-dim); background: transparent; cursor: default; }
+
+.input-divider { width: 1px; height: 22px; background: var(--border); align-self: center; }
+
+#input-hint {
+  margin-top: 5px;
+  font-size: 11.5px;
+  color: var(--text-dim);
+  padding: 0 2px;
+}
+
+/* ── Login Screen ── */
+#login-screen {
+  position: fixed;
+  inset: 0;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+#login-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 40px;
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+#login-card .logo-text {
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-glyph {
+  width: 36px; height: 36px;
+  background: var(--accent);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+#login-card p {
+  color: var(--text-muted);
+  font-size: 13.5px;
+  margin-top: -12px;
+}
+
+.field { display: flex; flex-direction: column; gap: 6px; }
+
+.field label {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.field input, .field select {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  padding: 10px 12px;
+  font-size: 14px;
+  font-family: 'Inter', system-ui;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.field input:focus, .field select:focus { border-color: var(--accent); }
+.field select option { background: var(--surface2); }
+
+.color-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.color-swatch {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: border-color 0.12s, transform 0.12s;
+  flex-shrink: 0;
+}
+.color-swatch:hover { transform: scale(1.15); }
+.color-swatch.selected { border-color: white; box-shadow: 0 0 0 2px var(--bg); }
+
+#join-btn {
+  background: var(--accent);
+  border: none;
+  color: #0d1117;
+  font-size: 14.5px;
+  font-weight: 600;
+  font-family: 'Inter', system-ui;
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+#join-btn:hover { opacity: 0.88; }
+#join-btn:active { opacity: 0.75; }
+
+/* ── Scrollback button ── */
+#scroll-btn {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--accent);
+  color: #0d1117;
+  border: none;
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  gap: 6px;
+  z-index: 50;
+  font-family: 'Inter', system-ui;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+#scroll-btn.show { display: flex; }
+
+/* ── Connection status ── */
+#status-bar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  background: var(--amber);
+  color: #0d1117;
+  font-size: 12.5px;
+  font-weight: 600;
+  text-align: center;
+  padding: 6px;
+  z-index: 200;
+  transform: translateY(-100%);
+  transition: transform 0.25s ease;
+}
+#status-bar.show { transform: translateY(0); }
+
+/* ── Mobile ── */
+#mobile-menu-btn {
+  display: none;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 20px;
+  cursor: pointer;
+  padding: 4px;
+}
+
+#sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 90;
+}
+
+@media (max-width: 680px) {
+  #sidebar {
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    z-index: 100;
+    transform: translateX(-100%);
+  }
+  #sidebar.open { transform: translateX(0); }
+  #sidebar-overlay.show { display: block; }
+  #mobile-menu-btn { display: flex; align-items: center; }
+  :root { --sidebar-w: 220px; }
+}
+</style>
 </head>
-
 <body>
-    <div id="sticky-header" class="sticky-header" style="display: none;">
-        <span id="close-button" onclick="toggleHeader()">X</span>
-        <a href="" target="_blank" class="important"></a>
-    </div>
-    <div class="container">
-        {% include header.html %}
 
-        <div class="content" id="xatchatContent">
-            <p style="text-align:center; max-width:700px; margin: 0 auto 15px auto;">
-                This page serves as a preserved archive of a Wii-era xat chatroom from an earlier period of the web. While the chatroom remains fully functional, it is maintained primarily for archival and historical purposes, documenting a small piece of early online community culture.
-            </p>
-            <p style="text-align:center; max-width:700px; margin: 0 auto 15px auto; font-size:0.95em;">
-                Activity may be limited, as the chat is no longer actively promoted or moderated. It is presented here as a living snapshot of the era in which it was originally created.
-            </p>
-            <div style="position: relative; width: 100%; max-width: 650px; margin: 0 auto; padding-top: 74.8%;">
-                <iframe src="https://xat.com/embed/chat.php#id=159514655&gn=Codys_Nintendo_Room" allow="clipboard-write" frameborder="0" scrolling="no" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;"></iframe>
-            </div>
-            <p style="text-align:center; max-width:700px; margin: 15px auto 0 auto; color:#76801c; font-size:0.9em;">
-                Please note that this chatroom is retained in its original embedded form. Since it is no longer actively moderated, the owner and moderators may not be present. Visitors are welcome to participate, but are expected to remain respectful and mindful of others.
-            </p>
-            <br>
-            
-        </div>
+<!-- Status bar -->
+<div id="status-bar">⚡ Reconnecting…</div>
+
+<!-- Login -->
+<div id="login-screen">
+  <div id="login-card">
+    <div class="logo-text">
+      <div class="logo-glyph">⚡</div>
+      Nexus Chat
+    </div>
+    <p>Real-time rooms powered by Cloudflare Workers</p>
+
+    <div class="field">
+      <label>Your username</label>
+      <input id="login-user" type="text" maxlength="24" placeholder="CoolUser99" autocomplete="off" spellcheck="false">
     </div>
 
-    {% include footer.html %}
+    <div class="field">
+      <label>Room</label>
+      <select id="login-room">
+        <option value="general"># general</option>
+        <option value="gaming"># gaming</option>
+        <option value="anime"># anime</option>
+        <option value="music"># music</option>
+        <option value="dev"># dev</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Your color</label>
+      <div class="color-row" id="color-picker"></div>
+    </div>
+
+    <button id="join-btn">Join Room →</button>
+  </div>
+</div>
+
+<!-- App -->
+<div id="app" style="display:none">
+  <div id="sidebar-overlay"></div>
+
+  <!-- Sidebar -->
+  <div id="sidebar">
+    <div id="sidebar-header">
+      <h1><span class="logo-dot"></span> Nexus Chat</h1>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Rooms</div>
+      <div id="room-list"></div>
+    </div>
+
+    <div class="sidebar-section" style="flex:1; display:flex; flex-direction:column; min-height:0;">
+      <div class="sidebar-label">Online — <span id="user-count">0</span></div>
+      <div id="users-list"></div>
+    </div>
+
+    <div id="sidebar-profile">
+      <div id="my-avatar"></div>
+      <div class="profile-info">
+        <div class="profile-name" id="my-name-label">–</div>
+        <div class="profile-status">● Online</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main -->
+  <div id="main">
+    <div id="chat-header">
+      <button id="mobile-menu-btn" aria-label="Open sidebar">☰</button>
+      <div class="room-name"><span class="hash">#</span><span id="header-room">general</span></div>
+      <div class="divider"></div>
+      <div class="topic" id="header-topic">Welcome to Nexus Chat — type /help for commands</div>
+      <div id="online-count"><span id="online-num">0</span> online</div>
+    </div>
+
+    <div id="messages-wrap" role="log" aria-live="polite" aria-label="Chat messages"></div>
+
+    <div id="typing-bar"></div>
+
+    <div id="reply-banner">
+      <span>↩</span>
+      <div class="reply-info">Replying to <span class="reply-to-name" id="reply-to-name"></span></div>
+      <button id="cancel-reply" aria-label="Cancel reply">✕</button>
+    </div>
+
+    <div id="input-area">
+      <div id="input-box">
+        <textarea id="msg-input" rows="1" placeholder="Message #general…" maxlength="1000" aria-label="Message input"></textarea>
+        <div class="input-divider"></div>
+        <button class="input-btn" id="emoji-trigger-btn" title="Add emoji" aria-label="Emoji">😊</button>
+        <div class="input-divider"></div>
+        <button class="input-btn" id="send-btn" title="Send (Enter)" aria-label="Send">➤</button>
+      </div>
+      <div id="input-hint">Enter to send · Shift+Enter for new line · /help for commands</div>
+    </div>
+  </div>
+</div>
+
+<button id="scroll-btn" aria-label="Jump to latest">↓ New messages</button>
+
+<!-- Quick emoji picker (inline) -->
+<div id="inline-emoji" style="display:none; position:fixed; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:8px; box-shadow:0 8px 24px rgba(0,0,0,0.5); z-index:300;">
+  <div style="display:flex; gap:4px; flex-wrap:wrap; max-width:200px;">
+  </div>
+</div>
+
+<script>
+// ── Config ───────────────────────────────────────────────────
+// Replace this with your actual worker URL after deploying
+const WORKER_URL = "wss://YOUR-WORKER.workers.dev";
+
+// ── State ────────────────────────────────────────────────────
+let ws, myUser, myColor, myRoom, mySessionId;
+let replyTarget = null;   // { id, user, text }
+let reconnectTimer = null;
+let reconnectDelay = 1500;
+let lastMsgUser = null;
+let lastMsgTime = 0;
+let typingTimer = null;
+let isTyping = false;
+
+const COLORS = [
+  "#58a6ff","#3fb950","#f78166","#d2a8ff","#ffa657",
+  "#79c0ff","#56d364","#ff7b72","#bc8cff","#e3b341",
+];
+
+const ROOMS = ["general","gaming","anime","music","dev"];
+const ROOM_TOPICS = {
+  general: "Welcome to Nexus Chat — type /help for commands",
+  gaming:  "Gaming chat — share clips, finds & hot takes 🎮",
+  anime:   "Anime discussion — no spoilers without warning 👁",
+  music:   "Music talk — share what you're listening to 🎵",
+  dev:     "Dev lounge — code help, tools & shitposting 💻",
+};
+
+const EMOJI_LIST = ["👍","❤️","😂","😮","😢","🔥","🎉","💯","👀","✨"];
+
+// ── DOM refs ─────────────────────────────────────────────────
+const $login   = document.getElementById("login-screen");
+const $app     = document.getElementById("app");
+const $msgs    = document.getElementById("messages-wrap");
+const $input   = document.getElementById("msg-input");
+const $sendBtn = document.getElementById("send-btn");
+const $typing  = document.getElementById("typing-bar");
+const $replyB  = document.getElementById("reply-banner");
+const $replyN  = document.getElementById("reply-to-name");
+const $userLst = document.getElementById("users-list");
+const $status  = document.getElementById("status-bar");
+const $scrollB = document.getElementById("scroll-btn");
+const $onlineN = document.getElementById("online-num");
+const $userCnt = document.getElementById("user-count");
+const $hRoom   = document.getElementById("header-room");
+const $hTopic  = document.getElementById("header-topic");
+const $myAvatar = document.getElementById("my-avatar");
+const $myNameL  = document.getElementById("my-name-label");
+
+// ── Color picker ─────────────────────────────────────────────
+const $colorRow = document.getElementById("color-picker");
+let pickedColor = COLORS[0];
+
+COLORS.forEach(c => {
+  const s = document.createElement("div");
+  s.className = "color-swatch" + (c === pickedColor ? " selected" : "");
+  s.style.background = c;
+  s.title = c;
+  s.addEventListener("click", () => {
+    pickedColor = c;
+    $colorRow.querySelectorAll(".color-swatch").forEach(el => el.classList.remove("selected"));
+    s.classList.add("selected");
+  });
+  $colorRow.appendChild(s);
+});
+
+// ── Rooms sidebar ─────────────────────────────────────────────
+function renderRoomList(activeRoom) {
+  const $list = document.getElementById("room-list");
+  $list.innerHTML = "";
+  ROOMS.forEach(r => {
+    const btn = document.createElement("button");
+    btn.className = "room-btn" + (r === activeRoom ? " active" : "");
+    btn.innerHTML = `<span class="hash">#</span>${r}`;
+    btn.addEventListener("click", () => {
+      if (r === myRoom) return;
+      switchRoom(r);
+    });
+    $list.appendChild(btn);
+  });
+}
+
+function switchRoom(room) {
+  if (ws && ws.readyState === WebSocket.OPEN) ws.close();
+  myRoom = room;
+  $msgs.innerHTML = "";
+  lastMsgUser = null; lastMsgTime = 0;
+  replyTarget = null;
+  $replyB.style.display = "none";
+  connect();
+  renderRoomList(room);
+  $hRoom.textContent = room;
+  $input.placeholder = `Message #${room}…`;
+  $hTopic.textContent = ROOM_TOPICS[room] || "";
+}
+
+// ── Login ─────────────────────────────────────────────────────
+document.getElementById("join-btn").addEventListener("click", joinChat);
+document.getElementById("login-user").addEventListener("keydown", e => {
+  if (e.key === "Enter") joinChat();
+});
+
+function joinChat() {
+  const user = document.getElementById("login-user").value.trim().replace(/\s+/g, "_");
+  if (!user) { document.getElementById("login-user").focus(); return; }
+  myUser = user.slice(0, 24);
+  myColor = pickedColor;
+  myRoom = document.getElementById("login-room").value;
+  $login.style.display = "none";
+  $app.style.display = "flex";
+  $myNameL.textContent = myUser;
+  const av = avatarEl(myUser, myColor, 34);
+  $myAvatar.style.background = hexDim(myColor);
+  $myAvatar.style.color = myColor;
+  $myAvatar.textContent = initials(myUser);
+  renderRoomList(myRoom);
+  $hRoom.textContent = myRoom;
+  $input.placeholder = `Message #${myRoom}…`;
+  $hTopic.textContent = ROOM_TOPICS[myRoom] || "";
+  connect();
+  $input.focus();
+}
+
+// ── WebSocket ─────────────────────────────────────────────────
+function connect() {
+  if (ws) ws.close();
+  const url = `${WORKER_URL}/ws?room=${encodeURIComponent(myRoom)}&user=${encodeURIComponent(myUser)}&color=${encodeURIComponent(myColor)}`;
+  ws = new WebSocket(url);
+
+  ws.addEventListener("open", () => {
+    $status.classList.remove("show");
+    reconnectDelay = 1500;
+    clearTimeout(reconnectTimer);
+  });
+
+  ws.addEventListener("message", ({ data }) => {
+    let msg;
+    try { msg = JSON.parse(data); } catch { return; }
+    handleServerMsg(msg);
+  });
+
+  ws.addEventListener("close", () => {
+    $status.classList.add("show");
+    reconnectTimer = setTimeout(() => {
+      reconnectDelay = Math.min(reconnectDelay * 1.5, 15000);
+      connect();
+    }, reconnectDelay);
+  });
+
+  ws.addEventListener("error", () => ws.close());
+}
+
+function send(obj) {
+  if (ws && ws.readyState === WebSocket.OPEN) ws.send(JSON.stringify(obj));
+}
+
+// ── Server message handler ────────────────────────────────────
+function handleServerMsg(msg) {
+  switch (msg.type) {
+    case "init":
+      mySessionId = msg.sessionId;
+      msg.history.forEach(m => renderMsg(m, true));
+      renderUsers(msg.users);
+      scrollBottom();
+      break;
+    case "message":
+      renderMsg(msg, false);
+      maybeScrollBottom();
+      break;
+    case "system":
+      if (msg.event === "help") {
+        renderHelp(msg.text);
+      } else {
+        renderSystem(msg.text);
+      }
+      maybeScrollBottom();
+      break;
+    case "users":
+      renderUsers(msg.users);
+      break;
+    case "typing":
+      renderTyping(msg.users);
+      break;
+    case "reaction_update":
+      updateReactions(msg.messageId, msg.reactions);
+      break;
+    case "error":
+      renderSystem("⚠ " + msg.message);
+      break;
+    case "ping":
+      send({ type: "pong" });
+      break;
+  }
+}
+
+// ── Render: Messages ──────────────────────────────────────────
+const CONSECUTIVE_GAP = 5 * 60 * 1000; // 5 min
+
+function renderMsg(msg, isHistory) {
+  const isOwn = msg.user === myUser;
+  const ts = msg.timestamp;
+  const consecutive = msg.user === lastMsgUser && (ts - lastMsgTime) < CONSECUTIVE_GAP;
+
+  // Date divider if first message or new day
+  if (!isHistory || $msgs.children.length === 0) {
+    // only add on first render or time jump (handled below)
+  }
+  if (lastMsgTime && !isSameDay(lastMsgTime, ts)) {
+    $msgs.appendChild(dateDivider(ts));
+  }
+
+  const row = document.createElement("div");
+  row.className = "msg-row" + (isOwn ? " own" : "") + (consecutive ? " consecutive" : "") + (msg.isEmote ? " emote" : "");
+  row.dataset.msgId = msg.id;
+
+  // Avatar
+  const avDiv = document.createElement("div");
+  avDiv.className = "msg-avatar";
+  avDiv.style.background = hexDim(msg.color || "#58a6ff");
+  avDiv.style.color = msg.color || "#58a6ff";
+  avDiv.textContent = initials(msg.user);
+  avDiv.title = msg.user;
+  avDiv.addEventListener("click", () => mentionUser(msg.user));
+
+  // Body
+  const body = document.createElement("div");
+  body.className = "msg-body";
+
+  // Reply reference
+  if (msg.replyTo) {
+    const orig = findMsg(msg.replyTo.id);
+    const ref = document.createElement("div");
+    ref.className = "msg-reply";
+    ref.innerHTML = `<span class="reply-name" style="color:${msg.replyTo.color || "#58a6ff"}">${esc(msg.replyTo.user)}</span>: ${esc((msg.replyTo.text || "").slice(0, 60))}`;
+    ref.addEventListener("click", () => scrollToMsg(msg.replyTo.id));
+    body.appendChild(ref);
+  }
+
+  // Header (username + time)
+  const header = document.createElement("div");
+  header.className = "msg-header";
+  header.innerHTML = `<span class="msg-username" style="color:${msg.color || "#58a6ff"}">${esc(msg.user)}</span><span class="msg-time">${formatTime(ts)}</span>`;
+  body.appendChild(header);
+
+  // Text
+  const textEl = document.createElement("div");
+  textEl.className = "msg-text";
+  if (msg.isEmote) textEl.dataset.user = msg.user;
+  textEl.innerHTML = linkify(esc(msg.text));
+  body.appendChild(textEl);
+
+  // Reactions
+  if (msg.reactions && Object.keys(msg.reactions).length > 0) {
+    body.appendChild(buildReactions(msg.id, msg.reactions));
+  }
+
+  // Action bar
+  const actions = document.createElement("div");
+  actions.className = "msg-actions";
+
+  const replyBtn = document.createElement("button");
+  replyBtn.className = "msg-action-btn";
+  replyBtn.textContent = "↩";
+  replyBtn.title = "Reply";
+  replyBtn.addEventListener("click", () => setReply(msg));
+
+  const reactBtn = document.createElement("button");
+  reactBtn.className = "msg-action-btn";
+  reactBtn.textContent = "😊";
+  reactBtn.title = "React";
+  reactBtn.addEventListener("click", (e) => showEmojiPicker(e, msg.id));
+
+  actions.appendChild(replyBtn);
+  actions.appendChild(reactBtn);
+
+  row.appendChild(avDiv);
+  row.appendChild(body);
+  row.appendChild(actions);
+
+  $msgs.appendChild(row);
+
+  lastMsgUser = msg.user;
+  lastMsgTime = ts;
+}
+
+function renderSystem(text) {
+  const el = document.createElement("div");
+  el.className = "msg-system";
+  el.textContent = text;
+  $msgs.appendChild(el);
+  lastMsgUser = null;
+}
+
+function renderHelp(text) {
+  const el = document.createElement("div");
+  el.className = "msg-system help-msg";
+  el.textContent = text;
+  $msgs.appendChild(el);
+  lastMsgUser = null;
+}
+
+function dateDivider(ts) {
+  const el = document.createElement("div");
+  el.className = "date-divider";
+  el.textContent = new Date(ts).toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" });
+  return el;
+}
+
+function buildReactions(msgId, reactions) {
+  const wrap = document.createElement("div");
+  wrap.className = "msg-reactions";
+  wrap.dataset.reactionsFor = msgId;
+
+  for (const [emoji, users] of Object.entries(reactions)) {
+    const btn = document.createElement("button");
+    btn.className = "reaction-btn" + (users.includes(myUser) ? " mine" : "");
+    btn.dataset.emoji = emoji;
+    btn.innerHTML = `${emoji}<span class="reaction-count">${users.length}</span>`;
+    btn.title = users.join(", ");
+    btn.addEventListener("click", () => sendReaction(msgId, emoji));
+    wrap.appendChild(btn);
+  }
+  return wrap;
+}
+
+function updateReactions(msgId, reactions) {
+  const row = document.querySelector(`.msg-row[data-msg-id="${msgId}"]`);
+  if (!row) return;
+  const body = row.querySelector(".msg-body");
+  const old = body.querySelector(".msg-reactions");
+  if (old) old.remove();
+
+  if (reactions && Object.keys(reactions).length > 0) {
+    const reactionEl = buildReactions(msgId, reactions);
+    const textEl = body.querySelector(".msg-text");
+    textEl.after(reactionEl);
+  }
+}
+
+// ── Render: Users ─────────────────────────────────────────────
+function renderUsers(users) {
+  $userLst.innerHTML = "";
+  $onlineN.textContent = users.length;
+  $userCnt.textContent = users.length;
+
+  users.forEach(u => {
+    const item = document.createElement("div");
+    item.className = "user-item";
+
+    const av = document.createElement("div");
+    av.className = "user-avatar";
+    av.style.background = hexDim(u.color || "#58a6ff");
+    av.style.color = u.color || "#58a6ff";
+    av.textContent = initials(u.user);
+
+    const nameEl = document.createElement("span");
+    nameEl.textContent = u.user;
+    nameEl.style.color = u.user === myUser ? "var(--text)" : "var(--text-muted)";
+
+    const dot = document.createElement("div");
+    dot.className = "user-status-dot";
+
+    item.appendChild(av);
+    item.appendChild(nameEl);
+    item.appendChild(dot);
+    $userLst.appendChild(item);
+  });
+}
+
+// ── Render: Typing ────────────────────────────────────────────
+function renderTyping(users) {
+  const others = users.filter(u => u !== myUser);
+  if (others.length === 0) {
+    $typing.innerHTML = "";
+    return;
+  }
+  const names = others.slice(0, 3).join(", ");
+  const verb = others.length === 1 ? "is" : "are";
+  $typing.innerHTML = `<div class="typing-dots"><span></span><span></span><span></span></div><span>${esc(names)} ${verb} typing…</span>`;
+}
+
+// ── Sending ───────────────────────────────────────────────────
+function sendMessage() {
+  const text = $input.value.trim();
+  if (!text) return;
+  $input.value = "";
+  autoResize();
+
+  const payload = { type: "message", text };
+  if (replyTarget) {
+    payload.replyTo = {
+      id:    replyTarget.id,
+      user:  replyTarget.user,
+      color: replyTarget.color,
+      text:  replyTarget.text,
+    };
+  }
+  send(payload);
+  clearReply();
+  stopTypingIndicator();
+}
+
+function sendReaction(messageId, emoji) {
+  send({ type: "reaction", messageId, emoji });
+}
+
+// ── Reply ─────────────────────────────────────────────────────
+function setReply(msg) {
+  replyTarget = msg;
+  $replyN.textContent = msg.user;
+  $replyN.style.color = msg.color || "var(--text)";
+  $replyB.style.display = "flex";
+  $input.focus();
+}
+
+function clearReply() {
+  replyTarget = null;
+  $replyB.style.display = "none";
+}
+
+document.getElementById("cancel-reply").addEventListener("click", clearReply);
+
+// ── Typing indicator ──────────────────────────────────────────
+function startTypingIndicator() {
+  if (!isTyping) {
+    isTyping = true;
+    send({ type: "typing", typing: true });
+  }
+  clearTimeout(typingTimer);
+  typingTimer = setTimeout(stopTypingIndicator, 3500);
+}
+
+function stopTypingIndicator() {
+  if (isTyping) {
+    isTyping = false;
+    send({ type: "typing", typing: false });
+  }
+  clearTimeout(typingTimer);
+}
+
+// ── Emoji picker ──────────────────────────────────────────────
+let emojiTarget = null;
+const $inlineEmoji = document.getElementById("inline-emoji");
+const $emojiGrid = $inlineEmoji.querySelector("div");
+
+EMOJI_LIST.forEach(em => {
+  const btn = document.createElement("button");
+  btn.textContent = em;
+  btn.style.cssText = "border:none;background:transparent;font-size:20px;cursor:pointer;padding:5px;border-radius:6px;transition:background 0.1s;";
+  btn.addEventListener("mouseenter", () => btn.style.background = "var(--surface2)");
+  btn.addEventListener("mouseleave", () => btn.style.background = "transparent");
+  btn.addEventListener("click", () => {
+    if (emojiTarget) {
+      sendReaction(emojiTarget, em);
+    } else {
+      $input.value += em;
+      $input.focus();
+    }
+    hideEmojiPicker();
+  });
+  $emojiGrid.appendChild(btn);
+});
+
+function showEmojiPicker(e, msgId) {
+  emojiTarget = msgId || null;
+  const rect = e.target.getBoundingClientRect();
+  $inlineEmoji.style.left = Math.min(rect.left, window.innerWidth - 230) + "px";
+  $inlineEmoji.style.top = (rect.bottom + 6) + "px";
+  $inlineEmoji.style.display = "block";
+  e.stopPropagation();
+}
+
+function hideEmojiPicker() {
+  $inlineEmoji.style.display = "none";
+  emojiTarget = null;
+}
+
+document.getElementById("emoji-trigger-btn").addEventListener("click", (e) => {
+  showEmojiPicker(e, null);
+});
+
+document.addEventListener("click", (e) => {
+  if (!$inlineEmoji.contains(e.target)) hideEmojiPicker();
+});
+
+// ── Input handling ────────────────────────────────────────────
+$input.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+});
+
+$input.addEventListener("input", () => {
+  autoResize();
+  if ($input.value.trim()) startTypingIndicator();
+  else stopTypingIndicator();
+  $sendBtn.disabled = !$input.value.trim();
+});
+
+$sendBtn.addEventListener("click", sendMessage);
+$sendBtn.disabled = true;
+
+function autoResize() {
+  $input.style.height = "auto";
+  $input.style.height = Math.min($input.scrollHeight, 120) + "px";
+}
+
+function mentionUser(user) {
+  $input.value += `@${user} `;
+  $input.focus();
+}
+
+// ── Scroll ────────────────────────────────────────────────────
+function scrollBottom() {
+  $msgs.scrollTop = $msgs.scrollHeight;
+  $scrollB.classList.remove("show");
+}
+
+function maybeScrollBottom() {
+  const atBottom = $msgs.scrollHeight - $msgs.scrollTop - $msgs.clientHeight < 120;
+  if (atBottom) scrollBottom();
+  else $scrollB.classList.add("show");
+}
+
+$msgs.addEventListener("scroll", () => {
+  const atBottom = $msgs.scrollHeight - $msgs.scrollTop - $msgs.clientHeight < 80;
+  if (atBottom) $scrollB.classList.remove("show");
+});
+
+$scrollB.addEventListener("click", scrollBottom);
+
+function scrollToMsg(id) {
+  const el = document.querySelector(`.msg-row[data-msg-id="${id}"]`);
+  if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+}
+
+// ── Mobile sidebar ────────────────────────────────────────────
+const $sidebar = document.getElementById("sidebar");
+const $overlay = document.getElementById("sidebar-overlay");
+
+document.getElementById("mobile-menu-btn").addEventListener("click", () => {
+  $sidebar.classList.add("open");
+  $overlay.classList.add("show");
+});
+
+$overlay.addEventListener("click", () => {
+  $sidebar.classList.remove("open");
+  $overlay.classList.remove("show");
+});
+
+// ── Utilities ─────────────────────────────────────────────────
+function initials(name) {
+  return name.slice(0, 2).toUpperCase();
+}
+
+function hexDim(hex) {
+  // Make a dim background version of a color
+  const r = parseInt(hex.slice(1,3),16);
+  const g = parseInt(hex.slice(3,5),16);
+  const b = parseInt(hex.slice(5,7),16);
+  return `rgba(${r},${g},${b},0.15)`;
+}
+
+function esc(str) {
+  return String(str)
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;");
+}
+
+function linkify(text) {
+  return text.replace(
+    /(https?:\/\/[^\s<>"]+)/g,
+    '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>'
+  );
+}
+
+function formatTime(ts) {
+  return new Date(ts).toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" });
+}
+
+function isSameDay(a, b) {
+  const da = new Date(a), db = new Date(b);
+  return da.getFullYear() === db.getFullYear()
+      && da.getMonth()    === db.getMonth()
+      && da.getDate()     === db.getDate();
+}
+
+function findMsg(id) {
+  return document.querySelector(`.msg-row[data-msg-id="${id}"]`);
+}
+
+function avatarEl(user, color, size) {
+  const el = document.createElement("div");
+  el.style.cssText = `width:${size}px;height:${size}px;border-radius:50%;background:${hexDim(color)};color:${color};display:flex;align-items:center;justify-content:center;font-size:${Math.round(size*0.35)}px;font-weight:600;font-family:'JetBrains Mono',monospace;`;
+  el.textContent = initials(user);
+  return el;
+}
+</script>
 </body>
-
 </html>
