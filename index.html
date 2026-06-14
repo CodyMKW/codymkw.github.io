@@ -168,7 +168,6 @@
 <body>
 
 <div class="container">
-    <!-- Main Intro Card -->
     <div class="card">
         <div class="profile">
             <h1>CodyMKW</h1>
@@ -181,9 +180,7 @@
         <a href="https://codymkw.nekoweb.org" class="btn">Go to Main Site</a>
     </div>
 
-    <!-- Live Integrations Card -->
     <div class="card">
-        <!-- GitHub Activity -->
         <div style="margin-bottom: 1.5rem;">
             <div class="section-title">
                 <span style="color: var(--accent)">●</span> Latest Code Activity
@@ -197,7 +194,19 @@
             </a>
         </div>
 
-        <!-- Nintendo 3DS Status (3DSRPC) -->
+        <div style="margin-bottom: 1.5rem;">
+            <div class="section-title">
+                <span style="color: var(--accent)" id="switch-dot">●</span> Switch Presence
+            </div>
+            <a href="#" target="_blank" class="data-row" id="switch-container">
+                <div class="data-icon" id="switch-icon">🎮</div>
+                <div class="data-info">
+                    <div class="data-title pulse" id="switch-title">Connecting to Switch API...</div>
+                    <div class="data-sub" id="switch-sub">Checking status</div>
+                </div>
+            </a>
+        </div>
+
         <div style="margin-bottom: 1.5rem;">
             <div class="section-title">
                 <span style="color: var(--accent)" id="rpc-dot">●</span> 3DS Rich Presence
@@ -211,7 +220,6 @@
             </a>
         </div>
 
-        <!-- AniList Activity -->
         <div style="margin-bottom: 1.5rem;">
             <div class="section-title">
                 <span style="color: var(--accent)">●</span> Last Watched Anime
@@ -225,7 +233,6 @@
             </a>
         </div>
 
-        <!-- My Hero Ultra Rumble API Feed -->
         <div>
             <div class="section-title">
                 <span style="color: var(--accent)">●</span> Ultra Rumble Active Map
@@ -267,7 +274,52 @@
             document.getElementById('gh-sub').innerText = "Check out my repositories";
         });
 
-    // 2. Fetch Nintendo 3DS Rich Presence Status
+    // 2. Fetch Nintendo Switch Status (nxapi)
+    fetch('https://nxapi-presence.fancy.org.uk/api/presence/644cd5195d154bd5?include-splatoon3=1')
+        .then(res => res.json())
+        .then(data => {
+            if (data && data.friend) {
+                const f = data.friend;
+                const p = f.presence;
+                const iconEl = document.getElementById('switch-icon');
+                const titleEl = document.getElementById('switch-title');
+                const subEl = document.getElementById('switch-sub');
+                const containerEl = document.getElementById('switch-container');
+                const dotEl = document.getElementById('switch-dot');
+
+                let imgUrl = f.imageUri; // Fallback to user avatar
+
+                if (p && p.state === "ONLINE" && p.game) {
+                    titleEl.innerText = p.game.name || "Playing Switch";
+                    if (p.game.imageUri) imgUrl = p.game.imageUri;
+                    
+                    // Convert raw minutes to hours safely
+                    const hours = Math.floor(p.game.totalPlayTime / 60);
+                    subEl.innerText = `Online Now • ${hours.toLocaleString()}+ hrs played`;
+                    dotEl.style.color = "#4ade80"; 
+                } else {
+                    titleEl.innerText = "Currently Offline";
+                    subEl.innerText = "Nintendo Switch";
+                    dotEl.style.color = "#8b949e";
+                }
+
+                if (imgUrl) {
+                    iconEl.innerHTML = `<img src="${imgUrl}" style="width:100%; height:100%; object-fit:cover;">`;
+                }
+                titleEl.classList.remove('pulse');
+                containerEl.href = data.title ? data.title.url : "https://fancy.org.uk";
+            } else {
+                throw new Error("Invalid format");
+            }
+        })
+        .catch(() => {
+            document.getElementById('switch-title').innerText = "Switch Status Offline";
+            document.getElementById('switch-title').classList.remove('pulse');
+            document.getElementById('switch-sub').innerText = "Service connection issue";
+            document.getElementById('switch-dot').style.color = "#ff6b6b";
+        });
+
+    // 3. Fetch Nintendo 3DS Rich Presence Status
     fetch('https://3dsrpc.codymkw.workers.dev/?fc=0645-5821-2438&network=nintendo')
         .then(res => res.json())
         .then(data => {
@@ -278,7 +330,6 @@
                 const containerEl = document.getElementById('rpc-container');
                 const dotEl = document.getElementById('rpc-dot');
 
-                // If online and playing a game, prioritize game image. Fall back to Mii.
                 const imgUrl = (data.isOnline && data.currentGameImage) ? data.currentGameImage : data.miiImage;
                 if (imgUrl) {
                     iconEl.innerHTML = `<img src="${imgUrl}" style="width:100%; height:100%; object-fit:cover;">`;
@@ -287,11 +338,11 @@
                 if (data.isOnline) {
                     titleEl.innerText = data.currentGame || "Playing on 3DS";
                     subEl.innerText = data.currentGameActivity || "Online Now";
-                    dotEl.style.color = "#4ade80"; // Bright Green for Online
+                    dotEl.style.color = "#4ade80";
                 } else {
                     titleEl.innerText = data.statusMessage || "Currently Offline";
                     subEl.innerText = data.favoriteGame ? `Favorite: ${data.favoriteGame}` : "Offline";
-                    dotEl.style.color = "#8b949e"; // Muted Gray for Offline
+                    dotEl.style.color = "#8b949e";
                 }
 
                 titleEl.classList.remove('pulse');
@@ -307,7 +358,7 @@
             document.getElementById('rpc-dot').style.color = "#ff6b6b";
         });
 
-    // 3. Fetch Last Watched Anime from AniList
+    // 4. Fetch Last Watched Anime from AniList
     const aniListQuery = `
     query {
         Page(page: 1, perPage: 1) {
@@ -359,7 +410,7 @@
         document.getElementById('al-sub').innerText = "Check out my anime stats";
     });
 
-    // 4. Fetch Data from your Custom Ultra Rumble Worker API
+    // 5. Fetch Data from your Custom Ultra Rumble Worker API
     fetch('https://ultrarumble-api.codymkw.workers.dev')
         .then(res => res.json())
         .then(data => {
