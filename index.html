@@ -143,7 +143,6 @@
             border-color: rgba(255, 255, 255, 0.1);
         }
 
-        /* Status-driven glowing cards */
         .online-glow {
             border-color: rgba(74, 222, 128, 0.25) !important;
             box-shadow: 0 0 15px rgba(74, 222, 128, 0.08);
@@ -223,7 +222,7 @@
             <span class="tag">🐙 Splatoon</span>
             <span class="tag">🍃 Animal Crossing</span>
             <span class="tag">💥 Ultra Rumble</span>
-            <span class="tag">⚡ Cloudflare Workers</span>
+            <span class="tag">🛠️ Web Dev</span>
         </div>
         
         <a href="https://codymkw.nekoweb.org" class="btn">Go to Main Site</a>
@@ -290,7 +289,7 @@
                 <div class="data-icon" id="ur-icon">🎮</div>
                 <div class="data-info">
                     <div class="data-title pulse" id="ur-title">Fetching Map Rotation...</div>
-                    <div class="data-sub" id="ur-sub">Connecting to Worker API</div>
+                    <div class="data-sub" id="ur-sub">Connecting to API</div>
                 </div>
             </a>
         </div>
@@ -300,9 +299,8 @@
 </div>
 
 <script>
-    // 0. Temporal Enhancements (Dynamic Time Greeting & Age Multi-tracker)
+    // 0. Temporal Tracking Engine
     function initializeCoreEngine() {
-        // Dynamic age tracker 
         const birthday = new Date('1991-01-17T00:00:00');
         const today = new Date();
         let age = today.getFullYear() - birthday.getFullYear();
@@ -310,7 +308,6 @@
         if (m < 0 || (m === 0 && today.getDate() < birthday.getDate())) { age--; }
         document.getElementById('level-badge').innerText = `Lv. ${age}`;
 
-        // Localized greeting
         const hrs = today.getHours();
         let greeting = "Welcome to my hub.";
         if (hrs < 12) greeting = "Good morning! Welcome to my hub.";
@@ -483,26 +480,46 @@
         document.getElementById('al-sub').innerText = "Check out my anime stats";
     });
 
-    // 5. Fetch Data from your Custom Ultra Rumble Worker API
+    // 5. Enhanced Ultra Rumble Multi-Data Parser
     fetch('https://ultrarumble-api.codymkw.workers.dev')
         .then(res => res.json())
         .then(data => {
             if (data && data.maps) {
+                // Parse distinct modes if they are split up in your API structure
                 const ranked = data.maps.find(m => m.mode === "Ranked Match") || data.maps[0];
+                const casual = data.maps.find(m => m.mode === "Standard Match" || m.mode === "Casual Match");
                 const season = data.season ? data.season.name : "Active Season";
 
+                // Set image preview from current primary map
                 document.getElementById('ur-icon').innerHTML = `<img src="${ranked.image}" style="width:100%; height:100%; object-fit:cover;">`;
-                document.getElementById('ur-title').innerText = ranked.map;
+                
+                // Upgrade 1: Dual Map Mode Displaying
+                if (casual && casual.map !== ranked.map) {
+                    document.getElementById('ur-title').innerText = `R: ${ranked.map} | C: ${casual.map}`;
+                } else {
+                    document.getElementById('ur-title').innerText = ranked.map;
+                }
                 document.getElementById('ur-title').classList.remove('pulse');
-                document.getElementById('ur-sub').innerText = `${season} • Ranked Rotation`;
+
+                // Upgrade 2: Look for active event trackers or loop timers
+                let structuralSubtext = `${season}`;
+                if (data.timeLeft || data.rotation_left) {
+                    structuralSubtext += ` • ${data.timeLeft || data.rotation_left} left`;
+                } else if (data.event) {
+                    structuralSubtext += ` • ${data.event.name || data.event}`;
+                } else {
+                    structuralSubtext += ` • Rotation Live`;
+                }
+                
+                document.getElementById('ur-sub').innerText = structuralSubtext;
             } else {
                 throw new Error();
             }
         })
         .catch(() => {
-            document.getElementById('ur-title').innerText = "Ultra Rumble Status";
+            document.getElementById('ur-title').innerText = "Ultra Rumble Rotation";
             document.getElementById('ur-title').classList.remove('pulse');
-            document.getElementById('ur-sub').innerText = "API status currently offline";
+            document.getElementById('ur-sub').innerText = "API feed currently offline";
         });
 </script>
 
