@@ -1,33 +1,34 @@
 # CodyMKW Hub
 
-A real-time personal dashboard aggregating my gaming statistics, coding activity, and current interests. This hub serves as a central point for my digital presence, pulling live data from various APIs to display what I'm currently playing, coding, and watching.
+A real-time, high-performance personal telemetry dashboard aggregating live gaming metrics, coding milestones, and media tracking. Designed with a sleek, modern glassmorphic interface, this hub serves as a central hub for my digital presence, utilizing multiple API streams to showcase active stats dynamically.
 
 ## 🚀 Features
 
-* **Live Console Presence:** Real-time status updates for both Nintendo Switch (via `nxapi`) and Nintendo 3DS (via `3dsrpc`).
-* **Gaming Milestones:** Automatically tracks play hours for titles like *Animal Crossing: New Horizons*.
-* **Code Activity:** Tracks the latest push/activity from my GitHub profile.
-* **Anime Tracker:** Fetches my current progress on shows via the AniList GraphQL API.
-* **Competitive Stats:** Displays the current map rotation for *My Hero Ultra Rumble* via a custom Cloudflare Worker API.
-* **Responsive Design:** A clean, glass-morphism inspired UI that works on desktop and mobile.
+* **Automated Level System:** Dynamically computes and displays my current "Lv." metric based on my real birthdate (January 17, 1991), removing the need for manual updates.
+* **Temporal Greeting Engine:** Context-aware sub-headers automatically detect the visitor's localized time zone to offer distinct morning, afternoon, or evening greetings.
+* **Live Operational Glow:** Status cards for the Nintendo Switch and Nintendo 3DS feature responsive glow behaviors that automatically activate when the console state switches to active/online.
+* **Curated Specialty Tags:** Micro-badges emphasizing focus fields: *Splatoon*, *Animal Crossing*, *Ultra Rumble*, and *Web Dev*.
+* **Multi-Platform Live Data Feeds:**
+    * **GitHub Activity:** Fetches the single most recent public event, rendering accurate commit, repository names, and tracking contexts.
+    * **Switch Presence:** Displays current real-time software titles and total lifetime hour logs via `nxapi`.
+    * **3DS Presence:** Leverages the custom `3DSRPC` ecosystem to broadcast active hand-held operations, Mii assets, and game states.
+    * **AniList Tracking:** Pulls watch state logs, episode increments, and high-fidelity cover art from the AniList GraphQL engine.
+    * **Ultra Rumble Rotation:** An enhanced parser checking for split matchmaking brackets (Ranked vs. Casual), remaining cycle timers (`timeLeft`), or active seasonal milestones.
 
-## 🛠 Tech Stack
+## 🛠 Tech Stack & Integrations
 
-* **Frontend:** Vanilla HTML5, CSS3, and JavaScript (Fetch API).
-* **Backend/Data:** * [Cloudflare Workers](https://workers.cloudflare.com/) (For API management and Proxying).
-  * [AniList GraphQL API](https://anilist.co/).
-  * [GitHub REST API](https://docs.github.com/en/rest).
-  * Custom `3dsrpc` & `nxapi` integrations.
+* **Frontend:** Responsive vanilla HTML5, procedural CSS3 variables, and raw asynchronous JavaScript (Fetch API Engine).
+* **Data Pipelines:**
+    * [AniList GraphQL API Core](https://anilist.co/)
+    * [GitHub Public Event Stream REST API](https://docs.github.com/en/rest)
+    * [3DSRPC Telemetry Engine](https://3dsrpc.com)
+    * Custom *My Hero Ultra Rumble* API infrastructure.
 
-## 📝 API Credits
+## 📝 Link References & Credits
 
-* **3DS Rich Presence:** Powered by my custom [3dsrpc](https://3dsrpc.codymkw.workers.dev/) worker.
-* **Switch Presence:** Powered by [nxapi-presence](https://nxapi-presence.fancy.org.uk/).
-* **Anime Data:** Powered by [AniList](https://anilist.co/).
-
-## 👤 Author
-
-* **Cody** - [codymkw.nekoweb.org](https://codymkw.nekoweb.org)
+* **Main Project Dashboard:** Hosted via [codymkw.nekoweb.org](https://codymkw.nekoweb.org)
+* **Switch Telemetry Base:** Built using framework concepts from [samuelthomas2774/nxapi](https://github.com/samuelthomas2774/nxapi)
+* **Ultra Rumble Resource Hub:** Connected with references from [ultrarumble.com](https://ultrarumble.com)
 
 ---
-*Built with ❤️ for the gaming and dev community.*
+*Built for the competitive gaming and development community.*
