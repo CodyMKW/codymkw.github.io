@@ -197,6 +197,20 @@
             </a>
         </div>
 
+        <!-- Nintendo 3DS Status (3DSRPC) -->
+        <div style="margin-bottom: 1.5rem;">
+            <div class="section-title">
+                <span style="color: var(--accent)" id="rpc-dot">●</span> 3DS Rich Presence
+            </div>
+            <a href="#" target="_blank" class="data-row" id="rpc-container">
+                <div class="data-icon" id="rpc-icon">🎮</div>
+                <div class="data-info">
+                    <div class="data-title pulse" id="rpc-title">Connecting to 3DSRPC...</div>
+                    <div class="data-sub" id="rpc-sub">Checking console status</div>
+                </div>
+            </a>
+        </div>
+
         <!-- AniList Activity -->
         <div style="margin-bottom: 1.5rem;">
             <div class="section-title">
@@ -253,7 +267,47 @@
             document.getElementById('gh-sub').innerText = "Check out my repositories";
         });
 
-    // 2. Fetch Last Watched Anime from AniList
+    // 2. Fetch Nintendo 3DS Rich Presence Status
+    fetch('https://3dsrpc.codymkw.workers.dev/?fc=0645-5821-2438&network=nintendo')
+        .then(res => res.json())
+        .then(data => {
+            if (data) {
+                const iconEl = document.getElementById('rpc-icon');
+                const titleEl = document.getElementById('rpc-title');
+                const subEl = document.getElementById('rpc-sub');
+                const containerEl = document.getElementById('rpc-container');
+                const dotEl = document.getElementById('rpc-dot');
+
+                // If online and playing a game, prioritize game image. Fall back to Mii.
+                const imgUrl = (data.isOnline && data.currentGameImage) ? data.currentGameImage : data.miiImage;
+                if (imgUrl) {
+                    iconEl.innerHTML = `<img src="${imgUrl}" style="width:100%; height:100%; object-fit:cover;">`;
+                }
+
+                if (data.isOnline) {
+                    titleEl.innerText = data.currentGame || "Playing on 3DS";
+                    subEl.innerText = data.currentGameActivity || "Online Now";
+                    dotEl.style.color = "#4ade80"; // Bright Green for Online
+                } else {
+                    titleEl.innerText = data.statusMessage || "Currently Offline";
+                    subEl.innerText = data.favoriteGame ? `Favorite: ${data.favoriteGame}` : "Offline";
+                    dotEl.style.color = "#8b949e"; // Muted Gray for Offline
+                }
+
+                titleEl.classList.remove('pulse');
+                containerEl.href = data.profileUrl || "https://3dsrpc.com";
+            } else {
+                throw new Error("Empty payload");
+            }
+        })
+        .catch(() => {
+            document.getElementById('rpc-title').innerText = "3DS Status Offline";
+            document.getElementById('rpc-title').classList.remove('pulse');
+            document.getElementById('rpc-sub').innerText = "Unable to connect to service";
+            document.getElementById('rpc-dot').style.color = "#ff6b6b";
+        });
+
+    // 3. Fetch Last Watched Anime from AniList
     const aniListQuery = `
     query {
         Page(page: 1, perPage: 1) {
@@ -305,12 +359,11 @@
         document.getElementById('al-sub').innerText = "Check out my anime stats";
     });
 
-    // 3. Fetch Data from your Custom Ultra Rumble Worker API
+    // 4. Fetch Data from your Custom Ultra Rumble Worker API
     fetch('https://ultrarumble-api.codymkw.workers.dev')
         .then(res => res.json())
         .then(data => {
             if (data && data.maps) {
-                // Find active Ranked map, fallback to the first listed map if not found
                 const ranked = data.maps.find(m => m.mode === "Ranked Match") || data.maps[0];
                 const season = data.season ? data.season.name : "Active Season";
 
