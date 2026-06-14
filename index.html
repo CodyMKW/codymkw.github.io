@@ -18,15 +18,11 @@
             --font-stack: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
-        * {
-            box-sizing: border-box;
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            margin: 0;
             background-color: var(--bg-main);
-            background-image: 
+            background-image:
                 radial-gradient(circle at 10% 20%, rgba(0, 255, 135, 0.05) 0%, transparent 40%),
                 radial-gradient(circle at 90% 80%, rgba(96, 239, 255, 0.05) 0%, transparent 40%),
                 linear-gradient(to bottom, #060913, #02040a);
@@ -41,20 +37,10 @@
             overflow-x: hidden;
         }
 
-        /* Custom Modern Scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: var(--bg-main);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--accent-green);
-        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-main); }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent-green); }
 
         .dashboard {
             width: 100%;
@@ -66,12 +52,10 @@
         }
 
         @media (max-width: 820px) {
-            .dashboard {
-                grid-template-columns: 1fr;
-            }
+            .dashboard { grid-template-columns: 1fr; }
+            .profile-panel { position: static; }
         }
 
-        /* Reusable Card Styling */
         .card {
             background: var(--bg-card);
             backdrop-filter: blur(24px);
@@ -79,7 +63,7 @@
             border: 1px solid var(--border-line);
             border-radius: 24px;
             padding: 32px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
             position: relative;
             overflow: hidden;
         }
@@ -87,21 +71,18 @@
         .card::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135px, transparent 0%, rgba(255,255,255,0.02) 100%);
+            inset: 0;
+            background: linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.02) 100%);
             pointer-events: none;
         }
 
-        /* Profile Block */
         .profile-panel {
             display: flex;
             flex-direction: column;
             gap: 24px;
             position: sticky;
             top: 40px;
+            scroll-margin-top: 40px;
         }
 
         .identity-header {
@@ -128,7 +109,6 @@
         }
 
         .identity-title h1 {
-            margin: 0;
             font-size: 2.2rem;
             font-weight: 800;
             letter-spacing: -1px;
@@ -139,29 +119,28 @@
         }
 
         .identity-title p {
-            margin: 4px 0 0 0;
+            margin: 4px 0 0;
             font-size: 0.95rem;
             color: var(--text-muted);
             line-height: 1.4;
         }
 
         .rank-badge {
-            background: linear-gradient(135deg, rgba(0, 255, 135, 0.1), rgba(96, 239, 255, 0.1));
-            border: 1px solid rgba(0, 255, 135, 0.3);
+            background: linear-gradient(135deg, rgba(0,255,135,0.1), rgba(96,239,255,0.1));
+            border: 1px solid rgba(0,255,135,0.3);
             color: var(--accent-green);
             padding: 6px 14px;
             border-radius: 14px;
             font-size: 0.85rem;
             font-weight: 700;
             letter-spacing: 0.5px;
-            box-shadow: 0 0 20px rgba(0, 255, 135, 0.15);
+            box-shadow: 0 0 20px rgba(0,255,135,0.15);
             white-space: nowrap;
             flex-shrink: 0;
         }
 
-        /* Widgets */
         .system-widget {
-            background: rgba(0, 0, 0, 0.2);
+            background: rgba(0,0,0,0.2);
             border: 1px solid var(--border-line);
             border-radius: 16px;
             padding: 16px;
@@ -187,7 +166,6 @@
             font-weight: 700;
         }
 
-        /* Interest Badges */
         .matrix-tags {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -195,7 +173,7 @@
         }
 
         .matrix-badge {
-            background: rgba(255, 255, 255, 0.02);
+            background: rgba(255,255,255,0.02);
             border: 1px solid var(--border-line);
             padding: 12px;
             border-radius: 12px;
@@ -205,19 +183,18 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            transition: background 0.2s, border-color 0.2s, transform 0.2s;
+            will-change: transform;
         }
 
-        .matrix-badge span {
-            font-size: 1.1rem;
-        }
+        .matrix-badge span { font-size: 1.1rem; }
 
         .matrix-badge:hover {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255,255,255,0.05);
             border-color: rgba(255,255,255,0.15);
             transform: translateY(-2px);
         }
 
-        /* Buttons */
         .action-group {
             display: flex;
             flex-direction: column;
@@ -235,12 +212,15 @@
             text-align: center;
             text-decoration: none;
             cursor: pointer;
-            box-shadow: 0 8px 25px rgba(0, 255, 135, 0.2);
+            display: block;
+            box-shadow: 0 8px 25px rgba(0,255,135,0.2);
+            transition: transform 0.2s, box-shadow 0.2s;
+            will-change: transform;
         }
 
         .btn-prime:hover {
             transform: translateY(-2px);
-            box-shadow: 0 12px 30px rgba(0, 255, 135, 0.4);
+            box-shadow: 0 12px 30px rgba(0,255,135,0.4);
         }
 
         .btn-sub {
@@ -253,6 +233,7 @@
             font-size: 0.9rem;
             text-align: center;
             cursor: pointer;
+            transition: background 0.2s, border-color 0.2s, color 0.2s;
         }
 
         .btn-sub:hover {
@@ -260,7 +241,6 @@
             border-color: rgba(255,255,255,0.2);
         }
 
-        /* Feeds Panel */
         .telemetry-panel {
             display: flex;
             flex-direction: column;
@@ -290,13 +270,18 @@
             display: flex;
             align-items: center;
             gap: 20px;
-            background: rgba(5, 8, 16, 0.4);
+            background: rgba(5,8,16,0.4);
             border: 1px solid var(--border-line);
             padding: 16px 20px;
             border-radius: 18px;
             text-decoration: none;
             color: inherit;
             position: relative;
+            opacity: 0;
+            transform: translateY(8px);
+            animation: rowIn 0.4s ease forwards;
+            transition: background 0.25s, border-color 0.25s, transform 0.25s;
+            will-change: transform, opacity;
         }
 
         .feed-row:hover {
@@ -305,11 +290,21 @@
             transform: scale(1.015) translateX(4px);
         }
 
-        /* Online glow styling */
+        @keyframes rowIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .feed-row:nth-child(1) { animation-delay: 0.05s; }
+        .feed-row:nth-child(2) { animation-delay: 0.10s; }
+        .feed-row:nth-child(3) { animation-delay: 0.15s; }
+        .feed-row:nth-child(4) { animation-delay: 0.20s; }
+        .feed-row:nth-child(5) { animation-delay: 0.25s; }
+        .feed-row:nth-child(6) { animation-delay: 0.30s; }
+
         .live-active {
-            border-color: rgba(0, 255, 135, 0.3) !important;
-            box-shadow: 0 10px 30px rgba(0, 255, 135, 0.06);
-            background: linear-gradient(90deg, rgba(0, 255, 135, 0.02), rgba(5, 8, 16, 0.4)) !important;
+            border-color: rgba(0,255,135,0.3) !important;
+            box-shadow: 0 10px 30px rgba(0,255,135,0.06);
+            background: linear-gradient(90deg, rgba(0,255,135,0.02), rgba(5,8,16,0.4)) !important;
         }
 
         .status-node {
@@ -317,7 +312,7 @@
             height: 8px;
             border-radius: 50%;
             background: var(--text-muted);
-            display: inline-block;
+            flex-shrink: 0;
         }
 
         .feed-row.live-active .status-node {
@@ -327,9 +322,9 @@
         }
 
         @keyframes beacon {
-            0% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.4); opacity: 0.6; }
-            100% { transform: scale(1); opacity: 1; }
+            0%   { transform: scale(1);   opacity: 1; }
+            50%  { transform: scale(1.4); opacity: 0.6; }
+            100% { transform: scale(1);   opacity: 1; }
         }
 
         .feed-media {
@@ -345,6 +340,7 @@
             overflow: hidden;
             flex-shrink: 0;
             box-shadow: inset 0 2px 8px rgba(0,0,0,0.5);
+            transition: filter 0.3s;
         }
 
         .feed-media img {
@@ -352,6 +348,8 @@
             height: 100%;
             object-fit: cover;
         }
+
+        .feed-media.dimmed { filter: grayscale(0.6) brightness(0.5); }
 
         .feed-content {
             flex: 1;
@@ -386,15 +384,24 @@
             background: rgba(0,0,0,0.2);
             border-radius: 6px;
             border: 1px solid var(--border-line);
+            flex-shrink: 0;
+        }
+
+        /* Skeleton shimmer for loading state */
+        @keyframes shimmer {
+            0%   { background-position: -400px 0; }
+            100% { background-position: 400px 0; }
         }
 
         .pulse {
-            animation: overlayPulse 1.5s infinite ease-in-out;
-        }
-        @keyframes overlayPulse {
-            0% { opacity: 0.3; }
-            50% { opacity: 1; }
-            100% { opacity: 0.3; }
+            background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.04) 75%);
+            background-size: 800px 100%;
+            animation: shimmer 1.6s infinite linear;
+            border-radius: 6px;
+            color: transparent !important;
+            user-select: none;
+            min-width: 120px;
+            display: inline-block;
         }
     </style>
 </head>
@@ -423,7 +430,6 @@
             <div class="matrix-badge"><span>🛠️</span> Development</div>
         </div>
 
-        <!-- Info Widgets -->
         <div class="card" style="padding: 20px; display: flex; flex-direction: column; gap: 10px;">
             <div class="system-widget">
                 <div class="widget-label"><span style="color:var(--accent-green)">👋</span> Hub Status</div>
@@ -434,7 +440,7 @@
                 <div class="widget-value" id="runtime-clock">00:00:00</div>
             </div>
             <div class="system-widget">
-                <div class="widget-label">📡 Connection</div>
+                <div class="widget-label">📡 Ping</div>
                 <div class="widget-value" id="ping-tracker">-- ms</div>
             </div>
         </div>
@@ -445,55 +451,65 @@
         </div>
     </div>
 
-    <!-- Right Column: What I'm Up To -->
+    <!-- Right Column -->
     <div class="telemetry-panel">
         <div class="panel-heading">What I'm up to lately</div>
 
-        <!-- GitHub Activity -->
-        <a href="https://github.com/CodyMKW" target="_blank" class="feed-row" id="gh-container">
+        <!-- GitHub -->
+        <a href="https://github.com/CodyMKW" target="_blank" rel="noopener noreferrer" class="feed-row" id="gh-container">
             <div class="feed-media">🐙</div>
             <div class="feed-content">
-                <div class="feed-title pulse" id="gh-title">Checking GitHub...</div>
+                <div class="feed-title pulse" id="gh-title">Checking GitHub…</div>
                 <div class="feed-subtitle" id="gh-sub">Finding my last commit</div>
             </div>
             <div class="feed-meta">Code</div>
         </a>
 
-        <!-- Nintendo Switch Status -->
-        <a href="https://github.com/samuelthomas2774/nxapi" target="_blank" class="feed-row" id="switch-container">
+        <!-- Nintendo Switch -->
+        <a href="https://github.com/samuelthomas2774/nxapi" target="_blank" rel="noopener noreferrer" class="feed-row" id="switch-container">
             <div class="feed-media" id="switch-icon">🎮</div>
             <div class="feed-content">
-                <div class="feed-title pulse" id="switch-title">Checking Switch status...</div>
+                <div class="feed-title pulse" id="switch-title">Checking Switch…</div>
                 <div class="feed-subtitle" id="switch-sub">Am I playing right now?</div>
             </div>
             <div class="status-node" id="switch-dot"></div>
         </a>
 
-        <!-- Nintendo 3DS Status -->
-        <a href="https://3dsrpc.com" target="_blank" class="feed-row" id="rpc-container">
+        <!-- Nintendo 3DS -->
+        <a href="https://3dsrpc.com" target="_blank" rel="noopener noreferrer" class="feed-row" id="rpc-container">
             <div class="feed-media" id="rpc-icon">🎮</div>
             <div class="feed-content">
-                <div class="feed-title pulse" id="rpc-title">Checking 3DS status...</div>
+                <div class="feed-title pulse" id="rpc-title">Checking 3DS…</div>
                 <div class="feed-subtitle" id="rpc-sub">Seeing if my handheld is on</div>
             </div>
             <div class="status-node" id="rpc-dot"></div>
         </a>
 
-        <!-- AniList Activity -->
-        <a href="https://anilist.co/user/CodyMKW/" target="_blank" class="feed-row" id="al-container">
+        <!-- AniList -->
+        <a href="https://anilist.co/user/CodyMKW/" target="_blank" rel="noopener noreferrer" class="feed-row" id="al-container">
             <div class="feed-media" id="al-icon">📺</div>
             <div class="feed-content">
-                <div class="feed-title pulse" id="al-title">Checking AniList...</div>
+                <div class="feed-title pulse" id="al-title">Checking AniList…</div>
                 <div class="feed-subtitle" id="al-sub">Finding my last watched episode</div>
             </div>
             <div class="feed-meta">Anime</div>
         </a>
 
-        <!-- My Hero Ultra Rumble Rotations -->
-        <a href="https://ultrarumble.com" target="_blank" class="feed-row" id="ur-container">
+        <!-- Last.fm -->
+        <a href="https://www.last.fm/user/CodyMKW" target="_blank" rel="noopener noreferrer" class="feed-row" id="lfm-container">
+            <div class="feed-media" id="lfm-icon">🎵</div>
+            <div class="feed-content">
+                <div class="feed-title pulse" id="lfm-title">Checking Last.fm…</div>
+                <div class="feed-subtitle" id="lfm-sub">Finding what I last listened to</div>
+            </div>
+            <div class="feed-meta">Music</div>
+        </a>
+
+        <!-- Ultra Rumble -->
+        <a href="https://ultrarumble.com" target="_blank" rel="noopener noreferrer" class="feed-row" id="ur-container">
             <div class="feed-media" id="ur-icon">💥</div>
             <div class="feed-content">
-                <div class="feed-title pulse" id="ur-title">Checking active maps...</div>
+                <div class="feed-title pulse" id="ur-title">Checking active maps…</div>
                 <div class="feed-subtitle" id="ur-sub">Looking up game rotation info</div>
             </div>
             <div class="feed-meta">Ultra Rumble</div>
@@ -502,221 +518,249 @@
 </div>
 
 <script>
-    // 0. Time, Greetings, and Age Calculations
-    function launchDashboardCore() {
-        const birthday = new Date('1991-01-17T00:00:00');
-        const today = new Date();
-        let age = today.getFullYear() - birthday.getFullYear();
-        const m = today.getMonth() - birthday.getMonth();
-        if (m < 0 || (m === 0 && today.getDate() < birthday.getDate())) { age--; }
-        document.getElementById('level-badge').innerText = `Lv. ${age}`;
+// ─── Core: time, greeting, level ───────────────────────────────────────────
+(function launchDashboardCore() {
+    const birthday = new Date('1991-01-17T00:00:00'); // replace year with actual birth year
+    const today = new Date();
+    let age = today.getFullYear() - birthday.getFullYear();
+    const m = today.getMonth() - birthday.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthday.getDate())) age--;
+    document.getElementById('level-badge').innerText = `Lv. ${age}`;
 
-        // Friendly local greetings
-        const hrs = today.getHours();
-        let greeting = "Welcome to my little corner of the web.";
-        if (hrs < 12) greeting = "Good morning! Hope your day is off to a great start.";
-        else if (hrs < 18) greeting = "Good afternoon! Thanks for stopping by.";
-        else greeting = "Good evening! Hope you're having a chill night.";
-        document.getElementById('dynamic-greet').innerText = greeting;
+    const hrs = today.getHours();
+    let greeting = "Welcome to my little corner of the web.";
+    if (hrs < 12)      greeting = "Good morning! Hope your day is off to a great start.";
+    else if (hrs < 18) greeting = "Good afternoon! Thanks for stopping by.";
+    else               greeting = "Good evening! Hope you're having a chill night.";
+    document.getElementById('dynamic-greet').innerText = greeting;
 
-        // Running Live Clock
-        setInterval(() => {
-            const now = new Date();
-            document.getElementById('runtime-clock').innerText = now.toTimeString().split(' ')[0];
-        }, 1000);
+    setInterval(() => {
+        document.getElementById('runtime-clock').innerText =
+            new Date().toTimeString().split(' ')[0];
+    }, 1000);
+})();
 
-        // Ping Loop
-        setInterval(() => {
-            const simulatedPing = Math.floor(Math.random() * 25) + 12;
-            document.getElementById('ping-tracker').innerText = `${simulatedPing} ms`;
-        }, 4000);
+// ─── Real ping measurement ──────────────────────────────────────────────────
+(function measurePing() {
+    function probe() {
+        const t0 = performance.now();
+        fetch('https://www.gravatar.com/avatar/5127de8a3a295a02ff3fc55bb6b2fabe?s=1', { cache: 'no-store', mode: 'no-cors' })
+            .then(() => {
+                const ms = Math.round(performance.now() - t0);
+                document.getElementById('ping-tracker').innerText = `${ms} ms`;
+            })
+            .catch(() => {
+                document.getElementById('ping-tracker').innerText = `-- ms`;
+            });
     }
-    launchDashboardCore();
+    probe();
+    setInterval(probe, 8000);
+})();
 
-    // Clipboard feature text rewrite
-    document.getElementById('share-hub-btn').addEventListener('click', function() {
-        navigator.clipboard.writeText(window.location.href);
-        const originalText = this.innerText;
-        this.innerText = "Link copied!";
-        this.style.color = "var(--accent-green)";
-        setTimeout(() => {
-            this.innerText = originalText;
-            this.style.color = "";
-        }, 2000);
-    });
+// ─── Copy link ──────────────────────────────────────────────────────────────
+document.getElementById('share-hub-btn').addEventListener('click', function () {
+    const btn = this;
+    const copy = () => {
+        btn.innerText = "Copied!";
+        btn.style.color = "var(--accent-green)";
+        setTimeout(() => { btn.innerText = "Copy Page Link"; btn.style.color = ""; }, 2000);
+    };
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(window.location.href).then(copy).catch(copy);
+    } else {
+        const ta = document.createElement('textarea');
+        ta.value = window.location.href;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        ta.remove();
+        copy();
+    }
+});
 
-    // 1. GitHub Pipeline
-    fetch('https://api.github.com/users/CodyMKW/events/public')
-        .then(res => res.json())
-        .then(data => {
-            if (data && data.length > 0) {
-                const latest = data[0];
-                let action = "Active in";
-                if (latest.type === "PushEvent") action = "Pushed to";
-                if (latest.type === "WatchEvent") action = "Starred";
-                if (latest.type === "CreateEvent") action = "Created";
-                
-                document.getElementById('gh-title').innerText = latest.repo.name;
-                document.getElementById('gh-title').classList.remove('pulse');
-                document.getElementById('gh-sub').innerText = `${action} this repository`;
-                document.getElementById('gh-container').href = `https://github.com/${latest.repo.name}`;
-            } else { throw new Error(); }
-        })
-        .catch(() => {
-            document.getElementById('gh-title').innerText = "My GitHub Profile";
-            document.getElementById('gh-title').classList.remove('pulse');
-            document.getElementById('gh-sub').innerText = "Check out what projects I'm working on";
-        });
-
-    // 2. Nintendo Switch Pipeline
-    fetch('https://nxapi-presence.fancy.org.uk/api/presence/644cd5195d154bd5?include-splatoon3=1')
-        .then(res => res.json())
-        .then(data => {
-            if (data && data.friend) {
-                const f = data.friend;
-                const p = f.presence;
-                const iconEl = document.getElementById('switch-icon');
-                const titleEl = document.getElementById('switch-title');
-                const subEl = document.getElementById('switch-sub');
-                const containerEl = document.getElementById('switch-container');
-
-                let imgUrl = f.imageUri; 
-
-                if (p && p.state === "ONLINE" && p.game) {
-                    titleEl.innerText = p.game.name || "Playing something on Switch";
-                    if (p.game.imageUri) imgUrl = p.game.imageUri;
-                    const hours = Math.floor(p.game.totalPlayTime / 60);
-                    subEl.innerText = `Online now • Around ${hours.toLocaleString()}+ hours played`;
-                    containerEl.classList.add('live-active');
-                } else {
-                    titleEl.innerText = "Currently Offline";
-                    subEl.innerText = "Not on the Switch right now";
-                    containerEl.classList.remove('live-active');
-                }
-
-                if (imgUrl) iconEl.innerHTML = `<img src="${imgUrl}">`;
-                titleEl.classList.remove('pulse');
-            } else { throw new Error(); }
-        })
-        .catch(() => {
-            document.getElementById('switch-title').innerText = "Switch status unavailable";
-            document.getElementById('switch-title').classList.remove('pulse');
-            document.getElementById('switch-sub').innerText = "Couldn't connect to the API feed";
-        });
-
-    // 3. Nintendo 3DS Pipeline
-    fetch('https://3dsrpc.codymkw.workers.dev/?fc=0645-5821-2438&network=nintendo')
-        .then(res => res.json())
-        .then(data => {
-            if (data) {
-                const iconEl = document.getElementById('rpc-icon');
-                const titleEl = document.getElementById('rpc-title');
-                const subEl = document.getElementById('rpc-sub');
-                const containerEl = document.getElementById('rpc-container');
-
-                const imgUrl = (data.isOnline && data.currentGameImage) ? data.currentGameImage : data.miiImage;
-                if (imgUrl) iconEl.innerHTML = `<img src="${imgUrl}">`;
-
-                if (data.isOnline) {
-                    titleEl.innerText = data.currentGame || "Playing on 3DS";
-                    subEl.innerText = data.currentGameActivity || "Online right now!";
-                    containerEl.classList.add('live-active');
-                } else {
-                    titleEl.innerText = data.statusMessage || "Currently Offline";
-                    subEl.innerText = data.favoriteGame ? `Favorite game: ${data.favoriteGame}` : "3DS is turned off";
-                    containerEl.classList.remove('live-active');
-                }
-                titleEl.classList.remove('pulse');
-                containerEl.href = data.profileUrl || "https://3dsrpc.com";
-            } else { throw new Error(); }
-        })
-        .catch(() => {
-            document.getElementById('rpc-title').innerText = "3DS status unavailable";
-            document.getElementById('rpc-title').classList.remove('pulse');
-            document.getElementById('rpc-sub').innerText = "Couldn't connect to the API feed";
-        });
-
-    // 4. AniList Pipeline
-    const aniListQuery = `
-    query {
-        Page(page: 1, perPage: 1) {
-            mediaList(userName: "CodyMKW", sort: UPDATED_TIME_DESC) {
-                status progress
-                media {
-                    title { english romaji }
-                    coverImage { large }
-                    siteUrl
-                }
-            }
-        }
-    }`;
-
-    fetch('https://graphql.anilist.co', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query: aniListQuery })
-    })
-    .then(res => res.json())
+// ─── GitHub ─────────────────────────────────────────────────────────────────
+fetch('https://api.github.com/users/CodyMKW/events/public')
+    .then(r => r.json())
     .then(data => {
-        const list = data.data.Page.mediaList;
-        if (list && list.length > 0) {
-            const entry = list[0];
-            const anime = entry.media;
-            const title = anime.title.english || anime.title.romaji;
-            const statusMap = { CURRENT: "Watching right now", COMPLETED: "Finished watching", DROPPED: "Dropped this show", PAUSED: "On hold", PLANNING: "Planning to watch" };
-            
-            let progressStr = statusMap[entry.status] || entry.status;
-            if (entry.status === 'CURRENT' && entry.progress) {
-                progressStr += ` • Episode ${entry.progress}`;
-            }
-
-            document.getElementById('al-icon').innerHTML = `<img src="${anime.coverImage.large}">`;
-            document.getElementById('al-title').innerText = title;
-            document.getElementById('al-title').classList.remove('pulse');
-            document.getElementById('al-sub').innerText = progressStr;
-            document.getElementById('al-container').href = anime.siteUrl;
-        } else { throw new Error(); }
+        const latest = data?.[0];
+        if (!latest) throw new Error();
+        const typeMap = { PushEvent: 'Pushed to', WatchEvent: 'Starred', CreateEvent: 'Created', ForkEvent: 'Forked' };
+        const action = typeMap[latest.type] || 'Active in';
+        document.getElementById('gh-title').innerText = latest.repo.name;
+        document.getElementById('gh-title').classList.remove('pulse');
+        document.getElementById('gh-sub').innerText = `${action} this repository`;
+        document.getElementById('gh-container').href = `https://github.com/${latest.repo.name}`;
     })
     .catch(() => {
-        document.getElementById('al-title').innerText = "My Anime List";
-        document.getElementById('al-title').classList.remove('pulse');
-        document.getElementById('al-sub').innerText = "Take a look at my watch history";
+        document.getElementById('gh-title').innerText = "My GitHub Profile";
+        document.getElementById('gh-title').classList.remove('pulse');
+        document.getElementById('gh-sub').innerText = "Check out what projects I'm working on";
     });
 
-    // 5. Ultra Rumble Pipeline
-    fetch('https://ultrarumble-api.codymkw.workers.dev')
-        .then(res => res.json())
-        .then(data => {
-            if (data && data.maps) {
-                const ranked = data.maps.find(m => m.mode === "Ranked Match") || data.maps[0];
-                const casual = data.maps.find(m => m.mode === "Standard Match" || m.mode === "Casual Match");
-                const season = data.season ? data.season.name : "Active Season";
+// ─── Nintendo Switch ─────────────────────────────────────────────────────────
+fetch('https://nxapi-presence.fancy.org.uk/api/presence/644cd5195d154bd5?include-splatoon3=1')
+    .then(r => r.json())
+    .then(data => {
+        if (!data?.friend) throw new Error();
+        const f = data.friend;
+        const p = f.presence;
+        const iconEl      = document.getElementById('switch-icon');
+        const titleEl     = document.getElementById('switch-title');
+        const subEl       = document.getElementById('switch-sub');
+        const containerEl = document.getElementById('switch-container');
+        let imgUrl = f.imageUri;
 
-                document.getElementById('ur-icon').innerHTML = `<img src="${ranked.image}">`;
-                
-                if (casual && casual.map !== ranked.map) {
-                    document.getElementById('ur-title').innerText = `Ranked: ${ranked.map} | Casual: ${casual.map}`;
-                } else {
-                    document.getElementById('ur-title').innerText = ranked.map;
-                }
-                document.getElementById('ur-title').classList.remove('pulse');
+        if (p?.state === 'ONLINE' && p.game) {
+            titleEl.innerText = p.game.name || "Playing something on Switch";
+            if (p.game.imageUri) imgUrl = p.game.imageUri;
+            const hours = Math.floor((p.game.totalPlayTime || 0) / 60);
+            subEl.innerText = `Online now • Around ${hours.toLocaleString()}+ hours played`;
+            containerEl.classList.add('live-active');
+        } else {
+            titleEl.innerText = "Currently Offline";
+            subEl.innerText = "Not on the Switch right now";
+            iconEl.classList.add('dimmed');
+        }
 
-                let subtext = `${season}`;
-                if (data.timeLeft || data.rotation_left) {
-                    subtext += ` • ${data.timeLeft || data.rotation_left} left on this rotation`;
-                } else if (data.event) {
-                    subtext += ` • Event: ${data.event.name || data.event}`;
-                } else {
-                    subtext += ` • Rotation live`;
-                }
-                document.getElementById('ur-sub').innerText = subtext;
-            } else { throw new Error(); }
-        })
-        .catch(() => {
-            document.getElementById('ur-title').innerText = "Ultra Rumble Maps";
-            document.getElementById('ur-title').classList.remove('pulse');
-            document.getElementById('ur-sub').innerText = "Couldn't grab the map data right now";
-        });
+        if (imgUrl) iconEl.innerHTML = `<img src="${imgUrl}" alt="">`;
+        titleEl.classList.remove('pulse');
+    })
+    .catch(() => {
+        document.getElementById('switch-title').innerText = "Switch status unavailable";
+        document.getElementById('switch-title').classList.remove('pulse');
+        document.getElementById('switch-sub').innerText = "Couldn't connect to the API feed";
+    });
+
+// ─── Nintendo 3DS ────────────────────────────────────────────────────────────
+fetch('https://3dsrpc.codymkw.workers.dev/?fc=0645-5821-2438&network=nintendo')
+    .then(r => r.json())
+    .then(data => {
+        if (!data) throw new Error();
+        const iconEl      = document.getElementById('rpc-icon');
+        const titleEl     = document.getElementById('rpc-title');
+        const subEl       = document.getElementById('rpc-sub');
+        const containerEl = document.getElementById('rpc-container');
+        const imgUrl      = data.isOnline && data.currentGameImage ? data.currentGameImage : data.miiImage;
+
+        if (imgUrl) iconEl.innerHTML = `<img src="${imgUrl}" alt="">`;
+
+        if (data.isOnline) {
+            titleEl.innerText = data.currentGame || "Playing on 3DS";
+            subEl.innerText   = data.currentGameActivity || "Online right now!";
+            containerEl.classList.add('live-active');
+        } else {
+            titleEl.innerText = data.statusMessage || "Currently Offline";
+            subEl.innerText   = data.favoriteGame ? `Favorite: ${data.favoriteGame}` : "3DS is turned off";
+            iconEl.classList.add('dimmed');
+        }
+        titleEl.classList.remove('pulse');
+        containerEl.href = data.profileUrl || 'https://3dsrpc.com';
+    })
+    .catch(() => {
+        document.getElementById('rpc-title').innerText = "3DS status unavailable";
+        document.getElementById('rpc-title').classList.remove('pulse');
+        document.getElementById('rpc-sub').innerText = "Couldn't connect to the API feed";
+    });
+
+// ─── AniList ─────────────────────────────────────────────────────────────────
+const aniListQuery = `query {
+    Page(page:1,perPage:1){
+        mediaList(userName:"CodyMKW",sort:UPDATED_TIME_DESC){
+            status progress
+            media{ title{english romaji} coverImage{large} siteUrl }
+        }
+    }
+}`;
+
+fetch('https://graphql.anilist.co', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ query: aniListQuery })
+})
+.then(r => r.json())
+.then(data => {
+    const entry = data?.data?.Page?.mediaList?.[0];
+    if (!entry) throw new Error();
+    const anime = entry.media;
+    const title = anime.title.english || anime.title.romaji;
+    const statusMap = {
+        CURRENT:   "Watching right now",
+        COMPLETED: "Finished watching",
+        DROPPED:   "Dropped this show",
+        PAUSED:    "On hold",
+        PLANNING:  "Planning to watch"
+    };
+    let progressStr = statusMap[entry.status] || entry.status;
+    if (entry.status === 'CURRENT' && entry.progress) progressStr += ` • Episode ${entry.progress}`;
+
+    document.getElementById('al-icon').innerHTML = `<img src="${anime.coverImage.large}" alt="">`;
+    document.getElementById('al-title').innerText = title;
+    document.getElementById('al-title').classList.remove('pulse');
+    document.getElementById('al-sub').innerText = progressStr;
+    document.getElementById('al-container').href = anime.siteUrl;
+
+    if (entry.status === 'CURRENT') {
+        document.getElementById('al-container').classList.add('live-active');
+    }
+})
+.catch(() => {
+    document.getElementById('al-title').innerText = "My Anime List";
+    document.getElementById('al-title').classList.remove('pulse');
+    document.getElementById('al-sub').innerText = "Take a look at my watch history";
+});
+
+// ─── Last.fm ───────────────────────────────────────────────
+fetch('https://lastfm-last-played.biancarosa.com.br/CodyMKW/latest-song')
+    .then(r => r.json())
+    .then(data => {
+        const track = data?.track;
+        if (!track) throw new Error();
+
+        const art    = track.image?.find(i => i.size === 'extralarge')?.['#text']
+                    || track.image?.find(i => i.size === 'large')?.['#text'];
+        const artist = track.artist?.['#text'];
+        const album  = track.album?.['#text'];
+
+        if (art) document.getElementById('lfm-icon').innerHTML = `<img src="${art}" alt="">`;
+        document.getElementById('lfm-title').innerText = `${track.name} — ${artist}`;
+        document.getElementById('lfm-title').classList.remove('pulse');
+        document.getElementById('lfm-sub').innerText = `Last listened • ${album || artist}`;
+        document.getElementById('lfm-container').href = track.url || 'https://www.last.fm/user/CodyMKW';
+    })
+    .catch(() => {
+        document.getElementById('lfm-title').innerText = "My Last.fm Profile";
+        document.getElementById('lfm-title').classList.remove('pulse');
+        document.getElementById('lfm-sub').innerText = "See what I've been listening to";
+    });
+
+// ─── Ultra Rumble ─────────────────────────────────────────────────────────────
+fetch('https://ultrarumble-api.codymkw.workers.dev')
+    .then(r => r.json())
+    .then(data => {
+        if (!data?.maps) throw new Error();
+        const ranked = data.maps.find(m => m.mode === 'Ranked Match') || data.maps[0];
+        const casual = data.maps.find(m => m.mode === 'Standard Match' || m.mode === 'Casual Match');
+        const season = data.season?.name || 'Active Season';
+
+        if (ranked.image) document.getElementById('ur-icon').innerHTML = `<img src="${ranked.image}" alt="">`;
+
+        document.getElementById('ur-title').innerText =
+            (casual && casual.map !== ranked.map)
+                ? `Ranked: ${ranked.map} | Casual: ${casual.map}`
+                : ranked.map;
+        document.getElementById('ur-title').classList.remove('pulse');
+
+        let sub = season;
+        if (data.timeLeft || data.rotation_left) sub += ` • ${data.timeLeft || data.rotation_left} left`;
+        else if (data.event)                      sub += ` • Event: ${data.event.name || data.event}`;
+        else                                       sub += ` • Rotation live`;
+        document.getElementById('ur-sub').innerText = sub;
+    })
+    .catch(() => {
+        document.getElementById('ur-title').innerText = "Ultra Rumble Maps";
+        document.getElementById('ur-title').classList.remove('pulse');
+        document.getElementById('ur-sub').innerText = "Couldn't grab the map data right now";
+    });
 </script>
 
 </body>
