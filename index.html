@@ -108,6 +108,23 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            gap: 16px;
+        }
+
+        .identity-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .profile-avatar {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            border: 2px solid var(--accent-green);
+            box-shadow: 0 0 15px rgba(0, 255, 135, 0.2);
+            object-fit: cover;
+            flex-shrink: 0;
         }
 
         .identity-title h1 {
@@ -118,25 +135,28 @@
             background: linear-gradient(to right, #fff 40%, var(--text-muted));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            line-height: 1.1;
         }
 
         .identity-title p {
-            margin: 6px 0 0 0;
+            margin: 4px 0 0 0;
             font-size: 0.95rem;
             color: var(--text-muted);
-            line-height: 1.5;
+            line-height: 1.4;
         }
 
         .rank-badge {
             background: linear-gradient(135deg, rgba(0, 255, 135, 0.1), rgba(96, 239, 255, 0.1));
             border: 1px solid rgba(0, 255, 135, 0.3);
             color: var(--accent-green);
-            padding: 6px 16px;
+            padding: 6px 14px;
             border-radius: 14px;
             font-size: 0.85rem;
             font-weight: 700;
             letter-spacing: 0.5px;
             box-shadow: 0 0 20px rgba(0, 255, 135, 0.15);
+            white-space: nowrap;
+            flex-shrink: 0;
         }
 
         /* Widgets */
@@ -385,9 +405,12 @@
     <div class="profile-panel">
         <div class="card">
             <div class="identity-header">
-                <div class="identity-title">
-                    <h1>CodyMKW</h1>
-                    <p id="dynamic-greet">Loading things up...</p>
+                <div class="identity-wrapper">
+                    <img src="https://www.gravatar.com/avatar/5127de8a3a295a02ff3fc55bb6b2fabe?s=2048" alt="CodyMKW Avatar" class="profile-avatar">
+                    <div class="identity-title">
+                        <h1>CodyMKW</h1>
+                        <p id="dynamic-greet">Loading things up...</p>
+                    </div>
                 </div>
                 <div class="rank-badge" id="level-badge">Lv. --</div>
             </div>
