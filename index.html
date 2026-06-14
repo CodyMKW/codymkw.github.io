@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CodyMKW // Executive Hub</title>
+    <title>CodyMKW // My Hub</title>
     <style>
         :root {
             --bg-main: #060913;
-            --bg-card: rgba(10, 15, 30, 0.7);
+            --bg-card: rgba(10, 15, 30, 0.75);
             --bg-card-hover: rgba(16, 24, 48, 0.85);
             --border-glow: rgba(0, 255, 135, 0.15);
             --border-line: rgba(255, 255, 255, 0.05);
@@ -95,7 +95,7 @@
             pointer-events: none;
         }
 
-        /* Profile Block (Left Column) */
+        /* Profile Block */
         .profile-panel {
             display: flex;
             flex-direction: column;
@@ -139,7 +139,7 @@
             box-shadow: 0 0 20px rgba(0, 255, 135, 0.15);
         }
 
-        /* Utility System Analytics Widgets */
+        /* Widgets */
         .system-widget {
             background: rgba(0, 0, 0, 0.2);
             border: 1px solid var(--border-line);
@@ -167,7 +167,7 @@
             font-weight: 700;
         }
 
-        /* Modern Matrix Tags */
+        /* Interest Badges */
         .matrix-tags {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -197,7 +197,7 @@
             transform: translateY(-2px);
         }
 
-        /* Primary Action Buttons */
+        /* Buttons */
         .action-group {
             display: flex;
             flex-direction: column;
@@ -240,7 +240,7 @@
             border-color: rgba(255,255,255,0.2);
         }
 
-        /* Telemetry Feed Items (Right Column) */
+        /* Feeds Panel */
         .telemetry-panel {
             display: flex;
             flex-direction: column;
@@ -285,7 +285,7 @@
             transform: scale(1.015) translateX(4px);
         }
 
-        /* Live online status glow configuration */
+        /* Online glow styling */
         .live-active {
             border-color: rgba(0, 255, 135, 0.3) !important;
             box-shadow: 0 10px 30px rgba(0, 255, 135, 0.06);
@@ -381,13 +381,13 @@
 <body>
 
 <div class="dashboard">
-    <!-- Profile & Information Panel -->
+    <!-- Profile Left Panel -->
     <div class="profile-panel">
         <div class="card">
             <div class="identity-header">
                 <div class="identity-title">
                     <h1>CodyMKW</h1>
-                    <p id="dynamic-greet">Loading system configuration...</p>
+                    <p id="dynamic-greet">Loading things up...</p>
                 </div>
                 <div class="rank-badge" id="level-badge">Lv. --</div>
             </div>
@@ -400,48 +400,48 @@
             <div class="matrix-badge"><span>🛠️</span> Development</div>
         </div>
 
-        <!-- Infrastructure Diagnostics Widgets -->
+        <!-- Info Widgets -->
         <div class="card" style="padding: 20px; display: flex; flex-direction: column; gap: 10px;">
             <div class="system-widget">
-                <div class="widget-label"><span style="color:var(--accent-green)">⚡</span> Core System</div>
-                <div class="widget-value" style="color:var(--accent-green)">ONLINE</div>
+                <div class="widget-label"><span style="color:var(--accent-green)">👋</span> Hub Status</div>
+                <div class="widget-value" style="color:var(--accent-green)">CHILLIN</div>
             </div>
             <div class="system-widget">
-                <div class="widget-label">🕒 Session Clock</div>
+                <div class="widget-label">🕒 Local Time</div>
                 <div class="widget-value" id="runtime-clock">00:00:00</div>
             </div>
             <div class="system-widget">
-                <div class="widget-label">📡 Sync Latency</div>
+                <div class="widget-label">📡 Connection</div>
                 <div class="widget-value" id="ping-tracker">-- ms</div>
             </div>
         </div>
 
         <div class="action-group">
-            <a href="https://codymkw.nekoweb.org" class="btn-prime">Launch Root Domain</a>
-            <button class="btn-sub" id="share-hub-btn">Copy Matrix Link</button>
+            <a href="https://codymkw.nekoweb.org" class="btn-prime">Visit My Main Site</a>
+            <button class="btn-sub" id="share-hub-btn">Copy Page Link</button>
         </div>
     </div>
 
-    <!-- Live Telemetry Data Feed Deck -->
+    <!-- Right Column: What I'm Up To -->
     <div class="telemetry-panel">
-        <div class="panel-heading">Real-Time Operations</div>
+        <div class="panel-heading">What I'm up to lately</div>
 
         <!-- GitHub Activity -->
         <a href="https://github.com/CodyMKW" target="_blank" class="feed-row" id="gh-container">
             <div class="feed-media">🐙</div>
             <div class="feed-content">
-                <div class="feed-title pulse" id="gh-title">Polling GitHub Endpoint...</div>
-                <div class="feed-subtitle" id="gh-sub">Establishing link connection</div>
+                <div class="feed-title pulse" id="gh-title">Checking GitHub...</div>
+                <div class="feed-subtitle" id="gh-sub">Finding my last commit</div>
             </div>
-            <div class="feed-meta">Repository</div>
+            <div class="feed-meta">Code</div>
         </a>
 
         <!-- Nintendo Switch Status -->
         <a href="https://github.com/samuelthomas2774/nxapi" target="_blank" class="feed-row" id="switch-container">
             <div class="feed-media" id="switch-icon">🎮</div>
             <div class="feed-content">
-                <div class="feed-title pulse" id="switch-title">Connecting Switch Node...</div>
-                <div class="feed-subtitle" id="switch-sub">Verifying account context</div>
+                <div class="feed-title pulse" id="switch-title">Checking Switch status...</div>
+                <div class="feed-subtitle" id="switch-sub">Am I playing right now?</div>
             </div>
             <div class="status-node" id="switch-dot"></div>
         </a>
@@ -450,8 +450,8 @@
         <a href="https://3dsrpc.com" target="_blank" class="feed-row" id="rpc-container">
             <div class="feed-media" id="rpc-icon">🎮</div>
             <div class="feed-content">
-                <div class="feed-title pulse" id="rpc-title">Listening For 3DS...</div>
-                <div class="feed-subtitle" id="rpc-sub">Waiting for handshake</div>
+                <div class="feed-title pulse" id="rpc-title">Checking 3DS status...</div>
+                <div class="feed-subtitle" id="rpc-sub">Seeing if my handheld is on</div>
             </div>
             <div class="status-node" id="rpc-dot"></div>
         </a>
@@ -460,8 +460,8 @@
         <a href="https://anilist.co/user/CodyMKW/" target="_blank" class="feed-row" id="al-container">
             <div class="feed-media" id="al-icon">📺</div>
             <div class="feed-content">
-                <div class="feed-title pulse" id="al-title">Fetching AniList Logs...</div>
-                <div class="feed-subtitle" id="al-sub">Reading media streams</div>
+                <div class="feed-title pulse" id="al-title">Checking AniList...</div>
+                <div class="feed-subtitle" id="al-sub">Finding my last watched episode</div>
             </div>
             <div class="feed-meta">Anime</div>
         </a>
@@ -470,18 +470,17 @@
         <a href="https://ultrarumble.com" target="_blank" class="feed-row" id="ur-container">
             <div class="feed-media" id="ur-icon">💥</div>
             <div class="feed-content">
-                <div class="feed-title pulse" id="ur-title">Parsing Arena Data...</div>
-                <div class="feed-subtitle" id="ur-sub">Connecting rotation arrays</div>
+                <div class="feed-title pulse" id="ur-title">Checking active maps...</div>
+                <div class="feed-subtitle" id="ur-sub">Looking up game rotation info</div>
             </div>
-            <div class="feed-meta">Map Rotation</div>
+            <div class="feed-meta">Ultra Rumble</div>
         </a>
     </div>
 </div>
 
 <script>
-    // 0. Dashboard Internal Time & Calibration Engine
+    // 0. Time, Greetings, and Age Calculations
     function launchDashboardCore() {
-        // Precise Age Computation Loop
         const birthday = new Date('1991-01-17T00:00:00');
         const today = new Date();
         let age = today.getFullYear() - birthday.getFullYear();
@@ -489,21 +488,21 @@
         if (m < 0 || (m === 0 && today.getDate() < birthday.getDate())) { age--; }
         document.getElementById('level-badge').innerText = `Lv. ${age}`;
 
-        // Dynamic System Greeting
+        // Friendly local greetings
         const hrs = today.getHours();
-        let greeting = "Welcome to the terminal interface.";
-        if (hrs < 12) greeting = "Good morning. Systems clear.";
-        else if (hrs < 18) greeting = "Good afternoon. Diagnostics stable.";
-        else greeting = "Good evening. Node monitoring active.";
+        let greeting = "Welcome to my little corner of the web.";
+        if (hrs < 12) greeting = "Good morning! Hope your day is off to a great start.";
+        else if (hrs < 18) greeting = "Good afternoon! Thanks for stopping by.";
+        else greeting = "Good evening! Hope you're having a chill night.";
         document.getElementById('dynamic-greet').innerText = greeting;
 
-        // Running Live Operational Clock
+        // Running Live Clock
         setInterval(() => {
             const now = new Date();
             document.getElementById('runtime-clock').innerText = now.toTimeString().split(' ')[0];
         }, 1000);
 
-        // Simulated Sync Latency Cycle (Visual Polish)
+        // Ping Loop
         setInterval(() => {
             const simulatedPing = Math.floor(Math.random() * 25) + 12;
             document.getElementById('ping-tracker').innerText = `${simulatedPing} ms`;
@@ -511,11 +510,11 @@
     }
     launchDashboardCore();
 
-    // Clipboard Copy Event Configuration
+    // Clipboard feature text rewrite
     document.getElementById('share-hub-btn').addEventListener('click', function() {
         navigator.clipboard.writeText(window.location.href);
         const originalText = this.innerText;
-        this.innerText = "Link Secured!";
+        this.innerText = "Link copied!";
         this.style.color = "var(--accent-green)";
         setTimeout(() => {
             this.innerText = originalText;
@@ -523,7 +522,7 @@
         }, 2000);
     });
 
-    // 1. Telemetry Pipeline: GitHub Activity
+    // 1. GitHub Pipeline
     fetch('https://api.github.com/users/CodyMKW/events/public')
         .then(res => res.json())
         .then(data => {
@@ -536,17 +535,17 @@
                 
                 document.getElementById('gh-title').innerText = latest.repo.name;
                 document.getElementById('gh-title').classList.remove('pulse');
-                document.getElementById('gh-sub').innerText = `${action} code repository`;
+                document.getElementById('gh-sub').innerText = `${action} this repository`;
                 document.getElementById('gh-container').href = `https://github.com/${latest.repo.name}`;
             } else { throw new Error(); }
         })
         .catch(() => {
-            document.getElementById('gh-title').innerText = "GitHub Repositories";
+            document.getElementById('gh-title').innerText = "My GitHub Profile";
             document.getElementById('gh-title').classList.remove('pulse');
-            document.getElementById('gh-sub').innerText = "View code production pipelines";
+            document.getElementById('gh-sub').innerText = "Check out what projects I'm working on";
         });
 
-    // 2. Telemetry Pipeline: Nintendo Switch Matrix (nxapi)
+    // 2. Nintendo Switch Pipeline
     fetch('https://nxapi-presence.fancy.org.uk/api/presence/644cd5195d154bd5?include-splatoon3=1')
         .then(res => res.json())
         .then(data => {
@@ -561,14 +560,14 @@
                 let imgUrl = f.imageUri; 
 
                 if (p && p.state === "ONLINE" && p.game) {
-                    titleEl.innerText = p.game.name || "Switch Active Session";
+                    titleEl.innerText = p.game.name || "Playing something on Switch";
                     if (p.game.imageUri) imgUrl = p.game.imageUri;
                     const hours = Math.floor(p.game.totalPlayTime / 60);
-                    subEl.innerText = `Live System Online • Over ${hours.toLocaleString()} hrs logged`;
+                    subEl.innerText = `Online now • Around ${hours.toLocaleString()}+ hours played`;
                     containerEl.classList.add('live-active');
                 } else {
-                    titleEl.innerText = "Switch System Standby";
-                    subEl.innerText = "Console link is offline";
+                    titleEl.innerText = "Currently Offline";
+                    subEl.innerText = "Not on the Switch right now";
                     containerEl.classList.remove('live-active');
                 }
 
@@ -577,12 +576,12 @@
             } else { throw new Error(); }
         })
         .catch(() => {
-            document.getElementById('switch-title').innerText = "Switch Link Closed";
+            document.getElementById('switch-title').innerText = "Switch status unavailable";
             document.getElementById('switch-title').classList.remove('pulse');
-            document.getElementById('switch-sub').innerText = "Telemetry synchronization failure";
+            document.getElementById('switch-sub').innerText = "Couldn't connect to the API feed";
         });
 
-    // 3. Telemetry Pipeline: Nintendo 3DS Stream
+    // 3. Nintendo 3DS Pipeline
     fetch('https://3dsrpc.codymkw.workers.dev/?fc=0645-5821-2438&network=nintendo')
         .then(res => res.json())
         .then(data => {
@@ -596,12 +595,12 @@
                 if (imgUrl) iconEl.innerHTML = `<img src="${imgUrl}">`;
 
                 if (data.isOnline) {
-                    titleEl.innerText = data.currentGame || "3DS Active Session";
-                    subEl.innerText = data.currentGameActivity || "Live Network Communication";
+                    titleEl.innerText = data.currentGame || "Playing on 3DS";
+                    subEl.innerText = data.currentGameActivity || "Online right now!";
                     containerEl.classList.add('live-active');
                 } else {
-                    titleEl.innerText = data.statusMessage || "3DS System Standby";
-                    subEl.innerText = data.favoriteGame ? `Preferred Stack: ${data.favoriteGame}` : "Offline";
+                    titleEl.innerText = data.statusMessage || "Currently Offline";
+                    subEl.innerText = data.favoriteGame ? `Favorite game: ${data.favoriteGame}` : "3DS is turned off";
                     containerEl.classList.remove('live-active');
                 }
                 titleEl.classList.remove('pulse');
@@ -609,12 +608,12 @@
             } else { throw new Error(); }
         })
         .catch(() => {
-            document.getElementById('rpc-title').innerText = "3DS Link Closed";
+            document.getElementById('rpc-title').innerText = "3DS status unavailable";
             document.getElementById('rpc-title').classList.remove('pulse');
-            document.getElementById('rpc-sub').innerText = "Telemetry configuration offline";
+            document.getElementById('rpc-sub').innerText = "Couldn't connect to the API feed";
         });
 
-    // 4. Telemetry Pipeline: AniList Verification
+    // 4. AniList Pipeline
     const aniListQuery = `
     query {
         Page(page: 1, perPage: 1) {
@@ -641,7 +640,7 @@
             const entry = list[0];
             const anime = entry.media;
             const title = anime.title.english || anime.title.romaji;
-            const statusMap = { CURRENT: "Streaming Now", COMPLETED: "Archived Entirety", DROPPED: "Data Dropped", PAUSED: "Hold State", PLANNING: "Queued" };
+            const statusMap = { CURRENT: "Watching right now", COMPLETED: "Finished watching", DROPPED: "Dropped this show", PAUSED: "On hold", PLANNING: "Planning to watch" };
             
             let progressStr = statusMap[entry.status] || entry.status;
             if (entry.status === 'CURRENT' && entry.progress) {
@@ -656,12 +655,12 @@
         } else { throw new Error(); }
     })
     .catch(() => {
-        document.getElementById('al-title').innerText = "AniList Media Tracking";
+        document.getElementById('al-title').innerText = "My Anime List";
         document.getElementById('al-title').classList.remove('pulse');
-        document.getElementById('al-sub').innerText = "View tracking indexing profile";
+        document.getElementById('al-sub').innerText = "Take a look at my watch history";
     });
 
-    // 5. Telemetry Pipeline: My Hero Ultra Rumble Engine Parse
+    // 5. Ultra Rumble Pipeline
     fetch('https://ultrarumble-api.codymkw.workers.dev')
         .then(res => res.json())
         .then(data => {
@@ -673,7 +672,7 @@
                 document.getElementById('ur-icon').innerHTML = `<img src="${ranked.image}">`;
                 
                 if (casual && casual.map !== ranked.map) {
-                    document.getElementById('ur-title').innerText = `R: ${ranked.map} | C: ${casual.map}`;
+                    document.getElementById('ur-title').innerText = `Ranked: ${ranked.map} | Casual: ${casual.map}`;
                 } else {
                     document.getElementById('ur-title').innerText = ranked.map;
                 }
@@ -681,11 +680,11 @@
 
                 let subtext = `${season}`;
                 if (data.timeLeft || data.rotation_left) {
-                    subtext += ` • Cycle remaining: ${data.timeLeft || data.rotation_left}`;
+                    subtext += ` • ${data.timeLeft || data.rotation_left} left on this rotation`;
                 } else if (data.event) {
-                    subtext += ` • ${data.event.name || data.event}`;
+                    subtext += ` • Event: ${data.event.name || data.event}`;
                 } else {
-                    subtext += ` • Rotations active`;
+                    subtext += ` • Rotation live`;
                 }
                 document.getElementById('ur-sub').innerText = subtext;
             } else { throw new Error(); }
@@ -693,7 +692,7 @@
         .catch(() => {
             document.getElementById('ur-title').innerText = "Ultra Rumble Maps";
             document.getElementById('ur-title').classList.remove('pulse');
-            document.getElementById('ur-sub').innerText = "Arena feed mapping metrics disconnected";
+            document.getElementById('ur-sub').innerText = "Couldn't grab the map data right now";
         });
 </script>
 
