@@ -171,7 +171,7 @@
     <div class="card">
         <div class="profile">
             <h1>CodyMKW</h1>
-            <div class="level-badge">Lv. 35</div>
+            <div class="level-badge" id="level-badge">Lv. --</div>
         </div>
         <p style="color: var(--muted); font-size: 0.9rem; margin-top: 0; margin-bottom: 1.5rem;">
             Developer, Gamer, & Anime Fan. Welcome to my hub.
@@ -249,6 +249,23 @@
 </div>
 
 <script>
+    // 0. Auto-calculate Level based on Birthdate (Jan 17, 1991)
+    function updateLevelBadge() {
+        const birthday = new Date('1991-01-17T00:00:00');
+        const today = new Date();
+        
+        let age = today.getFullYear() - birthday.getFullYear();
+        const m = today.getMonth() - birthday.getMonth();
+        
+        // Adjust if the birthday hasn't occurred yet in the current year
+        if (m < 0 || (m === 0 && today.getDate() < birthday.getDate())) {
+            age--;
+        }
+        
+        document.getElementById('level-badge').innerText = `Lv. ${age}`;
+    }
+    updateLevelBadge();
+
     // 1. Fetch Latest GitHub Activity
     fetch('https://api.github.com/users/CodyMKW/events/public')
         .then(res => res.json())
@@ -287,13 +304,12 @@
                 const containerEl = document.getElementById('switch-container');
                 const dotEl = document.getElementById('switch-dot');
 
-                let imgUrl = f.imageUri; // Fallback to user avatar
+                let imgUrl = f.imageUri; 
 
                 if (p && p.state === "ONLINE" && p.game) {
                     titleEl.innerText = p.game.name || "Playing Switch";
                     if (p.game.imageUri) imgUrl = p.game.imageUri;
                     
-                    // Convert raw minutes to hours safely
                     const hours = Math.floor(p.game.totalPlayTime / 60);
                     subEl.innerText = `Online Now • ${hours.toLocaleString()}+ hrs played`;
                     dotEl.style.color = "#4ade80"; 
