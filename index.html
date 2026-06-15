@@ -431,13 +431,13 @@
         </div>
 
         <div class="card" style="padding: 20px; display: flex; flex-direction: column; gap: 10px;">
-            <div class="system-widget">
-                <div class="widget-label"><span style="color:var(--accent-green)">👋</span> Hub Status</div>
-                <div class="widget-value" style="color:var(--accent-green)">CHILLIN</div>
+            <div class="system-widget" style="flex-direction: column; align-items: flex-start; gap: 6px;">
+                <div class="widget-label">💬 Status</div>
+                <div id="cafe-status" style="font-size:0.85rem; color: var(--text-primary); line-height:1.4;">Loading status…</div>
             </div>
             <div class="system-widget">
                 <div class="widget-label">🕒 Local Time</div>
-                <div class="widget-value" id="runtime-clock">00:00:00</div>
+                <div class="widget-value" id="runtime-clock">12:00 AM</div>
             </div>
             <div class="system-widget">
                 <div class="widget-label">📡 Ping</div>
@@ -535,8 +535,11 @@
     document.getElementById('dynamic-greet').innerText = greeting;
 
     setInterval(() => {
-        document.getElementById('runtime-clock').innerText =
-            new Date().toTimeString().split(' ')[0];
+        const _n = new Date();
+            let _h = _n.getHours(), _m = _n.getMinutes();
+            const _ampm = _h >= 12 ? 'PM' : 'AM';
+            _h = _h % 12 || 12;
+            document.getElementById('runtime-clock').innerText = _h + ':' + String(_m).padStart(2,'0') + ' ' + _ampm;
     }, 1000);
 })();
 
@@ -761,6 +764,20 @@ fetch('https://ultrarumble-api.codymkw.workers.dev')
         document.getElementById('ur-title').classList.remove('pulse');
         document.getElementById('ur-sub').innerText = "Couldn't grab the map data right now";
     });
+
+// ─── status.cafe ─────────────────────────────────────────────────────────────
+fetch('https://status.cafe/users/codymkw/status.json')
+    .then(r => r.json())
+    .then(data => {
+        if (!data || !data.content) throw new Error();
+        const face = data.face ? data.face + ' ' : '';
+        const time = data.timeAgo ? ' <span style="opacity:0.5;font-size:0.8rem;">' + data.timeAgo + '</span>' : '';
+        document.getElementById('cafe-status').innerHTML = face + data.content + time;
+    })
+    .catch(() => {
+        document.getElementById('cafe-status').innerText = 'No status set.';
+    });
+
 </script>
 
 </body>
