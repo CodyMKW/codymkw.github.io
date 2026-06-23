@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <meta property="og:title" content="Nintendo Switch Intro Adder">
-    <meta property="og:description" content="Instantly prepend the iconic Switch logo animation to your custom clips. Done completely in-browser.">
+    <meta property="og:description" content="Instantly prepend the iconic Switch or Switch 2 logo animation to your custom clips. Done completely in-browser.">
     <meta property="og:image" content="switch-logo.png">
     <meta property="og:type" content="website">
     <meta name="theme-color" content="#E60012">
@@ -24,7 +24,7 @@
             --text-muted: #7A7E85;
             --switch-red: #E60012;
             --switch-red-glow: rgba(230, 0, 18, 0.4);
-            --switch-blue: #00B0E6;
+            --switch-grey: #32353C;
             --success-green: #24A148;
         }
 
@@ -73,6 +73,55 @@
             font-size: 20px;
             font-weight: 700;
             letter-spacing: -0.5px;
+        }
+
+        /* Console/Intro Type Selector */
+        .selector-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: block;
+            text-align: left;
+        }
+
+        .intro-selector {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            background-color: var(--bg-input);
+            padding: 4px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 24px;
+        }
+
+        .selector-option {
+            display: none;
+        }
+
+        .selector-button {
+            padding: 12px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-muted);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .selector-option:checked + .selector-button.switch-1 {
+            background-color: var(--switch-red);
+            color: white;
+            box-shadow: 0 0 12px var(--switch-red-glow);
+        }
+
+        .selector-option:checked + .selector-button.switch-2 {
+            background-color: var(--switch-grey);
+            color: white;
+            border: 1px solid #4A4E57;
         }
 
         .upload-zone {
@@ -196,6 +245,18 @@
             <h1>Switch Intro Merger</h1>
         </div>
 
+        <span class="selector-label">Select Intro Animation</span>
+        <div class="intro-selector">
+            <label>
+                <input type="radio" name="introType" value="nintendoswitchintro.mp4" class="selector-option" checked>
+                <div class="selector-button switch-1">Nintendo Switch</div>
+            </label>
+            <label>
+                <input type="radio" name="introType" value="nintendoswitch2intro.mp4" class="selector-option">
+                <div class="selector-button switch-2">Nintendo Switch 2</div>
+            </label>
+        </div>
+
         <label class="upload-zone" id="dropArea">
             <svg width="32" height="32" viewBox="0 0 24 24">
                 <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/>
@@ -228,7 +289,7 @@
 
         let targetFile = null;
 
-        // Setup FFmpeg with the Single-Threaded Core to bypass SharedArrayBuffer rules
+        // Setup FFmpeg with the Single-Threaded Core 
         const { createFFmpeg, fetchFile } = FFmpeg;
         const ffmpeg = createFFmpeg({ 
             log: true,
@@ -267,13 +328,21 @@
                     statusMessage.textContent = `Merging video streams: ${Math.round(ratio * 100)}%`;
                 });
 
+                // Get the file name of the chosen intro variation
+                const selectedIntroFile = document.querySelector('input[name="introType"]:checked').value;
+                
+                // CRITICAL FIX: Generate full absolute path URLs to prevent 404 fetch errors on GitHub Pages
+                const cleanIntroUrl = new URL(selectedIntroFile, window.location.href).href;
+
                 statusMessage.textContent = "Staging local source files...";
-                ffmpeg.FS('writeFile', 'intro.mp4', await fetchFile('nintendoswitchintro.mp4'));
+                
+                // Fetch using our safe absolute URL construction
+                ffmpeg.FS('writeFile', 'intro.mp4', await fetchFile(cleanIntroUrl));
                 ffmpeg.FS('writeFile', 'user.mp4', await fetchFile(targetFile));
 
                 statusMessage.textContent = "Processing filter structures (this may take a minute)...";
                 
-                // Concatenate streams cleanly
+                // Concatenate video/audio streams cleanly
                 await ffmpeg.run(
                     '-i', 'intro.mp4', 
                     '-i', 'user.mp4', 
@@ -291,7 +360,7 @@
                 
                 videoPreview.src = finalUrl;
                 downloadBtn.href = finalUrl;
-                downloadBtn.download = `switch_intro_${targetFile.name}`;
+                downloadBtn.download = `merged_${targetFile.name}`;
                 
                 downloadBtn.style.display = 'inline-flex';
                 mergeBtn.style.display = 'none';
