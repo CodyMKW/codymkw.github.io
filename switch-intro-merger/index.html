@@ -1,237 +1,279 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script src="coi-serviceworker.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <!-- Discord & Social Media Embed Metadata -->
     <meta property="og:title" content="Nintendo Switch Intro Adder">
-    <meta property="og:description" content="Add the iconic Nintendo Switch intro to the beginning of your videos directly in your browser.">
+    <meta property="og:description" content="Instantly prepend the iconic Switch logo animation to your custom clips. Done completely in-browser.">
     <meta property="og:image" content="switch-logo.png">
     <meta property="og:type" content="website">
     <meta name="theme-color" content="#E60012">
 
-    <title>Nintendo Switch Intro Adder</title>
+    <title>Switch Intro Merger</title>
 
-    <!-- Load FFmpeg.wasm from CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js"></script>
 
     <style>
         :root {
-            --bg-color: #121212;
-            --container-bg: #1e1e1e;
-            --text-main: #ffffff;
-            --text-muted: #a0a0a0;
-            --nintendo-red: #E60012;
-            --nintendo-red-hover: #cc0010;
+            --bg-main: #0B0B0C;
+            --bg-card: #141416;
+            --bg-input: #1D1E22;
+            --border-color: #2A2C33;
+            --text-main: #F4F5F6;
+            --text-muted: #7A7E85;
+            --switch-red: #E60012;
+            --switch-red-glow: rgba(230, 0, 18, 0.4);
+            --switch-blue: #00B0E6;
+            --success-green: #24A148;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
         body {
-            background-color: var(--bg-color);
+            background-color: var(--bg-main);
             color: var(--text-main);
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            padding: 20px;
+            padding: 24px;
         }
 
-        .container {
-            background-color: var(--container-bg);
-            padding: 40px;
-            border-radius: 16px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-            max-width: 600px;
+        .workspace {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
             width: 100%;
-            text-align: center;
+            max-width: 640px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
         }
 
-        .header {
-            margin-bottom: 30px;
+        .brand {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 32px;
         }
 
-        .header img {
-            max-width: 80px;
-            margin-bottom: 15px;
+        .brand img {
+            height: 32px;
+            width: auto;
+            object-fit: contain;
         }
 
-        .header h1 {
-            font-size: 24px;
+        .brand h1 {
+            font-size: 20px;
             font-weight: 700;
-            margin-bottom: 8px;
+            letter-spacing: -0.5px;
         }
 
-        .header p {
-            color: var(--text-muted);
-            font-size: 14px;
-        }
-
-        .upload-area {
-            border: 2px dashed #444;
-            border-radius: 12px;
-            padding: 30px;
-            margin-bottom: 20px;
-            transition: border-color 0.3s;
+        .upload-zone {
+            background-color: var(--bg-input);
+            border: 2px dashed var(--border-color);
+            border-radius: 14px;
+            padding: 40px 20px;
+            text-align: center;
             cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            display: block;
+            margin-bottom: 24px;
         }
 
-        .upload-area:hover {
-            border-color: var(--nintendo-red);
+        .upload-zone:hover {
+            border-color: var(--switch-red);
+            box-shadow: 0 0 12px var(--switch-red-glow);
+        }
+
+        .upload-zone svg {
+            fill: var(--text-muted);
+            margin-bottom: 12px;
+            transition: fill 0.2s ease;
+        }
+
+        .upload-zone:hover svg {
+            fill: var(--switch-red);
+        }
+
+        .upload-zone p {
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--text-main);
+            margin-bottom: 4px;
+        }
+
+        .upload-zone span {
+            font-size: 13px;
+            color: var(--text-muted);
         }
 
         input[type="file"] {
             display: none;
         }
 
-        .btn {
-            background-color: var(--nintendo-red);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            font-size: 16px;
-            font-weight: 600;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background-color 0.2s, transform 0.1s;
-            width: 100%;
-            margin-bottom: 15px;
-        }
-
-        .btn:hover:not(:disabled) {
-            background-color: var(--nintendo-red-hover);
-        }
-
-        .btn:active:not(:disabled) {
-            transform: scale(0.98);
-        }
-
-        .btn:disabled {
-            background-color: #555;
-            cursor: not-allowed;
-            color: #888;
-        }
-
-        .preview-container {
+        .preview-box {
             display: none;
-            margin-bottom: 20px;
-            border-radius: 8px;
-            overflow: hidden;
             background: #000;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            margin-bottom: 24px;
+            aspect-ratio: 16 / 9;
         }
 
         video {
             width: 100%;
-            max-height: 300px;
+            height: 100%;
+            object-fit: contain;
             display: block;
         }
 
-        .status {
-            font-size: 14px;
-            color: var(--text-muted);
-            margin-top: 10px;
-            min-height: 20px;
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 14px 24px;
+            font-size: 15px;
+            font-weight: 600;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            text-decoration: none;
+        }
+
+        #mergeBtn {
+            background-color: var(--switch-red);
+            color: #ffffff;
+        }
+
+        #mergeBtn:hover:not(:disabled) {
+            background-color: #ff1a2e;
+            box-shadow: 0 0 16px var(--switch-red-glow);
+        }
+
+        #mergeBtn:disabled {
+            background-color: #222327;
+            color: #52555e;
+            cursor: not-allowed;
         }
 
         #downloadBtn {
             display: none;
-            background-color: #2ea44f;
+            background-color: var(--success-green);
+            color: white;
         }
-        
+
         #downloadBtn:hover {
-            background-color: #22863a;
+            background-color: #2cbc5b;
+        }
+
+        .status-tray {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .status-text {
+            font-size: 13px;
+            color: var(--text-muted);
+            font-weight: 500;
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div class="header">
+    <div class="workspace">
+        <div class="brand">
             <img src="switch-logo.png" alt="Switch Logo" onerror="this.style.display='none'">
-            <h1>Switch Intro Adder</h1>
-            <p>Select a video to prepend the Switch intro.</p>
+            <h1>Switch Intro Merger</h1>
         </div>
 
-        <label class="upload-area" id="drop-area">
-            <span id="file-name">Click to select a video file...</span>
-            <input type="file" id="videoInput" accept="video/mp4,video/x-m4v,video/*">
+        <label class="upload-zone" id="dropArea">
+            <svg width="32" height="32" viewBox="0 0 24 24">
+                <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/>
+            </svg>
+            <p id="fileNameText">Select target video file</p>
+            <span>Supports MP4, MOV, and common video profiles</span>
+            <input type="file" id="videoInput" accept="video/*">
         </label>
 
-        <div class="preview-container" id="previewContainer">
+        <div class="preview-box" id="previewBox">
             <video id="videoPreview" controls></video>
         </div>
 
-        <button id="mergeBtn" class="btn" disabled>Merge Videos</button>
-        <a id="downloadBtn" class="btn">Download Result</a>
+        <button id="mergeBtn" class="btn" disabled>Merge Intro Sequence</button>
+        <a id="downloadBtn" class="btn">Download Finished Clip</a>
 
-        <div class="status" id="statusText"></div>
+        <div class="status-tray">
+            <p class="status-text" id="statusMessage">Awaiting asset selection.</p>
+        </div>
     </div>
 
     <script>
         const videoInput = document.getElementById('videoInput');
-        const fileNameDisplay = document.getElementById('file-name');
-        const previewContainer = document.getElementById('previewContainer');
+        const fileNameText = document.getElementById('fileNameText');
+        const previewBox = document.getElementById('previewBox');
         const videoPreview = document.getElementById('videoPreview');
         const mergeBtn = document.getElementById('mergeBtn');
         const downloadBtn = document.getElementById('downloadBtn');
-        const statusText = document.getElementById('statusText');
+        const statusMessage = document.getElementById('statusMessage');
 
-        let userFile = null;
+        let targetFile = null;
 
-        // Initialize FFmpeg
+        // Setup FFmpeg with the Single-Threaded Core to bypass SharedArrayBuffer rules
         const { createFFmpeg, fetchFile } = FFmpeg;
-        const ffmpeg = createFFmpeg({ log: true });
+        const ffmpeg = createFFmpeg({ 
+            log: true,
+            corePath: "https://unpkg.com/@ffmpeg/core-st/dist/ffmpeg-core.js",
+            mainName: "main"
+        });
 
-        // Handle file selection
         videoInput.addEventListener('change', (e) => {
             if (e.target.files.length > 0) {
-                userFile = e.target.files[0];
-                fileNameDisplay.textContent = userFile.name;
+                targetFile = e.target.files[0];
+                fileNameText.textContent = targetFile.name;
                 
-                // Show preview
-                const objectURL = URL.createObjectURL(userFile);
-                videoPreview.src = objectURL;
-                previewContainer.style.display = 'block';
+                const url = URL.createObjectURL(targetFile);
+                videoPreview.src = url;
+                previewBox.style.display = 'block';
+                
                 mergeBtn.disabled = false;
+                mergeBtn.style.display = 'inline-flex';
                 downloadBtn.style.display = 'none';
-                statusText.textContent = "Ready to merge.";
+                statusMessage.textContent = "Ready to compile.";
             }
         });
 
-        // Handle merging
         mergeBtn.addEventListener('click', async () => {
-            if (!userFile) return;
+            if (!targetFile) return;
 
             try {
                 mergeBtn.disabled = true;
-                statusText.textContent = 'Loading FFmpeg engine... (This might take a moment on first run)';
-                
+                statusMessage.textContent = "Loading encoding toolkit...";
+
                 if (!ffmpeg.isLoaded()) {
                     await ffmpeg.load();
                 }
 
-                // Log progress to the UI
                 ffmpeg.setProgress(({ ratio }) => {
-                    statusText.textContent = `Processing: ${Math.round(ratio * 100)}% done...`;
+                    statusMessage.textContent = `Merging video streams: ${Math.round(ratio * 100)}%`;
                 });
 
-                statusText.textContent = 'Loading files into memory...';
-                
-                // Fetch the local switch intro and the user's video into virtual memory
+                statusMessage.textContent = "Staging local source files...";
                 ffmpeg.FS('writeFile', 'intro.mp4', await fetchFile('nintendoswitchintro.mp4'));
-                ffmpeg.FS('writeFile', 'user.mp4', await fetchFile(userFile));
+                ffmpeg.FS('writeFile', 'user.mp4', await fetchFile(targetFile));
 
-                statusText.textContent = 'Merging videos... Please wait.';
-
-                // Run FFmpeg command to concatenate the videos
-                // The concat filter ensures audio and video streams line up correctly
+                statusMessage.textContent = "Processing filter structures (this may take a minute)...";
+                
+                // Concatenate streams cleanly
                 await ffmpeg.run(
                     '-i', 'intro.mp4', 
                     '-i', 'user.mp4', 
@@ -241,27 +283,23 @@
                     'output.mp4'
                 );
 
-                statusText.textContent = 'Finalizing...';
-
-                // Read the result
+                statusMessage.textContent = "Generating final clip headers...";
                 const data = ffmpeg.FS('readFile', 'output.mp4');
                 
-                // Create a download link for the generated buffer
-                const videoBlob = new Blob([data.buffer], { type: 'video/mp4' });
-                const downloadUrl = URL.createObjectURL(videoBlob);
+                const compiledBlob = new Blob([data.buffer], { type: 'video/mp4' });
+                const finalUrl = URL.createObjectURL(compiledBlob);
                 
-                // Update UI
-                videoPreview.src = downloadUrl;
-                downloadBtn.href = downloadUrl;
-                downloadBtn.download = 'switch_edit_' + userFile.name;
-                downloadBtn.style.display = 'block';
+                videoPreview.src = finalUrl;
+                downloadBtn.href = finalUrl;
+                downloadBtn.download = `switch_intro_${targetFile.name}`;
+                
+                downloadBtn.style.display = 'inline-flex';
                 mergeBtn.style.display = 'none';
-                
-                statusText.textContent = 'Done! You can preview it above or download it.';
+                statusMessage.textContent = "Render complete.";
 
-            } catch (error) {
-                console.error(error);
-                statusText.textContent = 'An error occurred during processing. Check the console.';
+            } catch (err) {
+                console.error(err);
+                statusMessage.textContent = "Compilation aborted due to internal script exception.";
                 mergeBtn.disabled = false;
             }
         });
