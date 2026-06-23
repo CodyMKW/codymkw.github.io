@@ -260,7 +260,7 @@
             height: 100%;
             background-color: var(--switch-red);
             box-shadow: 0 0 10px var(--switch-red-glow);
-            transition: width 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: width 0.1s linear;
         }
 
         .log-terminal {
@@ -401,8 +401,8 @@
             <h2>Frequently Asked Questions</h2>
             
             <div class="faq-item">
-                <div class="faq-question">Why does the bar hang at 95% for a second?</div>
-                <div class="faq-answer">Even after processing all the video frames, the video engine needs a brief moment to bundle everything into a clean MP4 container and hand the final file back to the webpage. The progress bar stays pinned at 95% during this final step so you know it's still finishing up.</div>
+                <div class="faq-question">What is this?</div>
+                <div class="faq-answer">It is basically just something made out of boredom lol</div>
             </div>
 
             <div class="faq-item">
@@ -437,6 +437,7 @@
         let targetFile = null;
         let systemLogs = [];
         let lastUiUpdateTime = 0;
+        let isDone = false;
 
         const ffmpegWorker = new Worker('worker.js');
 
@@ -445,15 +446,17 @@
             
             switch (type) {
                 case 'STATUS':
-                    statusMessage.textContent = message;
+                    if (!isDone) statusMessage.textContent = message;
                     break;
                     
                 case 'PROGRESS':
-                    if (ratio >= 0 && ratio <= 1) {
-                        const percentage = Math.min(Math.round(ratio * 100), 95);
+                    if (ratio >= 0 && ratio <= 1 && !isDone) {
+                        const percentage = Math.round(ratio * 100);
                         requestAnimationFrame(() => {
-                            progressBar.style.width = `${percentage}%`;
-                            statusMessage.textContent = `Processing clip matrix... ${percentage}%`;
+                            if (!isDone) {
+                                progressBar.style.width = `${percentage}%`;
+                                statusMessage.textContent = `Processing clip matrix... ${percentage}%`;
+                            }
                         });
                     }
                     break;
@@ -472,20 +475,25 @@
                     break;
                     
                 case 'DONE':
-                    statusMessage.textContent = "Render complete.";
-                    const compiledBlob = new Blob([data], { type: 'video/mp4' });
-                    const finalUrl = URL.createObjectURL(compiledBlob);
+                    isDone = true;
                     
-                    logTerminal.textContent = systemLogs.slice(-25).join('\n');
-                    logTerminal.scrollTop = logTerminal.scrollHeight;
+                    requestAnimationFrame(() => {
+                        statusMessage.textContent = "Render complete.";
+                        progressBar.style.width = '100%';
+                        
+                        const compiledBlob = new Blob([data], { type: 'video/mp4' });
+                        const finalUrl = URL.createObjectURL(compiledBlob);
+                        
+                        logTerminal.textContent = systemLogs.slice(-25).join('\n');
+                        logTerminal.scrollTop = logTerminal.scrollHeight;
 
-                    progressBar.style.width = '100%';
-                    videoPreview.src = finalUrl;
-                    downloadBtn.href = finalUrl;
-                    downloadBtn.download = `merged_${targetFile.name}`;
-                    
-                    downloadBtn.style.display = 'inline-flex';
-                    mergeBtn.style.display = 'none';
+                        videoPreview.src = finalUrl;
+                        downloadBtn.href = finalUrl;
+                        downloadBtn.download = `merged_${targetFile.name}`;
+                        
+                        downloadBtn.style.display = 'inline-flex';
+                        mergeBtn.style.display = 'none';
+                    });
                     break;
                     
                 case 'ERROR':
@@ -513,6 +521,7 @@
                 progressContainer.style.display = 'none';
                 progressBar.style.width = '0%';
                 systemLogs = [];
+                isDone = false;
                 statusMessage.textContent = "Ready to compile.";
             }
         });
@@ -525,6 +534,7 @@
             progressContainer.style.display = 'block';
             progressBar.style.width = '0%';
             statusMessage.textContent = "Reading local raw asset buffer...";
+            isDone = false;
 
             const selectedIntroFile = document.querySelector('input[name="introType"]:checked').value;
             const cleanIntroUrl = new URL(selectedIntroFile, window.location.href).href;
