@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="data:,">
 
+    <!-- Discord & Social Media Embed Metadata -->
     <meta property="og:title" content="Nintendo Switch Intro Adder">
     <meta property="og:description" content="Instantly prepend the iconic Switch or Switch 2 logo animation to your custom clips. Done completely in-browser.">
     <meta property="og:image" content="switch-logo.png">
@@ -15,15 +16,16 @@
 
     <style>
         :root {
-            --bg-main: #0B0B0C;
-            --bg-card: #141416;
-            --bg-input: #1D1E22;
-            --border-color: #2A2C33;
+            --bg-main: #060607;
+            --bg-card: #0D0E10;
+            --bg-input: #131417;
+            --bg-terminal: #030304;
+            --border-color: #1F2126;
             --text-main: #F4F5F6;
-            --text-muted: #7A7E85;
+            --text-muted: #82868F;
             --switch-red: #E60012;
-            --switch-red-glow: rgba(230, 0, 18, 0.4);
-            --switch-grey: #32353C;
+            --switch-red-glow: rgba(230, 0, 18, 0.35);
+            --switch-grey: #2D3035;
             --success-green: #24A148;
         }
 
@@ -38,49 +40,56 @@
             background-color: var(--bg-main);
             color: var(--text-main);
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
             min-height: 100vh;
-            padding: 24px;
+            padding: 40px 24px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 680px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
         }
 
         .workspace {
             background-color: var(--bg-card);
             border: 1px solid var(--border-color);
-            border-radius: 20px;
-            width: 100%;
-            max-width: 640px;
+            border-radius: 24px;
             padding: 40px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 24px 48px rgba(0, 0, 0, 0.8);
+            text-align: center;
         }
 
         .brand {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 12px;
-            margin-bottom: 32px;
+            gap: 14px;
+            margin-bottom: 36px;
         }
 
         .brand img {
-            height: 32px;
+            height: 34px;
             width: auto;
             object-fit: contain;
         }
 
         .brand h1 {
-            font-size: 20px;
+            font-size: 22px;
             font-weight: 700;
             letter-spacing: -0.5px;
         }
 
         .selector-label {
-            font-size: 12px;
+            font-size: 11px;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 1.5px;
             color: var(--text-muted);
             font-weight: 700;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             display: block;
             text-align: left;
         }
@@ -89,10 +98,10 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             background-color: var(--bg-input);
-            padding: 4px;
-            border-radius: 10px;
+            padding: 5px;
+            border-radius: 12px;
             border: 1px solid var(--border-color);
-            margin-bottom: 24px;
+            margin-bottom: 28px;
         }
 
         .selector-option {
@@ -100,12 +109,12 @@
         }
 
         .selector-button {
-            padding: 12px;
+            padding: 14px;
             text-align: center;
             font-size: 14px;
             font-weight: 600;
             color: var(--text-muted);
-            border-radius: 8px;
+            border-radius: 9px;
             cursor: pointer;
             transition: all 0.2s ease;
         }
@@ -113,35 +122,36 @@
         .selector-option:checked + .selector-button.switch-1 {
             background-color: var(--switch-red);
             color: white;
-            box-shadow: 0 0 12px var(--switch-red-glow);
+            box-shadow: 0 0 16px var(--switch-red-glow);
         }
 
         .selector-option:checked + .selector-button.switch-2 {
             background-color: var(--switch-grey);
             color: white;
-            border: 1px solid #4A4E57;
+            border: 1px solid #444852;
         }
 
         .upload-zone {
             background-color: var(--bg-input);
             border: 2px dashed var(--border-color);
-            border-radius: 14px;
-            padding: 40px 20px;
+            border-radius: 16px;
+            padding: 48px 20px;
             text-align: center;
             cursor: pointer;
             transition: all 0.2s ease-in-out;
             display: block;
-            margin-bottom: 24px;
+            margin-bottom: 28px;
         }
 
         .upload-zone:hover {
             border-color: var(--switch-red);
-            box-shadow: 0 0 12px var(--switch-red-glow);
+            background-color: #16171B;
+            box-shadow: 0 0 16px var(--switch-red-glow);
         }
 
         .upload-zone svg {
             fill: var(--text-muted);
-            margin-bottom: 12px;
+            margin-bottom: 14px;
             transition: fill 0.2s ease;
         }
 
@@ -153,7 +163,7 @@
             font-size: 15px;
             font-weight: 500;
             color: var(--text-main);
-            margin-bottom: 4px;
+            margin-bottom: 6px;
         }
 
         .upload-zone span {
@@ -168,10 +178,10 @@
         .preview-box {
             display: none;
             background: #000;
-            border-radius: 12px;
+            border-radius: 14px;
             overflow: hidden;
             border: 1px solid var(--border-color);
-            margin-bottom: 24px;
+            margin-bottom: 28px;
             aspect-ratio: 16 / 9;
         }
 
@@ -187,10 +197,10 @@
             align-items: center;
             justify-content: center;
             width: 100%;
-            padding: 14px 24px;
+            padding: 16px 24px;
             font-size: 15px;
             font-weight: 600;
-            border-radius: 10px;
+            border-radius: 12px;
             border: none;
             cursor: pointer;
             transition: all 0.15s ease;
@@ -204,12 +214,12 @@
 
         #mergeBtn:hover:not(:disabled) {
             background-color: #ff1a2e;
-            box-shadow: 0 0 16px var(--switch-red-glow);
+            box-shadow: 0 0 20px var(--switch-red-glow);
         }
 
         #mergeBtn:disabled {
-            background-color: #222327;
-            color: #52555e;
+            background-color: #191a1e;
+            color: #484b54;
             cursor: not-allowed;
         }
 
@@ -224,8 +234,7 @@
         }
 
         .status-tray {
-            margin-top: 20px;
-            text-align: center;
+            margin-top: 24px;
         }
 
         .status-text {
@@ -250,72 +259,167 @@
             width: 0%;
             height: 100%;
             background-color: var(--switch-red);
-            box-shadow: 0 0 8px var(--switch-red-glow);
-            transition: width 0.1s linear;
+            box-shadow: 0 0 10px var(--switch-red-glow);
+            transition: width 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .log-terminal {
             display: none;
-            margin-top: 16px;
-            background-color: #050506;
+            margin-top: 20px;
+            background-color: var(--bg-terminal);
             border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 12px;
+            border-radius: 10px;
+            padding: 16px;
             text-align: left;
-            max-height: 120px;
+            max-height: 140px;
             overflow-y: auto;
             font-family: monospace;
             font-size: 11px;
-            color: #A0A5B0;
+            color: #8c929e;
             white-space: pre-wrap;
+            line-height: 1.6;
+        }
+
+        /* FAQ Section Formatting */
+        .faq-section {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 32px 40px;
+        }
+
+        .faq-section h2 {
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            margin-bottom: 20px;
+            color: var(--text-main);
+            text-align: left;
+        }
+
+        .faq-item {
+            border-bottom: 1px solid var(--border-color);
+            padding: 16px 0;
+            text-align: left;
+        }
+
+        .faq-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .faq-question {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 6px;
+        }
+
+        .faq-answer {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* Nice Footer Styling */
+        footer {
+            margin-top: 24px;
+            text-align: center;
+            padding: 16px 0;
+        }
+
+        footer p {
+            font-size: 12px;
+            color: var(--text-muted);
+            letter-spacing: 0.3px;
+        }
+
+        footer a {
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        footer a:hover {
+            color: var(--switch-red);
         }
     </style>
 </head>
 <body>
 
-    <div class="workspace">
-        <div class="brand">
-            <img src="switch-logo.png" alt="Switch Logo" onerror="this.style.display='none'">
-            <h1>Switch Intro Merger</h1>
-        </div>
-
-        <span class="selector-label">Select Intro Animation</span>
-        <div class="intro-selector">
-            <label>
-                <input type="radio" name="introType" value="nintendoswitchintro.mp4" class="selector-option" checked>
-                <div class="selector-button switch-1">Nintendo Switch</div>
-            </label>
-            <label>
-                <input type="radio" name="introType" value="nintendoswitch2intro.mp4" class="selector-option">
-                <div class="selector-button switch-2">Nintendo Switch 2</div>
-            </label>
-        </div>
-
-        <label class="upload-zone" id="dropArea">
-            <svg width="32" height="32" viewBox="0 0 24 24">
-                <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/>
-            </svg>
-            <p id="fileNameText">Select target video file</p>
-            <span>Supports MP4, MOV, and common video profiles</span>
-            <input type="file" id="videoInput" accept="video/*">
-        </label>
-
-        <div class="preview-box" id="previewBox">
-            <video id="videoPreview" controls></video>
-        </div>
-
-        <button id="mergeBtn" class="btn" disabled>Merge Intro Sequence</button>
-        <a id="downloadBtn" class="btn">Download Finished Clip</a>
-
-        <div class="status-tray">
-            <p class="status-text" id="statusMessage">Awaiting asset selection.</p>
-            
-            <div class="progress-container" id="progressContainer">
-                <div class="progress-bar" id="progressBar"></div>
+    <div class="container">
+        <!-- Main Application Deck -->
+        <div class="workspace">
+            <div class="brand">
+                <img src="switch-logo.png" alt="Switch Logo" onerror="this.style.display='none'">
+                <h1>Switch Intro Merger</h1>
             </div>
 
-            <div class="log-terminal" id="logTerminal"></div>
+            <!-- Intro Type Selection -->
+            <span class="selector-label">Select Intro Animation</span>
+            <div class="intro-selector">
+                <label>
+                    <input type="radio" name="introType" value="nintendoswitchintro.mp4" class="selector-option" checked>
+                    <div class="selector-button switch-1">Nintendo Switch</div>
+                </label>
+                <label>
+                    <input type="radio" name="introType" value="nintendoswitch2intro.mp4" class="selector-option">
+                    <div class="selector-button switch-2">Nintendo Switch 2</div>
+                </label>
+            </div>
+
+            <!-- Video Upload Dropzone -->
+            <label class="upload-zone" id="dropArea">
+                <svg width="32" height="32" viewBox="0 0 24 24">
+                    <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/>
+                </svg>
+                <p id="fileNameText">Select target video file</p>
+                <span>Supports MP4, MOV, and common video profiles</span>
+                <input type="file" id="videoInput" accept="video/*">
+            </label>
+
+            <div class="preview-box" id="previewBox">
+                <video id="videoPreview" controls></video>
+            </div>
+
+            <button id="mergeBtn" class="btn" disabled>Merge Intro Sequence</button>
+            <a id="downloadBtn" class="btn">Download Finished Clip</a>
+
+            <div class="status-tray">
+                <p class="status-text" id="statusMessage">Awaiting asset selection.</p>
+                
+                <div class="progress-container" id="progressContainer">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
+
+                <div class="log-terminal" id="logTerminal"></div>
+            </div>
         </div>
+
+        <!-- FAQ Container Layout -->
+        <div class="faq-section">
+            <h2>Frequently Asked Questions</h2>
+            
+            <div class="faq-item">
+                <div class="faq-question">Why does the bar hang at 95% for a second?</div>
+                <div class="faq-answer">Even after processing all the video frames, the video engine needs a brief moment to bundle everything into a clean MP4 container and hand the final file back to the webpage. The progress bar stays pinned at 95% during this final step so you know it's still finishing up.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">Are my videos being uploaded anywhere?</div>
+                <div class="faq-answer">Nope! Everything happens completely inside your browser using WebAssembly. Your video clips never leave your computer, making it 100% private.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">Why does the first video take a moment to start?</div>
+                <div class="faq-answer">The very first time you click "Merge", the page has to boot up the video processing engine inside a separate background worker thread. Once that engine is warmed up and sitting in memory, any other videos you process in the same session will start moving immediately.</div>
+            </div>
+        </div>
+
+        <!-- Minimalist Production Footer -->
+        <footer>
+            <p>&copy; 2026 CodyMKW &bull; Powered by WebAssembly</p>
+        </footer>
     </div>
 
     <script>
@@ -334,10 +438,8 @@
         let systemLogs = [];
         let lastUiUpdateTime = 0;
 
-        // FIXED: Pointing directly to our clean standard local worker file
         const ffmpegWorker = new Worker('worker.js');
 
-        // Background Thread Communication Monitor
         ffmpegWorker.onmessage = (e) => {
             const { type, message, ratio, logType, data, error } = e.data;
             
@@ -348,10 +450,10 @@
                     
                 case 'PROGRESS':
                     if (ratio >= 0 && ratio <= 1) {
-                        const percentage = Math.round(ratio * 100);
+                        const percentage = Math.min(Math.round(ratio * 100), 95);
                         requestAnimationFrame(() => {
                             progressBar.style.width = `${percentage}%`;
-                            statusMessage.textContent = `Merging video streams: ${percentage}%`;
+                            statusMessage.textContent = `Processing clip matrix... ${percentage}%`;
                         });
                     }
                     break;
@@ -361,7 +463,7 @@
                     const now = Date.now();
                     if (now - lastUiUpdateTime > 100) {
                         lastUiUpdateTime = now;
-                        const activeSnapshot = systemLogs.slice(-20).join('\n');
+                        const activeSnapshot = systemLogs.slice(-25).join('\n');
                         requestAnimationFrame(() => {
                             logTerminal.textContent = activeSnapshot;
                             logTerminal.scrollTop = logTerminal.scrollHeight;
@@ -374,7 +476,7 @@
                     const compiledBlob = new Blob([data], { type: 'video/mp4' });
                     const finalUrl = URL.createObjectURL(compiledBlob);
                     
-                    logTerminal.textContent = systemLogs.slice(-20).join('\n');
+                    logTerminal.textContent = systemLogs.slice(-25).join('\n');
                     logTerminal.scrollTop = logTerminal.scrollHeight;
 
                     progressBar.style.width = '100%';
@@ -388,7 +490,7 @@
                     
                 case 'ERROR':
                     console.error(error);
-                    statusMessage.innerHTML = `<span style="color:#e60012; font-weight:700;">Compilation Failed!</span><br>Error trace dropped into tracking diagnostics container.`;
+                    statusMessage.innerHTML = `<span style="color:#e60012; font-weight:700;">Compilation Failed!</span><br>Error dropped to diagnostics console container.`;
                     progressBar.style.width = '0%';
                     mergeBtn.disabled = false;
                     break;
@@ -425,7 +527,6 @@
             statusMessage.textContent = "Reading local raw asset buffer...";
 
             const selectedIntroFile = document.querySelector('input[name="introType"]:checked').value;
-            // Ensure full absolute URLs are passed to the worker context
             const cleanIntroUrl = new URL(selectedIntroFile, window.location.href).href;
 
             try {
@@ -440,7 +541,7 @@
 
             } catch (err) {
                 console.error(err);
-                statusMessage.textContent = "Failed to open localized clip structural array elements.";
+                statusMessage.textContent = "Failed to process target video stream data.";
                 mergeBtn.disabled = false;
             }
         });
