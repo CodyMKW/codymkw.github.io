@@ -1,518 +1,269 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Switch Intro Merger</title>
-<meta name="description" content="Prepend the Nintendo Switch startup intro to any video — runs entirely in your browser, no upload required.">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Discord & Social Media Embed Metadata -->
+    <meta property="og:title" content="Nintendo Switch Intro Adder">
+    <meta property="og:description" content="Add the iconic Nintendo Switch intro to the beginning of your videos directly in your browser.">
+    <meta property="og:image" content="switch-logo.png">
+    <meta property="og:type" content="website">
+    <meta name="theme-color" content="#E60012">
 
-<!-- Open Graph -->
-<meta property="og:type" content="website">
-<meta property="og:title" content="Switch Intro Merger">
-<meta property="og:description" content="Prepend the Nintendo Switch startup intro to any video. Runs entirely in your browser — no upload, no server.">
-<meta property="og:image" content="https://codymkw.github.io/switch-intro-merger/switch-logo.png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta property="og:url" content="https://codymkw.github.io/switch-intro-merger">
-<meta property="og:site_name" content="CodyMKW Tools">
+    <title>Nintendo Switch Intro Adder</title>
 
-<!-- Twitter / X Card -->
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Switch Intro Merger">
-<meta name="twitter:description" content="Prepend the Nintendo Switch startup intro to any video. Runs entirely in your browser — no upload, no server.">
-<meta name="twitter:image" content="https://codymkw.github.io/switch-intro-merger/switch-logo.png">
+    <!-- Load FFmpeg.wasm from CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js"></script>
 
-<style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    <style>
+        :root {
+            --bg-color: #121212;
+            --container-bg: #1e1e1e;
+            --text-main: #ffffff;
+            --text-muted: #a0a0a0;
+            --nintendo-red: #E60012;
+            --nintendo-red-hover: #cc0010;
+        }
 
-  :root {
-    --bg: #0d0d0f;
-    --surface: #16161a;
-    --surface2: #1e1e24;
-    --border: rgba(255,255,255,0.08);
-    --border-hover: rgba(255,255,255,0.15);
-    --text: #f0eff4;
-    --muted: #8b8a96;
-    --accent: #e4000f;
-    --accent-dim: rgba(228,0,15,0.12);
-    --accent-dim2: rgba(228,0,15,0.06);
-    --radius: 10px;
-    --radius-lg: 16px;
-  }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
 
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 48px 20px 80px;
-  }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
 
-  header { text-align: center; margin-bottom: 48px; }
+        .container {
+            background-color: var(--container-bg);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+        }
 
-  .logo-mark { display: inline-flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+        .header {
+            margin-bottom: 30px;
+        }
 
-  h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; color: var(--text); }
-  h1 span { color: var(--accent); }
+        .header img {
+            max-width: 80px;
+            margin-bottom: 15px;
+        }
 
-  .subtitle { margin-top: 8px; font-size: 14px; color: var(--muted); line-height: 1.6; }
+        .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
 
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    padding: 28px;
-    width: 100%;
-    max-width: 560px;
-  }
+        .header p {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
 
-  .section-label {
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 12px;
-  }
+        .upload-area {
+            border: 2px dashed #444;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 20px;
+            transition: border-color 0.3s;
+            cursor: pointer;
+        }
 
-  .intro-slot {
-    background: var(--accent-dim2);
-    border: 1px solid rgba(228,0,15,0.2);
-    border-radius: var(--radius);
-    padding: 14px 18px;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    margin-bottom: 24px;
-  }
+        .upload-area:hover {
+            border-color: var(--nintendo-red);
+        }
 
-  .intro-slot .dot {
-    width: 8px; height: 8px; border-radius: 50%;
-    background: var(--accent); flex-shrink: 0;
-  }
+        input[type="file"] {
+            display: none;
+        }
 
-  .intro-slot .intro-name { font-size: 14px; font-weight: 500; color: var(--text); }
-  .intro-slot .intro-note { font-size: 12px; color: var(--muted); margin-top: 2px; }
+        .btn {
+            background-color: var(--nintendo-red);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            width: 100%;
+            margin-bottom: 15px;
+        }
 
-  .status-badge {
-    margin-left: auto;
-    font-size: 11px; font-weight: 600;
-    padding: 3px 9px; border-radius: 20px;
-    white-space: nowrap;
-  }
+        .btn:hover:not(:disabled) {
+            background-color: var(--nintendo-red-hover);
+        }
 
-  .status-badge.loading {
-    background: var(--accent-dim);
-    color: var(--accent);
-    border: 1px solid rgba(228,0,15,0.25);
-  }
+        .btn:active:not(:disabled) {
+            transform: scale(0.98);
+        }
 
-  .status-badge.ready {
-    background: rgba(34,197,94,0.1);
-    color: #4ade80;
-    border: 1px solid rgba(34,197,94,0.25);
-  }
+        .btn:disabled {
+            background-color: #555;
+            cursor: not-allowed;
+            color: #888;
+        }
 
-  .status-badge.error {
-    background: rgba(228,0,15,0.1);
-    color: #ff8585;
-    border: 1px solid rgba(228,0,15,0.3);
-  }
+        .preview-container {
+            display: none;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #000;
+        }
 
-  .drop-zone {
-    border: 1.5px dashed var(--border-hover);
-    border-radius: var(--radius);
-    padding: 36px 20px;
-    text-align: center;
-    cursor: pointer;
-    transition: border-color 0.2s, background 0.2s;
-    position: relative;
-  }
+        video {
+            width: 100%;
+            max-height: 300px;
+            display: block;
+        }
 
-  .drop-zone:hover, .drop-zone.dragover {
-    border-color: var(--accent);
-    background: var(--accent-dim2);
-  }
+        .status {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-top: 10px;
+            min-height: 20px;
+        }
 
-  .drop-zone input[type="file"] {
-    position: absolute; inset: 0; opacity: 0;
-    cursor: pointer; width: 100%; height: 100%;
-  }
-
-  .drop-icon { width: 40px; height: 40px; margin: 0 auto 12px; color: var(--muted); }
-  .drop-title { font-size: 15px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
-  .drop-hint { font-size: 13px; color: var(--muted); }
-  .drop-zone.has-file .drop-icon { color: var(--accent); }
-
-  .divider { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
-
-  .order-preview {
-    display: flex; align-items: center; gap: 10px;
-    padding: 14px 16px;
-    background: var(--surface2);
-    border-radius: var(--radius);
-    margin-bottom: 24px;
-  }
-
-  .order-chip {
-    font-size: 12px; font-weight: 500;
-    padding: 4px 10px; border-radius: 6px;
-    border: 1px solid var(--border);
-    background: var(--surface); color: var(--text);
-    white-space: nowrap; max-width: 160px;
-    overflow: hidden; text-overflow: ellipsis;
-  }
-
-  .order-chip.switch-chip { border-color: rgba(228,0,15,0.3); color: #ff6b6b; }
-  .order-arrow { color: var(--muted); font-size: 14px; flex-shrink: 0; }
-  .order-chip.user-chip { flex: 1; }
-
-  .btn-merge {
-    width: 100%; padding: 14px;
-    background: var(--accent); color: #fff;
-    border: none; border-radius: var(--radius);
-    font-size: 15px; font-weight: 600;
-    cursor: pointer;
-    transition: opacity 0.2s, transform 0.1s;
-    letter-spacing: 0.01em;
-  }
-
-  .btn-merge:hover:not(:disabled) { opacity: 0.88; }
-  .btn-merge:active:not(:disabled) { transform: scale(0.99); }
-  .btn-merge:disabled { opacity: 0.4; cursor: not-allowed; }
-
-  .progress-wrap { display: none; margin-top: 20px; }
-  .progress-wrap.visible { display: block; }
-
-  .progress-label {
-    font-size: 13px; color: var(--muted);
-    margin-bottom: 8px;
-    display: flex; justify-content: space-between;
-  }
-
-  .progress-bar-bg { height: 4px; background: var(--surface2); border-radius: 2px; overflow: hidden; }
-  .progress-bar-fill { height: 100%; background: var(--accent); border-radius: 2px; width: 0%; transition: width 0.15s ease; }
-
-  .result-card {
-    display: none; margin-top: 20px;
-    background: rgba(34,197,94,0.06);
-    border: 1px solid rgba(34,197,94,0.2);
-    border-radius: var(--radius);
-    padding: 16px 18px;
-    align-items: center; gap: 14px;
-  }
-
-  .result-card.visible { display: flex; }
-
-  .result-icon {
-    width: 36px; height: 36px; border-radius: 50%;
-    background: rgba(34,197,94,0.12);
-    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-  }
-
-  .result-icon svg { color: #4ade80; }
-  .result-text { flex: 1; }
-  .result-text strong { font-size: 14px; font-weight: 600; display: block; color: #4ade80; }
-  .result-text span { font-size: 12px; color: var(--muted); }
-
-  .btn-download {
-    padding: 8px 16px;
-    background: rgba(34,197,94,0.15); color: #4ade80;
-    border: 1px solid rgba(34,197,94,0.3);
-    border-radius: 8px; font-size: 13px; font-weight: 600;
-    cursor: pointer; text-decoration: none; white-space: nowrap;
-    transition: background 0.2s;
-  }
-
-  .btn-download:hover { background: rgba(34,197,94,0.25); }
-
-  .error-msg {
-    display: none; margin-top: 12px;
-    padding: 12px 16px;
-    background: rgba(228,0,15,0.08);
-    border: 1px solid rgba(228,0,15,0.2);
-    border-radius: var(--radius);
-    font-size: 13px; color: #ff8585;
-  }
-
-  .error-msg.visible { display: block; }
-
-  .note { margin-top: 20px; font-size: 12px; color: var(--muted); text-align: center; line-height: 1.7; max-width: 460px; }
-
-  canvas { display: none; }
-  video { display: none; }
-</style>
+        #downloadBtn {
+            display: none;
+            background-color: #2ea44f;
+        }
+        
+        #downloadBtn:hover {
+            background-color: #22863a;
+        }
+    </style>
 </head>
 <body>
 
-<header>
-  <div class="logo-mark">
-    <svg width="44" height="26" viewBox="0 0 44 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="0" y="2" width="10" height="22" rx="5" fill="#e4000f"/>
-      <rect x="12" y="0" width="20" height="26" rx="3" fill="#1e1e24" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
-      <rect x="14" y="8" width="16" height="10" rx="2" fill="#0d0d0f"/>
-      <rect x="34" y="2" width="10" height="22" rx="5" fill="#4a4a5a"/>
-    </svg>
-  </div>
-  <h1>Switch Intro <span>Merger</span></h1>
-  <p class="subtitle">Prepend the Nintendo Switch startup intro to any video.<br>Everything runs locally in your browser — no upload required.</p>
-</header>
+    <div class="container">
+        <div class="header">
+            <img src="switch-logo.png" alt="Switch Logo" onerror="this.style.display='none'">
+            <h1>Switch Intro Adder</h1>
+            <p>Select a video to prepend the Switch intro.</p>
+        </div>
 
-<div class="card">
+        <label class="upload-area" id="drop-area">
+            <span id="file-name">Click to select a video file...</span>
+            <input type="file" id="videoInput" accept="video/mp4,video/x-m4v,video/*">
+        </label>
 
-  <p class="section-label">Intro clip</p>
-  <div class="intro-slot">
-    <div class="dot"></div>
-    <div>
-      <div class="intro-name">nintendoswitchintro.mp4</div>
-      <div class="intro-note" id="introNote">Loading…</div>
+        <div class="preview-container" id="previewContainer">
+            <video id="videoPreview" controls></video>
+        </div>
+
+        <button id="mergeBtn" class="btn" disabled>Merge Videos</button>
+        <a id="downloadBtn" class="btn">Download Result</a>
+
+        <div class="status" id="statusText"></div>
     </div>
-    <span class="status-badge loading" id="introBadge">Loading</span>
-  </div>
 
-  <p class="section-label">Your video</p>
-  <div class="drop-zone" id="dropZone">
-    <input type="file" accept="video/*" id="userInput">
-    <svg class="drop-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-      <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5"/>
-    </svg>
-    <div class="drop-title" id="dropTitle">Drop your video here</div>
-    <div class="drop-hint" id="dropHint">or click to browse — MP4, MOV, WebM supported</div>
-  </div>
+    <script>
+        const videoInput = document.getElementById('videoInput');
+        const fileNameDisplay = document.getElementById('file-name');
+        const previewContainer = document.getElementById('previewContainer');
+        const videoPreview = document.getElementById('videoPreview');
+        const mergeBtn = document.getElementById('mergeBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const statusText = document.getElementById('statusText');
 
-  <hr class="divider">
+        let userFile = null;
 
-  <p class="section-label">Merge order</p>
-  <div class="order-preview">
-    <span class="order-chip switch-chip">Switch Intro</span>
-    <span class="order-arrow">→</span>
-    <span class="order-chip user-chip" id="orderUser">Your video</span>
-  </div>
+        // Initialize FFmpeg
+        const { createFFmpeg, fetchFile } = FFmpeg;
+        const ffmpeg = createFFmpeg({ log: true });
 
-  <button class="btn-merge" id="mergeBtn" disabled>Merge videos</button>
+        // Handle file selection
+        videoInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                userFile = e.target.files[0];
+                fileNameDisplay.textContent = userFile.name;
+                
+                // Show preview
+                const objectURL = URL.createObjectURL(userFile);
+                videoPreview.src = objectURL;
+                previewContainer.style.display = 'block';
+                mergeBtn.disabled = false;
+                downloadBtn.style.display = 'none';
+                statusText.textContent = "Ready to merge.";
+            }
+        });
 
-  <div class="progress-wrap" id="progressWrap">
-    <div class="progress-label">
-      <span id="progressText">Rendering…</span>
-      <span id="progressPct">0%</span>
-    </div>
-    <div class="progress-bar-bg">
-      <div class="progress-bar-fill" id="progressBar"></div>
-    </div>
-  </div>
+        // Handle merging
+        mergeBtn.addEventListener('click', async () => {
+            if (!userFile) return;
 
-  <div class="result-card" id="resultCard">
-    <div class="result-icon">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-        <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/>
-      </svg>
-    </div>
-    <div class="result-text">
-      <strong>Merge complete!</strong>
-      <span id="resultInfo">Your video is ready to download.</span>
-    </div>
-    <a class="btn-download" id="downloadLink" href="#" download="merged-video.webm">Download</a>
-  </div>
+            try {
+                mergeBtn.disabled = true;
+                statusText.textContent = 'Loading FFmpeg engine... (This might take a moment on first run)';
+                
+                if (!ffmpeg.isLoaded()) {
+                    await ffmpeg.load();
+                }
 
-  <div class="error-msg" id="errorMsg"></div>
+                // Log progress to the UI
+                ffmpeg.setProgress(({ ratio }) => {
+                    statusText.textContent = `Processing: ${Math.round(ratio * 100)}% done...`;
+                });
 
-</div>
+                statusText.textContent = 'Loading files into memory...';
+                
+                // Fetch the local switch intro and the user's video into virtual memory
+                ffmpeg.FS('writeFile', 'intro.mp4', await fetchFile('nintendoswitchintro.mp4'));
+                ffmpeg.FS('writeFile', 'user.mp4', await fetchFile(userFile));
 
-<p class="note">
-  Output is a <strong>.webm</strong> file rendered via browser canvas — no server, no upload.<br>
-  Large videos may take a while; keep this tab active while processing.
-</p>
+                statusText.textContent = 'Merging videos... Please wait.';
 
-<canvas id="canvas"></canvas>
-<video id="v1" playsinline muted crossorigin="anonymous"></video>
-<video id="v2" playsinline muted></video>
+                // Run FFmpeg command to concatenate the videos
+                // The concat filter ensures audio and video streams line up correctly
+                await ffmpeg.run(
+                    '-i', 'intro.mp4', 
+                    '-i', 'user.mp4', 
+                    '-filter_complex', '[0:v:0][0:a:0][1:v:0][1:a:0]concat=n=2:v=1:a=1[outv][outa]', 
+                    '-map', '[outv]', 
+                    '-map', '[outa]', 
+                    'output.mp4'
+                );
 
-<script>
-const userInput    = document.getElementById('userInput');
-const dropZone     = document.getElementById('dropZone');
-const mergeBtn     = document.getElementById('mergeBtn');
-const introBadge   = document.getElementById('introBadge');
-const introNote    = document.getElementById('introNote');
-const dropTitle    = document.getElementById('dropTitle');
-const dropHint     = document.getElementById('dropHint');
-const orderUser    = document.getElementById('orderUser');
-const progressWrap = document.getElementById('progressWrap');
-const progressText = document.getElementById('progressText');
-const progressPct  = document.getElementById('progressPct');
-const progressBar  = document.getElementById('progressBar');
-const resultCard   = document.getElementById('resultCard');
-const resultInfo   = document.getElementById('resultInfo');
-const downloadLink = document.getElementById('downloadLink');
-const errorMsg     = document.getElementById('errorMsg');
-const canvas       = document.getElementById('canvas');
-const v1           = document.getElementById('v1');
-const v2           = document.getElementById('v2');
-const ctx          = canvas.getContext('2d');
+                statusText.textContent = 'Finalizing...';
 
-let introReady = false;
-let userFile   = null;
+                // Read the result
+                const data = ffmpeg.FS('readFile', 'output.mp4');
+                
+                // Create a download link for the generated buffer
+                const videoBlob = new Blob([data.buffer], { type: 'video/mp4' });
+                const downloadUrl = URL.createObjectURL(videoBlob);
+                
+                // Update UI
+                videoPreview.src = downloadUrl;
+                downloadBtn.href = downloadUrl;
+                downloadBtn.download = 'switch_edit_' + userFile.name;
+                downloadBtn.style.display = 'block';
+                mergeBtn.style.display = 'none';
+                
+                statusText.textContent = 'Done! You can preview it above or download it.';
 
-// Auto-load the bundled intro clip
-v1.src = 'nintendoswitchintro.mp4';
-v1.onloadedmetadata = () => {
-  introReady = true;
-  introBadge.textContent = 'Ready';
-  introBadge.className = 'status-badge ready';
-  introNote.textContent = v1.duration.toFixed(1) + 's';
-  updateMergeBtn();
-};
-v1.onerror = () => {
-  introBadge.textContent = 'Not found';
-  introBadge.className = 'status-badge error';
-  introNote.textContent = 'Place nintendoswitchintro.mp4 in the same folder as this file';
-};
-v1.load();
-
-function updateMergeBtn() {
-  mergeBtn.disabled = !(introReady && userFile);
-}
-
-function showError(msg) { errorMsg.textContent = msg; errorMsg.classList.add('visible'); }
-function clearError()   { errorMsg.classList.remove('visible'); }
-
-userInput.addEventListener('change', e => {
-  const f = e.target.files[0];
-  if (f) setUserFile(f);
-});
-
-dropZone.addEventListener('dragover',  e => { e.preventDefault(); dropZone.classList.add('dragover'); });
-dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
-dropZone.addEventListener('drop', e => {
-  e.preventDefault();
-  dropZone.classList.remove('dragover');
-  const f = e.dataTransfer.files[0];
-  if (f && f.type.startsWith('video/')) setUserFile(f);
-});
-
-function setUserFile(f) {
-  userFile = f;
-  dropZone.classList.add('has-file');
-  dropTitle.textContent = f.name;
-  dropHint.textContent  = formatSize(f.size);
-  orderUser.textContent = f.name.length > 28 ? f.name.slice(0, 26) + '…' : f.name;
-  updateMergeBtn();
-}
-
-function formatSize(b) {
-  return b < 1024 * 1024 ? (b / 1024).toFixed(1) + ' KB' : (b / (1024 * 1024)).toFixed(1) + ' MB';
-}
-
-function setProgress(pct, label) {
-  progressBar.style.width = pct + '%';
-  progressPct.textContent = Math.round(pct) + '%';
-  if (label) progressText.textContent = label;
-}
-
-mergeBtn.addEventListener('click', async () => {
-  clearError();
-  resultCard.classList.remove('visible');
-  progressWrap.classList.add('visible');
-  mergeBtn.disabled = true;
-  setProgress(0, 'Loading videos…');
-
-  try {
-    // Re-load v1 from its src so it's seekable
-    await reloadVideo(v1, v1.src);
-    await loadVideoFromFile(v2, userFile);
-
-    const W = Math.max(v1.videoWidth, v2.videoWidth);
-    const H = Math.max(v1.videoHeight, v2.videoHeight);
-    canvas.width  = W;
-    canvas.height = H;
-
-    const totalDuration = v1.duration + v2.duration;
-    const stream = canvas.captureStream(30);
-
-    let mimeType = 'video/webm;codecs=vp9';
-    if (!MediaRecorder.isTypeSupported(mimeType)) mimeType = 'video/webm;codecs=vp8';
-    if (!MediaRecorder.isTypeSupported(mimeType)) mimeType = 'video/webm';
-
-    const recorder = new MediaRecorder(stream, { mimeType, videoBitsPerSecond: 8_000_000 });
-    const chunks   = [];
-    recorder.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
-    recorder.start(100);
-
-    setProgress(2, 'Rendering Switch intro…');
-    await renderVideo(v1, W, H, 0, v1.duration, totalDuration);
-
-    setProgress(50, 'Rendering your video…');
-    await renderVideo(v2, W, H, v1.duration, v2.duration, totalDuration);
-
-    setProgress(98, 'Finalizing…');
-    recorder.stop();
-    await new Promise(res => recorder.onstop = res);
-
-    const blob  = new Blob(chunks, { type: mimeType });
-    const url   = URL.createObjectURL(blob);
-    const fname = userFile.name.replace(/\.[^/.]+$/, '') + '_with_switch_intro.webm';
-
-    downloadLink.href     = url;
-    downloadLink.download = fname;
-    resultInfo.textContent = formatSize(blob.size) + ' — ' + fname;
-
-    setProgress(100, 'Done!');
-    resultCard.classList.add('visible');
-
-  } catch (err) {
-    showError('Something went wrong: ' + err.message);
-    console.error(err);
-  }
-
-  progressWrap.classList.remove('visible');
-  mergeBtn.disabled = false;
-  updateMergeBtn();
-});
-
-function reloadVideo(el, src) {
-  return new Promise((resolve, reject) => {
-    el.src = src;
-    el.onloadedmetadata = () => resolve();
-    el.onerror = () => reject(new Error('Could not load nintendoswitchintro.mp4'));
-    el.load();
-  });
-}
-
-function loadVideoFromFile(el, file) {
-  return new Promise((resolve, reject) => {
-    el.src = URL.createObjectURL(file);
-    el.onloadedmetadata = () => resolve();
-    el.onerror = () => reject(new Error('Failed to load ' + file.name));
-    el.load();
-  });
-}
-
-function renderVideo(vid, W, H, offset, clipDuration, totalDuration) {
-  return new Promise((resolve, reject) => {
-    vid.currentTime = 0;
-
-    const draw = () => {
-      const pct = 2 + ((offset + vid.currentTime) / totalDuration) * 96;
-      setProgress(pct);
-
-      ctx.fillStyle = '#000';
-      ctx.fillRect(0, 0, W, H);
-
-      const vw = vid.videoWidth, vh = vid.videoHeight;
-      const scale = Math.min(W / vw, H / vh);
-      ctx.drawImage(vid, (W - vw * scale) / 2, (H - vh * scale) / 2, vw * scale, vh * scale);
-
-      if (vid.paused || vid.ended) { resolve(); return; }
-      requestAnimationFrame(draw);
-    };
-
-    vid.onended = () => resolve();
-    vid.onerror = () => reject(new Error('Playback error'));
-    vid.play().then(() => requestAnimationFrame(draw)).catch(reject);
-  });
-}
-</script>
+            } catch (error) {
+                console.error(error);
+                statusText.textContent = 'An error occurred during processing. Check the console.';
+                mergeBtn.disabled = false;
+            }
+        });
+    </script>
 </body>
 </html>
