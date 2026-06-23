@@ -1,4 +1,5 @@
-importScripts('https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js');
+// FIXED: Loading the library locally to bypass strict browser CDN blocks
+importScripts('ffmpeg.min.js');
 
 const { createFFmpeg, fetchFile } = FFmpeg;
 const ffmpeg = createFFmpeg({ 
