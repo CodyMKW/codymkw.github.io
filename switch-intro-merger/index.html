@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
+    <link rel="icon" href="data:,">
+
     <meta property="og:title" content="Nintendo Switch Intro Adder">
     <meta property="og:description" content="Instantly prepend the iconic Switch or Switch 2 logo animation to your custom clips. Done completely in-browser.">
     <meta property="og:image" content="switch-logo.png">
@@ -288,7 +290,6 @@
 
         let targetFile = null;
 
-        // Setup FFmpeg with the Single-Threaded Core 
         const { createFFmpeg, fetchFile } = FFmpeg;
         const ffmpeg = createFFmpeg({ 
             log: true,
@@ -324,7 +325,7 @@
                 }
 
                 ffmpeg.setProgress(({ ratio }) => {
-                    statusMessage.textContent = `Merging video streams: ${Math.round(ratio * 100)}%`;
+                    statusMessage.textContent = `Processing clip architecture: ${Math.round(ratio * 100)}%`;
                 });
 
                 const selectedIntroFile = document.querySelector('input[name="introType"]:checked').value;
@@ -334,15 +335,24 @@
                 ffmpeg.FS('writeFile', 'intro.mp4', await fetchFile(cleanIntroUrl));
                 ffmpeg.FS('writeFile', 'user.mp4', await fetchFile(targetFile));
 
-                statusMessage.textContent = "Processing filter structures (this may take a minute)...";
+                statusMessage.textContent = "Re-indexing and scaling streams (takes a moment)...";
                 
-                // Concatenate video/audio streams and implement web-optimized streaming headers
+                // CRITICAL FIX: Explicitly normalize resolution to 1280x720, map standard YUV420p pixels, and force aac audio matching
                 await ffmpeg.run(
                     '-i', 'intro.mp4', 
                     '-i', 'user.mp4', 
-                    '-filter_complex', '[0:v:0][0:a:0][1:v:0][1:a:0]concat=n=2:v=1:a=1[outv][outa]', 
+                    '-filter_complex', 
+                    '[0:v]scale=1280:720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2,setsar=1[v0];' +
+                    '[1:v]scale=1280:720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2,setsar=1[v1];' +
+                    '[0:a]aresample=44100[a0];' +
+                    '[1:a]aresample=44100[a1];' +
+                    '[v0][a0][v1][a1]concat=n=2:v=1:a=1[outv][outa]', 
                     '-map', '[outv]', 
                     '-map', '[outa]', 
+                    '-c:v', 'libx264',
+                    '-preset', 'ultrafast',
+                    '-pix_fmt', 'yuv420p',
+                    '-c:a', 'aac',
                     '-movflags', '+faststart',
                     'output.mp4'
                 );
@@ -350,7 +360,6 @@
                 statusMessage.textContent = "Generating final clip headers...";
                 const data = ffmpeg.FS('readFile', 'output.mp4');
                 
-                // FIX: Pass 'data' directly instead of 'data.buffer' to isolate exact file bytes
                 const compiledBlob = new Blob([data], { type: 'video/mp4' });
                 const finalUrl = URL.createObjectURL(compiledBlob);
                 
