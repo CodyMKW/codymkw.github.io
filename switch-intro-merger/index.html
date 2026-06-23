@@ -238,6 +238,27 @@
             line-height: 1.5;
         }
 
+        /* Progress Bar Track Layout */
+        .progress-container {
+            display: none;
+            width: 100%;
+            background-color: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+            margin-top: 16px;
+            height: 10px;
+        }
+
+        /* Animated Progress Filler */
+        .progress-bar {
+            width: 0%;
+            height: 100%;
+            background-color: var(--switch-red);
+            box-shadow: 0 0 8px var(--switch-red-glow);
+            transition: width 0.1s linear;
+        }
+
         .log-terminal {
             display: none;
             margin-top: 16px;
@@ -293,6 +314,11 @@
 
         <div class="status-tray">
             <p class="status-text" id="statusMessage">Awaiting asset selection.</p>
+            
+            <div class="progress-container" id="progressContainer">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+
             <div class="log-terminal" id="logTerminal"></div>
         </div>
     </div>
@@ -305,6 +331,8 @@
         const mergeBtn = document.getElementById('mergeBtn');
         const downloadBtn = document.getElementById('downloadBtn');
         const statusMessage = document.getElementById('statusMessage');
+        const progressContainer = document.getElementById('progressContainer');
+        const progressBar = document.getElementById('progressBar');
         const logTerminal = document.getElementById('logTerminal');
 
         let targetFile = null;
@@ -317,15 +345,20 @@
             mainName: "main"
         });
 
+        // Watch internal FFmpeg CLI progress loops
+        ffmpeg.setProgress(({ ratio }) => {
+            if (ratio >= 0 && ratio <= 1) {
+                const percentage = Math.round(ratio * 100);
+                progressBar.style.width = `${percentage}%`;
+                statusMessage.textContent = `Merging video streams: ${percentage}%`;
+            }
+        });
+
         // Track internal engine readouts visually
         ffmpeg.setLogger(({ type, message }) => {
             systemLogs.push(`[${type}] ${message}`);
             logTerminal.textContent = systemLogs.slice(-20).join('\n');
             logTerminal.scrollTop = logTerminal.scrollHeight;
-            
-            if (message.includes('frame=')) {
-                statusMessage.textContent = message.trim();
-            }
         });
 
         videoInput.addEventListener('change', (e) => {
@@ -341,6 +374,8 @@
                 mergeBtn.style.display = 'inline-flex';
                 downloadBtn.style.display = 'none';
                 logTerminal.style.display = 'none';
+                progressContainer.style.display = 'none';
+                progressBar.style.width = '0%';
                 systemLogs = [];
                 statusMessage.textContent = "Ready to compile.";
             }
@@ -352,6 +387,8 @@
             try {
                 mergeBtn.disabled = true;
                 logTerminal.style.display = 'block';
+                progressContainer.style.display = 'block';
+                progressBar.style.width = '0%';
                 statusMessage.textContent = "Loading encoding toolkit...";
 
                 if (!ffmpeg.isLoaded()) {
@@ -398,6 +435,7 @@
                 const compiledBlob = new Blob([data], { type: 'video/mp4' });
                 const finalUrl = URL.createObjectURL(compiledBlob);
                 
+                progressBar.style.width = '100%';
                 videoPreview.src = finalUrl;
                 downloadBtn.href = finalUrl;
                 downloadBtn.download = `merged_${targetFile.name}`;
@@ -409,6 +447,7 @@
             } catch (err) {
                 console.error(err);
                 statusMessage.innerHTML = `<span style="color:#e60012; font-weight:700;">Compilation Failed!</span><br>Check internal terminal output below for tracking errors.`;
+                progressBar.style.width = '0%';
                 mergeBtn.disabled = false;
             }
         });
