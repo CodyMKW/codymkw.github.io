@@ -1,4 +1,28 @@
-// FIXED: Loading the library locally to bypass strict browser CDN blocks
+// =========================================================================
+// ENVIRONMENT SHIM: Fool ffmpeg.min.js into believing a DOM exists in this worker
+// =========================================================================
+self.window = self;
+self.document = {
+    currentScript: { src: self.location.href },
+    createElement: function(tagName) {
+        if (tagName === 'a') {
+            return {
+                href: '',
+                get protocol() { try { return new URL(this.href, self.location.href).protocol; } catch(e) { return ''; } },
+                get host() { try { return new URL(this.href, self.location.href).host; } catch(e) { return ''; } },
+                get hostname() { try { return new URL(this.href, self.location.href).hostname; } catch(e) { return ''; } },
+                get pathname() { try { return new URL(this.href, self.location.href).pathname; } catch(e) { return ''; } },
+                get search() { try { return new URL(this.href, self.location.href).search; } catch(e) { return ''; } },
+                get hash() { try { return new URL(this.href, self.location.href).hash; } catch(e) { return ''; } }
+            };
+        }
+        return {};
+    },
+    getElementsByTagName: function() { return []; }
+};
+// =========================================================================
+
+// Now safely load the library locally
 importScripts('ffmpeg.min.js');
 
 const { createFFmpeg, fetchFile } = FFmpeg;
