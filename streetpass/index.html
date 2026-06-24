@@ -5,8 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="data:,">
 
+    <!-- Discord & Social Media Embed Metadata -->
     <meta property="og:title" content="Retro Handheld StreetPass Generator">
-    <meta property="og:description" content="Instantly generate custom 3DS-style notification tags. Done completely in-browser.">
+    <meta property="og:description" content="Instantly generate custom 3DS-style notification tags with custom avatars. Done completely in-browser.">
     <meta property="og:type" content="website">
     <meta name="theme-color" content="#00FF66">
 
@@ -302,6 +303,10 @@
                     <input type="text" id="miiName" class="text-input" placeholder="e.g., Cody" maxlength="12">
                 </div>
                 <div class="form-row">
+                    <label for="avatarUrl">Avatar Image URL (Optional)</label>
+                    <input type="url" id="avatarUrl" class="text-input" placeholder="e.g., https://yourdomain.com/avatar.png">
+                </div>
+                <div class="form-row">
                     <label for="miiMessage">Status Message</label>
                     <input type="text" id="miiMessage" class="text-input" placeholder="e.g., Playing Splatoon 3!" maxlength="45">
                 </div>
@@ -324,6 +329,10 @@
                 <div class="faq-question">What is this?</div>
                 <div class="faq-answer">It's a retro handheld notification simulator built out of absolute boredom lol. It renders an accurate, high-definition reproduction of old-school 3D handheld notifications to use for profiles or memes.</div>
             </div>
+            <div class="faq-item">
+                <div class="faq-question">Why isn't my avatar image showing up?</div>
+                <div class="faq-answer">The image link provided must support CORS (Cross-Origin Resource Sharing) headers so the Canvas script can safely manipulate it. Try hosting the asset directly on your own web host dashboard or a public image repository.</div>
+            </div>
         </div>
 
         <footer>
@@ -333,6 +342,7 @@
 
     <script>
         const miiName = document.getElementById('miiName');
+        const avatarUrl = document.getElementById('avatarUrl');
         const miiMessage = document.getElementById('miiMessage');
         const previewBox = document.getElementById('previewBox');
         const canvas = document.getElementById('streetpassCanvas');
@@ -342,7 +352,6 @@
         const resetBtn = document.getElementById('resetBtn');
         const uiLed = document.getElementById('uiLed');
 
-        // Dynamically adjust the browser UI LED color depending on mode choice
         document.querySelectorAll('input[name="notifyType"]').forEach(radio => {
             radio.addEventListener('change', (e) => {
                 if(e.target.value === 'streetpass') {
@@ -358,7 +367,7 @@
             });
         });
 
-        function renderStreetpass() {
+        function renderStreetpass(loadedImg = null) {
             const W = canvas.width;
             const H = canvas.height;
             const mode = document.querySelector('input[name="notifyType"]:checked').value;
@@ -381,18 +390,45 @@
             ctx.fillStyle = accentColor;
             ctx.fillRect(0, 0, 45, H);
 
-            // Draw a minimal representation of a profile avatar card container
+            // Draw Profile Avatar Container Circle
             ctx.fillStyle = '#25272f';
             ctx.beginPath();
             ctx.arc(160, H / 2, 75, 0, Math.PI * 2);
             ctx.fill();
 
-            // Minimalist profile face outline
-            ctx.strokeStyle = '#3e4251';
-            ctx.lineWidth = 6;
-            ctx.beginPath();
-            ctx.arc(160, (H / 2) - 10, 30, 0, Math.PI, false);
-            ctx.stroke();
+            if (loadedImg) {
+                // Mask and Draw the Custom Avatar Image (Object-Fit Cover Logic)
+                ctx.save();
+                ctx.beginPath();
+                ctx.arc(160, H / 2, 75, 0, Math.PI * 2);
+                ctx.clip();
+
+                const maskSize = 150;
+                const imgRatio = loadedImg.width / loadedImg.height;
+                let dw, dh, dx, dy;
+
+                if (imgRatio > 1) {
+                    dh = maskSize;
+                    dw = maskSize * imgRatio;
+                    dx = 160 - dw / 2;
+                    dy = (H / 2) - 75;
+                } else {
+                    dw = maskSize;
+                    dh = maskSize / imgRatio;
+                    dx = 85;
+                    dy = (H / 2) - dh / 2;
+                }
+
+                ctx.drawImage(loadedImg, dx, dy, dw, dh);
+                ctx.restore();
+            } else {
+                // Fallback Minimal Default Silhouette Outline
+                ctx.strokeStyle = '#3e4251';
+                ctx.lineWidth = 6;
+                ctx.beginPath();
+                ctx.arc(160, (H / 2) - 10, 30, 0, Math.PI, false);
+                ctx.stroke();
+            }
 
             // Header Mode Tag Text
             ctx.fillStyle = accentColor;
@@ -418,18 +454,40 @@
         }
 
         generateBtn.addEventListener('click', () => {
-            previewBox.style.display = 'block';
-            renderStreetpass();
-            downloadBtn.href = canvas.toDataURL('image/png');
-            downloadBtn.download = `streetpass_tag_${Date.now()}.png`;
+            const url = avatarUrl.value.trim();
 
-            generateBtn.style.display = 'none';
-            downloadBtn.style.display = 'inline-flex';
-            resetBtn.style.display = 'inline-flex';
+            const finalizeUI = () => {
+                previewBox.style.display = 'block';
+                downloadBtn.href = canvas.toDataURL('image/png');
+                downloadBtn.download = `streetpass_tag_${Date.now()}.png`;
+
+                generateBtn.style.display = 'none';
+                downloadBtn.style.display = 'inline-flex';
+                resetBtn.style.display = 'inline-flex';
+            };
+
+            if (url) {
+                const img = new Image();
+                img.crossOrigin = "anonymous";
+                img.onload = () => {
+                    renderStreetpass(img);
+                    finalizeUI();
+                };
+                img.onerror = () => {
+                    alert("Failed to load avatar image. Check the URL context or CORS permissions. Falling back to default silhouette.");
+                    renderStreetpass(null);
+                    finalizeUI();
+                };
+                img.src = url;
+            } else {
+                renderStreetpass(null);
+                finalizeUI();
+            }
         });
 
         resetBtn.addEventListener('click', () => {
             miiName.value = '';
+            avatarUrl.value = '';
             miiMessage.value = '';
             previewBox.style.display = 'none';
             generateBtn.style.display = 'inline-flex';
