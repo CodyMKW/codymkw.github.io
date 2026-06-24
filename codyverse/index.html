@@ -6,104 +6,395 @@
     <title>Codyverse Plaza</title>
     <style>
         :root {
-            --miiverse-green: #92e600;
-            --miiverse-green-hover: #7bc200;
-            --bg-dark: #15202b;
-            --card-dark: #1e2732;
-            --border-color: #38444d;
-            --text-main: #ffffff;
-            --text-muted: #8899a6;
+            --wiiu-green: #8ec600;
+            --wiiu-green-hover: #76a500;
+            --nintendo-red: #e60012;
+            --bg-light: #f3f3f3;
+            --card-bg: #ffffff;
+            --border-color: #e0e0e0;
+            --text-main: #3c3c3c;
+            --text-muted: #8c8c8c;
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
         }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: var(--bg-dark); color: var(--text-main); margin: 0; padding: 0;
-            display: flex; justify-content: center;
+            font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            -webkit-font-smoothing: antialiased;
         }
-        .container { width: 100%; max-width: 650px; border-left: 1px solid var(--border-color); border-right: 1px solid var(--border-color); min-height: 100vh; padding-bottom: 50px; }
-        header { position: sticky; top: 0; background: rgba(21, 32, 43, 0.85); backdrop-filter: blur(5px); padding: 15px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; z-index: 10; }
-        h1 { font-size: 1.4rem; margin: 0; color: var(--miiverse-green); font-weight: 800; }
-        .community-bar { display: flex; overflow-x: auto; background: var(--card-dark); border-bottom: 1px solid var(--border-color); padding: 5px 10px; gap: 8px; }
-        .comm-tab { padding: 8px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; color: var(--text-muted); cursor: pointer; border: 1px solid transparent; white-space: nowrap; }
-        .comm-tab.active { background: rgba(146, 230, 0, 0.15); color: var(--miiverse-green); border-color: var(--miiverse-green); }
-        .btn { background-color: var(--miiverse-green); color: #000; border: none; padding: 8px 16px; border-radius: 9999px; font-weight: bold; cursor: pointer; font-size: 0.9rem; transition: background 0.2s; }
-        .btn:hover { background-color: var(--miiverse-green-hover); }
-        .btn-outline { background: transparent; color: var(--text-main); border: 1px solid var(--border-color); }
-        .btn-outline:hover { background: rgba(255,255,255,0.1); }
-        .panel { padding: 20px; border-bottom: 1px solid var(--border-color); background: var(--card-dark); }
-        .input-group { margin-bottom: 12px; }
-        input, textarea { width: 100%; padding: 12px; background: var(--bg-dark); border: 1px solid var(--border-color); color: white; border-radius: 8px; box-sizing: border-box; font-size: 1rem; }
-        textarea { resize: none; height: 80px; font-family: inherit; }
-        .post { padding: 15px; border-bottom: 1px solid var(--border-color); display: flex; gap: 12px; }
-        .avatar { width: 48px; height: 48px; background: #4b5563; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: bold; color: white; font-size: 1.2rem; border: 2px solid var(--miiverse-green); overflow: hidden; }
-        .avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .post-content { flex: 1; }
-        .post-header { display: flex; gap: 8px; align-items: center; margin-bottom: 4px; }
-        .display-name { font-weight: bold; }
-        .username { color: var(--text-muted); font-size: 0.9rem; }
-        .post-body { line-height: 1.4; font-size: 1rem; word-break: break-word; }
-        .post-actions { margin-top: 10px; display: flex; gap: 15px; }
-        .action-btn { background: transparent; border: 1px solid var(--border-color); color: var(--text-muted); padding: 4px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.85rem; }
-        .yeah-btn { border-color: #ff7f00; color: #ff7f00; }
-        .yeah-btn.active { background: #ff7f00; color: white; }
-        .reply-btn { border-color: #00a2ff; color: #00a2ff; }
-        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 100; }
-        .modal-content { background: var(--card-dark); padding: 20px; border-radius: 12px; width: 90%; max-width: 500px; border: 1px solid var(--border-color); }
-        .hidden { display: none; }
+
+        .app-wrapper {
+            width: 100%;
+            max-width: 1100px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            box-sizing: border-box;
+            gap: 20px;
+        }
+
+        /* --- NINTENDO STYLE NAVBAR --- */
+        header {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: 15px 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--wiiu-green);
+            letter-spacing: -0.5px;
+        }
+
+        .logo-dot {
+            width: 12px;
+            height: 12px;
+            background-color: var(--wiiu-green);
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        /* --- MAIN LAYOUT GRID --- */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 20px;
+            align-items: start;
+        }
+
+        @media (max-width: 850px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* --- SIDEBAR CARDS --- */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .user-profile-summary {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 12px;
+        }
+
+        /* --- THE PLAZA COMMUNITY HUBS GRID --- */
+        .community-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .community-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.9rem;
+            transition: transform 0.15s, border-color 0.15s;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+        }
+
+        .community-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--wiiu-green);
+        }
+
+        .community-card.active {
+            background: var(--wiiu-green);
+            color: white;
+            border-color: var(--wiiu-green);
+        }
+
+        /* --- POSTS & TIMELINE --- */
+        .feed-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .post-composer textarea {
+            width: 100%;
+            height: 90px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            padding: 12px;
+            box-sizing: border-box;
+            resize: none;
+            font-family: inherit;
+            font-size: 0.95rem;
+            background-color: #fafafa;
+            transition: border-color 0.2s;
+        }
+
+        .post-composer textarea:focus {
+            outline: none;
+            border-color: var(--wiiu-green);
+            background-color: white;
+        }
+
+        .post {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            display: flex;
+            gap: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+        }
+
+        .avatar {
+            width: 54px;
+            height: 54px;
+            background: #e2e8f0;
+            border-radius: var(--radius-md);
+            border: 2px solid var(--wiiu-green);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #4a5568;
+            font-size: 1.3rem;
+            flex-shrink: 0;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .post-main {
+            flex: 1;
+        }
+
+        .post-header {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+
+        .display-name {
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--text-main);
+        }
+
+        .username {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .post-body {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: #2c2c2c;
+            word-break: break-word;
+        }
+
+        .post-actions {
+            margin-top: 15px;
+            display: flex;
+            gap: 12px;
+        }
+
+        /* --- NINTENDO SIGNATURE BUTTONS --- */
+        .btn {
+            background: var(--wiiu-green);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 9999px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(142,198,0,0.3);
+            transition: background 0.15s, transform 0.1s;
+        }
+
+        .btn:hover { background: var(--wiiu-green-hover); }
+        .btn:active { transform: scale(0.97); }
+
+        .btn-outline {
+            background: white;
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            box-shadow: none;
+        }
+        .btn-outline:hover { background: #f9f9f9; border-color: #b5b5b5; }
+
+        .action-tab {
+            background: #f0f0f0;
+            border: none;
+            padding: 6px 14px;
+            border-radius: var(--radius-sm);
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: #666;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .action-tab.yeah-active {
+            background: #ff7f00;
+            color: white;
+        }
+
+        .action-tab.reply-tab {
+            background: #e1f5fe;
+            color: #0288d1;
+        }
+
+        /* --- COMPONENT STUTTER FIXES --- */
+        .hidden { display: none !important; }
+        .input-field {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        /* --- MODAL DIALOG --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; z-index: 100;
+        }
+        .modal-body {
+            background: white; padding: 25px; border-radius: var(--radius-lg); width: 90%; max-width: 550px;
+            border: 1px solid var(--border-color); box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
     </style>
 </head>
 <body>
-    <div class="container">
+
+    <div class="app-wrapper">
         <header>
-            <h1 id="title-banner">💚 Codyverse Plaza</h1>
-            <div id="user-header"></div>
+            <div class="logo-area">
+                <span class="logo-dot"></span> Codyverse Plaza
+            </div>
+            <div id="user-nav-widget"></div>
         </header>
 
-        <div class="community-bar" id="communities-list">
-            <div class="comm-tab active" onclick="switchCommunity('general')">💬 General Community</div>
-            <div class="comm-tab" onclick="switchCommunity('splatoon')">🦑 Splatoon Zone</div>
-            <div class="comm-tab" onclick="switchCommunity('animal_crossing')">🍃 Animal Crossing Area</div>
-            <div class="comm-tab" onclick="switchCommunity('webdev')">💻 Web Dev Labs</div>
-            <div class="comm-tab" onclick="switchCommunity('anime')">📺 Dubbed Anime Lounge</div>
-        </div>
+        <div class="main-layout">
+            
+            <div class="sidebar">
+                <div id="user-info-card" class="card user-profile-summary hidden">
+                    <div class="avatar" id="user-card-avatar">?</div>
+                    <div>
+                        <div id="user-card-name" class="display-name" style="font-size:1.1rem;">-</div>
+                        <div id="user-card-handle" class="username">-</div>
+                    </div>
+                    <div id="user-card-bio" style="font-size:0.85rem; color:var(--text-muted); line-height:1.4;"></div>
+                    <button class="btn btn-outline" style="width:100%; font-size:0.8rem;" onclick="toggleProfileEdit()">Settings Profile</button>
+                </div>
 
-        <div id="profile-section" class="panel hidden">
-            <h3>🎨 Personalize Identity Settings</h3>
-            <div class="input-group"><input type="text" id="prof-displayname" placeholder="Display Name"></div>
-            <div class="input-group"><input type="text" id="prof-avatar" placeholder="Direct URL Image path (e.g. https://...png)"></div>
-            <div class="input-group"><textarea id="prof-bio" placeholder="Bio updates..."></textarea></div>
-            <button class="btn" onclick="updateProfile()">Apply Profile Upgrades</button>
-            <button class="btn btn-outline" onclick="toggleProfileEdit()">Cancel</button>
-        </div>
-
-        <div id="auth-section" class="panel hidden">
-            <h3 id="auth-title">Sign In to Codyverse</h3>
-            <div class="input-group" id="dn-group" style="display:none;"><input type="text" id="auth-displayname" placeholder="Display Name"></div>
-            <div class="input-group"><input type="text" id="auth-username" placeholder="Username"></div>
-            <div class="input-group"><input type="password" id="auth-password" placeholder="Password"></div>
-            <button class="btn" id="auth-main-btn" onclick="handleAuth()">Sign In</button>
-            <button class="btn btn-outline" id="auth-toggle-btn" onclick="toggleAuthMode()" style="margin-left: 10px;">Create Account</button>
-        </div>
-
-        <div id="post-section" class="panel hidden">
-            <textarea id="post-text" placeholder="Share your status with this community..."></textarea>
-            <div style="display: flex; justify-content: space-between; margin-top: 8px; align-items: center;">
-                <button class="btn btn-outline" onclick="toggleProfileEdit()">Profile / Custom Avatar</button>
-                <button class="btn" onclick="submitPost()">Post</button>
+                <div id="guest-info-card" class="card style-text" style="text-align: center;">
+                    <h4 style="margin-top:0;">Welcome Traveler!</h4>
+                    <p style="font-size:0.85rem; color:var(--text-muted); line-height:1.4;">Sign in to select communities and save posts inside the network matrix.</p>
+                </div>
             </div>
-        </div>
 
-        <div id="feed" class="feed"></div>
+            <div class="feed-container">
+                
+                <div class="community-grid" id="communities-box">
+                    <div class="community-card active" onclick="switchCommunity('general')">💬 General</div>
+                    <div class="community-card" onclick="switchCommunity('splatoon')">🦑 Splatoon</div>
+                    <div class="community-card" onclick="switchCommunity('animal_crossing')">🍃 Animal Crossing</div>
+                    <div class="community-card" onclick="switchCommunity('webdev')">💻 Web Development</div>
+                    <div class="community-card" onclick="switchCommunity('anime')">📺 Dubbed Anime</div>
+                </div>
+
+                <div id="profile-edit-panel" class="card hidden">
+                    <h3 style="margin-top:0; border-bottom:1px solid var(--border-color); padding-bottom:8px;">🎨 Edit User Profile</h3>
+                    <label style="font-size:0.8rem; font-weight:bold;">Display Name</label>
+                    <input type="text" id="prof-displayname" class="input-field">
+                    <label style="font-size:0.8rem; font-weight:bold;">Avatar Image Link</label>
+                    <input type="text" id="prof-avatar" class="input-field" placeholder="https://domain.com/pic.png">
+                    <label style="font-size:0.8rem; font-weight:bold;">Bio Text Description</label>
+                    <textarea id="prof-bio" class="input-field" style="height:60px;"></textarea>
+                    <div style="margin-top:10px; display:flex; gap:10px;">
+                        <button class="btn" onclick="updateProfile()">Save Modifications</button>
+                        <button class="btn btn-outline" onclick="toggleProfileEdit()">Cancel</button>
+                    </div>
+                </div>
+
+                <div id="auth-panel" class="card hidden">
+                    <h3 id="auth-panel-title" style="margin-top:0;">Sign In</h3>
+                    <input type="text" id="auth-displayname" class="input-field hidden" placeholder="Display Name">
+                    <input type="text" id="auth-username" class="input-field" placeholder="Username Handle">
+                    <input type="password" id="auth-password" class="input-field" placeholder="Password Access Security">
+                    <div style="margin-top:5px;">
+                        <button class="btn" id="auth-execution-btn" onclick="handleAuth()">Connect</button>
+                        <button class="btn btn-outline" id="auth-toggle-view" onclick="toggleAuthMode()">Create Registration Profile</button>
+                    </div>
+                </div>
+
+                <div id="post-panel" class="card post-composer hidden">
+                    <textarea id="post-text" placeholder="Write something elegant or completely ridiculous..."></textarea>
+                    <div style="display:flex; justify-content:flex-end; margin-top:10px;">
+                        <button class="btn" onclick="submitPost()">Post into Channel</button>
+                    </div>
+                </div>
+
+                <div id="feed-stream"></div>
+            </div>
+
+        </div>
     </div>
 
-    <div id="reply-modal" class="modal hidden">
-        <div class="modal-content">
-            <h3 style="margin-top:0;">Discussion Thread</h3>
-            <div id="modal-parent-post"></div>
-            <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 15px 0;">
-            <div id="modal-replies-list" style="max-height: 200px; overflow-y: auto; margin-bottom: 15px;"></div>
-            <div class="input-group"><textarea id="reply-text" placeholder="Add to the conversation..."></textarea></div>
-            <button class="btn" onclick="submitReply()">Send Reply</button>
-            <button class="btn btn-outline" onclick="closeReplyModal()">Dismiss</button>
+    <div id="reply-modal" class="modal-overlay hidden">
+        <div class="modal-body">
+            <h3 style="margin-top:0; color:var(--text-main);">Thread Status Hub</h3>
+            <div id="modal-parent-post-anchor"></div>
+            <hr style="border:0; border-top:1px solid var(--border-color); margin:15px 0;">
+            <div id="modal-replies-stream" style="max-height:240px; overflow-y:auto; margin-bottom:15px; display:flex; flex-direction:column; gap:12px;"></div>
+            <textarea id="reply-text" class="input-field" style="height:70px; resize:none;" placeholder="Contribute insight to this discussion card..."></textarea>
+            <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:5px;">
+                <button class="btn btn-outline" onclick="closeReplyModal()">Close</button>
+                <button class="btn" onclick="submitReply()">Send Reply</button>
+            </div>
         </div>
     </div>
 
@@ -130,31 +421,37 @@
                 currentProfile = data.profile;
                 
                 if (currentUser) {
-                    const activeAvatar = currentProfile && currentProfile.avatarUrl ? currentProfile.avatarUrl : '';
-                    document.getElementById('user-header').innerHTML = `
-                        <div style="display:flex; align-items:center; gap:8px;">
-                            ${renderAvatar(activeAvatar, currentProfile?.displayName || currentUser)}
-                            <button class="btn btn-outline" onclick="logout()">Log Out</button>
-                        </div>`;
-                    document.getElementById('post-section').classList.remove('hidden');
-                    document.getElementById('auth-section').classList.add('hidden');
+                    document.getElementById('user-nav-widget').innerHTML = `<button class="btn btn-outline" onclick="logout()">Disconnect</button>`;
+                    document.getElementById('post-panel').classList.remove('hidden');
+                    document.getElementById('user-info-card').classList.remove('hidden');
+                    document.getElementById('guest-info-card').classList.add('hidden');
+                    document.getElementById('auth-panel').classList.add('hidden');
+                    
+                    // Setup sidebar metrics layout references
+                    document.getElementById('user-card-avatar').innerHTML = currentProfile?.avatarUrl ? `<img src="${currentProfile.avatarUrl}">` : currentUser.charAt(0).toUpperCase();
+                    document.getElementById('user-card-name').innerText = currentProfile?.displayName || currentUser;
+                    document.getElementById('user-card-handle').innerText = `@${currentUser}`;
+                    document.getElementById('user-card-bio').innerText = currentProfile?.bio || 'No status bio cataloged.';
+                    
                     if(currentProfile) {
                         document.getElementById('prof-displayname').value = currentProfile.displayName || '';
                         document.getElementById('prof-avatar').value = currentProfile.avatarUrl || '';
                         document.getElementById('prof-bio').value = currentProfile.bio || '';
                     }
                 } else {
-                    document.getElementById('user-header').innerHTML = '';
-                    document.getElementById('auth-section').classList.remove('hidden');
-                    document.getElementById('post-section').classList.add('hidden');
+                    document.getElementById('user-nav-widget').innerHTML = '';
+                    document.getElementById('auth-panel').classList.remove('hidden');
+                    document.getElementById('post-panel').classList.add('hidden');
+                    document.getElementById('user-info-card').classList.add('hidden');
+                    document.getElementById('guest-info-card').classList.remove('hidden');
                 }
             } catch(e) { console.error(e); }
         }
 
         function switchCommunity(target) {
             currentCommunity = target;
-            const tabs = document.querySelectorAll('.comm-tab');
-            tabs.forEach(t => t.classList.remove('active'));
+            const blocks = document.querySelectorAll('.community-card');
+            blocks.forEach(b => b.classList.remove('active'));
             event.target.classList.add('active');
             loadPosts();
         }
@@ -168,19 +465,16 @@
                     bio: document.getElementById('prof-bio').value
                 }
             });
-            if(res.ok) {
-                toggleProfileEdit();
-                await checkAuth();
-                loadPosts();
-            }
+            if(res.ok) { toggleProfileEdit(); await checkAuth(); loadPosts(); }
         }
 
-        function toggleProfileEdit() { document.getElementById('profile-section').classList.toggle('hidden'); }
+        function toggleProfileEdit() { document.getElementById('profile-edit-panel').classList.toggle('hidden'); }
+        
         function toggleAuthMode() {
             isSignUp = !isSignUp;
-            document.getElementById('auth-title').innerText = isSignUp ? 'Create Codyverse Account' : 'Sign In to Codyverse';
-            document.getElementById('dn-group').style.display = isSignUp ? 'block' : 'none';
-            document.getElementById('auth-main-btn').innerText = isSignUp ? 'Register' : 'Sign In';
+            document.getElementById('auth-panel-title').innerText = isSignUp ? 'Create Registration Account' : 'Sign In';
+            document.getElementById('auth-displayname').classList.toggle('hidden', !isSignUp);
+            document.getElementById('auth-execution-btn').innerText = isSignUp ? 'Register Network ID' : 'Connect';
         }
 
         async function handleAuth() {
@@ -195,30 +489,30 @@
 
         async function logout() { await apiFetch('/api/logout'); window.location.reload(); }
 
-        function renderAvatar(url, name) {
-            return url ? `<div class="avatar"><img src="${url}" onerror="this.style.display='none'"></div>` : `<div class="avatar">${name.charAt(0).toUpperCase()}</div>`;
+        function buildAvatar(url, fallbackName) {
+            return url ? `<div class="avatar"><img src="${url}" onerror="this.parentElement.innerHTML='${fallbackName.charAt(0).toUpperCase()}'"></div>` : `<div class="avatar">${fallbackName.charAt(0).toUpperCase()}</div>`;
         }
 
         async function loadPosts() {
             const res = await apiFetch(`/api/posts?community=${currentCommunity}`);
             const posts = await res.json();
-            const feedEl = document.getElementById('feed');
-            if (posts.length === 0) { feedEl.innerHTML = '<div style="padding:40px; text-align:center; color:var(--text-muted)">No posts inside this hub quadrant yet.</div>'; return; }
+            const stream = document.getElementById('feed-stream');
+            if (posts.length === 0) { stream.innerHTML = '<div class="card" style="text-align:center; color:var(--text-muted)">The community square database file is empty. Post first!</div>'; return; }
 
-            feedEl.innerHTML = posts.map(post => {
-                const isYeahed = post.yeahedBy && post.yeahedBy.includes(currentUser);
+            stream.innerHTML = posts.map(post => {
+                const checkedYeah = post.yeahedBy && post.yeahedBy.includes(currentUser);
                 return `
                     <div class="post">
-                        ${renderAvatar(post.avatarUrl, post.displayName)}
-                        <div class="post-content">
+                        ${buildAvatar(post.avatarUrl, post.displayName)}
+                        <div class="post-main">
                             <div class="post-header">
                                 <span class="display-name">${post.displayName}</span>
                                 <span class="username">@${post.username}</span>
                             </div>
                             <div class="post-body">${escapeHtml(post.content)}</div>
                             <div class="post-actions">
-                                <button class="action-btn yeah-btn ${isYeahed ? 'active' : ''}" onclick="giveYeah('${post.id}')">💚 Yeah! (${post.yeahs || 0})</button>
-                                <button class="action-btn reply-btn" onclick="openReplyModal('${post.id}', '${post.displayName}', '${post.username}', \`${escapeHtml(post.content)}\`, '${post.avatarUrl}')">💬 Replies (${post.replyCount || 0})</button>
+                                <button class="action-tab ${checkedYeah ? 'yeah-active' : ''}" onclick="giveYeah('${post.id}')">💚 Yeah! (${post.yeahs || 0})</button>
+                                <button class="action-tab reply-tab" onclick="openReplyModal('${post.id}', '${post.displayName}', '${post.username}', \`${escapeHtml(post.content)}\`, '${post.avatarUrl}')">💬 Discussion (${post.replyCount || 0})</button>
                             </div>
                         </div>
                     </div>
@@ -227,26 +521,26 @@
         }
 
         async function submitPost() {
-            const content = document.getElementById('post-text').value;
-            if(!content) return;
-            const res = await apiFetch('/api/posts', { method: 'POST', body: { content, community: currentCommunity } });
+            const targetText = document.getElementById('post-text').value;
+            if(!targetText) return;
+            const res = await apiFetch('/api/posts', { method: 'POST', body: { content: targetText, community: currentCommunity } });
             if (res.ok) { document.getElementById('post-text').value = ''; loadPosts(); }
         }
 
         async function giveYeah(postId) {
-            if(!currentUser) return alert('Sign in to leave a "Yeah!"');
+            if(!currentUser) return alert('Session identity needed to log structural feedback notes.');
             const res = await apiFetch('/api/yeah', { method: 'POST', body: { postId, community: currentCommunity } });
             if(res.ok) loadPosts();
         }
 
         async function openReplyModal(postId, displayName, username, content, avatarUrl) {
             activePostId = postId;
-            document.getElementById('modal-parent-post').innerHTML = `
-                <div style="display:flex; gap:10px; opacity:0.8;">
-                    ${renderAvatar(avatarUrl, displayName)}
+            document.getElementById('modal-parent-post-anchor').innerHTML = `
+                <div style="display:flex; gap:12px; opacity:0.85;">
+                    ${buildAvatar(avatarUrl, displayName)}
                     <div>
                         <strong>${displayName}</strong> <span style="color:var(--text-muted)">@${username}</span>
-                        <div style="margin-top:4px;">${content}</div>
+                        <div style="margin-top:4px; font-size:0.95rem;">${content}</div>
                     </div>
                 </div>`;
             document.getElementById('reply-modal').classList.remove('hidden');
@@ -258,15 +552,15 @@
         async function loadReplies() {
             const res = await apiFetch(`/api/replies?postId=${activePostId}`);
             const replies = await res.json();
-            const listEl = document.getElementById('modal-replies-list');
-            if(replies.length === 0) { listEl.innerHTML = '<p style="color:var(--text-muted); text-align:center;">No responses logged.</p>'; return; }
+            const listContainer = document.getElementById('modal-replies-stream');
+            if(replies.length === 0) { listContainer.innerHTML = '<p style="color:var(--text-muted); text-align:center; font-size:0.9rem;">No response nodes found on this thread line.</p>'; return; }
             
-            listEl.innerHTML = replies.map(r => `
-                <div style="display:flex; gap:10px; margin-bottom:12px; font-size:0.95rem;">
-                    ${renderAvatar(r.avatarUrl, r.displayName)}
+            listContainer.innerHTML = replies.map(r => `
+                <div style="display:flex; gap:10px; font-size:0.9rem; background:#f7f9fa; padding:10px; border-radius:var(--radius-sm); border:1px solid var(--border-color);">
+                    ${buildAvatar(r.avatarUrl, r.displayName)}
                     <div>
                         <strong>${r.displayName}</strong> <span style="color:var(--text-muted)">@${r.username}</span>
-                        <div style="margin-top:2px;">${escapeHtml(r.content)}</div>
+                        <div style="margin-top:3px; color:#222;">${escapeHtml(r.content)}</div>
                     </div>
                 </div>
             `).join('');
