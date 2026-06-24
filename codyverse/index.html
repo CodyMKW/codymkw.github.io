@@ -3,792 +3,1095 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Codyverse Plaza Premium - Connected System</title>
+    <title>Codyverse Plaza</title>
     <style>
-        :root[data-theme="light"] {
-            --bg-dark: #f3f3f3; --card-bg: #ffffff; --input-bg: #fafafa; --border-color: #d1d1d6;
-            --text-main: #1c1c1e; --text-muted: #8e8e93; --wiiu-green: #8ec600; --wiiu-green-hover: #76a500;
-            --tab-bg: #e5e5ea; --tab-hover: #d1d1d6; --poll-bar: #abd942;
+        :root {
+            --bg: #111114;
+            --surface: #1c1c20;
+            --surface2: #242428;
+            --border: #2e2e35;
+            --border-bright: #3d3d47;
+            --green: #92e600;
+            --green-dim: #6aaa00;
+            --green-glow: rgba(146,230,0,0.12);
+            --green-glow-strong: rgba(146,230,0,0.22);
+            --text: #f0f0f3;
+            --text-2: #9898a8;
+            --text-3: #5a5a6a;
+            --yeah: #ff7f00;
+            --fresh: #00d4f0;
+            --cozy: #e040a0;
+            --danger: #ef4444;
+            --radius: 14px;
+            --radius-sm: 8px;
+            --radius-pill: 9999px;
+            --font: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            --shadow: 0 4px 24px rgba(0,0,0,0.4);
+            --shadow-green: 0 0 0 2px var(--green);
         }
-        :root[data-theme="dark"] {
-            --bg-dark: #1b1b1d; --card-bg: #2d2d31; --input-bg: #202023; --border-color: #3f3f46;
-            --text-main: #f4f4f5; --text-muted: #a1a1aa; --wiiu-green: #92e600; --wiiu-green-hover: #abd942;
-            --tab-bg: #3f3f46; --tab-hover: #52525b; --poll-bar: #8ec600;
+        [data-theme="light"] {
+            --bg: #f0f0f3;
+            --surface: #ffffff;
+            --surface2: #f7f7fa;
+            --border: #dddde5;
+            --border-bright: #c5c5d0;
+            --green: #6aaa00;
+            --green-dim: #527f00;
+            --green-glow: rgba(106,170,0,0.1);
+            --green-glow-strong: rgba(106,170,0,0.2);
+            --text: #111114;
+            --text-2: #55556a;
+            --text-3: #aaaabc;
+            --shadow: 0 2px 12px rgba(0,0,0,0.08);
         }
 
-        body { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; background-color: var(--bg-dark); color: var(--text-main); margin: 0; padding: 0; display: flex; justify-content: center; -webkit-font-smoothing: antialiased; transition: background-color 0.2s, color 0.2s; }
-        .app-wrapper { width: 100%; max-width: 1400px; min-height: 100vh; display: flex; flex-direction: column; padding: 20px; box-sizing: border-box; gap: 20px; }
-        header { background: var(--card-bg); border-radius: 16px; padding: 15px 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border-color); }
-        .logo-area { display: flex; align-items: center; gap: 8px; font-size: 1.5rem; font-weight: 800; color: var(--wiiu-green); letter-spacing: -0.5px; }
-        .logo-dot { width: 12px; height: 12px; background-color: var(--wiiu-green); border-radius: 50%; display: inline-block; }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        .main-layout { display: grid; grid-template-columns: 280px 1fr 310px; gap: 20px; align-items: start; }
-        @media (max-width: 1150px) { .main-layout { grid-template-columns: 280px 1fr; } }
-        @media (max-width: 780px) { .main-layout { grid-template-columns: 1fr; } }
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+            transition: background 0.2s, color 0.2s;
+        }
 
-        .sidebar { display: flex; flex-direction: column; gap: 20px; }
-        .card { background: var(--card-bg); border-radius: 16px; border: 1px solid var(--border-color); box-shadow: 0 4px 15px rgba(0,0,0,0.1); padding: 20px; box-sizing: border-box; }
-        .user-profile-summary { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 12px; }
+        /* ── SCROLLBAR ── */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border-bright); border-radius: 3px; }
 
-        .community-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; margin-bottom: 5px; }
-        .community-card { position: relative; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 15px; text-align: center; cursor: pointer; font-weight: bold; font-size: 0.9rem; color: var(--text-main); transition: transform 0.15s, border-color 0.15s; padding-right: 32px; }
-        .community-card:hover { transform: translateY(-2px); border-color: var(--wiiu-green); }
-        .community-card.active { background: var(--wiiu-green); color: #111; border-color: var(--wiiu-green); }
-        .community-delete-btn { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: transparent; border: none; color: #ef4444; font-size: 0.9rem; cursor: pointer; display: none; }
-        .community-card:hover .community-delete-btn { display: block; }
+        /* ── LAYOUT ── */
+        .shell { max-width: 1380px; margin: 0 auto; padding: 16px; display: flex; flex-direction: column; gap: 16px; }
 
-        .announcement-banner { background: rgba(146, 230, 0, 0.08); border: 2px dashed var(--wiiu-green); border-radius: 12px; padding: 15px; position: relative; color: var(--text-main); font-size: 0.9rem; line-height: 1.4; }
-        .announcement-title { font-weight: bold; display: flex; align-items: center; gap: 6px; color: var(--wiiu-green); margin-bottom: 5px; }
+        /* ── HEADER ── */
+        .topbar {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 14px 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            box-shadow: var(--shadow);
+        }
+        .logo {
+            display: flex; align-items: center; gap: 10px;
+            font-size: 1.3rem; font-weight: 900; letter-spacing: -0.5px; color: var(--green);
+            text-decoration: none;
+        }
+        .logo-pip {
+            width: 10px; height: 10px; border-radius: 50%; background: var(--green);
+            box-shadow: 0 0 8px var(--green); animation: pip-pulse 2.5s ease-in-out infinite;
+        }
+        @keyframes pip-pulse { 0%,100% { opacity:1; } 50% { opacity:0.4; } }
+        .logo-sub { font-size: 0.65rem; font-weight: 600; color: var(--text-3); letter-spacing: 0.08em; text-transform: uppercase; margin-left: 2px; }
+        .topbar-right { display: flex; align-items: center; gap: 10px; }
+        .clock { font-size: 0.75rem; font-weight: 700; color: var(--text-3); background: var(--surface2); border: 1px solid var(--border); padding: 4px 10px; border-radius: var(--radius-sm); font-variant-numeric: tabular-nums; letter-spacing: 0.03em; }
 
-        .feed-container { display: flex; flex-direction: column; gap: 15px; }
-        .post-composer textarea { width: 100%; height: 90px; border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; box-sizing: border-box; resize: none; font-family: inherit; font-size: 0.95rem; color: var(--text-main); background-color: var(--input-bg); transition: border-color 0.2s; margin-bottom: 5px; }
-        .post-composer textarea:focus { outline: none; border-color: var(--wiiu-green); }
+        /* ── GRID ── */
+        .grid { display: grid; grid-template-columns: 260px 1fr 290px; gap: 16px; align-items: start; }
+        @media (max-width: 1100px) { .grid { grid-template-columns: 240px 1fr; } .right-col { display: none; } }
+        @media (max-width: 700px) { .grid { grid-template-columns: 1fr; } .left-col { display: none; } }
 
-        .char-counter { font-size: 0.8rem; color: var(--text-muted); text-align: right; }
-        .post { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 20px; display: flex; gap: 15px; position: relative; }
-        .post-img { width: 100%; max-height: 320px; object-fit: cover; border-radius: 12px; margin-top: 12px; border: 1px solid var(--border-color); }
+        /* ── CARD ── */
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 18px;
+            box-shadow: var(--shadow);
+        }
+        .card-title {
+            font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em;
+            color: var(--text-3); margin-bottom: 14px;
+        }
 
-        .avatar { width: 54px; height: 54px; background: #4b5563; border-radius: 12px; border: 2px solid var(--wiiu-green); overflow: hidden; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #fff; font-size: 1.3rem; flex-shrink: 0; cursor: pointer; transition: transform 0.1s; }
-        .avatar:hover { transform: scale(1.04); }
-        .avatar img { width: 100%; height: 100%; object-fit: cover; }
+        /* ── SIDEBAR LEFT ── */
+        .left-col { display: flex; flex-direction: column; gap: 14px; }
 
-        .post-main { flex: 1; }
-        .post-header { display: flex; align-items: baseline; gap: 8px; margin-bottom: 6px; padding-right: 24px; }
-        .display-name { font-weight: 700; font-size: 1rem; color: var(--text-main); cursor: pointer; }
-        .display-name:hover { text-decoration: underline; color: var(--wiiu-green); }
-        .username { color: var(--text-muted); font-size: 0.85rem; cursor: pointer; }
-        .post-timestamp { color: var(--text-muted); font-size: 0.75rem; margin-left: auto; }
+        .profile-card { text-align: center; }
+        .profile-avatar {
+            width: 68px; height: 68px; border-radius: 16px; background: var(--surface2);
+            border: 2px solid var(--green); margin: 0 auto 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.6rem; font-weight: 800; color: var(--green);
+            overflow: hidden; cursor: pointer; transition: transform 0.15s;
+        }
+        .profile-avatar:hover { transform: scale(1.04); }
+        .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .profile-name { font-weight: 800; font-size: 1rem; margin-bottom: 2px; }
+        .profile-handle { font-size: 0.8rem; color: var(--text-2); margin-bottom: 10px; }
+        .profile-bio { font-size: 0.8rem; color: var(--text-2); line-height: 1.5; margin-bottom: 14px; }
 
-        .post-body { font-size: 0.95rem; line-height: 1.5; color: var(--text-main); word-break: break-word; }
-        .post-actions { margin-top: 15px; display: flex; flex-wrap: wrap; gap: 8px; }
+        .stat-row { display: flex; justify-content: center; gap: 20px; margin-bottom: 14px; }
+        .stat-item { text-align: center; }
+        .stat-num { font-size: 1.1rem; font-weight: 900; color: var(--green); }
+        .stat-label { font-size: 0.65rem; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.06em; }
 
-        .btn { background: var(--wiiu-green); color: #111; border: none; padding: 10px 20px; border-radius: 9999px; font-weight: 700; font-size: 0.9rem; cursor: pointer; box-shadow: 0 4px 10px rgba(146, 230, 0, 0.15); transition: background 0.15s, transform 0.1s, color 0.15s; }
-        .btn:hover { background: var(--wiiu-green-hover); }
-        .btn:active { transform: scale(0.97); }
-        .btn-outline { background: transparent; color: var(--text-main); border: 1px solid var(--border-color); box-shadow: none; }
-        .btn-outline:hover { background: var(--tab-hover); border-color: var(--text-muted); color: var(--text-main); }
-        .btn-danger { background: #ef4444; color: white; box-shadow: none; }
-        .btn-danger:hover { background: #dc2626; }
+        /* ── COMMUNITY TABS ── */
+        .comm-grid { display: flex; flex-direction: column; gap: 6px; }
+        .comm-btn {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 10px 14px; border-radius: var(--radius-sm);
+            border: 1px solid transparent;
+            background: transparent; color: var(--text-2);
+            font-size: 0.85rem; font-weight: 600; cursor: pointer;
+            transition: all 0.15s; text-align: left; width: 100%;
+        }
+        .comm-btn:hover { background: var(--surface2); color: var(--text); border-color: var(--border); }
+        .comm-btn.active { background: var(--green-glow); color: var(--green); border-color: var(--green); }
+        .comm-btn .comm-del { color: var(--danger); opacity: 0; font-size: 0.75rem; transition: opacity 0.15s; background: none; border: none; cursor: pointer; padding: 0 0 0 6px; }
+        .comm-btn:hover .comm-del { opacity: 1; }
 
-        .action-tab { background: var(--tab-bg); border: none; padding: 6px 12px; border-radius: 8px; font-size: 0.8rem; font-weight: bold; color: var(--text-main); cursor: pointer; display: flex; align-items: center; gap: 5px; transition: background-color 0.15s, color 0.15s; }
-        .action-tab:hover { background: var(--tab-hover); }
-        .action-tab.active-yeah { background: #ff7f00 !important; color: white !important; }
-        .action-tab.active-fresh { background: #00ddff !important; color: #111 !important; }
-        .action-tab.active-cozy { background: #ff55bb !important; color: white !important; }
+        /* ── MAIN FEED ── */
+        .feed-col { display: flex; flex-direction: column; gap: 14px; }
 
-        .post-delete-trigger { position: absolute; top: 18px; right: 18px; background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 1rem; padding: 2px 6px; border-radius: 4px; }
-        .post-delete-trigger:hover { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+        /* ── SEARCH BAR ── */
+        .search-wrap { position: relative; }
+        .search-wrap svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-3); pointer-events: none; }
+        .search-input {
+            width: 100%; padding: 10px 14px 10px 38px;
+            background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm);
+            color: var(--text); font-family: var(--font); font-size: 0.85rem;
+            transition: border-color 0.15s;
+        }
+        .search-input:focus { outline: none; border-color: var(--green); }
+        .search-input::placeholder { color: var(--text-3); }
 
+        /* ── ANNOUNCEMENT ── */
+        .announcement {
+            background: var(--green-glow); border: 1.5px dashed var(--green);
+            border-radius: var(--radius); padding: 14px 16px;
+        }
+        .announcement-label { font-size: 0.7rem; font-weight: 800; color: var(--green); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px; display: flex; align-items: center; gap: 5px; }
+        .announcement-text { font-size: 0.88rem; color: var(--text); line-height: 1.5; }
+
+        /* ── COMPOSER ── */
+        .composer { display: flex; flex-direction: column; gap: 10px; }
+        .composer-header { display: flex; align-items: center; gap: 10px; }
+        .composer-avatar { width: 40px; height: 40px; border-radius: 10px; background: var(--surface2); border: 1.5px solid var(--green); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1rem; color: var(--green); overflow: hidden; flex-shrink: 0; }
+        .composer-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .composer-textarea {
+            width: 100%; min-height: 80px; max-height: 200px;
+            background: var(--surface2); border: 1px solid var(--border);
+            border-radius: var(--radius-sm); padding: 12px;
+            color: var(--text); font-family: var(--font); font-size: 0.9rem;
+            resize: vertical; transition: border-color 0.15s; line-height: 1.5;
+        }
+        .composer-textarea:focus { outline: none; border-color: var(--green); }
+        .composer-textarea::placeholder { color: var(--text-3); }
+
+        .composer-toolbar { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+        .fmt-btn {
+            background: var(--surface2); border: 1px solid var(--border);
+            color: var(--text-2); padding: 4px 9px; font-size: 0.75rem; font-weight: 700;
+            border-radius: 6px; cursor: pointer; transition: all 0.12s;
+        }
+        .fmt-btn:hover { background: var(--border); color: var(--text); }
+        .composer-footer { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+        .char-meter { font-size: 0.75rem; color: var(--text-3); font-variant-numeric: tabular-nums; }
+        .char-meter.warn { color: var(--yeah); }
+        .char-meter.over { color: var(--danger); }
+
+        .img-toggle-btn { background: none; border: 1px solid var(--border); color: var(--text-3); padding: 5px 10px; border-radius: 6px; font-size: 0.75rem; cursor: pointer; transition: all 0.12s; }
+        .img-toggle-btn:hover { border-color: var(--green); color: var(--green); }
+        .img-url-input {
+            width: 100%; padding: 8px 12px;
+            background: var(--surface2); border: 1px solid var(--border);
+            border-radius: var(--radius-sm); color: var(--text); font-family: var(--font); font-size: 0.82rem;
+        }
+        .img-url-input:focus { outline: none; border-color: var(--green); }
+        .img-url-input::placeholder { color: var(--text-3); }
+
+        /* ── POSTS ── */
+        .post {
+            display: flex; gap: 13px; padding: 18px;
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: var(--radius); box-shadow: var(--shadow);
+            position: relative; transition: border-color 0.15s;
+            animation: post-in 0.2s ease;
+        }
+        @keyframes post-in { from { opacity:0; transform: translateY(6px); } to { opacity:1; transform:none; } }
+        .post:hover { border-color: var(--border-bright); }
+        .post-avatar {
+            width: 44px; height: 44px; border-radius: 11px; background: var(--surface2);
+            border: 1.5px solid var(--border-bright); overflow: hidden;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 1.1rem; color: var(--text-2);
+            flex-shrink: 0; cursor: pointer; transition: border-color 0.15s;
+        }
+        .post-avatar:hover { border-color: var(--green); }
+        .post-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .post-body { flex: 1; min-width: 0; }
+        .post-meta { display: flex; align-items: baseline; gap: 8px; margin-bottom: 8px; padding-right: 30px; flex-wrap: wrap; }
+        .post-name { font-weight: 800; font-size: 0.9rem; cursor: pointer; color: var(--text); transition: color 0.12s; }
+        .post-name:hover { color: var(--green); }
+        .post-handle { font-size: 0.78rem; color: var(--text-3); }
+        .post-time { font-size: 0.72rem; color: var(--text-3); margin-left: auto; }
+        .post-admin-badge { background: var(--danger); color: #fff; font-size: 0.6rem; font-weight: 800; padding: 1px 5px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.05em; }
+        .post-content { font-size: 0.88rem; line-height: 1.6; color: var(--text); word-break: break-word; }
+        .post-content strong { color: var(--text); }
+        .post-img { width: 100%; max-height: 300px; object-fit: cover; border-radius: 10px; margin-top: 12px; border: 1px solid var(--border); }
+        .post-reactions { display: flex; gap: 6px; margin-top: 12px; flex-wrap: wrap; }
+        .react-btn {
+            display: flex; align-items: center; gap: 5px;
+            background: var(--surface2); border: 1px solid var(--border);
+            color: var(--text-2); padding: 5px 10px; border-radius: var(--radius-pill);
+            font-size: 0.78rem; font-weight: 700; cursor: pointer; transition: all 0.15s;
+        }
+        .react-btn:hover { border-color: var(--border-bright); color: var(--text); }
+        .react-btn.active-yeah { background: rgba(255,127,0,0.15); border-color: var(--yeah); color: var(--yeah); }
+        .react-btn.active-fresh { background: rgba(0,212,240,0.12); border-color: var(--fresh); color: var(--fresh); }
+        .react-btn.active-cozy { background: rgba(224,64,160,0.12); border-color: var(--cozy); color: var(--cozy); }
+        .post-del-btn {
+            position: absolute; top: 14px; right: 14px;
+            background: none; border: none; color: var(--text-3);
+            font-size: 0.9rem; cursor: pointer; padding: 3px 6px; border-radius: 5px;
+            transition: all 0.12s; line-height: 1;
+        }
+        .post-del-btn:hover { background: rgba(239,68,68,0.12); color: var(--danger); }
+
+        .spoiler { background: var(--text); color: var(--text); border-radius: 3px; padding: 0 2px; cursor: pointer; transition: background 0.2s; }
+        .spoiler.open { background: transparent; color: inherit; }
+
+        .empty-feed { text-align: center; padding: 48px 20px; color: var(--text-3); }
+        .empty-feed-icon { font-size: 2.5rem; margin-bottom: 10px; }
+        .empty-feed h3 { font-size: 1rem; margin-bottom: 6px; color: var(--text-2); }
+        .empty-feed p { font-size: 0.82rem; }
+
+        /* ── BUTTONS ── */
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+            background: var(--green); color: #0a1400; border: none;
+            padding: 9px 20px; border-radius: var(--radius-pill);
+            font-weight: 800; font-size: 0.85rem; cursor: pointer;
+            transition: all 0.15s; white-space: nowrap;
+            box-shadow: 0 2px 12px var(--green-glow-strong);
+        }
+        .btn:hover { background: var(--green-dim); transform: translateY(-1px); }
+        .btn:active { transform: none; }
+        .btn-ghost {
+            background: transparent; color: var(--text-2); border: 1px solid var(--border);
+            box-shadow: none;
+        }
+        .btn-ghost:hover { background: var(--surface2); border-color: var(--border-bright); color: var(--text); transform: none; }
+        .btn-danger-ghost {
+            background: transparent; color: var(--danger); border: 1px solid rgba(239,68,68,0.3);
+            box-shadow: none;
+        }
+        .btn-danger-ghost:hover { background: rgba(239,68,68,0.1); }
+        .btn-sm { padding: 6px 12px; font-size: 0.78rem; }
+        .btn-xs { padding: 3px 9px; font-size: 0.72rem; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+        /* ── INPUT ── */
+        .field {
+            width: 100%; padding: 9px 12px;
+            background: var(--surface2); border: 1px solid var(--border);
+            border-radius: var(--radius-sm); color: var(--text);
+            font-family: var(--font); font-size: 0.85rem;
+            transition: border-color 0.15s; margin-bottom: 10px;
+        }
+        .field:focus { outline: none; border-color: var(--green); }
+        .field::placeholder { color: var(--text-3); }
+        .field-label { font-size: 0.72rem; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 4px; }
+
+        /* ── RIGHT SIDEBAR ── */
+        .right-col { display: flex; flex-direction: column; gap: 14px; }
+
+        /* ── POLL ── */
+        .poll-question { font-size: 0.88rem; font-weight: 700; line-height: 1.4; margin-bottom: 14px; color: var(--text); }
+        .poll-option {
+            margin-bottom: 8px; cursor: pointer; border-radius: var(--radius-sm);
+            overflow: hidden; position: relative; border: 1px solid var(--border);
+            transition: border-color 0.15s;
+        }
+        .poll-option:hover { border-color: var(--green); }
+        .poll-option.my-vote { border-color: var(--green); }
+        .poll-track { height: 36px; background: var(--surface2); position: relative; }
+        .poll-fill { position: absolute; left: 0; top: 0; height: 100%; background: var(--green-glow); transition: width 0.5s cubic-bezier(0.2,0.8,0.3,1); }
+        .poll-option.my-vote .poll-fill { background: var(--green-glow-strong); }
+        .poll-label { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 0.8rem; font-weight: 700; color: var(--text); pointer-events: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 65%; }
+        .poll-pct { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); font-size: 0.75rem; font-weight: 800; color: var(--text-2); pointer-events: none; }
+        .poll-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; font-size: 0.72rem; color: var(--text-3); }
+        .poll-empty { text-align: center; padding: 20px 10px; color: var(--text-3); font-size: 0.82rem; }
+        .poll-empty-icon { font-size: 1.8rem; margin-bottom: 8px; }
+
+        /* ── ONLINE LIST ── */
+        .online-user {
+            display: flex; align-items: center; gap: 10px; padding: 6px 0;
+            cursor: pointer; transition: opacity 0.12s;
+        }
+        .online-user:hover { opacity: 0.8; }
+        .online-pip { width: 7px; height: 7px; border-radius: 50%; background: #22c55e; flex-shrink: 0; }
+        .online-ava { width: 30px; height: 30px; border-radius: 8px; background: var(--surface2); border: 1px solid var(--border-bright); overflow: hidden; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 800; color: var(--text-2); flex-shrink: 0; }
+        .online-ava img { width: 100%; height: 100%; object-fit: cover; }
+        .online-name { font-size: 0.82rem; font-weight: 700; }
+        .online-handle { font-size: 0.72rem; color: var(--text-3); }
+
+        /* ── MODAL ── */
+        .overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.65);
+            backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center;
+            z-index: 200; padding: 20px;
+        }
+        .modal {
+            background: var(--surface); border: 1px solid var(--border-bright);
+            border-radius: var(--radius); padding: 28px; width: 100%; max-width: 420px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            animation: modal-in 0.2s ease;
+        }
+        @keyframes modal-in { from { opacity:0; transform:scale(0.95) translateY(8px); } to { opacity:1; transform:none; } }
+        .modal-title { font-size: 1.1rem; font-weight: 900; margin-bottom: 20px; }
+        .modal-ava { width: 80px; height: 80px; border-radius: 18px; background: var(--surface2); border: 2px solid var(--green); margin: 0 auto 14px; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 900; color: var(--green); overflow: hidden; }
+        .modal-ava img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* ── TOAST ── */
+        .toast-stack { position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 8px; z-index: 500; }
+        .toast {
+            padding: 11px 18px; border-radius: 10px; font-size: 0.82rem; font-weight: 700;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+            animation: toast-in 0.25s ease; max-width: 300px;
+        }
+        @keyframes toast-in { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:none; } }
+        .toast-ok { background: var(--green); color: #0a1400; }
+        .toast-err { background: var(--danger); color: #fff; }
+        .toast-info { background: var(--surface2); color: var(--text); border: 1px solid var(--border-bright); }
+
+        /* ── AUTH FORM ── */
+        .auth-tabs { display: flex; gap: 0; margin-bottom: 20px; border: 1px solid var(--border); border-radius: var(--radius-sm); overflow: hidden; }
+        .auth-tab { flex: 1; padding: 9px; background: transparent; border: none; color: var(--text-2); font-size: 0.82rem; font-weight: 700; cursor: pointer; transition: all 0.15s; }
+        .auth-tab.active { background: var(--green); color: #0a1400; }
+
+        /* ── TELEMETRY ── */
+        .telem-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .telem-item { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px 12px; }
+        .telem-val { font-size: 1.2rem; font-weight: 900; color: var(--green); }
+        .telem-lbl { font-size: 0.65rem; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.07em; margin-top: 1px; }
+
+        /* ── MISC ── */
+        .sep { border: none; border-top: 1px solid var(--border); margin: 14px 0; }
         .hidden { display: none !important; }
-        .input-field { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 10px; box-sizing: border-box; background-color: var(--input-bg); color: var(--text-main); font-family: inherit; }
-        .input-field:focus { outline: none; border-color: var(--wiiu-green); }
-        .online-dot { width: 8px; height: 8px; background-color: #22c55e; border-radius: 50%; display: inline-block; }
-
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 100; backdrop-filter: blur(4px); }
-        .modal-body { background: var(--card-bg); padding: 25px; border-radius: 16px; width: 90%; max-width: 550px; border: 1px solid var(--border-color); color: var(--text-main); }
-        .telemetry-clock { font-size: 0.85rem; font-weight: bold; color: var(--text-muted); background: var(--tab-bg); padding: 4px 10px; border-radius: 6px; border: 1px solid var(--border-color); }
-        .fmt-btn { background: var(--tab-bg); border: 1px solid var(--border-color); color: var(--text-main); padding: 4px 8px; font-size: 0.75rem; font-weight: bold; border-radius: 4px; cursor: pointer; }
-        .fmt-btn:hover { background: var(--tab-hover); }
-
-        /* POLL */
-        .poll-option-row { margin-bottom: 10px; cursor: pointer; position: relative; }
-        .poll-bar-outer { width: 100%; background: var(--input-bg); height: 28px; border-radius: 6px; overflow: hidden; border: 1px solid var(--border-color); margin-top: 4px; position: relative; }
-        .poll-bar-inner { background: var(--poll-bar); height: 100%; width: 0%; transition: width 0.4s cubic-bezier(0.1, 0.8, 0.3, 1); }
-        .poll-txt-lbl { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 0.8rem; font-weight: bold; color: var(--text-main); pointer-events: none; text-shadow: 0 1px 2px rgba(0,0,0,0.4); }
-        .poll-pct { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); font-size: 0.75rem; font-weight: 800; color: var(--text-main); pointer-events: none; }
-
-        /* MISC */
-        .spoiler-text { background: var(--text-main); color: var(--text-main); cursor: pointer; border-radius: 4px; padding: 0 2px; transition: background 0.2s; }
-        .spoiler-text.revealed { background: transparent; color: inherit; }
-        .admin-badge { background: #ef4444; color: white; font-size: 0.65rem; font-weight: bold; padding: 1px 5px; border-radius: 4px; text-transform: uppercase; }
-        .online-user-row { display: flex; align-items: center; gap: 10px; }
-        .online-avatar-sm { width: 32px; height: 32px; border-radius: 8px; background: #4b5563; border: 1px solid var(--wiiu-green); display: flex; align-items: center; justify-content: center; font-weight: bold; color: #fff; font-size: 0.8rem; overflow: hidden; flex-shrink: 0; }
-        .online-avatar-sm img { width: 100%; height: 100%; object-fit: cover; }
-        .error-toast { position: fixed; bottom: 20px; right: 20px; background: #ef4444; color: white; padding: 12px 20px; border-radius: 10px; font-size: 0.85rem; font-weight: bold; z-index: 999; box-shadow: 0 4px 20px rgba(0,0,0,0.3); animation: slideIn 0.3s ease; }
-        .success-toast { background: var(--wiiu-green); color: #111; }
-        @keyframes slideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .row { display: flex; gap: 8px; align-items: center; }
+        .row-between { display: flex; justify-content: space-between; align-items: center; }
+        .mt-10 { margin-top: 10px; }
+        .text-muted { color: var(--text-3); font-size: 0.8rem; }
+        .admin-note { font-size: 0.68rem; color: var(--text-3); font-style: italic; }
     </style>
 </head>
 <body>
 
-<div class="app-wrapper">
-    <header>
-        <div class="logo-area"><span class="logo-dot"></span> Codyverse Plaza</div>
-        <div style="display: flex; gap: 12px; align-items: center;">
-            <div class="telemetry-clock" id="live-telemetry-clock">00:00:00 UTC</div>
-            <button class="btn btn-outline" style="padding: 6px 12px; font-size: 0.8rem;" onclick="toggleTheme()">🌓 Theme</button>
-            <div id="user-nav-widget"></div>
+<div class="shell">
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+        <a class="logo" href="#">
+            <span class="logo-pip"></span>
+            Codyverse Plaza
+            <span class="logo-sub">Community</span>
+        </a>
+        <div class="topbar-right">
+            <span class="clock" id="clock">--:--:-- UTC</span>
+            <button class="btn btn-ghost btn-sm" onclick="toggleTheme()">🌓</button>
+            <div id="nav-auth"></div>
         </div>
     </header>
 
-    <div class="main-layout">
-        <!-- LEFT SIDEBAR -->
-        <div class="sidebar">
-            <div id="user-info-card" class="card user-profile-summary hidden">
-                <div class="avatar" id="user-card-avatar">?</div>
-                <div>
-                    <div id="user-card-name" class="display-name" style="font-size:1.1rem;">-</div>
-                    <div id="user-card-handle" class="username">-</div>
+    <!-- MAIN GRID -->
+    <div class="grid">
+
+        <!-- LEFT COL -->
+        <aside class="left-col">
+
+            <!-- PROFILE / GUEST CARD -->
+            <div class="card profile-card" id="card-profile">
+                <div class="profile-avatar" id="profile-ava" onclick="openProfileEdit()">?</div>
+                <div class="profile-name" id="profile-name">Guest</div>
+                <div class="profile-handle" id="profile-handle">Not signed in</div>
+                <div class="profile-bio" id="profile-bio"></div>
+                <div class="stat-row hidden" id="stat-row">
+                    <div class="stat-item"><div class="stat-num" id="stat-posts">0</div><div class="stat-label">Posts</div></div>
+                    <div class="stat-item"><div class="stat-num" id="stat-channels">0</div><div class="stat-label">Channels</div></div>
                 </div>
-                <div id="user-card-bio" style="font-size:0.85rem; color:var(--text-muted); line-height:1.4;"></div>
-                <button class="btn btn-outline" style="width:100%; font-size:0.8rem;" onclick="toggleProfileEdit()">⚙️ Profile Settings</button>
+                <button class="btn btn-ghost" style="width:100%; font-size:0.8rem;" id="btn-profile-action" onclick="openAuthModal()">Sign In</button>
             </div>
 
-            <div id="guest-info-card" class="card" style="text-align: center;">
-                <h4 style="margin-top:0;">Welcome!</h4>
-                <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:15px;">Sign in to post, react, and join the community.</p>
-                <button class="btn" style="width:100%;" onclick="showAuthPanel()">Sign In / Register</button>
-            </div>
-
-            <div id="community-builder-card" class="card hidden">
-                <h4 style="margin-top:0; color:var(--wiiu-green);">🔨 Open New Hub</h4>
-                <input type="text" id="new-comm-name" class="input-field" placeholder="Hub Name">
-                <button class="btn" style="width:100%; font-size:0.8rem;" onclick="createCommunity()">Launch Community</button>
-            </div>
-
+            <!-- CHANNELS -->
             <div class="card">
-                <h4 style="margin-top:0; color:var(--text-muted); font-size:0.85rem; text-transform:uppercase;">📊 Plaza Telemetry</h4>
-                <div style="font-size:0.8rem; display:grid; gap:6px;">
-                    <div>Loaded Channels: <strong id="stat-channels-count">-</strong></div>
-                    <div>Rendered Feed Size: <strong id="stat-posts-count">- items</strong></div>
-                    <div>Client Protocol: <strong>HTTP/2 JSON-KV</strong></div>
+                <div class="card-title">Channels</div>
+                <div class="comm-grid" id="comm-list"></div>
+                <div class="hidden mt-10" id="new-comm-form">
+                    <hr class="sep">
+                    <input type="text" class="field" id="new-comm-input" placeholder="New hub name..." maxlength="40">
+                    <button class="btn" style="width:100%;" onclick="createComm()">Launch Channel</button>
                 </div>
-            </div>
-        </div>
-
-        <!-- MAIN FEED -->
-        <div class="feed-container">
-            <div class="community-grid" id="communities-box"></div>
-
-            <div class="card" style="padding: 12px 20px; display: flex; gap: 10px; align-items: center;">
-                <span style="font-size: 0.9rem; color: var(--text-muted);">🔍</span>
-                <input type="search" id="system_plaza_search_override" class="input-field" style="margin-bottom:0; flex: 1; padding: 6px 12px;" placeholder="Filter by keyword or author..." oninput="filterPosts()">
+                <button class="btn btn-ghost btn-sm hidden mt-10" id="btn-new-comm" style="width:100%;" onclick="document.getElementById('new-comm-form').classList.toggle('hidden'); document.getElementById('new-comm-input').focus()">+ New Hub</button>
             </div>
 
-            <div id="announcement-area" class="announcement-banner hidden"></div>
-
-            <div id="profile-edit-panel" class="card hidden">
-                <h3 style="margin-top:0;">🎨 Profile Settings</h3>
-                <input type="text" id="prof-displayname" class="input-field" placeholder="Display Name">
-                <input type="text" id="prof-avatar" class="input-field" placeholder="Avatar Image URL (https://...)">
-                <textarea id="prof-bio" class="input-field" style="height:65px; resize:none;" placeholder="Bio..."></textarea>
-                <div style="display:flex; gap:10px;">
-                    <button class="btn" onclick="updateProfile()">Save Changes</button>
-                    <button class="btn btn-outline" onclick="toggleProfileEdit()">Cancel</button>
+            <!-- TELEMETRY -->
+            <div class="card">
+                <div class="card-title">Telemetry</div>
+                <div class="telem-grid">
+                    <div class="telem-item"><div class="telem-val" id="tel-channels">–</div><div class="telem-lbl">Channels</div></div>
+                    <div class="telem-item"><div class="telem-val" id="tel-posts">–</div><div class="telem-lbl">Posts</div></div>
+                    <div class="telem-item"><div class="telem-val" id="tel-online">–</div><div class="telem-lbl">Online</div></div>
+                    <div class="telem-item"><div class="telem-val" style="font-size:0.7rem; margin-top:4px;">KV</div><div class="telem-lbl">Backend</div></div>
                 </div>
             </div>
 
-            <div id="auth-panel" class="card hidden">
-                <h3 id="auth-panel-title" style="margin-top:0;">Sign In</h3>
-                <input type="text" id="auth-displayname" class="input-field hidden" placeholder="Display Name">
-                <input type="text" id="auth-username" class="input-field" placeholder="Username" autocomplete="username">
-                <input type="password" id="auth-password" class="input-field" placeholder="Password" autocomplete="current-password">
-                <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                    <button class="btn" id="auth-execution-btn" onclick="handleAuth()">Connect</button>
-                    <button class="btn btn-outline" id="auth-toggle-view" onclick="toggleAuthMode()">Create Profile</button>
-                    <button class="btn btn-outline" onclick="hideAuthPanel()">Cancel</button>
+        </aside>
+
+        <!-- FEED COL -->
+        <main class="feed-col">
+
+            <!-- SEARCH -->
+            <div class="card" style="padding: 12px 16px;">
+                <div class="search-wrap">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                    <input type="search" class="search-input" id="search" placeholder="Search posts and authors…" oninput="filterFeed()">
                 </div>
             </div>
 
-            <div id="post-panel" class="card post-composer hidden">
-                <div style="display:flex; gap:6px; margin-bottom:6px;">
-                    <button class="fmt-btn" onclick="insertFormat('[b]', '[/b]')"><b>B</b></button>
-                    <button class="fmt-btn" onclick="insertFormat('[i]', '[/i]')"><em>I</em></button>
-                    <button class="fmt-btn" onclick="insertFormat('[spoiler]', '[/spoiler]')">👁 Spoiler</button>
+            <!-- ANNOUNCEMENT -->
+            <div class="announcement hidden" id="ann-banner">
+                <div class="announcement-label">📌 Board Pin</div>
+                <div class="announcement-text" id="ann-text"></div>
+            </div>
+
+            <!-- COMPOSER -->
+            <div class="card hidden" id="composer">
+                <div class="composer-header">
+                    <div class="composer-avatar" id="composer-ava">?</div>
+                    <div style="flex:1; font-size:0.82rem; color:var(--text-2);">Posting to <strong id="composer-comm-label" style="color:var(--green);">#general</strong></div>
                 </div>
-                <textarea id="post-text" maxlength="280" placeholder="Share something elegant or completely ridiculous..." oninput="onComposerInput()"></textarea>
-                <div class="char-counter" id="post-char-count">0 / 280</div>
-                <input type="text" id="post-image-url" class="input-field" style="margin-top:10px; margin-bottom:0;" placeholder="Optional image URL (https://...)">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:12px; flex-wrap:wrap; gap:8px;">
-                    <button class="btn btn-outline" id="manage-announcement-btn" style="font-size:0.8rem; padding:6px 12px;" onclick="promptAnnouncement()">📌 Set Board Pin</button>
-                    <button class="btn" onclick="submitPost()">Post into Channel</button>
+                <div class="composer-toolbar mt-10">
+                    <button class="fmt-btn" onclick="fmt('[b]','[/b]')"><b>B</b></button>
+                    <button class="fmt-btn" onclick="fmt('[i]','[/i]')"><em>I</em></button>
+                    <button class="fmt-btn" onclick="fmt('[spoiler]','[/spoiler]')">👁 Spoiler</button>
+                    <button class="img-toggle-btn" onclick="toggleImgField()">🖼 Image</button>
+                    <button class="btn btn-ghost btn-xs hidden" id="btn-pin" onclick="promptPin()">📌 Set Pin</button>
+                </div>
+                <textarea class="composer-textarea mt-10" id="post-input" maxlength="280" placeholder="What's happening in the plaza…" oninput="onType()"></textarea>
+                <input type="url" class="img-url-input hidden" id="img-url" placeholder="Image URL (https://…)">
+                <div class="composer-footer mt-10">
+                    <span class="char-meter" id="char-count">0 / 280</span>
+                    <button class="btn btn-sm" onclick="submitPost()">Post</button>
                 </div>
             </div>
 
-            <div id="feed-stream"></div>
-        </div>
+            <!-- FEED -->
+            <div id="feed"></div>
 
-        <!-- RIGHT SIDEBAR -->
-        <div class="sidebar">
-            <div class="card" id="poll-card-container">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                    <h4 style="margin:0;">📊 Community Poll</h4>
-                    <button id="create-poll-trigger-btn" class="btn btn-outline hidden" style="padding:2px 8px; font-size:0.7rem; border-radius:4px;" onclick="togglePollCreator()">+ New Poll</button>
+        </main>
+
+        <!-- RIGHT COL -->
+        <aside class="right-col">
+
+            <!-- POLL -->
+            <div class="card" id="poll-card">
+                <div class="row-between" style="margin-bottom:12px;">
+                    <div class="card-title" style="margin-bottom:0;">Community Poll</div>
+                    <button class="btn btn-ghost btn-xs hidden" id="btn-new-poll" onclick="togglePollCreator()">+ New Poll</button>
                 </div>
 
-                <div id="poll-creator-view" class="hidden" style="border-bottom:1px solid var(--border-color); padding-bottom:12px; margin-bottom:12px;">
-                    <input type="text" id="poll-q-input" class="input-field" style="font-size:0.8rem; padding:6px;" placeholder="Poll Question...">
-                    <input type="text" id="poll-o1-input" class="input-field" style="font-size:0.8rem; padding:6px; margin-bottom:4px;" placeholder="Option 1">
-                    <input type="text" id="poll-o2-input" class="input-field" style="font-size:0.8rem; padding:6px; margin-bottom:4px;" placeholder="Option 2">
-                    <input type="text" id="poll-o3-input" class="input-field" style="font-size:0.8rem; padding:6px; margin-bottom:4px;" placeholder="Option 3 (Optional)">
-                    <input type="text" id="poll-o4-input" class="input-field" style="font-size:0.8rem; padding:6px; margin-bottom:8px;" placeholder="Option 4 (Optional)">
-                    <button class="btn" style="width:100%; font-size:0.75rem; padding:6px;" onclick="publishCustomPoll()">Launch Survey</button>
+                <!-- Poll creator (hidden by default) -->
+                <div class="hidden" id="poll-creator">
+                    <input type="text" class="field" id="poll-q" placeholder="Question…" maxlength="200">
+                    <input type="text" class="field" id="poll-o1" placeholder="Option 1" maxlength="80">
+                    <input type="text" class="field" id="poll-o2" placeholder="Option 2" maxlength="80">
+                    <input type="text" class="field" id="poll-o3" placeholder="Option 3 (optional)" maxlength="80">
+                    <input type="text" class="field" id="poll-o4" placeholder="Option 4 (optional)" maxlength="80">
+                    <div class="row mt-10">
+                        <button class="btn btn-sm" onclick="submitPoll()">Launch Poll</button>
+                        <button class="btn btn-ghost btn-sm" onclick="togglePollCreator()">Cancel</button>
+                    </div>
+                    <hr class="sep">
                 </div>
 
-                <p id="poll-display-question" style="font-size:0.85rem; font-weight:bold; margin:0 0 12px 0; line-height:1.3;">Loading poll...</p>
-                <div id="poll-options-render-stack"></div>
-                <div id="poll-metadata-footer" style="font-size:0.7rem; color:var(--text-muted); margin-top:8px; display:flex; justify-content:space-between; align-items:center;">
-                    <span id="poll-author-indicator">by @system</span>
-                    <div id="poll-admin-actions" class="hidden">
-                        <button style="background:transparent; border:none; color:#ef4444; font-size:0.75rem; cursor:pointer; padding:0;" onclick="adminNukePoll()">[Nuke Poll]</button>
+                <!-- Poll display -->
+                <div id="poll-display">
+                    <div class="poll-empty">
+                        <div class="poll-empty-icon">📊</div>
+                        <div>No poll active in this channel.</div>
+                        <div class="text-muted mt-10" id="poll-empty-hint"></div>
                     </div>
                 </div>
             </div>
 
+            <!-- ONLINE NOW -->
             <div class="card">
-                <h4 style="margin-top:0; border-bottom:1px solid var(--border-color); padding-bottom:8px; margin-bottom:12px;">
-                    <span class="online-dot"></span> Online Now
-                </h4>
-                <div id="online-users-box" style="display:flex; flex-direction:column; gap:10px; font-size:0.85rem;">
-                    <span style="color:var(--text-muted);">Loading...</span>
+                <div class="row-between" style="margin-bottom:12px;">
+                    <div class="card-title" style="margin-bottom:0;">
+                        <span style="display:inline-block; width:7px; height:7px; border-radius:50%; background:#22c55e; margin-right:5px; vertical-align:middle;"></span>
+                        Online Now
+                    </div>
+                    <span class="text-muted" id="online-count">–</span>
                 </div>
+                <div id="online-list"><span class="text-muted">Loading…</span></div>
             </div>
+
+        </aside>
+
+    </div>
+</div>
+
+<!-- ── MODALS ── -->
+
+<!-- AUTH MODAL -->
+<div class="overlay hidden" id="modal-auth" onclick="closeModal('modal-auth')">
+    <div class="modal" onclick="event.stopPropagation()">
+        <div class="modal-title">Welcome to the Plaza</div>
+        <div class="auth-tabs">
+            <button class="auth-tab active" id="tab-login" onclick="setAuthMode('login')">Sign In</button>
+            <button class="auth-tab" id="tab-register" onclick="setAuthMode('register')">Register</button>
+        </div>
+        <input type="text" class="field hidden" id="auth-display" placeholder="Display Name (optional)">
+        <input type="text" class="field" id="auth-user" placeholder="Username" autocomplete="username">
+        <input type="password" class="field" id="auth-pass" placeholder="Password" autocomplete="current-password">
+        <div class="row" style="justify-content:flex-end; gap:8px;">
+            <button class="btn btn-ghost btn-sm" onclick="closeModal('modal-auth')">Cancel</button>
+            <button class="btn btn-sm" id="btn-auth-submit" onclick="doAuth()">Sign In</button>
+        </div>
+    </div>
+</div>
+
+<!-- PROFILE EDIT MODAL -->
+<div class="overlay hidden" id="modal-profile" onclick="closeModal('modal-profile')">
+    <div class="modal" onclick="event.stopPropagation()">
+        <div class="modal-title">Edit Profile</div>
+        <div class="field-label">Display Name</div>
+        <input type="text" class="field" id="edit-name" placeholder="Display name" maxlength="40">
+        <div class="field-label">Avatar URL</div>
+        <input type="url" class="field" id="edit-avatar" placeholder="https://…">
+        <div class="field-label">Bio</div>
+        <textarea class="field" id="edit-bio" style="height:72px; resize:none;" maxlength="200" placeholder="Short bio…"></textarea>
+        <div class="row" style="justify-content:flex-end; gap:8px; margin-top:4px;">
+            <button class="btn btn-ghost btn-sm" onclick="closeModal('modal-profile')">Cancel</button>
+            <button class="btn btn-sm" onclick="saveProfile()">Save</button>
         </div>
     </div>
 </div>
 
 <!-- USER INSPECTOR MODAL -->
-<div id="user-inspector-modal" class="modal-overlay hidden" onclick="closeInspectorModal()">
-    <div class="modal-body" style="max-width:400px; text-align:center;" onclick="event.stopPropagation()">
-        <div class="avatar" id="inspect-avatar" style="width:72px; height:72px; font-size:1.8rem; margin:0 auto 12px auto; pointer-events:none; cursor:default;">?</div>
-        <h3 id="inspect-displayname" style="margin:0 0 4px 0;">-</h3>
-        <p id="inspect-username" style="color:var(--text-muted); margin:0 0 15px 0;">@-</p>
-        <div id="inspect-bio" style="background:var(--input-bg); padding:15px; border-radius:12px; font-size:0.9rem; text-align:left; border:1px solid var(--border-color); max-height:150px; overflow-y:auto; line-height:1.5;">-</div>
-        <br>
-        <button class="btn" style="width:100%;" onclick="closeInspectorModal()">Dismiss</button>
+<div class="overlay hidden" id="modal-user" onclick="closeModal('modal-user')">
+    <div class="modal" onclick="event.stopPropagation()" style="text-align:center;">
+        <div class="modal-ava" id="inspect-ava">?</div>
+        <div style="font-size:1.1rem; font-weight:900; margin-bottom:4px;" id="inspect-name">-</div>
+        <div style="color:var(--text-3); font-size:0.82rem; margin-bottom:14px;" id="inspect-handle">@-</div>
+        <div style="background:var(--surface2); border:1px solid var(--border); border-radius:var(--radius-sm); padding:14px; font-size:0.85rem; line-height:1.6; text-align:left; margin-bottom:16px; min-height:40px;" id="inspect-bio">-</div>
+        <div style="font-size:0.72rem; color:var(--text-3); margin-bottom:16px;" id="inspect-joined"></div>
+        <button class="btn" style="width:100%;" onclick="closeModal('modal-user')">Close</button>
     </div>
 </div>
 
+<!-- TOAST STACK -->
+<div class="toast-stack" id="toast-stack"></div>
+
 <script>
-    const API_BASE = "https://codyverse.codymkw.workers.dev";
-    let currentUser = null, currentProfile = null, currentCommunity = "general", loadedPostsCache = [], authMode = 'login';
+const API = "https://codyverse.codymkw.workers.dev";
+let me = null, myProfile = null, community = "general", postsCache = [], authMode = "login";
 
-    // ==========================================
-    // AUDIO SFX
-    // ==========================================
-    const sfxContext = new (window.AudioContext || window.webkitAudioContext)();
-    function playSfx(type) {
-        try {
-            const osc = sfxContext.createOscillator();
-            const gain = sfxContext.createGain();
-            osc.connect(gain); gain.connect(sfxContext.destination);
-            if (type === 'click') {
-                osc.type = 'triangle';
-                osc.frequency.setValueAtTime(400, sfxContext.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(120, sfxContext.currentTime + 0.08);
-                gain.gain.setValueAtTime(0.1, sfxContext.currentTime);
-                gain.gain.linearRampToValueAtTime(0.01, sfxContext.currentTime + 0.08);
-                osc.start(); osc.stop(sfxContext.currentTime + 0.08);
-            } else if (type === 'chime') {
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(587.33, sfxContext.currentTime);
-                osc.frequency.setValueAtTime(880, sfxContext.currentTime + 0.08);
-                gain.gain.setValueAtTime(0.15, sfxContext.currentTime);
-                gain.gain.linearRampToValueAtTime(0.01, sfxContext.currentTime + 0.25);
-                osc.start(); osc.stop(sfxContext.currentTime + 0.25);
-            } else if (type === 'switch') {
-                osc.type = 'square';
-                osc.frequency.setValueAtTime(220, sfxContext.currentTime);
-                gain.gain.setValueAtTime(0.05, sfxContext.currentTime);
-                gain.gain.linearRampToValueAtTime(0.001, sfxContext.currentTime + 0.05);
-                osc.start(); osc.stop(sfxContext.currentTime + 0.05);
-            }
-        } catch(e) {}
+// ── API ──────────────────────────────────────────────
+async function api(path, opts = {}) {
+    opts.credentials = "include";
+    if (opts.body && typeof opts.body === "object") {
+        opts.body = JSON.stringify(opts.body);
+        opts.headers = { ...opts.headers, "Content-Type": "application/json" };
     }
+    return fetch(`${API}${path}`, opts);
+}
 
-    // ==========================================
-    // API & UTILITIES
-    // ==========================================
-    async function apiFetch(endpoint, options = {}) {
-        options.credentials = 'include';
-        if (options.body && typeof options.body === 'object') {
-            options.body = JSON.stringify(options.body);
-            options.headers = { ...options.headers, 'Content-Type': 'application/json' };
+// ── AUDIO ─────────────────────────────────────────────
+const ctx = new (window.AudioContext || window.webkitAudioContext)();
+function sfx(type) {
+    try {
+        const o = ctx.createOscillator(), g = ctx.createGain();
+        o.connect(g); g.connect(ctx.destination);
+        const t = ctx.currentTime;
+        if (type === "post")   { o.type="sine";     o.frequency.setValueAtTime(523,t); o.frequency.setValueAtTime(784,t+0.1); g.gain.setValueAtTime(0.12,t); g.gain.linearRampToValueAtTime(0,t+0.3); o.start(); o.stop(t+0.3); }
+        if (type === "click")  { o.type="triangle"; o.frequency.setValueAtTime(380,t); o.frequency.exponentialRampToValueAtTime(100,t+0.08); g.gain.setValueAtTime(0.08,t); g.gain.linearRampToValueAtTime(0,t+0.08); o.start(); o.stop(t+0.08); }
+        if (type === "switch") { o.type="square";   o.frequency.setValueAtTime(200,t); g.gain.setValueAtTime(0.04,t); g.gain.linearRampToValueAtTime(0,t+0.05); o.start(); o.stop(t+0.05); }
+        if (type === "error")  { o.type="sawtooth"; o.frequency.setValueAtTime(180,t); g.gain.setValueAtTime(0.08,t); g.gain.linearRampToValueAtTime(0,t+0.18); o.start(); o.stop(t+0.18); }
+    } catch(e) {}
+}
+
+// ── TOAST ─────────────────────────────────────────────
+function toast(msg, type = "ok") {
+    const el = document.createElement("div");
+    el.className = `toast toast-${type}`;
+    el.textContent = msg;
+    document.getElementById("toast-stack").appendChild(el);
+    setTimeout(() => el.remove(), 3200);
+}
+
+// ── UTILS ──────────────────────────────────────────────
+function esc(s) { return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function fmt_content(s) {
+    let r = esc(s);
+    r = r.replace(/\[b\](.*?)\[\/b\]/gis, "<strong>$1</strong>");
+    r = r.replace(/\[i\](.*?)\[\/i\]/gis, "<em>$1</em>");
+    r = r.replace(/\[spoiler\](.*?)\[\/spoiler\]/gis, '<span class="spoiler" onclick="this.classList.toggle(\'open\')">$1</span>');
+    return r;
+}
+function ago(ts) {
+    if (!ts) return "";
+    const d = Date.now() - ts;
+    if (d < 5000) return "just now";
+    if (d < 60000) return `${Math.floor(d/1000)}s`;
+    if (d < 3600000) return `${Math.floor(d/60000)}m`;
+    if (d < 86400000) return `${Math.floor(d/3600000)}h`;
+    return new Date(ts).toLocaleDateString(undefined, { month:"short", day:"numeric" });
+}
+function isAdmin() { return me === "codymkw"; }
+function initials(s) { return (s||"?").charAt(0).toUpperCase(); }
+
+function renderAvatar(url, fallback, el) {
+    if (url) {
+        el.innerHTML = `<img src="${esc(url)}" onerror="this.parentElement.innerHTML='${esc(initials(fallback))}'">`;
+    } else {
+        el.textContent = initials(fallback);
+    }
+}
+
+// ── CLOCK ──────────────────────────────────────────────
+function tickClock() { document.getElementById("clock").textContent = new Date().toUTCString().replace("GMT","UTC"); }
+setInterval(tickClock, 1000); tickClock();
+
+// ── THEME ──────────────────────────────────────────────
+function toggleTheme() {
+    sfx("switch");
+    const t = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", t);
+    localStorage.setItem("plaza_theme", t);
+}
+(function(){ const t = localStorage.getItem("plaza_theme"); if(t) document.documentElement.setAttribute("data-theme", t); })();
+
+// ── AUTH ───────────────────────────────────────────────
+async function boot() {
+    const res = await api("/api/me").catch(()=>null);
+    if (res?.ok) {
+        const d = await res.json();
+        me = d.username; myProfile = d.profile;
+    }
+    renderAuthUI();
+    await loadChannels();
+    await loadFeed();
+    await loadAnnouncement();
+    await loadPoll();
+    if (me) startHeartbeat();
+}
+
+function renderAuthUI() {
+    if (me) {
+        document.getElementById("nav-auth").innerHTML = `<button class="btn btn-ghost btn-sm" onclick="doLogout()">Sign out</button>`;
+        document.getElementById("composer").classList.remove("hidden");
+        document.getElementById("btn-new-comm").classList.remove("hidden");
+        document.getElementById("btn-new-poll").classList.remove("hidden");
+        document.getElementById("stat-row").classList.remove("hidden");
+        if (isAdmin()) {
+            document.getElementById("btn-pin").classList.remove("hidden");
         }
-        return fetch(`${API_BASE}${endpoint}`, options);
+        // Profile card
+        const ava = document.getElementById("profile-ava");
+        renderAvatar(myProfile?.avatarUrl, me, ava);
+        document.getElementById("profile-name").textContent = myProfile?.displayName || me;
+        document.getElementById("profile-handle").textContent = `@${me}`;
+        document.getElementById("profile-bio").textContent = myProfile?.bio || "";
+        document.getElementById("btn-profile-action").textContent = "Edit Profile";
+        document.getElementById("btn-profile-action").onclick = openProfileEdit;
+
+        // Composer avatar
+        const ca = document.getElementById("composer-ava");
+        renderAvatar(myProfile?.avatarUrl, me, ca);
+    } else {
+        document.getElementById("nav-auth").innerHTML = `<button class="btn btn-sm" onclick="openAuthModal()">Sign In</button>`;
+        document.getElementById("profile-name").textContent = "Guest";
+        document.getElementById("profile-handle").textContent = "Not signed in";
+        document.getElementById("btn-profile-action").textContent = "Sign In";
+        document.getElementById("btn-profile-action").onclick = openAuthModal;
     }
+}
 
-    function escapeHtml(str) {
-        if (!str) return '';
-        return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+function openAuthModal() {
+    setAuthMode("login");
+    document.getElementById("modal-auth").classList.remove("hidden");
+    setTimeout(() => document.getElementById("auth-user").focus(), 50);
+}
+
+function setAuthMode(m) {
+    authMode = m;
+    document.getElementById("tab-login").classList.toggle("active", m === "login");
+    document.getElementById("tab-register").classList.toggle("active", m === "register");
+    document.getElementById("btn-auth-submit").textContent = m === "login" ? "Sign In" : "Register";
+    document.getElementById("auth-display").classList.toggle("hidden", m === "login");
+    document.getElementById("auth-pass").autocomplete = m === "login" ? "current-password" : "new-password";
+}
+
+async function doAuth() {
+    const username = document.getElementById("auth-user").value.trim();
+    const password = document.getElementById("auth-pass").value;
+    const displayName = document.getElementById("auth-display").value.trim();
+    if (!username || !password) { toast("Fill in username and password.", "err"); return; }
+
+    const endpoint = authMode === "login" ? "/api/login" : "/api/register";
+    const body = authMode === "login" ? { username, password } : { username, password, displayName };
+    const res = await api(endpoint, { method: "POST", body });
+
+    if (res.ok) {
+        const d = await res.json();
+        me = d.username; myProfile = d.profile;
+        sfx("post"); toast(`Welcome, ${myProfile?.displayName || me}!`, "ok");
+        closeModal("modal-auth");
+        renderAuthUI();
+        startHeartbeat();
+        loadFeed();
+    } else {
+        sfx("error");
+        const msg = await res.text();
+        toast(msg || "Authentication failed.", "err");
     }
+}
 
-    function parseCustomFormatting(str) {
-        let parsed = escapeHtml(str);
-        parsed = parsed.replace(/\[b\](.*?)\[\/b\]/gis, '<strong>$1</strong>');
-        parsed = parsed.replace(/\[i\](.*?)\[\/i\]/gis, '<em>$1</em>');
-        parsed = parsed.replace(/\[spoiler\](.*?)\[\/spoiler\]/gis, '<span class="spoiler-text" onclick="this.classList.toggle(\'revealed\')">$1</span>');
-        return parsed;
+async function doLogout() {
+    await api("/api/logout", { method: "POST" });
+    me = null; myProfile = null;
+    sfx("switch");
+    toast("Signed out.", "info");
+    renderAuthUI();
+    document.getElementById("composer").classList.add("hidden");
+    document.getElementById("btn-new-comm").classList.add("hidden");
+    document.getElementById("btn-new-poll").classList.add("hidden");
+    document.getElementById("stat-row").classList.add("hidden");
+    loadFeed();
+}
+
+// ── PROFILE ────────────────────────────────────────────
+function openProfileEdit() {
+    if (!me) { openAuthModal(); return; }
+    document.getElementById("edit-name").value = myProfile?.displayName || "";
+    document.getElementById("edit-avatar").value = myProfile?.avatarUrl || "";
+    document.getElementById("edit-bio").value = myProfile?.bio || "";
+    document.getElementById("modal-profile").classList.remove("hidden");
+}
+
+async function saveProfile() {
+    const displayName = document.getElementById("edit-name").value.trim();
+    const avatarUrl = document.getElementById("edit-avatar").value.trim();
+    const bio = document.getElementById("edit-bio").value.trim();
+    const res = await api("/api/me/profile", { method: "POST", body: { displayName, avatarUrl, bio } });
+    if (res.ok) {
+        const d = await res.json();
+        myProfile = d.profile;
+        sfx("post"); toast("Profile saved!", "ok");
+        closeModal("modal-profile");
+        renderAuthUI();
+    } else { sfx("error"); toast("Couldn't save profile.", "err"); }
+}
+
+// ── CHANNELS ───────────────────────────────────────────
+async function loadChannels() {
+    const res = await api("/api/communities");
+    if (!res.ok) return;
+    const list = await res.json();
+    document.getElementById("tel-channels").textContent = list.length;
+    document.getElementById("stat-channels").textContent = list.length;
+    const box = document.getElementById("comm-list");
+    box.innerHTML = list.map(c => `
+        <button class="comm-btn ${c.id === community ? "active" : ""}" onclick="switchChannel('${esc(c.id)}')">
+            <span>${esc(c.name)}</span>
+            ${(!c.system && isAdmin()) ? `<button class="comm-del" onclick="event.stopPropagation();delComm('${esc(c.id)}')">✕</button>` : ""}
+        </button>
+    `).join("");
+    // Update composer label
+    const current = list.find(c => c.id === community);
+    document.getElementById("composer-comm-label").textContent = `#${current?.name || community}`;
+}
+
+function switchChannel(id) {
+    sfx("click");
+    community = id;
+    document.getElementById("post-input").value = localStorage.getItem(`draft:${community}`) || "";
+    updateCharCount();
+    loadChannels();
+    loadFeed();
+    loadAnnouncement();
+    loadPoll();
+}
+
+async function createComm() {
+    const name = document.getElementById("new-comm-input").value.trim();
+    if (!name) return;
+    const res = await api("/api/communities", { method: "POST", body: { name } });
+    if (res.ok) {
+        sfx("post"); toast("Channel launched!", "ok");
+        document.getElementById("new-comm-input").value = "";
+        document.getElementById("new-comm-form").classList.add("hidden");
+        loadChannels();
+    } else { sfx("error"); toast(await res.text(), "err"); }
+}
+
+async function delComm(id) {
+    if (!confirm(`Delete channel "${id}"? Posts will remain in KV but the channel won't appear.`)) return;
+    const res = await api("/api/communities/delete", { method: "POST", body: { id } });
+    if (res.ok) { if (community === id) switchChannel("general"); else loadChannels(); }
+}
+
+// ── FEED ────────────────────────────────────────────────
+async function loadFeed() {
+    const res = await api(`/api/posts?community=${community}`);
+    if (!res.ok) return;
+    postsCache = await res.json();
+    document.getElementById("tel-posts").textContent = postsCache.length;
+    document.getElementById("stat-posts").textContent = postsCache.length;
+    renderFeed(postsCache);
+}
+
+function renderFeed(posts) {
+    const el = document.getElementById("feed");
+    if (!posts.length) {
+        el.innerHTML = `<div class="empty-feed"><div class="empty-feed-icon">🌿</div><h3>This channel is quiet.</h3><p>${me ? "Be the first to post something!" : "Sign in to start the conversation."}</p></div>`;
+        return;
     }
-
-    function timeAgo(ts) {
-        if (!ts) return '';
-        const diff = Date.now() - ts;
-        if (diff < 60000) return 'just now';
-        if (diff < 3600000) return `${Math.floor(diff / 60000)}m ago`;
-        if (diff < 86400000) return `${Math.floor(diff / 3600000)}h ago`;
-        return new Date(ts).toLocaleDateString();
-    }
-
-    function showToast(msg, isError = false) {
-        const el = document.createElement('div');
-        el.className = `error-toast${isError ? '' : ' success-toast'}`;
-        el.innerText = msg;
-        document.body.appendChild(el);
-        setTimeout(() => el.remove(), 3000);
-    }
-
-    function toggleTheme() {
-        playSfx('switch');
-        const current = document.documentElement.getAttribute('data-theme');
-        document.documentElement.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
-    }
-
-    function insertFormat(openTag, closeTag) {
-        const textarea = document.getElementById('post-text');
-        const start = textarea.selectionStart, end = textarea.selectionEnd;
-        textarea.value = textarea.value.substring(0, start) + openTag + textarea.value.substring(start, end) + closeTag + textarea.value.substring(end);
-        textarea.focus();
-        onComposerInput();
-    }
-
-    function onComposerInput() {
-        updateCharCount();
-        localStorage.setItem(`plaza_draft_${currentCommunity}`, document.getElementById('post-text').value);
-    }
-
-    function updateCharCount() {
-        document.getElementById('post-char-count').innerText = `${document.getElementById('post-text').value.length} / 280`;
-    }
-
-    function updateClock() {
-        document.getElementById('live-telemetry-clock').innerText = new Date().toUTCString().replace('GMT', 'UTC');
-    }
-    setInterval(updateClock, 1000);
-
-    function isPlatformAdmin() { return currentUser === "codymkw"; }
-
-    // ==========================================
-    // AUTH
-    // ==========================================
-    async function checkAuth() {
-        try {
-            const res = await apiFetch('/api/me');
-            const data = await res.json();
-            currentUser = data.username;
-            currentProfile = data.profile;
-        } catch(e) {}
-
-        if (currentUser) {
-            document.getElementById('user-nav-widget').innerHTML = `<button class="btn btn-outline" onclick="logout()">Disconnect</button>`;
-            ['post-panel', 'user-info-card', 'community-builder-card', 'create-poll-trigger-btn'].forEach(id => document.getElementById(id).classList.remove('hidden'));
-            document.getElementById('guest-info-card').classList.add('hidden');
-            document.getElementById('auth-panel').classList.add('hidden');
-
-            const avatarEl = document.getElementById('user-card-avatar');
-            if (currentProfile?.avatarUrl) {
-                avatarEl.innerHTML = `<img src="${escapeHtml(currentProfile.avatarUrl)}" onerror="this.parentElement.innerText='${escapeHtml(currentUser.charAt(0).toUpperCase())}'">`;
-            } else {
-                avatarEl.innerText = currentUser.charAt(0).toUpperCase();
-            }
-            document.getElementById('user-card-name').innerText = currentProfile?.displayName || currentUser;
-            document.getElementById('user-card-handle').innerText = `@${currentUser}`;
-            document.getElementById('user-card-bio').innerText = currentProfile?.bio || 'No bio yet.';
-
-            if (!isPlatformAdmin()) {
-                document.getElementById('manage-announcement-btn').classList.add('hidden');
-            }
-
-            startHeartbeat();
-        } else {
-            document.getElementById('user-nav-widget').innerHTML = `<button class="btn" onclick="showAuthPanel()">Sign In</button>`;
-        }
-
-        renderActivePoll();
-    }
-
-    function showAuthPanel() {
-        document.getElementById('auth-panel').classList.remove('hidden');
-        document.getElementById('auth-username').focus();
-    }
-
-    function hideAuthPanel() {
-        document.getElementById('auth-panel').classList.add('hidden');
-    }
-
-    function toggleAuthMode() {
-        authMode = authMode === 'login' ? 'register' : 'login';
-        document.getElementById('auth-panel-title').innerText = authMode === 'login' ? 'Sign In' : 'Create Profile';
-        document.getElementById('auth-execution-btn').innerText = authMode === 'login' ? 'Connect' : 'Register';
-        document.getElementById('auth-toggle-view').innerText = authMode === 'login' ? 'Create Profile' : 'Back to Sign In';
-        document.getElementById('auth-displayname').classList.toggle('hidden', authMode === 'login');
-    }
-
-    async function handleAuth() {
-        const username = document.getElementById('auth-username').value.trim();
-        const password = document.getElementById('auth-password').value;
-        const displayName = document.getElementById('auth-displayname').value.trim();
-        if (!username || !password) { showToast('Username and password required.', true); return; }
-
-        const endpoint = authMode === 'login' ? '/api/login' : '/api/register';
-        const body = authMode === 'login' ? { username, password } : { username, password, displayName };
-        const res = await apiFetch(endpoint, { method: 'POST', body });
-
-        if (res.ok) {
-            playSfx('chime');
-            await checkAuth();
-            showToast('Connected!');
-        } else {
-            const msg = await res.text();
-            showToast(msg || 'Authentication failed.', true);
-        }
-    }
-
-    async function logout() {
-        await apiFetch('/api/logout', { method: 'POST' });
-        currentUser = null; currentProfile = null;
-        location.reload();
-    }
-
-    // ==========================================
-    // PROFILE
-    // ==========================================
-    function toggleProfileEdit() {
-        const panel = document.getElementById('profile-edit-panel');
-        panel.classList.toggle('hidden');
-        if (!panel.classList.contains('hidden')) {
-            document.getElementById('prof-displayname').value = currentProfile?.displayName || '';
-            document.getElementById('prof-avatar').value = currentProfile?.avatarUrl || '';
-            document.getElementById('prof-bio').value = currentProfile?.bio || '';
-        }
-    }
-
-    async function updateProfile() {
-        const displayName = document.getElementById('prof-displayname').value.trim();
-        const avatarUrl = document.getElementById('prof-avatar').value.trim();
-        const bio = document.getElementById('prof-bio').value.trim();
-        const res = await apiFetch('/api/me/profile', { method: 'POST', body: { displayName, avatarUrl, bio } });
-        if (res.ok) {
-            playSfx('chime');
-            await checkAuth();
-            toggleProfileEdit();
-            showToast('Profile updated!');
-        } else {
-            showToast('Failed to save profile.', true);
-        }
-    }
-
-    // ==========================================
-    // COMMUNITIES
-    // ==========================================
-    async function loadCommunities() {
-        const res = await apiFetch('/api/communities');
-        const list = await res.json();
-        document.getElementById('stat-channels-count').innerText = list.length;
-        document.getElementById('communities-box').innerHTML = list.map(c => `
-            <div class="community-card ${c.id === currentCommunity ? 'active' : ''}" onclick="switchCommunity('${escapeHtml(c.id)}')">
-                ${escapeHtml(c.name)}
-                ${(!c.system && isPlatformAdmin()) ? `<button class="community-delete-btn" onclick="event.stopPropagation(); deleteCommunity('${escapeHtml(c.id)}')">✕</button>` : ''}
+    el.innerHTML = posts.map(p => {
+        const myR = me && p.reactedUsers?.[me];
+        const canDel = me && (me === p.username || isAdmin());
+        return `<div class="post" id="p-${esc(p.id)}">
+            <div class="post-avatar" onclick="inspectUser('${esc(p.username)}')">${p.avatarUrl ? `<img src="${esc(p.avatarUrl)}" onerror="this.parentElement.textContent='${esc(initials(p.displayName))}'">` : esc(initials(p.displayName))}</div>
+            <div class="post-body">
+                <div class="post-meta">
+                    <span class="post-name" onclick="inspectUser('${esc(p.username)}')">${esc(p.displayName||p.username)}</span>
+                    <span class="post-handle">@${esc(p.username)}</span>
+                    ${p.username==="codymkw" ? `<span class="post-admin-badge">Admin</span>` : ""}
+                    <span class="post-time">${ago(p.timestamp)}</span>
+                </div>
+                <div class="post-content">${fmt_content(p.content)}${p.imageUrl ? `<img src="${esc(p.imageUrl)}" class="post-img" onerror="this.style.display='none'">` : ""}</div>
+                ${me ? `<div class="post-reactions">
+                    <button class="react-btn ${myR==="yeah"?"active-yeah":""}" onclick="react('${esc(p.id)}','yeah')">🔥 Yeah <span>${p.reactions?.yeah||0}</span></button>
+                    <button class="react-btn ${myR==="fresh"?"active-fresh":""}" onclick="react('${esc(p.id)}','fresh')">✨ Fresh <span>${p.reactions?.fresh||0}</span></button>
+                    <button class="react-btn ${myR==="cozy"?"active-cozy":""}" onclick="react('${esc(p.id)}','cozy')">🌿 Cozy <span>${p.reactions?.cozy||0}</span></button>
+                </div>` : ""}
             </div>
-        `).join('');
-    }
+            ${canDel ? `<button class="post-del-btn" onclick="delPost('${esc(p.id)}')">✕</button>` : ""}
+        </div>`;
+    }).join("");
+}
 
-    function switchCommunity(target) {
-        playSfx('click');
-        currentCommunity = target;
-        loadCommunities();
-        loadPosts();
-        renderActivePoll();
-        loadAnnouncement();
-        document.getElementById('post-text').value = localStorage.getItem(`plaza_draft_${currentCommunity}`) || '';
+function filterFeed() {
+    const q = document.getElementById("search").value.toLowerCase();
+    if (!q) { renderFeed(postsCache); return; }
+    renderFeed(postsCache.filter(p =>
+        p.content.toLowerCase().includes(q) ||
+        (p.displayName||"").toLowerCase().includes(q) ||
+        p.username.toLowerCase().includes(q)
+    ));
+}
+
+// ── COMPOSER ────────────────────────────────────────────
+function fmt(open, close) {
+    const ta = document.getElementById("post-input");
+    const s = ta.selectionStart, e = ta.selectionEnd;
+    ta.value = ta.value.slice(0,s) + open + ta.value.slice(s,e) + close + ta.value.slice(e);
+    ta.focus(); updateCharCount();
+}
+function onType() { updateCharCount(); localStorage.setItem(`draft:${community}`, document.getElementById("post-input").value); }
+function updateCharCount() {
+    const len = document.getElementById("post-input").value.length;
+    const el = document.getElementById("char-count");
+    el.textContent = `${len} / 280`;
+    el.className = `char-meter${len>=260?"over":len>=200?" warn":""}`;
+}
+function toggleImgField() { document.getElementById("img-url").classList.toggle("hidden"); }
+
+async function submitPost() {
+    const content = document.getElementById("post-input").value.trim();
+    const imageUrl = document.getElementById("img-url").value.trim();
+    if (!content) return;
+    const btn = document.querySelector(".composer-footer .btn");
+    btn.disabled = true;
+    const res = await api("/api/posts", { method: "POST", body: { content, community, imageUrl } });
+    btn.disabled = false;
+    if (res.ok) {
+        sfx("post");
+        document.getElementById("post-input").value = "";
+        document.getElementById("img-url").value = "";
+        document.getElementById("img-url").classList.add("hidden");
+        localStorage.removeItem(`draft:${community}`);
         updateCharCount();
+        loadFeed();
+    } else {
+        sfx("error"); toast(await res.text() || "Couldn't post.", "err");
     }
+}
 
-    async function createCommunity() {
-        const name = document.getElementById('new-comm-name').value.trim();
-        if (!name) return;
-        const res = await apiFetch('/api/communities', { method: 'POST', body: { name } });
-        if (res.ok) {
-            playSfx('chime');
-            document.getElementById('new-comm-name').value = '';
-            loadCommunities();
-        } else {
-            const msg = await res.text();
-            showToast(msg || 'Could not create community.', true);
+async function delPost(id) {
+    if (!confirm("Delete this post?")) return;
+    const res = await api("/api/posts/delete", { method: "POST", body: { community, postId: id } });
+    if (res.ok) { sfx("click"); loadFeed(); }
+    else { sfx("error"); toast("Couldn't delete.", "err"); }
+}
+
+async function react(postId, reaction) {
+    if (!me) { toast("Sign in to react.", "info"); return; }
+    sfx("click");
+    const res = await api("/api/posts/react", { method: "POST", body: { community, postId, reaction } });
+    if (res.ok) {
+        const d = await res.json();
+        const post = postsCache.find(p => p.id === postId);
+        if (post) {
+            post.reactions = d.reactions;
+            if (!post.reactedUsers) post.reactedUsers = {};
+            if (d.myReaction) post.reactedUsers[me] = d.myReaction;
+            else delete post.reactedUsers[me];
         }
+        renderFeed(postsCache);
     }
+}
 
-    async function deleteCommunity(id) {
-        if (!confirm(`Delete community "${id}"?`)) return;
-        const res = await apiFetch('/api/communities/delete', { method: 'POST', body: { id } });
-        if (res.ok) { if (currentCommunity === id) switchCommunity('general'); else loadCommunities(); }
+// ── USER INSPECT ────────────────────────────────────────
+async function inspectUser(username) {
+    sfx("click");
+    const res = await api(`/api/user/lookup?username=${encodeURIComponent(username)}`);
+    if (!res.ok) return;
+    const p = await res.json();
+    const ava = document.getElementById("inspect-ava");
+    renderAvatar(p.avatarUrl, p.username, ava);
+    document.getElementById("inspect-name").textContent = p.displayName || p.username;
+    document.getElementById("inspect-handle").textContent = `@${p.username}`;
+    document.getElementById("inspect-bio").textContent = p.bio || "No bio.";
+    document.getElementById("inspect-joined").textContent = p.joinedAt ? `Joined ${new Date(p.joinedAt).toLocaleDateString(undefined,{year:"numeric",month:"long",day:"numeric"})}` : "";
+    document.getElementById("modal-user").classList.remove("hidden");
+}
+
+// ── ANNOUNCEMENT ────────────────────────────────────────
+async function loadAnnouncement() {
+    const res = await api(`/api/announcement?community=${community}`);
+    if (!res.ok) return;
+    const ann = await res.json();
+    const banner = document.getElementById("ann-banner");
+    if (ann?.text) {
+        document.getElementById("ann-text").textContent = ann.text;
+        banner.classList.remove("hidden");
+    } else {
+        banner.classList.add("hidden");
     }
+}
+async function promptPin() {
+    const text = prompt("Set board pin (leave blank to clear):");
+    if (text === null) return;
+    const res = await api("/api/announcement", { method: "POST", body: { community, text } });
+    if (res.ok) { toast(text ? "Pin set!" : "Pin cleared.", "ok"); loadAnnouncement(); }
+}
 
-    // ==========================================
-    // POSTS & FEED
-    // ==========================================
-    async function loadPosts() {
-        const res = await apiFetch(`/api/posts?community=${currentCommunity}`);
-        loadedPostsCache = await res.json();
-        document.getElementById('stat-posts-count').innerText = `${loadedPostsCache.length} items`;
-        renderFeed(loadedPostsCache);
+// ── POLL ────────────────────────────────────────────────
+let currentPoll = null;
+
+async function loadPoll() {
+    const res = await api(`/api/poll?community=${community}`);
+    if (!res.ok) return;
+    currentPoll = await res.json();
+    renderPoll();
+}
+
+function renderPoll() {
+    const el = document.getElementById("poll-display");
+    if (!currentPoll) {
+        // Show empty state, with hint if admin
+        const hint = isAdmin() ? "Create one with the + New Poll button above." : (me ? "" : "Sign in to vote.");
+        el.innerHTML = `<div class="poll-empty"><div class="poll-empty-icon">📊</div><div>No poll active in this channel.</div>${hint ? `<div class="text-muted" style="margin-top:8px;">${hint}</div>` : ""}</div>`;
+        return;
     }
-
-    function renderFeed(posts) {
-        const stream = document.getElementById('feed-stream');
-        if (!posts.length) {
-            stream.innerHTML = '<div class="card" style="text-align:center; color:var(--text-muted); padding:30px;">Empty channel timeline.</div>';
-            return;
-        }
-        stream.innerHTML = posts.map(post => {
-            const isOwner = currentUser && (currentUser === post.username || isPlatformAdmin());
-            const myReaction = post.reactedUsers?.[currentUser] || null;
-            return `
-            <div class="post" id="post-${post.id}">
-                <div class="avatar" onclick="inspectUser('${escapeHtml(post.username)}')">
-                    ${post.avatarUrl ? `<img src="${escapeHtml(post.avatarUrl)}" onerror="this.parentElement.innerText='${escapeHtml((post.displayName||'?').charAt(0).toUpperCase())}'">` : escapeHtml((post.displayName||'?').charAt(0).toUpperCase())}
+    const total = Object.values(currentPoll.votes||{}).reduce((a,b)=>a+b, 0);
+    const myVote = me ? currentPoll.voters?.[me] : undefined;
+    el.innerHTML = `
+        <div class="poll-question">${esc(currentPoll.question)}</div>
+        ${(currentPoll.options||[]).map((opt, i) => {
+            const count = currentPoll.votes[i] || 0;
+            const pct = total ? Math.round(count/total*100) : 0;
+            return `<div class="poll-option ${myVote==i?"my-vote":""}" onclick="votePoll(${i})">
+                <div class="poll-track">
+                    <div class="poll-fill" style="width:${pct}%"></div>
+                    <span class="poll-label">${esc(opt)}</span>
+                    <span class="poll-pct">${pct}%${myVote==i?" ✓":""}</span>
                 </div>
-                <div class="post-main">
-                    <div class="post-header">
-                        <span class="display-name" onclick="inspectUser('${escapeHtml(post.username)}')">${escapeHtml(post.displayName || post.username)}</span>
-                        <span class="username">@${escapeHtml(post.username)}</span>
-                        ${post.timestamp ? `<span class="post-timestamp">${timeAgo(post.timestamp)}</span>` : ''}
-                    </div>
-                    <div class="post-body">${parseCustomFormatting(post.content)}${post.imageUrl ? `<img src="${escapeHtml(post.imageUrl)}" class="post-img" onerror="this.style.display='none'">` : ''}</div>
-                    ${currentUser ? `
-                    <div class="post-actions">
-                        <button class="action-tab ${myReaction === 'yeah' ? 'active-yeah' : ''}" onclick="reactToPost('${post.id}', 'yeah')">🔥 Yeah <span>${post.reactions?.yeah || 0}</span></button>
-                        <button class="action-tab ${myReaction === 'fresh' ? 'active-fresh' : ''}" onclick="reactToPost('${post.id}', 'fresh')">✨ Fresh <span>${post.reactions?.fresh || 0}</span></button>
-                        <button class="action-tab ${myReaction === 'cozy' ? 'active-cozy' : ''}" onclick="reactToPost('${post.id}', 'cozy')">🌿 Cozy <span>${post.reactions?.cozy || 0}</span></button>
-                    </div>` : ''}
-                </div>
-                ${isOwner ? `<button class="post-delete-trigger" onclick="deletePost('${post.id}')" title="Delete post">✕</button>` : ''}
             </div>`;
-        }).join('');
-    }
+        }).join("")}
+        <div class="poll-footer">
+            <span>by ${currentPoll.creator==="system" ? "<strong>System</strong>" : `@${esc(currentPoll.creator)}`} · ${total} vote${total!==1?"s":""}</span>
+            ${isAdmin() ? `<button style="background:none;border:none;color:var(--danger);font-size:0.72rem;cursor:pointer;padding:0;" onclick="nukePoll()">Nuke poll</button>` : ""}
+        </div>`;
+}
 
-    function filterPosts() {
-        const val = document.getElementById('system_plaza_search_override').value.toLowerCase();
-        if (!val) { renderFeed(loadedPostsCache); return; }
-        renderFeed(loadedPostsCache.filter(p =>
-            p.content.toLowerCase().includes(val) ||
-            (p.displayName || '').toLowerCase().includes(val) ||
-            p.username.toLowerCase().includes(val)
-        ));
-    }
+async function votePoll(idx) {
+    if (!me) { toast("Sign in to vote.", "info"); return; }
+    sfx("click");
+    const res = await api("/api/poll/vote", { method: "POST", body: { community, optionIdx: idx } });
+    if (res.ok) { currentPoll = await res.json(); renderPoll(); }
+}
 
-    async function submitPost() {
-        const content = document.getElementById('post-text').value.trim();
-        const imageUrl = document.getElementById('post-image-url').value.trim();
-        if (!content) return;
+function togglePollCreator() {
+    document.getElementById("poll-creator").classList.toggle("hidden");
+}
 
-        const res = await apiFetch('/api/posts', { method: 'POST', body: { content, community: currentCommunity, imageUrl } });
-        if (res.ok) {
-            playSfx('chime');
-            document.getElementById('post-text').value = '';
-            document.getElementById('post-image-url').value = '';
-            localStorage.removeItem(`plaza_draft_${currentCommunity}`);
-            updateCharCount();
-            loadPosts();
-        } else {
-            showToast('Failed to post.', true);
-        }
-    }
+async function submitPoll() {
+    const q = document.getElementById("poll-q").value.trim();
+    const opts = ["poll-o1","poll-o2","poll-o3","poll-o4"].map(id => document.getElementById(id).value.trim()).filter(Boolean);
+    if (!q || opts.length < 2) { toast("Need a question and at least 2 options.", "err"); return; }
+    const res = await api("/api/poll/create", { method: "POST", body: { community, question: q, options: opts } });
+    if (res.ok) {
+        currentPoll = await res.json();
+        sfx("post"); toast("Poll launched!", "ok");
+        togglePollCreator();
+        ["poll-q","poll-o1","poll-o2","poll-o3","poll-o4"].forEach(id => document.getElementById(id).value = "");
+        renderPoll();
+    } else { sfx("error"); toast(await res.text(), "err"); }
+}
 
-    async function deletePost(postId) {
-        if (!confirm('Delete this post?')) return;
-        const res = await apiFetch('/api/posts/delete', { method: 'POST', body: { community: currentCommunity, postId } });
-        if (res.ok) { playSfx('click'); loadPosts(); }
-        else showToast('Could not delete post.', true);
-    }
+async function nukePoll() {
+    if (!confirm("Delete this poll permanently?")) return;
+    const res = await api("/api/poll/nuke", { method: "POST", body: { community } });
+    if (res.ok) { currentPoll = null; sfx("click"); toast("Poll removed.", "info"); renderPoll(); }
+}
 
-    async function reactToPost(postId, reaction) {
-        if (!currentUser) { showToast('Sign in to react!', true); return; }
-        playSfx('click');
-        const res = await apiFetch('/api/posts/react', { method: 'POST', body: { community: currentCommunity, postId, reaction } });
-        if (res.ok) {
-            const data = await res.json();
-            // Update cache and re-render
-            const post = loadedPostsCache.find(p => p.id === postId);
-            if (post) {
-                post.reactions = data.reactions;
-                if (!post.reactedUsers) post.reactedUsers = {};
-                if (data.myReaction) post.reactedUsers[currentUser] = data.myReaction;
-                else delete post.reactedUsers[currentUser];
-            }
-            renderFeed(loadedPostsCache);
-        }
-    }
+// ── ONLINE ──────────────────────────────────────────────
+async function loadOnline() {
+    const res = await api("/api/online").catch(()=>null);
+    if (!res?.ok) return;
+    const users = await res.json();
+    document.getElementById("tel-online").textContent = users.length;
+    document.getElementById("online-count").textContent = users.length;
+    const el = document.getElementById("online-list");
+    if (!users.length) { el.innerHTML = `<span class="text-muted">No one else online right now.</span>`; return; }
+    el.innerHTML = users.map(u => `
+        <div class="online-user" onclick="inspectUser('${esc(u.username)}')">
+            <span class="online-pip"></span>
+            <div class="online-ava">${u.avatarUrl ? `<img src="${esc(u.avatarUrl)}" onerror="this.parentElement.textContent='${esc(initials(u.displayName))}'">` : esc(initials(u.displayName))}</div>
+            <div><div class="online-name">${esc(u.displayName||u.username)}</div><div class="online-handle">@${esc(u.username)}</div></div>
+        </div>
+    `).join("");
+}
 
-    // ==========================================
-    // USER INSPECTOR
-    // ==========================================
-    async function inspectUser(username) {
-        playSfx('click');
-        try {
-            const res = await apiFetch(`/api/user/lookup?username=${encodeURIComponent(username)}`);
-            if (!res.ok) return;
-            const profile = await res.json();
-            const avatarEl = document.getElementById('inspect-avatar');
-            if (profile.avatarUrl) {
-                avatarEl.innerHTML = `<img src="${escapeHtml(profile.avatarUrl)}" style="width:100%; height:100%; object-fit:cover; border-radius:12px;" onerror="this.parentElement.innerText='${escapeHtml(username.charAt(0).toUpperCase())}'">`;
-            } else {
-                avatarEl.innerText = username.charAt(0).toUpperCase();
-            }
-            document.getElementById('inspect-displayname').innerText = profile.displayName || username;
-            document.getElementById('inspect-username').innerText = `@${profile.username}`;
-            document.getElementById('inspect-bio').innerText = profile.bio || 'No bio logged.';
-            document.getElementById('user-inspector-modal').classList.remove('hidden');
-        } catch(e) {}
-    }
+function startHeartbeat() {
+    const beat = () => api("/api/heartbeat", { method: "POST" }).catch(()=>{});
+    beat();
+    setInterval(beat, 60000);
+    setInterval(loadOnline, 30000);
+    loadOnline();
+}
 
-    function closeInspectorModal() {
-        document.getElementById('user-inspector-modal').classList.add('hidden');
-    }
+// ── MODAL ───────────────────────────────────────────────
+function closeModal(id) { document.getElementById(id).classList.add("hidden"); }
+document.addEventListener("keydown", e => { if (e.key === "Escape") document.querySelectorAll(".overlay:not(.hidden)").forEach(m => m.classList.add("hidden")); });
 
-    // ==========================================
-    // ANNOUNCEMENT BOARD
-    // ==========================================
-    async function loadAnnouncement() {
-        try {
-            const res = await apiFetch(`/api/announcement?community=${currentCommunity}`);
-            if (!res.ok) return;
-            const ann = await res.json();
-            const el = document.getElementById('announcement-area');
-            if (ann?.text) {
-                el.innerHTML = `<div class="announcement-title">📌 Board Pin</div>${escapeHtml(ann.text)}`;
-                el.classList.remove('hidden');
-            } else {
-                el.classList.add('hidden');
-            }
-        } catch(e) {}
-    }
-
-    async function promptAnnouncement() {
-        const text = prompt("Set board pin (leave empty to clear):");
-        if (text === null) return;
-        const res = await apiFetch('/api/announcement', { method: 'POST', body: { community: currentCommunity, text } });
-        if (res.ok) loadAnnouncement();
-    }
-
-    // ==========================================
-    // POLL
-    // ==========================================
-    function togglePollCreator() {
-        document.getElementById('poll-creator-view').classList.toggle('hidden');
-    }
-
-    async function renderActivePoll() {
-        try {
-            const res = await apiFetch(`/api/poll?community=${currentCommunity}`);
-            const poll = res.ok ? await res.json() : { question: "No Poll Active", creator: "system", options: [], votes: {} };
-
-            document.getElementById('poll-display-question').innerText = poll.question;
-            if (poll.creator === 'system') {
-                document.getElementById('poll-author-indicator').innerHTML = `by <span class="admin-badge">System</span>`;
-            } else {
-                document.getElementById('poll-author-indicator').innerText = `by @${poll.creator}`;
-            }
-            document.getElementById('poll-admin-actions').classList.toggle('hidden', !isPlatformAdmin());
-
-            const totalVotes = Object.values(poll.votes || {}).reduce((a, b) => a + b, 0);
-            const stack = document.getElementById('poll-options-render-stack');
-            stack.innerHTML = '';
-
-            (poll.options || []).forEach((opt, idx) => {
-                const count = poll.votes[idx] || 0;
-                const pct = totalVotes ? Math.round((count / totalVotes) * 100) : 0;
-                const row = document.createElement('div');
-                row.className = 'poll-option-row';
-                row.onclick = () => voteInActivePoll(idx);
-                row.innerHTML = `
-                    <div style="font-size:0.8rem; margin-bottom:2px;">${escapeHtml(opt)}</div>
-                    <div class="poll-bar-outer">
-                        <div class="poll-bar-inner" style="width:${pct}%;"></div>
-                        <span class="poll-pct">${pct}% (${count})</span>
-                    </div>`;
-                stack.appendChild(row);
-            });
-        } catch(e) {}
-    }
-
-    async function voteInActivePoll(optionIdx) {
-        playSfx('click');
-        const res = await apiFetch('/api/poll/vote', { method: 'POST', body: { community: currentCommunity, optionIdx } });
-        if (res.ok) renderActivePoll();
-    }
-
-    async function publishCustomPoll() {
-        const q = document.getElementById('poll-q-input').value.trim();
-        const o1 = document.getElementById('poll-o1-input').value.trim();
-        const o2 = document.getElementById('poll-o2-input').value.trim();
-        const o3 = document.getElementById('poll-o3-input').value.trim();
-        const o4 = document.getElementById('poll-o4-input').value.trim();
-        if (!q || !o1 || !o2) { showToast('Need a question and at least 2 options!', true); return; }
-
-        const options = [o1, o2];
-        if (o3) options.push(o3);
-        if (o4) options.push(o4);
-
-        const res = await apiFetch('/api/poll/create', { method: 'POST', body: { community: currentCommunity, question: q, options } });
-        if (res.ok) {
-            ['poll-q-input','poll-o1-input','poll-o2-input','poll-o3-input','poll-o4-input'].forEach(id => document.getElementById(id).value = '');
-            togglePollCreator();
-            renderActivePoll();
-            showToast('Poll launched!');
-        }
-    }
-
-    async function adminNukePoll() {
-        if (!confirm("Purge current poll from KV?")) return;
-        const res = await apiFetch('/api/poll/nuke', { method: 'POST', body: { community: currentCommunity } });
-        if (res.ok) { renderActivePoll(); showToast('Poll purged.'); }
-    }
-
-    // ==========================================
-    // ONLINE USERS
-    // ==========================================
-    async function loadOnlineUsers() {
-        try {
-            const res = await apiFetch('/api/online');
-            if (!res.ok) return;
-            const users = await res.json();
-            const box = document.getElementById('online-users-box');
-            if (!users.length) { box.innerHTML = '<span style="color:var(--text-muted); font-size:0.85rem;">No one online yet.</span>'; return; }
-            box.innerHTML = users.map(u => `
-                <div class="online-user-row" onclick="inspectUser('${escapeHtml(u.username)}')" style="cursor:pointer;">
-                    <div class="online-avatar-sm">
-                        ${u.avatarUrl ? `<img src="${escapeHtml(u.avatarUrl)}" onerror="this.parentElement.innerText='${escapeHtml((u.displayName||u.username).charAt(0).toUpperCase())}'">` : escapeHtml((u.displayName || u.username).charAt(0).toUpperCase())}
-                    </div>
-                    <div>
-                        <div style="font-weight:bold; font-size:0.85rem;">${escapeHtml(u.displayName || u.username)}</div>
-                        <div style="color:var(--text-muted); font-size:0.75rem;">@${escapeHtml(u.username)}</div>
-                    </div>
-                    <span class="online-dot" style="margin-left:auto;"></span>
-                </div>
-            `).join('');
-        } catch(e) {}
-    }
-
-    function startHeartbeat() {
-        const beat = () => apiFetch('/api/heartbeat', { method: 'POST' }).catch(() => {});
-        beat();
-        setInterval(beat, 60000);
-        setInterval(loadOnlineUsers, 30000);
-        loadOnlineUsers();
-    }
-
-    // ==========================================
-    // BOOT
-    // ==========================================
-    (async () => {
-        updateClock();
-        await checkAuth();
-        await loadCommunities();
-        await loadPosts();
-        await loadAnnouncement();
-        if (!currentUser) loadOnlineUsers(); // guests can still see who's online
-    })();
+// ── BOOT ─────────────────────────────────────────────────
+boot().then(() => {
+    // Restore draft
+    const draft = localStorage.getItem(`draft:${community}`);
+    if (draft) { document.getElementById("post-input").value = draft; updateCharCount(); }
+    // Load online even for guests
+    if (!me) loadOnline();
+});
 </script>
 </body>
 </html>
