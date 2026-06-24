@@ -20,323 +20,71 @@
         }
 
         body {
-            font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            background-color: var(--bg-dark); color: var(--text-main);
+            margin: 0; padding: 0; display: flex; justify-content: center;
             -webkit-font-smoothing: antialiased;
         }
 
-        .app-wrapper {
-            width: 100%;
-            max-width: 1100px;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            padding: 20px;
-            box-sizing: border-box;
-            gap: 20px;
-        }
+        .app-wrapper { width: 100%; max-width: 1100px; min-height: 100vh; display: flex; flex-direction: column; padding: 20px; box-sizing: border-box; gap: 20px; }
+        header { background: var(--card-bg); border-radius: var(--radius-lg); padding: 15px 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border-color); }
+        .logo-area { display: flex; align-items: center; gap: 8px; font-size: 1.5rem; font-weight: 800; color: var(--wiiu-green); letter-spacing: -0.5px; }
+        .logo-dot { width: 12px; height: 12px; background-color: var(--wiiu-green); border-radius: 50%; display: inline-block; }
+        .main-layout { display: grid; grid-template-columns: 280px 1fr; gap: 20px; align-items: start; }
+        @media (max-width: 850px) { .main-layout { grid-template-columns: 1fr; } }
+        .sidebar { display: flex; flex-direction: column; gap: 20px; }
+        .card { background: var(--card-bg); border-radius: var(--radius-lg); border: 1px solid var(--border-color); box-shadow: 0 4px 15px rgba(0,0,0,0.15); padding: 20px; box-sizing: border-box; }
+        .user-profile-summary { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 12px; }
+        
+        /* --- DYNAMIC COMMUNITIES CONTAINER GRID --- */
+        .community-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; margin-bottom: 5px; }
+        .community-card { position: relative; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 15px; text-align: center; cursor: pointer; font-weight: bold; font-size: 0.9rem; color: var(--text-main); transition: transform 0.15s, border-color 0.15s; box-shadow: 0 2px 6px rgba(0,0,0,0.1); padding-right: 30px; }
+        .community-card:hover { transform: translateY(-2px); border-color: var(--wiiu-green); }
+        .community-card.active { background: var(--wiiu-green); color: #111; border-color: var(--wiiu-green); }
+        .community-delete-btn { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: transparent; border: none; color: #ef4444; font-size: 0.9rem; cursor: pointer; display: none; padding: 2px 5px; }
+        .community-card:hover .community-delete-btn { display: block; }
+        .community-card.active .community-delete-btn { color: #7f1d1d; }
 
-        /* --- NINTENDO STYLE NAVBAR --- */
-        header {
-            background: var(--card-bg);
-            border-radius: var(--radius-lg);
-            padding: 15px 25px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border: 1px solid var(--border-color);
-        }
+        .feed-container { display: flex; flex-direction: column; gap: 15px; }
+        .post-composer textarea { width: 100%; height: 90px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 12px; box-sizing: border-box; resize: none; font-family: inherit; font-size: 0.95rem; color: var(--text-main); background-color: var(--input-bg); transition: border-color 0.2s; }
+        .post-composer textarea:focus { outline: none; border-color: var(--wiiu-green); }
+        .post { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 20px; display: flex; gap: 15px; }
+        .avatar { width: 54px; height: 54px; background: #4b5563; border-radius: var(--radius-md); border: 2px solid var(--wiiu-green); overflow: hidden; display: flex; align-items: center; justify-content: center; font-weight: bold; color: var(--text-main); font-size: 1.3rem; flex-shrink: 0; }
+        .avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .post-main { flex: 1; }
+        .post-header { display: flex; align-items: baseline; gap: 8px; margin-bottom: 6px; }
+        .display-name { font-weight: 700; font-size: 1rem; color: var(--text-main); }
+        .username { color: var(--text-muted); font-size: 0.85rem; }
+        .post-body { font-size: 0.95rem; line-height: 1.5; color: #e4e4e7; word-break: break-word; }
+        .post-actions { margin-top: 15px; display: flex; gap: 12px; }
 
-        .logo-area {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: var(--wiiu-green);
-            letter-spacing: -0.5px;
-        }
-
-        .logo-dot {
-            width: 12px;
-            height: 12px;
-            background-color: var(--wiiu-green);
-            border-radius: 50%;
-            display: inline-block;
-        }
-
-        /* --- MAIN LAYOUT GRID --- */
-        .main-layout {
-            display: grid;
-            grid-template-columns: 280px 1fr;
-            gap: 20px;
-            align-items: start;
-        }
-
-        @media (max-width: 850px) {
-            .main-layout {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* --- SIDEBAR CARDS --- */
-        .sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .card {
-            background: var(--card-bg);
-            border-radius: var(--radius-lg);
-            border: 1px solid var(--border-color);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-            padding: 20px;
-            box-sizing: border-box;
-        }
-
-        .user-profile-summary {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            gap: 12px;
-        }
-
-        /* --- THE PLAZA COMMUNITY HUBS GRID --- */
-        .community-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 12px;
-            margin-bottom: 10px;
-        }
-
-        .community-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-md);
-            padding: 15px;
-            text-align: center;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 0.9rem;
-            color: var(--text-main);
-            transition: transform 0.15s, border-color 0.15s, background-color 0.15s;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-        }
-
-        .community-card:hover {
-            transform: translateY(-2px);
-            border-color: var(--wiiu-green);
-            background-color: #35353a;
-        }
-
-        .community-card.active {
-            background: var(--wiiu-green);
-            color: #111;
-            border-color: var(--wiiu-green);
-        }
-
-        /* --- POSTS & TIMELINE --- */
-        .feed-container {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .post-composer textarea {
-            width: 100%;
-            height: 90px;
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-sm);
-            padding: 12px;
-            box-sizing: border-box;
-            resize: none;
-            font-family: inherit;
-            font-size: 0.95rem;
-            color: var(--text-main);
-            background-color: var(--input-bg);
-            transition: border-color 0.2s, background-color 0.2s;
-        }
-
-        .post-composer textarea:focus {
-            outline: none;
-            border-color: var(--wiiu-green);
-            background-color: #27272b;
-        }
-
-        .post {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-lg);
-            padding: 20px;
-            display: flex;
-            gap: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-
-        .avatar {
-            width: 54px;
-            height: 54px;
-            background: #4b5563;
-            border-radius: var(--radius-md);
-            border: 2px solid var(--wiiu-green);
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            color: var(--text-main);
-            font-size: 1.3rem;
-            flex-shrink: 0;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
-        }
-
-        .avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .post-main {
-            flex: 1;
-        }
-
-        .post-header {
-            display: flex;
-            align-items: baseline;
-            gap: 8px;
-            margin-bottom: 6px;
-        }
-
-        .display-name {
-            font-weight: 700;
-            font-size: 1rem;
-            color: var(--text-main);
-        }
-
-        .username {
-            color: var(--text-muted);
-            font-size: 0.85rem;
-        }
-
-        .post-body {
-            font-size: 0.95rem;
-            line-height: 1.5;
-            color: #e4e4e7;
-            word-break: break-word;
-        }
-
-        .post-actions {
-            margin-top: 15px;
-            display: flex;
-            gap: 12px;
-        }
-
-        /* --- NINTENDO SIGNATURE BUTTONS --- */
-        .btn {
-            background: var(--wiiu-green);
-            color: #111;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 9999px;
-            font-weight: 700;
-            font-size: 0.9rem;
-            cursor: pointer;
-            box-shadow: 0 4px 10px rgba(146, 230, 0, 0.2);
-            transition: background 0.15s, transform 0.1s;
-        }
-
+        .btn { background: var(--wiiu-green); color: #111; border: none; padding: 10px 20px; border-radius: 9999px; font-weight: 700; font-size: 0.9rem; cursor: pointer; box-shadow: 0 4px 10px rgba(146, 230, 0, 0.2); transition: background 0.15s, transform 0.1s; }
         .btn:hover { background: var(--wiiu-green-hover); }
         .btn:active { transform: scale(0.97); }
-
-        .btn-outline {
-            background: transparent;
-            color: var(--text-main);
-            border: 1px solid var(--border-color);
-            box-shadow: none;
-        }
+        .btn-outline { background: transparent; color: var(--text-main); border: 1px solid var(--border-color); }
         .btn-outline:hover { background: #3f3f46; border-color: #71717a; }
 
-        .action-tab {
-            background: #3f3f46;
-            border: none;
-            padding: 6px 14px;
-            border-radius: var(--radius-sm);
-            font-size: 0.8rem;
-            font-weight: bold;
-            color: var(--text-main);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
+        .action-tab { background: #3f3f46; border: none; padding: 6px 14px; border-radius: var(--radius-sm); font-size: 0.8rem; font-weight: bold; color: var(--text-main); cursor: pointer; display: flex; align-items: center; gap: 5px; }
         .action-tab:hover { background: #52525b; }
+        .action-tab.yeah-active { background: #ff7f00; color: white; }
+        .action-tab.reply-tab { background: #1e3a8a; color: #60a5fa; }
 
-        .action-tab.yeah-active {
-            background: #ff7f00;
-            color: white;
-        }
-
-        .action-tab.reply-tab {
-            background: #1e3a8a;
-            color: #60a5fa;
-        }
-        .action-tab.reply-tab:hover { background: #1e40af; }
-
-        /* --- COMPONENT STUTTER FIXES --- */
         .hidden { display: none !important; }
-        .input-field {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-sm);
-            margin-bottom: 10px;
-            box-sizing: border-box;
-            background-color: var(--input-bg);
-            color: var(--text-main);
-        }
-        .input-field:focus {
-            outline: none;
-            border-color: var(--wiiu-green);
-        }
-
-        /* --- MODAL DIALOG --- */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 100;
-            backdrop-filter: blur(2px);
-        }
-        .modal-body {
-            background: var(--card-bg); padding: 25px; border-radius: var(--radius-lg); width: 90%; max-width: 550px;
-            border: 1px solid var(--border-color); box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
+        .input-field { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); margin-bottom: 10px; box-sizing: border-box; background-color: var(--input-bg); color: var(--text-main); }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 100; backdrop-filter: blur(2px); }
+        .modal-body { background: var(--card-bg); padding: 25px; border-radius: var(--radius-lg); width: 90%; max-width: 550px; border: 1px solid var(--border-color); }
     </style>
 </head>
 <body>
 
     <div class="app-wrapper">
-        <!-- GLOBAL HEADBOARD HEADER -->
         <header>
-            <div class="logo-area">
-                <span class="logo-dot"></span> Codyverse Plaza
-            </div>
+            <div class="logo-area"><span class="logo-dot"></span> Codyverse Plaza</div>
             <div id="user-nav-widget"></div>
         </header>
 
-        <!-- DASHBOARD CONTAINER GRID -->
         <div class="main-layout">
-            
-            <!-- LEFT COLUMN STACK -->
             <div class="sidebar">
-                <!-- User Meta Information Card -->
                 <div id="user-info-card" class="card user-profile-summary hidden">
                     <div class="avatar" id="user-card-avatar">?</div>
                     <div>
@@ -347,33 +95,25 @@
                     <button class="btn btn-outline" style="width:100%; font-size:0.8rem;" onclick="toggleProfileEdit()">Profile Settings</button>
                 </div>
 
-                <!-- Info panel if signed out -->
-                <div id="guest-info-card" class="card style-text" style="text-align: center;">
-                    <h4 style="margin-top:0;">Welcome Traveler!</h4>
-                    <p style="font-size:0.85rem; color:var(--text-muted); line-height:1.4;">Sign in to select communities and save posts inside the network matrix.</p>
+                <div id="guest-info-card" class="card" style="text-align: center;">
+                    <h4 style="margin-top:0;">Welcome!</h4>
+                    <p style="font-size:0.85rem; color:var(--text-muted);">Sign in to construct sub-community worlds and log posts.</p>
+                </div>
+
+                <div id="community-builder-card" class="card hidden">
+                    <h4 style="margin-top:0; color:var(--wiiu-green);">🔨 Open New Hub</h4>
+                    <input type="text" id="new-comm-name" class="input-field" placeholder="Hub Name (e.g., Anime Dubs)">
+                    <button class="btn" style="width:100%; font-size:0.8rem;" onclick="createCommunity()">Launch Community</button>
                 </div>
             </div>
 
-            <!-- RIGHT TIMELINE CONTENT BLOCK -->
             <div class="feed-container">
-                
-                <!-- Nintendo Community Central Plaza Select Bar -->
-                <div class="community-grid" id="communities-box">
-                    <div class="community-card active" onclick="switchCommunity('general')">💬 General</div>
-                    <div class="community-card" onclick="switchCommunity('splatoon')">🦑 Splatoon</div>
-                    <div class="community-card" onclick="switchCommunity('animal_crossing')">🍃 Animal Crossing</div>
-                    <div class="community-card" onclick="switchCommunity('webdev')">💻 Web Development</div>
-                    <div class="community-card" onclick="switchCommunity('anime')">📺 Dubbed Anime</div>
-                </div>
+                <div class="community-grid" id="communities-box"></div>
 
-                <!-- Profile Customization Panel Subcard -->
                 <div id="profile-edit-panel" class="card hidden">
-                    <h3 style="margin-top:0; border-bottom:1px solid var(--border-color); padding-bottom:8px;">🎨 Edit User Profile</h3>
-                    <label style="font-size:0.8rem; font-weight:bold; display:block; margin-bottom:4px;">Display Name</label>
+                    <h3 style="margin-top:0; border-bottom:1px solid var(--border-color); padding-bottom:8px;">🎨 Edit Profile</h3>
                     <input type="text" id="prof-displayname" class="input-field">
-                    <label style="font-size:0.8rem; font-weight:bold; display:block; margin-bottom:4px;">Avatar Image Link</label>
                     <input type="text" id="prof-avatar" class="input-field" placeholder="https://domain.com/pic.png">
-                    <label style="font-size:0.8rem; font-weight:bold; display:block; margin-bottom:4px;">Bio Text Description</label>
                     <textarea id="prof-bio" class="input-field" style="height:60px; resize:none;"></textarea>
                     <div style="margin-top:10px; display:flex; gap:10px;">
                         <button class="btn" onclick="updateProfile()">Save Modifications</button>
@@ -381,37 +121,32 @@
                     </div>
                 </div>
 
-                <!-- Gate Authentication Form Interface -->
                 <div id="auth-panel" class="card hidden">
                     <h3 id="auth-panel-title" style="margin-top:0;">Sign In</h3>
                     <input type="text" id="auth-displayname" class="input-field hidden" placeholder="Display Name">
-                    <input type="text" id="auth-username" class="input-field" placeholder="Username Handle">
-                    <input type="password" id="auth-password" class="input-field" placeholder="Password Access Security">
+                    <input type="text" id="auth-username" class="input-field" placeholder="Username">
+                    <input type="password" id="auth-password" class="input-field" placeholder="Password">
                     <div style="margin-top:5px;">
                         <button class="btn" id="auth-execution-btn" onclick="handleAuth()">Connect</button>
-                        <button class="btn btn-outline" id="auth-toggle-view" onclick="toggleAuthMode()">Create Registration Profile</button>
+                        <button class="btn btn-outline" id="auth-toggle-view" onclick="toggleAuthMode()">Create Profile</button>
                     </div>
                 </div>
 
-                <!-- Messaging Composer Input Box -->
                 <div id="post-panel" class="card post-composer hidden">
-                    <textarea id="post-text" placeholder="Write something elegant or completely ridiculous..."></textarea>
+                    <textarea id="post-text" placeholder="Share something elegant or completely ridiculous..."></textarea>
                     <div style="display:flex; justify-content:flex-end; margin-top:10px;">
                         <button class="btn" onclick="submitPost()">Post into Channel</button>
                     </div>
                 </div>
 
-                <!-- Central Timeline Content Stream output -->
                 <div id="feed-stream"></div>
             </div>
-
         </div>
     </div>
 
-    <!-- REPLIES COMPONENT MODULE BOX -->
     <div id="reply-modal" class="modal-overlay hidden">
         <div class="modal-body">
-            <h3 style="margin-top:0; color:var(--text-main);">Thread Status Hub</h3>
+            <h3 style="margin-top:0;">Thread Status Hub</h3>
             <div id="modal-parent-post-anchor"></div>
             <hr style="border:0; border-top:1px solid var(--border-color); margin:15px 0;">
             <div id="modal-replies-stream" style="max-height:240px; overflow-y:auto; margin-bottom:15px; display:flex; flex-direction:column; gap:12px;"></div>
@@ -449,10 +184,10 @@
                     document.getElementById('user-nav-widget').innerHTML = `<button class="btn btn-outline" onclick="logout()">Disconnect</button>`;
                     document.getElementById('post-panel').classList.remove('hidden');
                     document.getElementById('user-info-card').classList.remove('hidden');
+                    document.getElementById('community-builder-card').classList.remove('hidden');
                     document.getElementById('guest-info-card').classList.add('hidden');
                     document.getElementById('auth-panel').classList.add('hidden');
                     
-                    // Setup sidebar metrics layout references
                     document.getElementById('user-card-avatar').innerHTML = currentProfile?.avatarUrl ? `<img src="${currentProfile.avatarUrl}">` : currentUser.charAt(0).toUpperCase();
                     document.getElementById('user-card-name').innerText = currentProfile?.displayName || currentUser;
                     document.getElementById('user-card-handle').innerText = `@${currentUser}`;
@@ -468,16 +203,54 @@
                     document.getElementById('auth-panel').classList.remove('hidden');
                     document.getElementById('post-panel').classList.add('hidden');
                     document.getElementById('user-info-card').classList.add('hidden');
+                    document.getElementById('community-builder-card').classList.add('hidden');
                     document.getElementById('guest-info-card').classList.remove('hidden');
                 }
             } catch(e) { console.error(e); }
+        }
+
+        async function loadCommunities() {
+            const res = await apiFetch('/api/communities');
+            const list = await res.json();
+            const box = document.getElementById('communities-box');
+            
+            box.innerHTML = list.map(c => {
+                const canDelete = !c.system && c.creator === currentUser;
+                return `
+                    <div class="community-card ${c.id === currentCommunity ? 'active' : ''}" onclick="switchCommunity('${c.id}')">
+                        ${escapeHtml(c.name)}
+                        ${canDelete ? `<button class="community-delete-btn" onclick="deleteCommunity(event, '${c.id}')">🗑️</button>` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function createCommunity() {
+            const name = document.getElementById('new-comm-name').value;
+            if(!name) return;
+            const res = await apiFetch('/api/communities/create', { method: 'POST', body: { name } });
+            if(res.ok) {
+                document.getElementById('new-comm-name').value = '';
+                await loadCommunities();
+            } else { alert(await res.text()); }
+        }
+
+        async function deleteCommunity(event, id) {
+            event.stopPropagation(); // Avoid triggering switch community onclick event context
+            if(!confirm("Are you sure you want to completely erase this community? All posts inside will be cleared.")) return;
+            const res = await apiFetch('/api/communities/delete', { method: 'POST', body: { id } });
+            if(res.ok) {
+                if(currentCommunity === id) currentCommunity = "general";
+                await loadCommunities();
+                loadPosts();
+            }
         }
 
         function switchCommunity(target) {
             currentCommunity = target;
             const blocks = document.querySelectorAll('.community-card');
             blocks.forEach(b => b.classList.remove('active'));
-            event.target.classList.add('active');
+            if(event && event.currentTarget) event.currentTarget.classList.add('active');
             loadPosts();
         }
 
@@ -494,7 +267,6 @@
         }
 
         function toggleProfileEdit() { document.getElementById('profile-edit-panel').classList.toggle('hidden'); }
-        
         function toggleAuthMode() {
             isSignUp = !isSignUp;
             document.getElementById('auth-panel-title').innerText = isSignUp ? 'Create Registration Account' : 'Sign In';
@@ -509,7 +281,7 @@
             const res = await apiFetch(isSignUp ? '/api/register' : '/api/login', {
                 method: 'POST', body: isSignUp ? { username, password, displayName } : { username, password }
             });
-            if(res.ok) { if(isSignUp) { toggleAuthMode(); } else { await checkAuth(); loadPosts(); } } else { alert(await res.text()); }
+            if(res.ok) { if(isSignUp) { toggleAuthMode(); } else { await checkAuth(); await loadCommunities(); loadPosts(); } } else { alert(await res.text()); }
         }
 
         async function logout() { await apiFetch('/api/logout'); window.location.reload(); }
@@ -600,7 +372,7 @@
 
         function escapeHtml(str) { return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
 
-        (async () => { await checkAuth(); loadPosts(); })();
+        (async () => { await checkAuth(); await loadCommunities(); loadPosts(); })();
     </script>
 </body>
 </html>
