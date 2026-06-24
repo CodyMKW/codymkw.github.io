@@ -3,33 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Codyverse Plaza Premium - Ultra Edition</title>
+    <title>Codyverse Plaza Premium - Connected System</title>
     <style>
         :root[data-theme="light"] {
-            --bg-dark: #f3f3f3; 
-            --card-bg: #ffffff; 
-            --input-bg: #fafafa; 
-            --border-color: #d1d1d6;
-            --text-main: #1c1c1e; 
-            --text-muted: #8e8e93; 
-            --wiiu-green: #8ec600; 
-            --wiiu-green-hover: #76a500;
-            --tab-bg: #e5e5ea;
-            --tab-hover: #d1d1d6;
-            --poll-bar: #abd942;
+            --bg-dark: #f3f3f3; --card-bg: #ffffff; --input-bg: #fafafa; --border-color: #d1d1d6;
+            --text-main: #1c1c1e; --text-muted: #8e8e93; --wiiu-green: #8ec600; --wiiu-green-hover: #76a500;
+            --tab-bg: #e5e5ea; --tab-hover: #d1d1d6; --poll-bar: #abd942;
         }
         :root[data-theme="dark"] {
-            --bg-dark: #1b1b1d; 
-            --card-bg: #2d2d31; 
-            --input-bg: #202023; 
-            --border-color: #3f3f46;
-            --text-main: #f4f4f5; 
-            --text-muted: #a1a1aa; 
-            --wiiu-green: #92e600; 
-            --wiiu-green-hover: #abd942;
-            --tab-bg: #3f3f46;
-            --tab-hover: #52525b;
-            --poll-bar: #8ec600;
+            --bg-dark: #1b1b1d; --card-bg: #2d2d31; --input-bg: #202023; --border-color: #3f3f46;
+            --text-main: #f4f4f5; --text-muted: #a1a1aa; --wiiu-green: #92e600; --wiiu-green-hover: #abd942;
+            --tab-bg: #3f3f46; --tab-hover: #52525b; --poll-bar: #8ec600;
         }
 
         body { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; background-color: var(--bg-dark); color: var(--text-main); margin: 0; padding: 0; display: flex; justify-content: center; -webkit-font-smoothing: antialiased; transition: background-color 0.2s, color 0.2s; }
@@ -38,7 +22,7 @@
         .logo-area { display: flex; align-items: center; gap: 8px; font-size: 1.5rem; font-weight: 800; color: var(--wiiu-green); letter-spacing: -0.5px; }
         .logo-dot { width: 12px; height: 12px; background-color: var(--wiiu-green); border-radius: 50%; display: inline-block; }
         
-        .main-layout { display: grid; grid-template-columns: 280px 1fr 300px; gap: 20px; align-items: start; }
+        .main-layout { display: grid; grid-template-columns: 280px 1fr 310px; gap: 20px; align-items: start; }
         @media (max-width: 1150px) { .main-layout { grid-template-columns: 280px 1fr; } }
         @media (max-width: 780px) { .main-layout { grid-template-columns: 1fr; } }
         
@@ -80,20 +64,17 @@
         .btn { background: var(--wiiu-green); color: #111; border: none; padding: 10px 20px; border-radius: 9999px; font-weight: 700; font-size: 0.9rem; cursor: pointer; box-shadow: 0 4px 10px rgba(146, 230, 0, 0.15); transition: background 0.15s, transform 0.1s, color 0.15s; }
         .btn:hover { background: var(--wiiu-green-hover); }
         .btn:active { transform: scale(0.97); }
-        
         .btn-outline { background: transparent; color: var(--text-main); border: 1px solid var(--border-color); box-shadow: none; }
         .btn-outline:hover { background: var(--tab-hover); border-color: var(--text-muted); color: var(--text-main); }
 
         .action-tab { background: var(--tab-bg); border: none; padding: 6px 12px; border-radius: 8px; font-size: 0.8rem; font-weight: bold; color: var(--text-main); cursor: pointer; display: flex; align-items: center; gap: 5px; transition: background-color 0.15s, color 0.15s; }
         .action-tab:hover { background: var(--tab-hover); }
-        
         .action-tab.active-yeah { background: #ff7f00 !important; color: white !important; }
         .action-tab.active-fresh { background: #00ddff !important; color: #111 !important; }
         .action-tab.active-cozy { background: #ff55bb !important; color: white !important; }
         .action-tab.reply-tab { background: #2f63ff; color: white; }
-        .action-tab.reply-tab:hover { background: #1e4cee; }
 
-        .post-delete-trigger { position: absolute; top: 18px; right: 18px; background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 1rem; padding: 2px 6px; border-radius: 4px; transition: background 0.1s; }
+        .post-delete-trigger { position: absolute; top: 18px; right: 18px; background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 1rem; padding: 2px 6px; border-radius: 4px; }
         .post-delete-trigger:hover { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
 
         .hidden { display: none !important; }
@@ -101,18 +82,19 @@
         .online-dot { width: 8px; height: 8px; background-color: #22c55e; border-radius: 50%; display: inline-block; }
         
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 100; backdrop-filter: blur(4px); }
-        .modal-body { background: var(--card-bg); padding: 25px; border-radius: 16px; width: 90%; max-width: 550px; border: 1px solid var(--border-color); box-shadow: 0 10px 30px rgba(0,0,0,0.3); color: var(--text-main); }
+        .modal-body { background: var(--card-bg); padding: 25px; border-radius: 16px; width: 90%; max-width: 550px; border: 1px solid var(--border-color); color: var(--text-main); }
         .telemetry-clock { font-size: 0.85rem; font-weight: bold; color: var(--text-muted); background: var(--tab-bg); padding: 4px 10px; border-radius: 6px; border: 1px solid var(--border-color); }
-
-        /* Formatting bar / Poll widget features */
         .fmt-btn { background: var(--tab-bg); border: 1px solid var(--border-color); color: var(--text-main); padding: 4px 8px; font-size: 0.75rem; font-weight: bold; border-radius: 4px; cursor: pointer; }
-        .fmt-btn:hover { background: var(--tab-hover); }
-        .poll-option-row { margin-bottom: 12px; cursor: pointer; }
-        .poll-bar-outer { width: 100%; background: var(--input-bg); height: 16px; border-radius: 8px; overflow: hidden; border: 1px solid var(--border-color); margin-top: 4px; position: relative; }
-        .poll-bar-inner { background: var(--poll-bar); height: 100%; width: 0%; transition: width 0.4s ease; }
-        .poll-pct { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); font-size: 0.7rem; font-weight: bold; color: var(--text-main); }
+
+        /* POLL COMPONENT SECTIONS */
+        .poll-option-row { margin-bottom: 10px; cursor: pointer; position: relative; }
+        .poll-bar-outer { width: 100%; background: var(--input-bg); height: 24px; border-radius: 6px; overflow: hidden; border: 1px solid var(--border-color); margin-top: 4px; position: relative; }
+        .poll-bar-inner { background: var(--poll-bar); height: 100%; width: 0%; transition: width 0.4s cubic-bezier(0.1, 0.8, 0.3, 1); }
+        .poll-txt-lbl { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 0.8rem; font-weight: bold; color: var(--text-main); pointer-events: none; text-shadow: 0 1px 2px rgba(0,0,0,0.4); }
+        .poll-pct { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); font-size: 0.75rem; font-weight: 800; color: var(--text-main); pointer-events: none; }
         .spoiler-text { background: var(--text-main); color: var(--text-main); cursor: pointer; border-radius: 4px; padding: 0 2px; }
         .spoiler-text.revealed { background: transparent; color: inherit; }
+        .admin-badge { background: #ef4444; color: white; font-size: 0.65rem; font-weight: bold; padding: 1px 5px; border-radius: 4px; text-transform: uppercase; }
     </style>
 </head>
 <body>
@@ -141,7 +123,7 @@
 
                 <div id="guest-info-card" class="card" style="text-align: center;">
                     <h4>Welcome!</h4>
-                    <p style="font-size:0.85rem; color:var(--text-muted);">Sign in to construct custom boards, post graphics, and interact.</p>
+                    <p style="font-size:0.85rem; color:var(--text-muted);">Sign in to manage custom hubs and engage in topics.</p>
                 </div>
 
                 <div id="community-builder-card" class="card hidden">
@@ -152,7 +134,7 @@
 
                 <div class="card">
                     <h4 style="margin-top:0; color:var(--text-muted); font-size:0.85rem; text-transform:uppercase;">📊 Plaza Telemetry</h4>
-                    <div style="font-size:0.8rem; display:grid; gap:6px;" id="telemetry-stats-body">
+                    <div style="font-size:0.8rem; display:grid; gap:6px;">
                         <div>Loaded Channels: <strong id="stat-channels-count">3</strong></div>
                         <div>Rendered Feed Size: <strong id="stat-posts-count">0 items</strong></div>
                         <div>Client Protocol: <strong>HTTP/2 JSON-KV</strong></div>
@@ -211,89 +193,63 @@
             </div>
 
             <div class="sidebar">
-                <div class="card">
-                    <h4 style="margin-top:0; margin-bottom:4px;">🦑 Plaza Splat Poll</h4>
-                    <p style="font-size:0.75rem; color:var(--text-muted); margin:0 0 12px 0;">Which aesthetic has optimal comfort?</p>
-                    <div id="poll-widget-body">
-                        <div class="poll-option-row" onclick="votePoll('splat')">
-                            <div style="display:flex; justify-content:space-between; font-size:0.8rem;"><span>🦑 Ink-Splat Chaos</span><span id="poll-v-splat">0</span></div>
-                            <div class="poll-bar-outer"><div class="poll-bar-inner" id="pb-splat"></div><div class="poll-pct" id="pp-splat">0%</div></div>
-                        </div>
-                        <div class="poll-option-row" onclick="votePoll('cozy')">
-                            <div style="display:flex; justify-content:space-between; font-size:0.8rem;"><span>🍃 Cozy Island Life</span><span id="poll-v-cozy">0</span></div>
-                            <div class="poll-bar-outer"><div class="poll-bar-inner" id="pb-cozy"></div><div class="poll-pct" id="pp-cozy">0%</div></div>
+                <div class="card" id="poll-card-container">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                        <h4 style="margin:0;">📊 Community Poll</h4>
+                        <button id="create-poll-trigger-btn" class="btn btn-outline hidden" style="padding:2px 8px; font-size:0.7rem; border-radius:4px;" onclick="togglePollCreator()">+ New Poll</button>
+                    </div>
+                    
+                    <div id="poll-creator-view" class="hidden" style="border-bottom:1px solid var(--border-color); padding-bottom:12px; margin-bottom:12px;">
+                        <input type="text" id="poll-q-input" class="input-field" style="font-size:0.8rem; padding:6px;" placeholder="Poll Question...">
+                        <input type="text" id="poll-o1-input" class="input-field" style="font-size:0.8rem; padding:6px; margin-bottom:4px;" placeholder="Option 1">
+                        <input type="text" id="poll-o2-input" class="input-field" style="font-size:0.8rem; padding:6px; margin-bottom:4px;" placeholder="Option 2">
+                        <input type="text" id="poll-o3-input" class="input-field" style="font-size:0.8rem; padding:6px; margin-bottom:4px;" placeholder="Option 3 (Optional)">
+                        <input type="text" id="poll-o4-input" class="input-field" style="font-size:0.8rem; padding:6px; margin-bottom:8px;" placeholder="Option 4 (Optional)">
+                        <button class="btn" style="width:100%; font-size:0.75rem; padding:6px;" onclick="publishCustomPoll()">Launch Survey</button>
+                    </div>
+
+                    <p id="poll-display-question" style="font-size:0.85rem; font-weight:bold; margin:0 0 12px 0; line-height:1.3;">Loading Poll data matrix...</p>
+                    <div id="poll-options-render-stack"></div>
+                    <div id="poll-metadata-footer" style="font-size:0.7rem; color:var(--text-muted); margin-top:8px; display:flex; justify-content:space-between; align-items:center;">
+                        <span id="poll-author-indicator">by @system</span>
+                        <div id="poll-admin-actions" class="hidden">
+                            <button style="background:transparent; border:none; color:#ef4444; font-size:0.75rem; cursor:pointer; padding:0;" onclick="adminNukePoll()">[Nuke Poll]</button>
                         </div>
                     </div>
                 </div>
 
                 <div class="card">
                     <h4 style="margin-top:0; border-bottom:1px solid var(--border-color); padding-bottom:6px;"><span class="online-dot"></span> Online Now</h4>
-                    <div id="online-users-box" style="display:flex; flex-direction:column; gap:10px; font-size:0.85rem;">
-                        Loading matrix registry...
-                    </div>
+                    <div id="online-users-box" style="display:flex; flex-direction:column; gap:10px; font-size:0.85rem;">Loading matrix registry...</div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="reply-modal" class="modal-overlay hidden" onclick="closeReplyModal()">
-        <div class="modal-body" onclick="event.stopPropagation()">
-            <h3 style="margin-top:0;">Thread Discussion Status</h3>
-            <div id="modal-parent-post-anchor"></div>
-            <hr style="border:0; border-top:1px solid var(--border-color); margin:15px 0;">
-            <div id="modal-replies-stream" style="max-height:240px; overflow-y:auto; margin-bottom:15px; display:flex; flex-direction:column; gap:12px;"></div>
-            <textarea id="reply-text" class="input-field" style="height:70px; resize:none;" placeholder="Contribute insight to conversation..."></textarea>
-            <div style="display:flex; justify-content:flex-end; gap:10px;">
-                <button class="btn btn-outline" onclick="closeReplyModal()">Close Hub</button>
-                <button class="btn" onclick="submitReply()">Send Reply</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="user-inspector-modal" class="modal-overlay hidden" onclick="closeInspectorModal()">
-        <div class="modal-body" style="max-width:400px; text-align:center;" onclick="event.stopPropagation()">
-            <div class="avatar" id="inspect-avatar" style="width:72px; height:72px; font-size:1.8rem; margin:0 auto 12px auto; pointer-events:none;">?</div>
-            <h3 id="inspect-displayname" style="margin:0 0 4px 0;">-</h3>
-            <p id="inspect-username" style="color:var(--text-muted); margin:0 0 15px 0; font-size:0.9rem;">@-</p>
-            <div id="inspect-bio" style="background:var(--input-bg); padding:15px; border-radius:12px; font-size:0.9rem; text-align:left; border:1px solid var(--border-color); line-height:1.4; word-break:break-word; max-height:150px; overflow-y:auto;">-</div>
-            <br>
-            <button class="btn" style="width:100%;" onclick="closeInspectorModal()">Dismiss Card</button>
-        </div>
-    </div>
+    <div id="user-inspector-modal" class="modal-overlay hidden" onclick="closeInspectorModal()"><div class="modal-body" style="max-width:400px; text-align:center;" onclick="event.stopPropagation()"><div class="avatar" id="inspect-avatar" style="width:72px; height:72px; font-size:1.8rem; margin:0 auto 12px auto; pointer-events:none;">?</div><h3 id="inspect-displayname" style="margin:0;">-</h3><p id="inspect-username" style="color:var(--text-muted); margin:0 0 15px 0;">@-</p><div id="inspect-bio" style="background:var(--input-bg); padding:15px; border-radius:12px; font-size:0.9rem; text-align:left; border:1px solid var(--border-color); max-height:150px; overflow-y:auto;">-</div><br><button class="btn" style="width:100%;" onclick="closeInspectorModal()">Dismiss Card</button></div></div>
 
     <script>
         const API_BASE = "https://codyverse.codymkw.workers.dev"; 
+        let currentUser = null, currentProfile = null, currentCommunity = "general", loadedPostsCache = [];
 
-        let isSignUp = false, currentUser = null, currentProfile = null, currentCommunity = "general", activePostId = null, loadedPostsCache = [];
-
-        // --- RETRO FX WEBAUDIO GENERATOR ENGINE ---
         const sfxContext = new (window.AudioContext || window.webkitAudioContext)();
         function playSfx(type) {
             try {
-                const osc = sfxContext.createOscillator();
-                const gain = sfxContext.createGain();
-                osc.connect(gain);
-                gain.connect(sfxContext.destination);
-
+                const osc = sfxContext.createOscillator(); const gain = sfxContext.createGain();
+                osc.connect(gain); gain.connect(sfxContext.destination);
                 if (type === 'click') {
-                    osc.type = 'triangle';
-                    osc.frequency.setValueAtTime(400, sfxContext.currentTime);
+                    osc.type = 'triangle'; osc.frequency.setValueAtTime(400, sfxContext.currentTime);
                     osc.frequency.exponentialRampToValueAtTime(120, sfxContext.currentTime + 0.08);
-                    gain.gain.setValueAtTime(0.1, sfxContext.currentTime);
-                    gain.gain.linearRampToValueAtTime(0.01, sfxContext.currentTime + 0.08);
+                    gain.gain.setValueAtTime(0.1, sfxContext.currentTime); gain.gain.linearRampToValueAtTime(0.01, sfxContext.currentTime + 0.08);
                     osc.start(); osc.stop(sfxContext.currentTime + 0.08);
                 } else if (type === 'chime') {
-                    osc.type = 'sine';
-                    osc.frequency.setValueAtTime(587.33, sfxContext.currentTime); // D5
-                    osc.frequency.setValueAtTime(880, sfxContext.currentTime + 0.08); // A5
-                    gain.gain.setValueAtTime(0.15, sfxContext.currentTime);
-                    gain.gain.linearRampToValueAtTime(0.01, sfxContext.currentTime + 0.25);
+                    osc.type = 'sine'; osc.frequency.setValueAtTime(587.33, sfxContext.currentTime);
+                    osc.frequency.setValueAtTime(880, sfxContext.currentTime + 0.08);
+                    gain.gain.setValueAtTime(0.15, sfxContext.currentTime); gain.gain.linearRampToValueAtTime(0.01, sfxContext.currentTime + 0.25);
                     osc.start(); osc.stop(sfxContext.currentTime + 0.25);
                 } else if (type === 'switch') {
-                    osc.type = 'square';
-                    osc.frequency.setValueAtTime(220, sfxContext.currentTime);
-                    gain.gain.setValueAtTime(0.05, sfxContext.currentTime);
-                    gain.gain.linearRampToValueAtTime(0.001, sfxContext.currentTime + 0.05);
+                    osc.type = 'square'; osc.frequency.setValueAtTime(220, sfxContext.currentTime);
+                    gain.gain.setValueAtTime(0.05, sfxContext.currentTime); gain.gain.linearRampToValueAtTime(0.001, sfxContext.currentTime + 0.05);
                     osc.start(); osc.stop(sfxContext.currentTime + 0.05);
                 }
             } catch(e){}
@@ -308,41 +264,14 @@
             return fetch(`${API_BASE}${endpoint}`, options);
         }
 
-        function toggleTheme() {
-            playSfx('switch');
-            const current = document.documentElement.getAttribute('data-theme');
-            document.documentElement.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
-        }
-
-        // TEXT WRAPPER FORMATTING ENGINE
-        function insertFormat(openTag, closeTag) {
-            const textarea = document.getElementById('post-text');
-            const start = textarea.selectionStart;
-            const end = textarea.selectionEnd;
-            const text = textarea.value;
-            textarea.value = text.substring(0, start) + openTag + text.substring(start, end) + closeTag + text.substring(end);
-            textarea.focus();
-            onComposerInput();
-        }
-
-        function onComposerInput() {
-            updateCharCount();
-            localStorage.setItem(`plaza_draft_${currentCommunity}`, document.getElementById('post-text').value);
-        }
-
-        function updateCharCount() {
-            document.getElementById('post-char-count').innerText = `${document.getElementById('post-text').value.length} / 280`;
-        }
-
-        function updateClock() {
-            const now = new Date();
-            document.getElementById('live-telemetry-clock').innerText = now.toUTCString().replace('GMT', 'UTC');
-        }
+        function toggleTheme() { playSfx('switch'); const current = document.documentElement.getAttribute('data-theme'); document.documentElement.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark'); }
+        function insertFormat(openTag, closeTag) { const textarea = document.getElementById('post-text'); const start = textarea.selectionStart; const end = textarea.selectionEnd; const text = textarea.value; textarea.value = text.substring(0, start) + openTag + text.substring(start, end) + closeTag + text.substring(end); textarea.focus(); onComposerInput(); }
+        function onComposerInput() { updateCharCount(); localStorage.setItem(`plaza_draft_${currentCommunity}`, document.getElementById('post-text').value); }
+        function updateCharCount() { document.getElementById('post-char-count').innerText = `${document.getElementById('post-text').value.length} / 280`; }
+        function updateClock() { document.getElementById('live-telemetry-clock').innerText = new Date().toUTCString().replace('GMT', 'UTC'); }
         setInterval(updateClock, 1000);
-
         function isPlatformAdmin() { return currentUser === "codymkw"; }
 
-        // PARSER INTERPRETER FOR SPOILERS AND FORMATS
         function parseCustomFormatting(str) {
             let parsed = escapeHtml(str);
             parsed = parsed.replace(/\[b\](.*?)\[\/b\]/gi, '<strong>$1</strong>');
@@ -351,321 +280,114 @@
             return parsed;
         }
 
-        // POLL SYSTEM LOGIC STORAGE
-        function renderPoll() {
-            const votes = JSON.parse(localStorage.getItem('plaza_poll_cache') || '{"splat":12,"cozy":18}');
-            const total = votes.splat + votes.cozy;
-            const pctSplat = total ? Math.round((votes.splat / total) * 100) : 0;
-            const pctCozy = total ? Math.round((votes.cozy / total) * 100) : 0;
-            
-            document.getElementById('poll-v-splat').innerText = votes.splat;
-            document.getElementById('poll-v-cozy').innerText = votes.cozy;
-            document.getElementById('pb-splat').style.width = pctSplat + '%';
-            document.getElementById('pb-cozy').style.width = pctCozy + '%';
-            document.getElementById('pp-splat').innerText = pctSplat + '%';
-            document.getElementById('pp-cozy').innerText = pctCozy + '%';
+        // ==========================================
+        // SYNCED DB POLL IMPLEMENTATION RUNTIMES
+        // ==========================================
+        function togglePollCreator() { document.getElementById('poll-creator-view').classList.toggle('hidden'); }
+
+        async function renderActivePoll() {
+            const res = await apiFetch(`/api/poll?community=${currentCommunity}`);
+            const currentPoll = res.ok ? await res.json() : { question: "No Poll Active", creator: "system", options: [], votes: {} };
+
+            document.getElementById('poll-display-question').innerText = currentPoll.question;
+            document.getElementById('poll-author-indicator').innerText = `by @${currentPoll.creator}`;
+            if (currentPoll.creator === 'system') document.getElementById('poll-author-indicator').innerHTML = `by <span class="admin-badge">System</span>`;
+
+            document.getElementById('poll-admin-actions').classList.toggle('hidden', !isPlatformAdmin());
+
+            const totalVotes = Object.values(currentPoll.votes).reduce((a, b) => a + b, 0);
+            const stack = document.getElementById('poll-options-render-stack');
+            stack.innerHTML = '';
+
+            currentPoll.options.forEach((opt, idx) => {
+                const count = currentPoll.votes[idx] || 0;
+                const pct = totalVotes ? Math.round((count / totalVotes) * 100) : 0;
+                const row = document.createElement('div');
+                row.className = 'poll-option-row';
+                row.onclick = () => voteInActivePoll(idx);
+                row.innerHTML = `<div class="poll-bar-outer"><div class="poll-bar-inner" style="width: ${pct}%;"></div></div><span class="poll-txt-lbl">${escapeHtml(opt)}</span><span class="poll-pct">${pct}% (${count})</span>`;
+                stack.appendChild(row);
+            });
         }
-        function votePoll(key) {
+
+        async function voteInActivePoll(optionIdx) {
             playSfx('click');
-            const votes = JSON.parse(localStorage.getItem('plaza_poll_cache') || '{"splat":12,"cozy":18}');
-            votes[key]++;
-            localStorage.setItem('plaza_poll_cache', JSON.stringify(votes));
-            renderPoll();
+            const res = await apiFetch('/api/poll/vote', { method: 'POST', body: { community: currentCommunity, optionIdx } });
+            if(res.ok) renderActivePoll();
         }
 
-        async function checkAuth() {
-            try {
-                const res = await apiFetch('/api/me');
-                const data = await res.json();
-                currentUser = data.username;
-                currentProfile = data.profile;
-                
-                if (currentUser) {
-                    document.getElementById('user-nav-widget').innerHTML = `<button class="btn btn-outline" onclick="logout()">Disconnect</button>`;
-                    document.getElementById('post-panel').classList.remove('hidden');
-                    document.getElementById('user-info-card').classList.remove('hidden');
-                    document.getElementById('community-builder-card').classList.remove('hidden');
-                    document.getElementById('guest-info-card').classList.add('hidden');
-                    document.getElementById('auth-panel').classList.add('hidden');
-                    
-                    document.getElementById('user-card-avatar').innerHTML = currentProfile?.avatarUrl ? `<img src="${currentProfile.avatarUrl}">` : currentUser.charAt(0).toUpperCase();
-                    document.getElementById('user-card-avatar').onclick = () => inspectUser(currentUser);
-                    document.getElementById('user-card-name').innerText = currentProfile?.displayName || currentUser;
-                    document.getElementById('user-card-handle').innerText = `@${currentUser}`;
-                    document.getElementById('user-card-bio').innerText = currentProfile?.bio || 'No status bio cataloged.';
-                    
-                    if(currentProfile) {
-                        document.getElementById('prof-displayname').value = currentProfile.displayName || '';
-                        document.getElementById('prof-avatar').value = currentProfile.avatarUrl || '';
-                        document.getElementById('prof-bio').value = currentProfile.bio || '';
-                    }
-                } else {
-                    document.getElementById('user-nav-widget').innerHTML = '';
-                    document.getElementById('auth-panel').classList.remove('hidden');
-                    document.getElementById('post-panel').classList.add('hidden');
-                    document.getElementById('user-info-card').classList.add('hidden');
-                    document.getElementById('community-builder-card').classList.add('hidden');
-                    document.getElementById('guest-info-card').classList.remove('hidden');
-                }
-            } catch(e) { console.error(e); }
-        }
+        async function publishCustomPoll() {
+            const q = document.getElementById('poll-q-input').value;
+            const o1 = document.getElementById('poll-o1-input').value; const o2 = document.getElementById('poll-o2-input').value;
+            const o3 = document.getElementById('poll-o3-input').value; const o4 = document.getElementById('poll-o4-input').value;
+            if (!q || !o1 || !o2) return alert("Requires question and 2 options!");
 
-        async function loadCommunities() {
-            const res = await apiFetch('/api/communities');
-            const list = await res.json();
-            const box = document.getElementById('communities-box');
-            document.getElementById('stat-channels-count').innerText = list.length;
-            
-            box.innerHTML = list.map(c => {
-                const canDelete = isPlatformAdmin() || (!c.system && c.creator === currentUser);
-                return `
-                    <div class="community-card ${c.id === currentCommunity ? 'active' : ''}" onclick="switchCommunity('${c.id}')">
-                        ${escapeHtml(c.name)}
-                        ${canDelete ? `<button class="community-delete-btn" onclick="deleteCommunity(event, '${c.id}')">🗑️</button>` : ''}
-                    </div>
-                `;
-            }).join('');
-            
-            const targetObj = list.find(c => c.id === currentCommunity);
-            const showPinBtn = currentUser && (isPlatformAdmin() || targetObj?.system || targetObj?.creator === currentUser);
-            document.getElementById('manage-announcement-btn').classList.toggle('hidden', !showPinBtn);
-        }
+            const optionsArray = [o1, o2]; if(o3) optionsArray.push(o3); if(o4) optionsArray.push(o4);
 
-        async function createCommunity() {
-            const name = document.getElementById('new-comm-name').value;
-            if(!name) return;
-            const res = await apiFetch('/api/communities/create', { method: 'POST', body: { name } });
-            if(res.ok) { document.getElementById('new-comm-name').value = ''; await loadCommunities(); }
-        }
-
-        async function deleteCommunity(event, id) {
-            event.stopPropagation();
-            if(!confirm("Erase board entirely? All channel database logs clear.")) return;
-            const res = await apiFetch('/api/communities/delete', { method: 'POST', body: { id } });
-            if(res.ok) { if(currentCommunity === id) currentCommunity = "general"; await loadCommunities(); loadPosts(); }
-        }
-
-        async function loadAnnouncement() {
-            const res = await apiFetch(`/api/announcement?community=${currentCommunity}`);
-            const ann = await res.json();
-            const box = document.getElementById('announcement-area');
-            if(ann) {
-                box.innerHTML = `<div class="announcement-title">📌 Announcement from @${ann.author}</div><div>${escapeHtml(ann.content)}</div>`;
-                box.classList.remove('hidden');
-            } else { box.classList.add('hidden'); }
-        }
-
-        async function promptAnnouncement() {
-            const text = prompt("Enter text definition (Keep blank to discard active panel pin):");
-            if(text === null) return;
-            await apiFetch('/api/announcement/set', { method: 'POST', body: { community: currentCommunity, content: text } });
-            loadAnnouncement();
-        }
-
-        async function loadOnlineUsers() {
-            try {
-                const res = await apiFetch('/api/online');
-                const users = await res.json();
-                const box = document.getElementById('online-users-box');
-                if(users.length === 0) { box.innerHTML = 'Grid telemetry clear.'; return; }
-                box.innerHTML = users.map(u => `
-                    <div style="display:flex; align-items:center; gap:8px;">
-                        <div class="avatar" style="width:28px; height:28px; font-size:0.75rem; border:1px solid var(--wiiu-green);" onclick="inspectUser('${u.username}')">
-                            ${u.avatarUrl ? `<img src="${u.avatarUrl}">` : u.username.charAt(0).toUpperCase()}
-                        </div>
-                        <div style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
-                            <strong class="display-name" style="font-size:0.85rem;" onclick="inspectUser('${u.username}')">${escapeHtml(u.displayName)}</strong>
-                            <br><span style="color:var(--text-muted); font-size:0.75rem; cursor:pointer;" onclick="inspectUser('${u.username}')">@${u.username}</span>
-                        </div>
-                    </div>
-                `).join('');
-            } catch(e) {}
-        }
-
-        async function inspectUser(username) {
-            playSfx('click');
-            try {
-                const res = await apiFetch(`/api/user/lookup?username=${username}`);
-                if(!res.ok) return;
-                const profile = await res.json();
-                document.getElementById('inspect-avatar').innerHTML = profile.avatarUrl ? `<img src="${profile.avatarUrl}" style="width:100%; height:100%; object-fit:cover; border-radius:12px;">` : username.charAt(0).toUpperCase();
-                document.getElementById('inspect-displayname').innerText = profile.displayName || username;
-                document.getElementById('inspect-username').innerText = `@${profile.username}`;
-                document.getElementById('inspect-bio').innerText = profile.bio || "No status bio logged by user.";
-                document.getElementById('user-inspector-modal').classList.remove('hidden');
-            } catch(e) {}
-        }
-
-        function closeInspectorModal() { document.getElementById('user-inspector-modal').classList.add('hidden'); }
-
-        function switchCommunity(target) {
-            playSfx('click');
-            currentCommunity = target;
-            loadCommunities();
-            loadAnnouncement();
-            loadPosts();
-
-            // Load saved drafts for channel if they exist
-            const savedDraft = localStorage.getItem(`plaza_draft_${currentCommunity}`) || '';
-            document.getElementById('post-text').value = savedDraft;
-            updateCharCount();
-        }
-
-        async function loadPosts() {
-            const res = await apiFetch(`/api/posts?community=${currentCommunity}`);
-            loadedPostsCache = await res.json();
-            document.getElementById('stat-posts-count').innerText = `${loadedPostsCache.length} items`;
-            renderFeed(loadedPostsCache);
-        }
-
-        function renderFeed(posts) {
-            const stream = document.getElementById('feed-stream');
-            if (posts.length === 0) { stream.innerHTML = '<div class="card" style="text-align:center; color:var(--text-muted)">Empty channel telemetry.</div>'; return; }
-
-            stream.innerHTML = posts.map(post => {
-                const userReaction = post.reactedUsers ? post.reactedUsers[currentUser] : null;
-                const rx = post.reactions || { yeah: 0, fresh: 0, cozy: 0 };
-                
-                const canDeletePost = isPlatformAdmin() || post.username === currentUser;
-                const deleteActionNode = canDeletePost ? `<button class="post-delete-trigger" onclick="deletePost('${post.id}')" title="Delete Post">🗑️</button>` : '';
-
-                return `
-                    <div class="post">
-                        ${deleteActionNode}
-                        <div class="avatar" onclick="inspectUser('${post.username}')">
-                            ${post.avatarUrl ? `<img src="${post.avatarUrl}" onerror="this.parentElement.innerHTML='${post.displayName.charAt(0).toUpperCase()}'">` : post.displayName.charAt(0).toUpperCase()}
-                        </div>
-                        <div class="post-main">
-                            <div class="post-header">
-                                <span class="display-name" onclick="inspectUser('${post.username}')">${escapeHtml(post.displayName)}</span>
-                                <span class="username" onclick="inspectUser('${post.username}')">@${post.username}</span>
-                            </div>
-                            <div class="post-body">
-                                ${parseCustomFormatting(post.content)}
-                                ${post.imageUrl ? `<img src="${escapeHtml(post.imageUrl)}" class="post-img" onerror="this.remove()">` : ''}
-                            </div>
-                            <div class="post-actions">
-                                <button class="action-tab ${userReaction === 'yeah' ? 'active-yeah' : ''}" onclick="applyReaction('${post.id}', 'yeah')">💚 Yeah! (${rx.yeah || 0})</button>
-                                <button class="action-tab ${userReaction === 'fresh' ? 'active-fresh' : ''}" onclick="applyReaction('${post.id}', 'fresh')">🦑 Fresh! (${rx.fresh || 0})</button>
-                                <button class="action-tab ${userReaction === 'cozy' ? 'active-cozy' : ''}" onclick="applyReaction('${post.id}', 'cozy')">🍃 Cozy! (${rx.cozy || 0})</button>
-                                <button class="action-tab reply-tab" onclick="openReplyModal('${post.id}', '${post.displayName}', '${post.username}', \`${escapeHtml(post.content)}\`, '${post.avatarUrl}')">💬 Discussion (${post.replyCount || 0})</button>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        async function deletePost(postId) {
-            if(!confirm("Erase this post completely from the board feed timeline?")) return;
-            const res = await apiFetch('/api/posts/delete', { method: 'POST', body: { postId, community: currentCommunity } });
-            if(res.ok) loadPosts();
-        }
-
-        function filterPosts() {
-            const val = document.getElementById('system_plaza_search_override').value.toLowerCase();
-            const filtered = loadedPostsCache.filter(p => p.content.toLowerCase().includes(val) || p.displayName.toLowerCase().includes(val) || p.username.toLowerCase().includes(val));
-            renderFeed(filtered);
-        }
-
-        async function submitPost() {
-            const content = document.getElementById('post-text').value;
-            const imageUrl = document.getElementById('post-image-url').value;
-            if(!content) return;
-            const res = await apiFetch('/api/posts', { method: 'POST', body: { content, community: currentCommunity, imageUrl } });
-            if (res.ok) { 
-                playSfx('chime');
-                document.getElementById('post-text').value = ''; 
-                document.getElementById('post-image-url').value = ''; 
-                localStorage.removeItem(`plaza_draft_${currentCommunity}`);
-                updateCharCount(); 
-                loadPosts(); 
+            const res = await apiFetch('/api/poll/create', { method: 'POST', body: { community: currentCommunity, question: q, options: optionsArray } });
+            if(res.ok) {
+                ['poll-q-input', 'poll-o1-input', 'poll-o2-input', 'poll-o3-input', 'poll-o4-input'].forEach(id => document.getElementById(id).value = '');
+                togglePollCreator(); renderActivePoll();
             }
         }
 
-        async function applyReaction(postId, reactionType) {
-            if(!currentUser) return alert('Identity authorization mapping configuration needed.');
-            playSfx('click');
-            const res = await apiFetch('/api/react', { method: 'POST', body: { postId, community: currentCommunity, reactionType } });
-            if(res.ok) loadPosts();
+        async function adminNukePoll() {
+            if(!confirm("Purge current poll metrics from global Cloudflare KV?")) return;
+            const res = await apiFetch('/api/poll/nuke', { method: 'POST', body: { community: currentCommunity } });
+            if(res.ok) renderActivePoll();
         }
 
-        async function openReplyModal(postId, displayName, username, content, avatarUrl) {
-            activePostId = postId;
-            const avatarHtml = avatarUrl ? `<div class="avatar" style="pointer-events:none;"><img src="${avatarUrl}"></div>` : `<div class="avatar" style="pointer-events:none;">${displayName.charAt(0).toUpperCase()}</div>`;
-            document.getElementById('modal-parent-post-anchor').innerHTML = `
-                <div style="display:flex; gap:12px; opacity:0.85; background:var(--input-bg); padding:12px; border-radius:12px; border:1px solid var(--border-color);">
-                    ${avatarHtml}
-                    <div><strong>${displayName}</strong> <span style="color:var(--text-muted)">@${username}</span><div style="margin-top:4px;">${content}</div></div>
-                </div>`;
-            document.getElementById('reply-modal').classList.remove('hidden');
-            loadReplies();
+        // ==========================================
+        // PLAZA SYSTEM FEED MANAGEMENT MODULES
+        // ==========================================
+        async function checkAuth() {
+            try {
+                const res = await apiFetch('/api/me'); const data = await res.json();
+                currentUser = data.username; currentProfile = data.profile;
+                if (currentUser) {
+                    document.getElementById('user-nav-widget').innerHTML = `<button class="btn btn-outline" onclick="logout()">Disconnect</button>`;
+                    ['post-panel', 'user-info-card', 'community-builder-card', 'create-poll-trigger-btn'].forEach(id => document.getElementById(id).classList.remove('hidden'));
+                    document.getElementById('guest-info-card').classList.add('hidden');
+                    document.getElementById('user-card-avatar').innerHTML = currentProfile?.avatarUrl ? `<img src="${currentProfile.avatarUrl}">` : currentUser.charAt(0).toUpperCase();
+                    document.getElementById('user-card-name').innerText = currentProfile?.displayName || currentUser;
+                    document.getElementById('user-card-handle').innerText = `@${currentUser}`;
+                    document.getElementById('user-card-bio').innerText = currentProfile?.bio || 'No status bio cataloged.';
+                }
+            } catch(e) {}
+            renderActivePoll();
         }
 
-        function closeReplyModal() { document.getElementById('reply-modal').classList.add('hidden'); activePostId = null; }
+        async function loadCommunities() {
+            const res = await apiFetch('/api/communities'); const list = await res.json();
+            document.getElementById('stat-channels-count').innerText = list.length;
+            document.getElementById('communities-box').innerHTML = list.map(c => `
+                <div class="community-card ${c.id === currentCommunity ? 'active' : ''}" onclick="switchCommunity('${c.id}')">${escapeHtml(c.name)}</div>
+            `).join('');
+        }
 
-        async function loadReplies() {
-            const res = await apiFetch(`/api/replies?postId=${activePostId}`);
-            const replies = await res.json();
-            const listContainer = document.getElementById('modal-replies-stream');
-            if(replies.length === 0) { listContainer.innerHTML = '<p style="color:var(--text-muted); font-size:0.9rem; text-align:center;">No responses logged.</p>'; return; }
-            listContainer.innerHTML = replies.map(r => `
-                <div style="display:flex; gap:10px; font-size:0.9rem; background:var(--card-bg); padding:10px; border-radius:8px; border:1px solid var(--border-color);">
-                    <div class="avatar" style="width:32px; height:32px; font-size:0.85rem; pointer-events:none;">
-                        ${r.avatarUrl ? `<img src="${r.avatarUrl}">` : r.displayName.charAt(0).toUpperCase()}
+        function switchCommunity(target) { playSfx('click'); currentCommunity = target; loadCommunities(); loadPosts(); renderActivePoll(); document.getElementById('post-text').value = localStorage.getItem(`plaza_draft_${currentCommunity}`) || ''; updateCharCount(); }
+        async function loadPosts() { const res = await apiFetch(`/api/posts?community=${currentCommunity}`); loadedPostsCache = await res.json(); document.getElementById('stat-posts-count').innerText = `${loadedPostsCache.length} items`; renderFeed(loadedPostsCache); }
+
+        function renderFeed(posts) {
+            const stream = document.getElementById('feed-stream'); if (posts.length === 0) { stream.innerHTML = '<div class="card" style="text-align:center; color:var(--text-muted)">Empty channel timeline.</div>'; return; }
+            stream.innerHTML = posts.map(post => `
+                <div class="post">
+                    <div class="avatar" onclick="inspectUser('${post.username}')">${post.avatarUrl ? `<img src="${post.avatarUrl}">` : post.displayName.charAt(0).toUpperCase()}</div>
+                    <div class="post-main">
+                        <div class="post-header"><span class="display-name">${escapeHtml(post.displayName)}</span><span class="username">@${post.username}</span></div>
+                        <div class="post-body">${parseCustomFormatting(post.content)}${post.imageUrl ? `<img src="${escapeHtml(post.imageUrl)}" class="post-img">` : ''}</div>
                     </div>
-                    <div><strong>${r.displayName}</strong> <span style="color:var(--text-muted)">@${r.username}</span><div style="color:var(--text-main); margin-top:2px;">${escapeHtml(r.content)}</div></div>
                 </div>
             `).join('');
         }
 
-        async function submitReply() {
-            const content = document.getElementById('reply-text').value;
-            if(!content || !activePostId) return;
-            const res = await apiFetch('/api/replies/create', { method: 'POST', body: { postId: activePostId, content, community: currentCommunity } });
-            if(res.ok) { document.getElementById('reply-text').value = ''; loadReplies(); loadPosts(); }
-        }
-
-        async function updateProfile() {
-            const res = await apiFetch('/api/profile/update', {
-                method: 'POST', body: { displayName: document.getElementById('prof-displayname').value, avatarUrl: document.getElementById('prof-avatar').value, bio: document.getElementById('prof-bio').value }
-            });
-            if(res.ok) { toggleProfileEdit(); await checkAuth(); loadPosts(); }
-        }
-
-        function toggleProfileEdit() { document.getElementById('profile-edit-panel').classList.toggle('hidden'); }
-        function toggleAuthMode() {
-            isSignUp = !isSignUp;
-            document.getElementById('auth-panel-title').innerText = isSignUp ? 'Create Registration Profile' : 'Sign In';
-            document.getElementById('auth-displayname').classList.toggle('hidden', !isSignUp);
-        }
-
-        async function handleAuth() {
-            const username = document.getElementById('auth-username').value;
-            const password = document.getElementById('auth-password').value;
-            const displayName = document.getElementById('auth-displayname').value;
-            const res = await apiFetch(isSignUp ? '/api/register' : '/api/login', { method: 'POST', body: isSignUp ? { username, password, displayName } : { username, password } });
-            if(res.ok) { if(isSignUp) { toggleAuthMode(); } else { window.location.reload(); } } else { alert(await res.text()); }
-        }
-
-        async function logout() { await apiFetch('/api/logout'); window.location.reload(); }
+        function filterPosts() { const val = document.getElementById('system_plaza_search_override').value.toLowerCase(); renderFeed(loadedPostsCache.filter(p => p.content.toLowerCase().includes(val) || p.displayName.toLowerCase().includes(val))); }
+        async function submitPost() { const content = document.getElementById('post-text').value; const imageUrl = document.getElementById('post-image-url').value; if(!content) return; const res = await apiFetch('/api/posts', { method: 'POST', body: { content, community: currentCommunity, imageUrl } }); if (res.ok) { playSfx('chime'); document.getElementById('post-text').value = ''; document.getElementById('post-image-url').value = ''; localStorage.removeItem(`plaza_draft_${currentCommunity}`); updateCharCount(); loadPosts(); } }
+        async function inspectUser(username) { playSfx('click'); try { const res = await apiFetch(`/api/user/lookup?username=${username}`); if(!res.ok) return; const profile = await res.json(); document.getElementById('inspect-avatar').innerHTML = profile.avatarUrl ? `<img src="${profile.avatarUrl}" style="width:100%; height:100%; object-fit:cover; border-radius:12px;">` : username.charAt(0).toUpperCase(); document.getElementById('inspect-displayname').innerText = profile.displayName || username; document.getElementById('inspect-username').innerText = `@${profile.username}`; document.getElementById('inspect-bio').innerText = profile.bio || "No status bio logged by user."; document.getElementById('user-inspector-modal').classList.remove('hidden'); } catch(e) {} }
+        function closeInspectorModal() { document.getElementById('user-inspector-modal').classList.add('hidden'); }
         function escapeHtml(str) { return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
 
-        (async () => { 
-            updateClock();
-            renderPoll();
-            await checkAuth(); 
-            await loadCommunities(); 
-            await loadAnnouncement(); 
-            loadPosts(); 
-            loadOnlineUsers();
-            setInterval(loadOnlineUsers, 20000); 
-
-            // Load community draft if available on startup
-            const savedDraft = localStorage.getItem(`plaza_draft_${currentCommunity}`) || '';
-            document.getElementById('post-text').value = savedDraft;
-            updateCharCount();
-        })();
+        (async () => { updateClock(); await checkAuth(); await loadCommunities(); loadPosts(); })();
     </script>
 </body>
 </html>
