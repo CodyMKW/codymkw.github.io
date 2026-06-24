@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Codyverse</title>
+    <title>Codyverse Plaza</title>
     <style>
         :root {
             --miiverse-green: #92e600;
@@ -15,86 +15,63 @@
             --text-muted: #8899a6;
         }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            margin: 0; padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-dark); color: var(--text-main); margin: 0; padding: 0;
             display: flex; justify-content: center;
         }
-        .container {
-            width: 100%; max-width: 600px;
-            border-left: 1px solid var(--border-color);
-            border-right: 1px solid var(--border-color);
-            min-height: 100vh; padding-bottom: 50px;
-        }
-        header {
-            position: sticky; top: 0;
-            background: rgba(21, 32, 43, 0.85); backdrop-filter: blur(5px);
-            padding: 15px; border-bottom: 1px solid var(--border-color);
-            display: flex; justify-content: space-between; align-items: center; z-index: 10;
-        }
-        h1 { font-size: 1.3rem; margin: 0; color: var(--miiverse-green); font-weight: 800; }
-        .btn {
-            background-color: var(--miiverse-green); color: #000; border: none;
-            padding: 8px 16px; border-radius: 9999px; font-weight: bold;
-            cursor: pointer; font-size: 0.9rem; transition: background 0.2s;
-        }
+        .container { width: 100%; max-width: 650px; border-left: 1px solid var(--border-color); border-right: 1px solid var(--border-color); min-height: 100vh; padding-bottom: 50px; }
+        header { position: sticky; top: 0; background: rgba(21, 32, 43, 0.85); backdrop-filter: blur(5px); padding: 15px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; z-index: 10; }
+        h1 { font-size: 1.4rem; margin: 0; color: var(--miiverse-green); font-weight: 800; }
+        .community-bar { display: flex; overflow-x: auto; background: var(--card-dark); border-bottom: 1px solid var(--border-color); padding: 5px 10px; gap: 8px; }
+        .comm-tab { padding: 8px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; color: var(--text-muted); cursor: pointer; border: 1px solid transparent; white-space: nowrap; }
+        .comm-tab.active { background: rgba(146, 230, 0, 0.15); color: var(--miiverse-green); border-color: var(--miiverse-green); }
+        .btn { background-color: var(--miiverse-green); color: #000; border: none; padding: 8px 16px; border-radius: 9999px; font-weight: bold; cursor: pointer; font-size: 0.9rem; transition: background 0.2s; }
         .btn:hover { background-color: var(--miiverse-green-hover); }
         .btn-outline { background: transparent; color: var(--text-main); border: 1px solid var(--border-color); }
         .btn-outline:hover { background: rgba(255,255,255,0.1); }
         .panel { padding: 20px; border-bottom: 1px solid var(--border-color); background: var(--card-dark); }
         .input-group { margin-bottom: 12px; }
-        input, textarea {
-            width: 100%; padding: 12px; background: var(--bg-dark);
-            border: 1px solid var(--border-color); color: white;
-            border-radius: 8px; box-sizing: border-box; font-size: 1rem;
-        }
+        input, textarea { width: 100%; padding: 12px; background: var(--bg-dark); border: 1px solid var(--border-color); color: white; border-radius: 8px; box-sizing: border-box; font-size: 1rem; }
         textarea { resize: none; height: 80px; font-family: inherit; }
         .post { padding: 15px; border-bottom: 1px solid var(--border-color); display: flex; gap: 12px; }
-        .avatar {
-            width: 48px; height: 48px; background: #4b5563; border-radius: 10px;
-            display: flex; align-items: center; justify-content: center;
-            font-weight: bold; color: white; font-size: 1.2rem;
-            border: 2px solid var(--miiverse-green); overflow: hidden; object-fit: cover;
-        }
+        .avatar { width: 48px; height: 48px; background: #4b5563; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: bold; color: white; font-size: 1.2rem; border: 2px solid var(--miiverse-green); overflow: hidden; }
         .avatar img { width: 100%; height: 100%; object-fit: cover; }
         .post-content { flex: 1; }
         .post-header { display: flex; gap: 8px; align-items: center; margin-bottom: 4px; }
         .display-name { font-weight: bold; }
         .username { color: var(--text-muted); font-size: 0.9rem; }
-        .timestamp { color: var(--text-muted); font-size: 0.85rem; margin-left: auto; }
         .post-body { line-height: 1.4; font-size: 1rem; word-break: break-word; }
         .post-actions { margin-top: 10px; display: flex; gap: 15px; }
-        .action-btn {
-            background: transparent; border: 1px solid var(--border-color);
-            color: var(--text-muted); padding: 4px 12px; border-radius: 6px;
-            cursor: pointer; font-weight: bold; font-size: 0.85rem;
-        }
+        .action-btn { background: transparent; border: 1px solid var(--border-color); color: var(--text-muted); padding: 4px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.85rem; }
         .yeah-btn { border-color: #ff7f00; color: #ff7f00; }
         .yeah-btn.active { background: #ff7f00; color: white; }
         .reply-btn { border-color: #00a2ff; color: #00a2ff; }
-        .modal {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 100;
-        }
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 100; }
         .modal-content { background: var(--card-dark); padding: 20px; border-radius: 12px; width: 90%; max-width: 500px; border: 1px solid var(--border-color); }
         .hidden { display: none; }
-        .reply-box { margin-top: 10px; padding-left: 20px; border-left: 2px solid var(--border-color); }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>💚 Codyverse</h1>
+            <h1 id="title-banner">💚 Codyverse Plaza</h1>
             <div id="user-header"></div>
         </header>
 
+        <div class="community-bar" id="communities-list">
+            <div class="comm-tab active" onclick="switchCommunity('general')">💬 General Community</div>
+            <div class="comm-tab" onclick="switchCommunity('splatoon')">🦑 Splatoon Zone</div>
+            <div class="comm-tab" onclick="switchCommunity('animal_crossing')">🍃 Animal Crossing Area</div>
+            <div class="comm-tab" onclick="switchCommunity('webdev')">💻 Web Dev Labs</div>
+            <div class="comm-tab" onclick="switchCommunity('anime')">📺 Dubbed Anime Lounge</div>
+        </div>
+
         <div id="profile-section" class="panel hidden">
-            <h3>🎨 Edit Your Profile Status</h3>
+            <h3>🎨 Personalize Identity Settings</h3>
             <div class="input-group"><input type="text" id="prof-displayname" placeholder="Display Name"></div>
-            <div class="input-group"><input type="text" id="prof-avatar" placeholder="Direct Image URL for Avatar"></div>
-            <div class="input-group"><textarea id="prof-bio" placeholder="Bio description..."></textarea></div>
-            <button class="btn" onclick="updateProfile()">Save Profile</button>
+            <div class="input-group"><input type="text" id="prof-avatar" placeholder="Direct URL Image path (e.g. https://...png)"></div>
+            <div class="input-group"><textarea id="prof-bio" placeholder="Bio updates..."></textarea></div>
+            <button class="btn" onclick="updateProfile()">Apply Profile Upgrades</button>
             <button class="btn btn-outline" onclick="toggleProfileEdit()">Cancel</button>
         </div>
 
@@ -108,40 +85,36 @@
         </div>
 
         <div id="post-section" class="panel hidden">
-            <textarea id="post-text" placeholder="Share a post to the universe..."></textarea>
+            <textarea id="post-text" placeholder="Share your status with this community..."></textarea>
             <div style="display: flex; justify-content: space-between; margin-top: 8px; align-items: center;">
-                <button class="btn btn-outline" onclick="toggleProfileEdit()">Settings / Profile</button>
+                <button class="btn btn-outline" onclick="toggleProfileEdit()">Profile / Custom Avatar</button>
                 <button class="btn" onclick="submitPost()">Post</button>
             </div>
         </div>
 
-        <div id="feed" class="feed">
-            <div style="padding: 20px; text-align: center; color: var(--text-muted);">Loading system posts...</div>
-        </div>
+        <div id="feed" class="feed"></div>
     </div>
 
     <div id="reply-modal" class="modal hidden">
         <div class="modal-content">
-            <h3 style="margin-top:0;">Discussions & Replies</h3>
+            <h3 style="margin-top:0;">Discussion Thread</h3>
             <div id="modal-parent-post"></div>
             <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 15px 0;">
             <div id="modal-replies-list" style="max-height: 200px; overflow-y: auto; margin-bottom: 15px;"></div>
-            <div class="input-group">
-                <textarea id="reply-text" placeholder="Write a response..."></textarea>
-            </div>
+            <div class="input-group"><textarea id="reply-text" placeholder="Add to the conversation..."></textarea></div>
             <button class="btn" onclick="submitReply()">Send Reply</button>
-            <button class="btn btn-outline" onclick="closeReplyModal()">Close</button>
+            <button class="btn btn-outline" onclick="closeReplyModal()">Dismiss</button>
         </div>
     </div>
 
     <script>
-        // 🌟 UPDATE THIS TO YOUR DEPLOYED WORKER BACKEND URL
+        // 🌟 POINT THIS TO YOUR DEPLOYED BACKEND
         const API_BASE = "https://codyverse.codymkw.workers.dev"; 
 
-        let isSignUp = false, currentUser = null, activePostId = null;
+        let isSignUp = false, currentUser = null, currentProfile = null, currentCommunity = "general", activePostId = null;
 
         async function apiFetch(endpoint, options = {}) {
-            options.credentials = 'include'; 
+            options.credentials = 'include';
             if (options.body && typeof options.body === 'object') {
                 options.body = JSON.stringify(options.body);
                 options.headers = { ...options.headers, 'Content-Type': 'application/json' };
@@ -154,12 +127,22 @@
                 const res = await apiFetch('/api/me');
                 const data = await res.json();
                 currentUser = data.username;
+                currentProfile = data.profile;
                 
                 if (currentUser) {
-                    document.getElementById('user-header').innerHTML = `<span style="margin-right:10px; color:var(--text-muted)">@${currentUser}</span><button class="btn btn-outline" onclick="logout()">Log Out</button>`;
+                    const activeAvatar = currentProfile && currentProfile.avatarUrl ? currentProfile.avatarUrl : '';
+                    document.getElementById('user-header').innerHTML = `
+                        <div style="display:flex; align-items:center; gap:8px;">
+                            ${renderAvatar(activeAvatar, currentProfile?.displayName || currentUser)}
+                            <button class="btn btn-outline" onclick="logout()">Log Out</button>
+                        </div>`;
                     document.getElementById('post-section').classList.remove('hidden');
                     document.getElementById('auth-section').classList.add('hidden');
-                    loadProfileData();
+                    if(currentProfile) {
+                        document.getElementById('prof-displayname').value = currentProfile.displayName || '';
+                        document.getElementById('prof-avatar').value = currentProfile.avatarUrl || '';
+                        document.getElementById('prof-bio').value = currentProfile.bio || '';
+                    }
                 } else {
                     document.getElementById('user-header').innerHTML = '';
                     document.getElementById('auth-section').classList.remove('hidden');
@@ -168,18 +151,16 @@
             } catch(e) { console.error(e); }
         }
 
-        async function loadProfileData() {
-            const res = await apiFetch('/api/profile');
-            if (res.ok) {
-                const data = await res.json();
-                document.getElementById('prof-displayname').value = data.displayName || '';
-                document.getElementById('prof-avatar').value = data.avatarUrl || '';
-                document.getElementById('prof-bio').value = data.bio || '';
-            }
+        function switchCommunity(target) {
+            currentCommunity = target;
+            const tabs = document.querySelectorAll('.comm-tab');
+            tabs.forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            loadPosts();
         }
 
         async function updateProfile() {
-            await apiFetch('/api/profile/update', {
+            const res = await apiFetch('/api/profile/update', {
                 method: 'POST',
                 body: {
                     displayName: document.getElementById('prof-displayname').value,
@@ -187,8 +168,11 @@
                     bio: document.getElementById('prof-bio').value
                 }
             });
-            toggleProfileEdit();
-            loadPosts();
+            if(res.ok) {
+                toggleProfileEdit();
+                await checkAuth();
+                loadPosts();
+            }
         }
 
         function toggleProfileEdit() { document.getElementById('profile-section').classList.toggle('hidden'); }
@@ -212,14 +196,14 @@
         async function logout() { await apiFetch('/api/logout'); window.location.reload(); }
 
         function renderAvatar(url, name) {
-            return url ? `<div class="avatar"><img src="${url}" alt="avatar"></div>` : `<div class="avatar">${name.charAt(0).toUpperCase()}</div>`;
+            return url ? `<div class="avatar"><img src="${url}" onerror="this.style.display='none'"></div>` : `<div class="avatar">${name.charAt(0).toUpperCase()}</div>`;
         }
 
         async function loadPosts() {
-            const res = await apiFetch('/api/posts');
+            const res = await apiFetch(`/api/posts?community=${currentCommunity}`);
             const posts = await res.json();
             const feedEl = document.getElementById('feed');
-            if (posts.length === 0) { feedEl.innerHTML = '<div style="padding:40px; text-align:center; color:var(--text-muted)">No ecosystem notes yet.</div>'; return; }
+            if (posts.length === 0) { feedEl.innerHTML = '<div style="padding:40px; text-align:center; color:var(--text-muted)">No posts inside this hub quadrant yet.</div>'; return; }
 
             feedEl.innerHTML = posts.map(post => {
                 const isYeahed = post.yeahedBy && post.yeahedBy.includes(currentUser);
@@ -245,13 +229,13 @@
         async function submitPost() {
             const content = document.getElementById('post-text').value;
             if(!content) return;
-            const res = await apiFetch('/api/posts', { method: 'POST', body: { content } });
+            const res = await apiFetch('/api/posts', { method: 'POST', body: { content, community: currentCommunity } });
             if (res.ok) { document.getElementById('post-text').value = ''; loadPosts(); }
         }
 
         async function giveYeah(postId) {
-            if(!currentUser) return alert('Log in to drop a Yeah!');
-            const res = await apiFetch('/api/yeah', { method: 'POST', body: { postId } });
+            if(!currentUser) return alert('Sign in to leave a "Yeah!"');
+            const res = await apiFetch('/api/yeah', { method: 'POST', body: { postId, community: currentCommunity } });
             if(res.ok) loadPosts();
         }
 
@@ -275,7 +259,7 @@
             const res = await apiFetch(`/api/replies?postId=${activePostId}`);
             const replies = await res.json();
             const listEl = document.getElementById('modal-replies-list');
-            if(replies.length === 0) { listEl.innerHTML = '<p style="color:var(--text-muted); text-align:center;">Be the first to reply!</p>'; return; }
+            if(replies.length === 0) { listEl.innerHTML = '<p style="color:var(--text-muted); text-align:center;">No responses logged.</p>'; return; }
             
             listEl.innerHTML = replies.map(r => `
                 <div style="display:flex; gap:10px; margin-bottom:12px; font-size:0.95rem;">
@@ -291,7 +275,7 @@
         async function submitReply() {
             const content = document.getElementById('reply-text').value;
             if(!content || !activePostId) return;
-            const res = await apiFetch('/api/replies/create', { method: 'POST', body: { postId: activePostId, content } });
+            const res = await apiFetch('/api/replies/create', { method: 'POST', body: { postId: activePostId, content, community: currentCommunity } });
             if(res.ok) { document.getElementById('reply-text').value = ''; loadReplies(); loadPosts(); }
         }
 
