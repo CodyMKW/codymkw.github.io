@@ -1,61 +1,59 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Codyverse Plaza</title>
+    <title>Codyverse Plaza Premium</title>
     <style>
-        :root {
-            --wiiu-green: #92e600;
-            --wiiu-green-hover: #abd942;
-            --bg-dark: #1b1b1d;
-            --card-bg: #2d2d31;
-            --input-bg: #202023;
-            --border-color: #3f3f46;
-            --text-main: #f4f4f5;
-            --text-muted: #a1a1aa;
-            --radius-lg: 16px;
-            --radius-md: 12px;
-            --radius-sm: 8px;
+        :root[data-theme="light"] {
+            --bg-dark: #f3f3f3; --card-bg: #ffffff; --input-bg: #fafafa; --border-color: #e0e0e0;
+            --text-main: #3c3c3c; --text-muted: #8c8c8c; --wiiu-green: #8ec600; --wiiu-green-hover: #76a500;
+        }
+        :root[data-theme="dark"] {
+            --bg-dark: #1b1b1d; --card-bg: #2d2d31; --input-bg: #202023; --border-color: #3f3f46;
+            --text-main: #f4f4f5; --text-muted: #a1a1aa; --wiiu-green: #92e600; --wiiu-green-hover: #abd942;
         }
 
-        body {
-            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-            background-color: var(--bg-dark); color: var(--text-main);
-            margin: 0; padding: 0; display: flex; justify-content: center;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        .app-wrapper { width: 100%; max-width: 1100px; min-height: 100vh; display: flex; flex-direction: column; padding: 20px; box-sizing: border-box; gap: 20px; }
-        header { background: var(--card-bg); border-radius: var(--radius-lg); padding: 15px 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border-color); }
+        body { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; background-color: var(--bg-dark); color: var(--text-main); margin: 0; padding: 0; display: flex; justify-content: center; -webkit-font-smoothing: antialiased; transition: background-color 0.2s, color 0.2s; }
+        .app-wrapper { width: 100%; max-width: 1200px; min-height: 100vh; display: flex; flex-direction: column; padding: 20px; box-sizing: border-box; gap: 20px; }
+        header { background: var(--card-bg); border-radius: 16px; padding: 15px 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border-color); }
         .logo-area { display: flex; align-items: center; gap: 8px; font-size: 1.5rem; font-weight: 800; color: var(--wiiu-green); letter-spacing: -0.5px; }
         .logo-dot { width: 12px; height: 12px; background-color: var(--wiiu-green); border-radius: 50%; display: inline-block; }
-        .main-layout { display: grid; grid-template-columns: 280px 1fr; gap: 20px; align-items: start; }
-        @media (max-width: 850px) { .main-layout { grid-template-columns: 1fr; } }
+        
+        .main-layout { display: grid; grid-template-columns: 280px 1fr 240px; gap: 20px; align-items: start; }
+        @media (max-width: 1000px) { .main-layout { grid-template-columns: 280px 1fr; } }
+        @media (max-width: 780px) { .main-layout { grid-template-columns: 1fr; } }
+        
         .sidebar { display: flex; flex-direction: column; gap: 20px; }
-        .card { background: var(--card-bg); border-radius: var(--radius-lg); border: 1px solid var(--border-color); box-shadow: 0 4px 15px rgba(0,0,0,0.15); padding: 20px; box-sizing: border-box; }
+        .card { background: var(--card-bg); border-radius: 16px; border: 1px solid var(--border-color); box-shadow: 0 4px 15px rgba(0,0,0,0.15); padding: 20px; box-sizing: border-box; }
         .user-profile-summary { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 12px; }
         
-        /* --- DYNAMIC COMMUNITIES CONTAINER GRID --- */
         .community-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; margin-bottom: 5px; }
-        .community-card { position: relative; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 15px; text-align: center; cursor: pointer; font-weight: bold; font-size: 0.9rem; color: var(--text-main); transition: transform 0.15s, border-color 0.15s; box-shadow: 0 2px 6px rgba(0,0,0,0.1); padding-right: 30px; }
+        .community-card { position: relative; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 15px; text-align: center; cursor: pointer; font-weight: bold; font-size: 0.9rem; color: var(--text-main); transition: transform 0.15s, border-color 0.15s; padding-right: 32px; }
         .community-card:hover { transform: translateY(-2px); border-color: var(--wiiu-green); }
         .community-card.active { background: var(--wiiu-green); color: #111; border-color: var(--wiiu-green); }
-        .community-delete-btn { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: transparent; border: none; color: #ef4444; font-size: 0.9rem; cursor: pointer; display: none; padding: 2px 5px; }
+        .community-delete-btn { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: transparent; border: none; color: #ef4444; font-size: 0.9rem; cursor: pointer; display: none; }
         .community-card:hover .community-delete-btn { display: block; }
-        .community-card.active .community-delete-btn { color: #7f1d1d; }
+
+        /* --- ANNOUNCEMENT BANNER --- */
+        .announcement-banner { background: rgba(146, 230, 0, 0.1); border: 2px dashed var(--wiiu-green); border-radius: 12px; padding: 15px; position: relative; color: var(--text-main); font-size: 0.9rem; line-height: 1.4; }
+        .announcement-title { font-weight: bold; display: flex; align-items: center; gap: 6px; color: var(--wiiu-green); margin-bottom: 5px; }
 
         .feed-container { display: flex; flex-direction: column; gap: 15px; }
-        .post-composer textarea { width: 100%; height: 90px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 12px; box-sizing: border-box; resize: none; font-family: inherit; font-size: 0.95rem; color: var(--text-main); background-color: var(--input-bg); transition: border-color 0.2s; }
+        .post-composer textarea { width: 100%; height: 80px; border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; box-sizing: border-box; resize: none; font-family: inherit; font-size: 0.95rem; color: var(--text-main); background-color: var(--input-bg); transition: border-color 0.2s; }
         .post-composer textarea:focus { outline: none; border-color: var(--wiiu-green); }
-        .post { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 20px; display: flex; gap: 15px; }
-        .avatar { width: 54px; height: 54px; background: #4b5563; border-radius: var(--radius-md); border: 2px solid var(--wiiu-green); overflow: hidden; display: flex; align-items: center; justify-content: center; font-weight: bold; color: var(--text-main); font-size: 1.3rem; flex-shrink: 0; }
+        
+        .char-counter { font-size: 0.8rem; color: var(--text-muted); text-align: right; margin-top: -4px; }
+        .post { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 20px; display: flex; gap: 15px; }
+        .post-img { width: 100%; max-height: 300px; object-fit: cover; border-radius: 8px; margin-top: 10px; border: 1px solid var(--border-color); }
+        
+        .avatar { width: 54px; height: 54px; background: #4b5563; border-radius: 12px; border: 2px solid var(--wiiu-green); overflow: hidden; display: flex; align-items: center; justify-content: center; font-weight: bold; color: var(--text-main); font-size: 1.3rem; flex-shrink: 0; }
         .avatar img { width: 100%; height: 100%; object-fit: cover; }
         .post-main { flex: 1; }
         .post-header { display: flex; align-items: baseline; gap: 8px; margin-bottom: 6px; }
         .display-name { font-weight: 700; font-size: 1rem; color: var(--text-main); }
         .username { color: var(--text-muted); font-size: 0.85rem; }
-        .post-body { font-size: 0.95rem; line-height: 1.5; color: #e4e4e7; word-break: break-word; }
+        .post-body { font-size: 0.95rem; line-height: 1.5; color: var(--text-main); word-break: break-word; }
         .post-actions { margin-top: 15px; display: flex; gap: 12px; }
 
         .btn { background: var(--wiiu-green); color: #111; border: none; padding: 10px 20px; border-radius: 9999px; font-weight: 700; font-size: 0.9rem; cursor: pointer; box-shadow: 0 4px 10px rgba(146, 230, 0, 0.2); transition: background 0.15s, transform 0.1s; }
@@ -64,15 +62,16 @@
         .btn-outline { background: transparent; color: var(--text-main); border: 1px solid var(--border-color); }
         .btn-outline:hover { background: #3f3f46; border-color: #71717a; }
 
-        .action-tab { background: #3f3f46; border: none; padding: 6px 14px; border-radius: var(--radius-sm); font-size: 0.8rem; font-weight: bold; color: var(--text-main); cursor: pointer; display: flex; align-items: center; gap: 5px; }
+        .action-tab { background: #3f3f46; border: none; padding: 6px 14px; border-radius: 8px; font-size: 0.8rem; font-weight: bold; color: var(--text-main); cursor: pointer; display: flex; align-items: center; gap: 5px; }
         .action-tab:hover { background: #52525b; }
         .action-tab.yeah-active { background: #ff7f00; color: white; }
         .action-tab.reply-tab { background: #1e3a8a; color: #60a5fa; }
 
         .hidden { display: none !important; }
-        .input-field { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); margin-bottom: 10px; box-sizing: border-box; background-color: var(--input-bg); color: var(--text-main); }
+        .input-field { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 10px; box-sizing: border-box; background-color: var(--input-bg); color: var(--text-main); }
+        .online-dot { width: 8px; height: 8px; background-color: #22c55e; border-radius: 50%; display: inline-block; }
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 100; backdrop-filter: blur(2px); }
-        .modal-body { background: var(--card-bg); padding: 25px; border-radius: var(--radius-lg); width: 90%; max-width: 550px; border: 1px solid var(--border-color); }
+        .modal-body { background: var(--card-bg); padding: 25px; border-radius: 16px; width: 90%; max-width: 550px; border: 1px solid var(--border-color); }
     </style>
 </head>
 <body>
@@ -80,7 +79,10 @@
     <div class="app-wrapper">
         <header>
             <div class="logo-area"><span class="logo-dot"></span> Codyverse Plaza</div>
-            <div id="user-nav-widget"></div>
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <button class="btn btn-outline" style="padding: 6px 12px; font-size: 0.8rem;" onclick="toggleTheme()">🌓 Theme</button>
+                <div id="user-nav-widget"></div>
+            </div>
         </header>
 
         <div class="main-layout">
@@ -96,26 +98,33 @@
                 </div>
 
                 <div id="guest-info-card" class="card" style="text-align: center;">
-                    <h4 style="margin-top:0;">Welcome!</h4>
-                    <p style="font-size:0.85rem; color:var(--text-muted);">Sign in to construct sub-community worlds and log posts.</p>
+                    <h4>Welcome!</h4>
+                    <p style="font-size:0.85rem; color:var(--text-muted);">Sign in to construct custom boards, post graphics, and interact.</p>
                 </div>
 
                 <div id="community-builder-card" class="card hidden">
                     <h4 style="margin-top:0; color:var(--wiiu-green);">🔨 Open New Hub</h4>
-                    <input type="text" id="new-comm-name" class="input-field" placeholder="Hub Name (e.g., Anime Dubs)">
+                    <input type="text" id="new-comm-name" class="input-field" placeholder="Hub Name">
                     <button class="btn" style="width:100%; font-size:0.8rem;" onclick="createCommunity()">Launch Community</button>
                 </div>
             </div>
 
             <div class="feed-container">
                 <div class="community-grid" id="communities-box"></div>
+                
+                <div class="card" style="padding: 12px 20px; display: flex; gap: 10px; align-items: center;">
+                    <span style="font-size: 0.9rem; color: var(--text-muted);">🔍 Filter:</span>
+                    <input type="text" id="search-filter" class="input-field" style="margin-bottom:0; flex: 1; padding: 6px 12px;" placeholder="Search keywords..." oninput="filterPosts()">
+                </div>
+
+                <div id="announcement-area" class="announcement-banner hidden"></div>
 
                 <div id="profile-edit-panel" class="card hidden">
-                    <h3 style="margin-top:0; border-bottom:1px solid var(--border-color); padding-bottom:8px;">🎨 Edit Profile</h3>
-                    <input type="text" id="prof-displayname" class="input-field">
-                    <input type="text" id="prof-avatar" class="input-field" placeholder="https://domain.com/pic.png">
-                    <textarea id="prof-bio" class="input-field" style="height:60px; resize:none;"></textarea>
-                    <div style="margin-top:10px; display:flex; gap:10px;">
+                    <h3 style="margin-top:0;">🎨 Edit Profile</h3>
+                    <input type="text" id="prof-displayname" class="input-field" placeholder="Display Name">
+                    <input type="text" id="prof-avatar" class="input-field" placeholder="Avatar URL">
+                    <textarea id="prof-bio" class="input-field" style="height:60px; resize:none;" placeholder="Bio details..."></textarea>
+                    <div style="display:flex; gap:10px;">
                         <button class="btn" onclick="updateProfile()">Save Modifications</button>
                         <button class="btn btn-outline" onclick="toggleProfileEdit()">Cancel</button>
                     </div>
@@ -126,32 +135,44 @@
                     <input type="text" id="auth-displayname" class="input-field hidden" placeholder="Display Name">
                     <input type="text" id="auth-username" class="input-field" placeholder="Username">
                     <input type="password" id="auth-password" class="input-field" placeholder="Password">
-                    <div style="margin-top:5px;">
+                    <div>
                         <button class="btn" id="auth-execution-btn" onclick="handleAuth()">Connect</button>
                         <button class="btn btn-outline" id="auth-toggle-view" onclick="toggleAuthMode()">Create Profile</button>
                     </div>
                 </div>
 
                 <div id="post-panel" class="card post-composer hidden">
-                    <textarea id="post-text" placeholder="Share something elegant or completely ridiculous..."></textarea>
-                    <div style="display:flex; justify-content:flex-end; margin-top:10px;">
+                    <textarea id="post-text" maxlength="280" placeholder="Share something elegant or completely ridiculous..." oninput="updateCharCount()"></textarea>
+                    <div class="char-counter" id="post-char-count">0 / 280</div>
+                    <input type="text" id="post-image-url" class="input-field" style="margin-top:10px; margin-bottom:0;" placeholder="Optional Embedded Image Link (https://...)">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:12px;">
+                        <button class="btn btn-outline" id="manage-announcement-btn" style="font-size:0.8rem; padding:6px 12px;" onclick="promptAnnouncement()">📌 Set Board Pin</button>
                         <button class="btn" onclick="submitPost()">Post into Channel</button>
                     </div>
                 </div>
 
                 <div id="feed-stream"></div>
             </div>
+
+            <div class="sidebar online-sidebar">
+                <div class="card">
+                    <h4 style="margin-top:0; border-bottom:1px solid var(--border-color); padding-bottom:6px;"><span class="online-dot"></span> Matrix Online Now</h4>
+                    <div id="online-users-box" style="display:flex; flex-direction:column; gap:10px; font-size:0.85rem;">
+                        Loading registry...
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
     <div id="reply-modal" class="modal-overlay hidden">
         <div class="modal-body">
-            <h3 style="margin-top:0;">Thread Status Hub</h3>
+            <h3>Thread Status Hub</h3>
             <div id="modal-parent-post-anchor"></div>
             <hr style="border:0; border-top:1px solid var(--border-color); margin:15px 0;">
-            <div id="modal-replies-stream" style="max-height:240px; overflow-y:auto; margin-bottom:15px; display:flex; flex-direction:column; gap:12px;"></div>
-            <textarea id="reply-text" class="input-field" style="height:70px; resize:none;" placeholder="Contribute insight to this discussion card..."></textarea>
-            <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:5px;">
+            <div id="modal-replies-stream" style="max-height:200px; overflow-y:auto; margin-bottom:15px; display:flex; flex-direction:column; gap:12px;"></div>
+            <textarea id="reply-text" class="input-field" style="height:70px; resize:none;" placeholder="Contribute insight..."></textarea>
+            <div style="display:flex; justify-content:flex-end; gap:10px;">
                 <button class="btn btn-outline" onclick="closeReplyModal()">Close</button>
                 <button class="btn" onclick="submitReply()">Send Reply</button>
             </div>
@@ -159,10 +180,9 @@
     </div>
 
     <script>
-        // 🌟 POINT THIS TO YOUR DEPLOYED BACKEND
         const API_BASE = "https://codyverse.codymkw.workers.dev"; 
 
-        let isSignUp = false, currentUser = null, currentProfile = null, currentCommunity = "general", activePostId = null;
+        let isSignUp = false, currentUser = null, currentProfile = null, currentCommunity = "general", activePostId = null, loadedPostsCache = [];
 
         async function apiFetch(endpoint, options = {}) {
             options.credentials = 'include';
@@ -171,6 +191,15 @@
                 options.headers = { ...options.headers, 'Content-Type': 'application/json' };
             }
             return fetch(`${API_BASE}${endpoint}`, options);
+        }
+
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute('data-theme');
+            document.documentElement.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+        }
+
+        function updateCharCount() {
+            document.getElementById('post-char-count').innerText = `${document.getElementById('post-text').value.length} / 280`;
         }
 
         async function checkAuth() {
@@ -223,78 +252,78 @@
                     </div>
                 `;
             }).join('');
+            
+            const targetObj = list.find(c => c.id === currentCommunity);
+            const showPinBtn = currentUser && (targetObj?.system || targetObj?.creator === currentUser);
+            document.getElementById('manage-announcement-btn').classList.toggle('hidden', !showPinBtn);
         }
 
         async function createCommunity() {
             const name = document.getElementById('new-comm-name').value;
             if(!name) return;
             const res = await apiFetch('/api/communities/create', { method: 'POST', body: { name } });
-            if(res.ok) {
-                document.getElementById('new-comm-name').value = '';
-                await loadCommunities();
-            } else { alert(await res.text()); }
+            if(res.ok) { document.getElementById('new-comm-name').value = ''; await loadCommunities(); }
         }
 
         async function deleteCommunity(event, id) {
-            event.stopPropagation(); // Avoid triggering switch community onclick event context
-            if(!confirm("Are you sure you want to completely erase this community? All posts inside will be cleared.")) return;
+            event.stopPropagation();
+            if(!confirm("Erase board? All embedded telemetry posts clear.")) return;
             const res = await apiFetch('/api/communities/delete', { method: 'POST', body: { id } });
-            if(res.ok) {
-                if(currentCommunity === id) currentCommunity = "general";
-                await loadCommunities();
-                loadPosts();
-            }
+            if(res.ok) { if(currentCommunity === id) currentCommunity = "general"; await loadCommunities(); loadPosts(); }
+        }
+
+        async function loadAnnouncement() {
+            const res = await apiFetch(`/api/announcement?community=${currentCommunity}`);
+            const ann = await res.json();
+            const box = document.getElementById('announcement-area');
+            if(ann) {
+                box.innerHTML = `<div class="announcement-title">📌 Announcement from @${ann.author}</div><div>${escapeHtml(ann.content)}</div>`;
+                box.classList.remove('hidden');
+            } else { box.classList.add('hidden'); }
+        }
+
+        async function promptAnnouncement() {
+            const text = prompt("Enter announcement pin description text (Leave empty to erase existing banner):");
+            if(text === null) return;
+            await apiFetch('/api/announcement/set', { method: 'POST', body: { community: currentCommunity, content: text } });
+            loadAnnouncement();
+        }
+
+        async function loadOnlineUsers() {
+            try {
+                const res = await apiFetch('/api/online');
+                const users = await res.json();
+                const box = document.getElementById('online-users-box');
+                if(users.length === 0) { box.innerHTML = 'Grid empty.'; return; }
+                box.innerHTML = users.map(u => `
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <div class="avatar" style="width:28px; height:28px; font-size:0.75rem; border:1px solid var(--wiiu-green);">
+                            ${u.avatarUrl ? `<img src="${u.avatarUrl}">` : u.username.charAt(0).toUpperCase()}
+                        </div>
+                        <div style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+                            <strong>${escapeHtml(u.displayName)}</strong> <span style="color:var(--text-muted); font-size:0.75rem;">@${u.username}</span>
+                        </div>
+                    </div>
+                `).join('');
+            } catch(e) {}
         }
 
         function switchCommunity(target) {
             currentCommunity = target;
-            const blocks = document.querySelectorAll('.community-card');
-            blocks.forEach(b => b.classList.remove('active'));
-            if(event && event.currentTarget) event.currentTarget.classList.add('active');
+            loadCommunities();
+            loadAnnouncement();
             loadPosts();
-        }
-
-        async function updateProfile() {
-            const res = await apiFetch('/api/profile/update', {
-                method: 'POST',
-                body: {
-                    displayName: document.getElementById('prof-displayname').value,
-                    avatarUrl: document.getElementById('prof-avatar').value,
-                    bio: document.getElementById('prof-bio').value
-                }
-            });
-            if(res.ok) { toggleProfileEdit(); await checkAuth(); loadPosts(); }
-        }
-
-        function toggleProfileEdit() { document.getElementById('profile-edit-panel').classList.toggle('hidden'); }
-        function toggleAuthMode() {
-            isSignUp = !isSignUp;
-            document.getElementById('auth-panel-title').innerText = isSignUp ? 'Create Registration Account' : 'Sign In';
-            document.getElementById('auth-displayname').classList.toggle('hidden', !isSignUp);
-            document.getElementById('auth-execution-btn').innerText = isSignUp ? 'Register Network ID' : 'Connect';
-        }
-
-        async function handleAuth() {
-            const username = document.getElementById('auth-username').value;
-            const password = document.getElementById('auth-password').value;
-            const displayName = document.getElementById('auth-displayname').value;
-            const res = await apiFetch(isSignUp ? '/api/register' : '/api/login', {
-                method: 'POST', body: isSignUp ? { username, password, displayName } : { username, password }
-            });
-            if(res.ok) { if(isSignUp) { toggleAuthMode(); } else { await checkAuth(); await loadCommunities(); loadPosts(); } } else { alert(await res.text()); }
-        }
-
-        async function logout() { await apiFetch('/api/logout'); window.location.reload(); }
-
-        function buildAvatar(url, fallbackName) {
-            return url ? `<div class="avatar"><img src="${url}" onerror="this.parentElement.innerHTML='${fallbackName.charAt(0).toUpperCase()}'"></div>` : `<div class="avatar">${fallbackName.charAt(0).toUpperCase()}</div>`;
         }
 
         async function loadPosts() {
             const res = await apiFetch(`/api/posts?community=${currentCommunity}`);
-            const posts = await res.json();
+            loadedPostsCache = await res.json();
+            renderFeed(loadedPostsCache);
+        }
+
+        function renderFeed(posts) {
             const stream = document.getElementById('feed-stream');
-            if (posts.length === 0) { stream.innerHTML = '<div class="card" style="text-align:center; color:var(--text-muted)">The community square database file is empty. Post first!</div>'; return; }
+            if (posts.length === 0) { stream.innerHTML = '<div class="card" style="text-align:center; color:var(--text-muted)">No active telemetry matches found in this terminal space.</div>'; return; }
 
             stream.innerHTML = posts.map(post => {
                 const checkedYeah = post.yeahedBy && post.yeahedBy.includes(currentUser);
@@ -306,7 +335,10 @@
                                 <span class="display-name">${post.displayName}</span>
                                 <span class="username">@${post.username}</span>
                             </div>
-                            <div class="post-body">${escapeHtml(post.content)}</div>
+                            <div class="post-body">
+                                ${escapeHtml(post.content)}
+                                ${post.imageUrl ? `<img src="${escapeHtml(post.imageUrl)}" class="post-img" onerror="this.remove()">` : ''}
+                            </div>
                             <div class="post-actions">
                                 <button class="action-tab ${checkedYeah ? 'yeah-active' : ''}" onclick="giveYeah('${post.id}')">💚 Yeah! (${post.yeahs || 0})</button>
                                 <button class="action-tab reply-tab" onclick="openReplyModal('${post.id}', '${post.displayName}', '${post.username}', \`${escapeHtml(post.content)}\`, '${post.avatarUrl}')">💬 Discussion (${post.replyCount || 0})</button>
@@ -317,15 +349,22 @@
             }).join('');
         }
 
+        function filterPosts() {
+            const val = document.getElementById('search-filter').value.toLowerCase();
+            const filtered = loadedPostsCache.filter(p => p.content.toLowerCase().includes(val) || p.displayName.toLowerCase().includes(val) || p.username.toLowerCase().includes(val));
+            renderFeed(filtered);
+        }
+
         async function submitPost() {
-            const targetText = document.getElementById('post-text').value;
-            if(!targetText) return;
-            const res = await apiFetch('/api/posts', { method: 'POST', body: { content: targetText, community: currentCommunity } });
-            if (res.ok) { document.getElementById('post-text').value = ''; loadPosts(); }
+            const content = document.getElementById('post-text').value;
+            const imageUrl = document.getElementById('post-image-url').value;
+            if(!content) return;
+            const res = await apiFetch('/api/posts', { method: 'POST', body: { content, community: currentCommunity, imageUrl } });
+            if (res.ok) { document.getElementById('post-text').value = ''; document.getElementById('post-image-url').value = ''; updateCharCount(); loadPosts(); }
         }
 
         async function giveYeah(postId) {
-            if(!currentUser) return alert('Session identity needed to log structural feedback notes.');
+            if(!currentUser) return alert('Identity authorization needed.');
             const res = await apiFetch('/api/yeah', { method: 'POST', body: { postId, community: currentCommunity } });
             if(res.ok) loadPosts();
         }
@@ -335,10 +374,7 @@
             document.getElementById('modal-parent-post-anchor').innerHTML = `
                 <div style="display:flex; gap:12px; opacity:0.85;">
                     ${buildAvatar(avatarUrl, displayName)}
-                    <div>
-                        <strong>${displayName}</strong> <span style="color:var(--text-muted)">@${username}</span>
-                        <div style="margin-top:4px; font-size:0.95rem;">${content}</div>
-                    </div>
+                    <div><strong>${displayName}</strong> <span style="color:var(--text-muted)">@${username}</span><div>${content}</div></div>
                 </div>`;
             document.getElementById('reply-modal').classList.remove('hidden');
             loadReplies();
@@ -350,15 +386,11 @@
             const res = await apiFetch(`/api/replies?postId=${activePostId}`);
             const replies = await res.json();
             const listContainer = document.getElementById('modal-replies-stream');
-            if(replies.length === 0) { listContainer.innerHTML = '<p style="color:var(--text-muted); text-align:center; font-size:0.9rem;">No response nodes found on this thread line.</p>'; return; }
-            
+            if(replies.length === 0) { listContainer.innerHTML = '<p style="color:var(--text-muted); font-size:0.9rem; text-align:center;">No responses.</p>'; return; }
             listContainer.innerHTML = replies.map(r => `
-                <div style="display:flex; gap:10px; font-size:0.9rem; background:var(--input-bg); padding:10px; border-radius:var(--radius-sm); border:1px solid var(--border-color);">
+                <div style="display:flex; gap:10px; font-size:0.9rem; background:var(--input-bg); padding:10px; border-radius:8px; border:1px solid var(--border-color);">
                     ${buildAvatar(r.avatarUrl, r.displayName)}
-                    <div>
-                        <strong>${r.displayName}</strong> <span style="color:var(--text-muted)">@${r.username}</span>
-                        <div style="margin-top:3px; color:#e4e4e7;">${escapeHtml(r.content)}</div>
-                    </div>
+                    <div><strong>${r.displayName}</strong> <span style="color:var(--text-muted)">@${r.username}</span><div style="color:var(--text-main); margin-top:2px;">${escapeHtml(r.content)}</div></div>
                 </div>
             `).join('');
         }
@@ -370,9 +402,40 @@
             if(res.ok) { document.getElementById('reply-text').value = ''; loadReplies(); loadPosts(); }
         }
 
+        async function updateProfile() {
+            const res = await apiFetch('/api/profile/update', {
+                method: 'POST', body: { displayName: document.getElementById('prof-displayname').value, avatarUrl: document.getElementById('prof-avatar').value, bio: document.getElementById('prof-bio').value }
+            });
+            if(res.ok) { toggleProfileEdit(); await checkAuth(); loadPosts(); }
+        }
+
+        function toggleProfileEdit() { document.getElementById('profile-edit-panel').classList.toggle('hidden'); }
+        function toggleAuthMode() {
+            isSignUp = !isSignUp;
+            document.getElementById('auth-panel-title').innerText = isSignUp ? 'Create Registration Profile' : 'Sign In';
+            document.getElementById('auth-displayname').classList.toggle('hidden', !isSignUp);
+        }
+
+        async function handleAuth() {
+            const username = document.getElementById('auth-username').value;
+            const password = document.getElementById('auth-password').value;
+            const displayName = document.getElementById('auth-displayname').value;
+            const res = await apiFetch(isSignUp ? '/api/register' : '/api/login', { method: 'POST', body: isSignUp ? { username, password, displayName } : { username, password } });
+            if(res.ok) { if(isSignUp) { toggleAuthMode(); } else { await checkAuth(); await loadCommunities(); loadPosts(); } } else { alert(await res.text()); }
+        }
+
+        async function logout() { await apiFetch('/api/logout'); window.location.reload(); }
+        function buildAvatar(url, fallbackName) { return url ? `<div class="avatar"><img src="${url}" onerror="this.parentElement.innerHTML='${fallbackName.charAt(0).toUpperCase()}'"></div>` : `<div class="avatar">${fallbackName.charAt(0).toUpperCase()}</div>`; }
         function escapeHtml(str) { return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
 
-        (async () => { await checkAuth(); await loadCommunities(); loadPosts(); })();
+        (async () => { 
+            await checkAuth(); 
+            await loadCommunities(); 
+            await loadAnnouncement(); 
+            loadPosts(); 
+            loadOnlineUsers();
+            setInterval(loadOnlineUsers, 30000); // Dynamic background poll loops
+        })();
     </script>
 </body>
 </html>
