@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:,">
+
+    <meta property="og:title" content="Retro Handheld StreetPass Generator">
+    <meta property="og:description" content="Instantly generate custom 3DS-style notification tags. Done completely in-browser.">
+    <meta property="og:type" content="website">
+    <meta name="theme-color" content="#00FF66">
+
+    <title>StreetPass Notification Generator</title>
+
+    <style>
+        :root {
+            --bg-main: #060607;
+            --bg-card: #0D0E10;
+            --bg-input: #131417;
+            --border-color: #1F2126;
+            --text-main: #F4F5F6;
+            --text-muted: #82868F;
+            --tag-green: #00FF66;
+            --tag-blue: #0099FF;
+            --tag-orange: #FF6600;
+            --led-color: var(--tag-green);
+            --led-glow: rgba(0, 255, 102, 0.4);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 40px 24px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 680px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .workspace {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 24px 48px rgba(0, 0, 0, 0.8);
+            text-align: center;
+            position: relative;
+        }
+
+        /* Pulsing Handheld LED Indicator */
+        .notification-led {
+            position: absolute;
+            top: 45px;
+            right: 45px;
+            width: 12px;
+            height: 12px;
+            background-color: var(--led-color);
+            border-radius: 50%;
+            box-shadow: 0 0 12px var(--led-glow);
+            animation: pulse-led 1.8s infinite ease-in-out;
+        }
+
+        @keyframes pulse-led {
+            0%, 100% { transform: scale(1); opacity: 0.6; box-shadow: 0 0 8px var(--led-glow); }
+            50% { transform: scale(1.15); opacity: 1; box-shadow: 0 0 18px var(--led-glow); }
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            margin-bottom: 36px;
+        }
+
+        .brand h1 {
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .selector-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-muted);
+            font-weight: 700;
+            margin-bottom: 10px;
+            display: block;
+            text-align: left;
+        }
+
+        .type-selector {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            background-color: var(--bg-input);
+            padding: 5px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 28px;
+        }
+
+        .selector-option {
+            display: none;
+        }
+
+        .selector-button {
+            padding: 14px;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+            border-radius: 9px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        #opt-streetpass:checked + .selector-button { background-color: #1b4726; color: #00FF66; border: 1px solid rgba(0,255,102,0.2); }
+        #opt-spotpass:checked + .selector-button { background-color: #113454; color: #0099FF; border: 1px solid rgba(0,153,255,0.2); }
+        #opt-friend:checked + .selector-button { background-color: #422512; color: #FF6600; border: 1px solid rgba(255,102,0,0.2); }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-bottom: 28px;
+            text-align: left;
+        }
+
+        .form-row {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            background-color: var(--bg-input);
+            border: 1px solid var(--border-color);
+            padding: 14px;
+            border-radius: 14px;
+        }
+
+        .form-row label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+            color: var(--text-muted);
+        }
+
+        .text-input {
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            font-size: 15px;
+            font-weight: 500;
+            outline: none;
+            width: 100%;
+        }
+
+        .text-input::placeholder {
+            color: #4b4e56;
+        }
+
+        .preview-box {
+            display: none;
+            background: #000;
+            border-radius: 14px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            margin-bottom: 28px;
+            aspect-ratio: 3 / 1;
+        }
+
+        canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .action-tray {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 16px 24px;
+            font-size: 15px;
+            font-weight: 600;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            text-decoration: none;
+        }
+
+        #generateBtn {
+            background-color: #1f2126;
+            color: #ffffff;
+            border: 1px solid #31353d;
+        }
+
+        #generateBtn:hover {
+            background-color: #2a2d34;
+        }
+
+        #downloadBtn {
+            display: none;
+            background-color: #24A148;
+            color: white;
+        }
+
+        #downloadBtn:hover {
+            background-color: #2cbc5b;
+        }
+
+        #resetBtn {
+            display: none;
+            background-color: var(--bg-input);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+        }
+
+        #resetBtn:hover {
+            background-color: #1c1e22;
+        }
+
+        .faq-section {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 32px 40px;
+        }
+
+        .faq-section h2 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .faq-item {
+            border-bottom: 1px solid var(--border-color);
+            padding: 16px 0;
+            text-align: left;
+        }
+
+        .faq-item:last-child { border-bottom: none; }
+
+        .faq-question { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+        .faq-answer { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+
+        footer { margin-top: 24px; text-align: center; padding: 16px 0; font-size: 12px; color: var(--text-muted); }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="workspace">
+            <div class="notification-led" id="uiLed"></div>
+            
+            <div class="brand">
+                <h1>StreetPass Generator</h1>
+            </div>
+
+            <span class="selector-label">Notification Mode</span>
+            <div class="type-selector">
+                <label>
+                    <input type="radio" name="notifyType" id="opt-streetpass" value="streetpass" class="selector-option" checked>
+                    <div class="selector-button">StreetPass</div>
+                </label>
+                <label>
+                    <input type="radio" name="notifyType" id="opt-spotpass" value="spotpass" class="selector-option">
+                    <div class="selector-button">SpotPass</div>
+                </label>
+                <label>
+                    <input type="radio" name="notifyType" id="opt-friend" value="friend" class="selector-option">
+                    <div class="selector-button">Friend Online</div>
+                </label>
+            </div>
+
+            <div class="input-group">
+                <div class="form-row">
+                    <label for="miiName">Mii Nickname</label>
+                    <input type="text" id="miiName" class="text-input" placeholder="e.g., Cody" maxlength="12">
+                </div>
+                <div class="form-row">
+                    <label for="miiMessage">Status Message</label>
+                    <input type="text" id="miiMessage" class="text-input" placeholder="e.g., Playing Splatoon 3!" maxlength="45">
+                </div>
+            </div>
+
+            <div class="preview-box" id="previewBox">
+                <canvas id="streetpassCanvas" width="1200" height="400"></canvas>
+            </div>
+
+            <div class="action-tray">
+                <button id="generateBtn" class="btn">Generate Notification Tag</button>
+                <a id="downloadBtn" class="btn">Download Tag Image</a>
+                <button id="resetBtn" class="btn">Create Another Tag</button>
+            </div>
+        </div>
+
+        <div class="faq-section">
+            <h2>Frequently Asked Questions</h2>
+            <div class="faq-item">
+                <div class="faq-question">What is this?</div>
+                <div class="faq-answer">It's a retro handheld notification simulator built out of absolute boredom lol. It renders an accurate, high-definition reproduction of old-school 3D handheld notifications to use for profiles or memes.</div>
+            </div>
+        </div>
+
+        <footer>
+            <p>&copy; 2026 CodyMKW &bull; Legacy Hardware Aesthetics</p>
+        </footer>
+    </div>
+
+    <script>
+        const miiName = document.getElementById('miiName');
+        const miiMessage = document.getElementById('miiMessage');
+        const previewBox = document.getElementById('previewBox');
+        const canvas = document.getElementById('streetpassCanvas');
+        const ctx = canvas.getContext('2d');
+        const generateBtn = document.getElementById('generateBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const uiLed = document.getElementById('uiLed');
+
+        // Dynamically adjust the browser UI LED color depending on mode choice
+        document.querySelectorAll('input[name="notifyType"]').forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                if(e.target.value === 'streetpass') {
+                    uiLed.style.setProperty('--led-color', '#00FF66');
+                    uiLed.style.setProperty('--led-glow', 'rgba(0, 255, 102, 0.4)');
+                } else if(e.target.value === 'spotpass') {
+                    uiLed.style.setProperty('--led-color', '#0099FF');
+                    uiLed.style.setProperty('--led-glow', 'rgba(0, 153, 255, 0.4)');
+                } else {
+                    uiLed.style.setProperty('--led-color', '#FF6600');
+                    uiLed.style.setProperty('--led-glow', 'rgba(255, 102, 0, 0.4)');
+                }
+            });
+        });
+
+        function renderStreetpass() {
+            const W = canvas.width;
+            const H = canvas.height;
+            const mode = document.querySelector('input[name="notifyType"]:checked').value;
+            
+            const name = miiName.value.trim() || "Cody";
+            const msg = miiMessage.value.trim() || "Playing Splatoon 3!";
+
+            let accentColor = '#00FF66';
+            let modeTitle = 'StreetPass';
+            if(mode === 'spotpass') { accentColor = '#0099FF'; modeTitle = 'SpotPass'; }
+            if(mode === 'friend') { accentColor = '#FF6600'; modeTitle = 'Friend Online'; }
+
+            ctx.clearRect(0, 0, W, H);
+
+            // Base Body Card
+            ctx.fillStyle = '#18191e';
+            ctx.fillRect(0, 0, W, H);
+
+            // Colored Notification Accent Anchor Band
+            ctx.fillStyle = accentColor;
+            ctx.fillRect(0, 0, 45, H);
+
+            // Draw a minimal representation of a profile avatar card container
+            ctx.fillStyle = '#25272f';
+            ctx.beginPath();
+            ctx.arc(160, H / 2, 75, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Minimalist profile face outline
+            ctx.strokeStyle = '#3e4251';
+            ctx.lineWidth = 6;
+            ctx.beginPath();
+            ctx.arc(160, (H / 2) - 10, 30, 0, Math.PI, false);
+            ctx.stroke();
+
+            // Header Mode Tag Text
+            ctx.fillStyle = accentColor;
+            ctx.font = 'bold 36px system-ui, -apple-system, sans-serif';
+            ctx.fillText(modeTitle.toUpperCase(), 280, 110);
+
+            // Mii Name Label Placement Pass
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 54px system-ui, -apple-system, sans-serif';
+            ctx.fillText(name, 280, 190);
+
+            // Custom Status Context Stream Text
+            ctx.fillStyle = '#9ca3af';
+            ctx.font = '500 36px system-ui, -apple-system, sans-serif';
+            
+            // Auto-scaling logic for status strings
+            let statusFontSize = 36;
+            while(ctx.measureText(msg).width > 850 && statusFontSize > 18) {
+                statusFontSize -= 2;
+                ctx.font = `500 ${statusFontSize}px system-ui, sans-serif`;
+            }
+            ctx.fillText(msg, 280, 275);
+        }
+
+        generateBtn.addEventListener('click', () => {
+            previewBox.style.display = 'block';
+            renderStreetpass();
+            downloadBtn.href = canvas.toDataURL('image/png');
+            downloadBtn.download = `streetpass_tag_${Date.now()}.png`;
+
+            generateBtn.style.display = 'none';
+            downloadBtn.style.display = 'inline-flex';
+            resetBtn.style.display = 'inline-flex';
+        });
+
+        resetBtn.addEventListener('click', () => {
+            miiName.value = '';
+            miiMessage.value = '';
+            previewBox.style.display = 'none';
+            generateBtn.style.display = 'inline-flex';
+            downloadBtn.style.display = 'none';
+            resetBtn.style.display = 'none';
+        });
+    </script>
+</body>
+</html>
