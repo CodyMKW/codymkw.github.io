@@ -404,6 +404,40 @@
             flex-shrink: 0;
         }
 
+        /* ── Sub-Tools Grid Layout Track ── */
+        .tools-heading {
+            margin-top: 24px;
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 10px;
+            margin-top: 4px;
+        }
+
+        .tool-card {
+            background: rgba(5,8,16,0.3);
+            border: 1px solid var(--border-line);
+            padding: 12px 14px;
+            border-radius: 14px;
+            text-decoration: none;
+            color: var(--text-muted);
+            font-size: 0.82rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.2s, border-color 0.2s, color 0.2s, transform 0.2s;
+        }
+
+        .tool-card:hover {
+            background: var(--bg-card-hover);
+            border-color: rgba(255,255,255,0.12);
+            color: #fff;
+            transform: translateY(-1px);
+        }
+
         /* Shimmer skeleton */
         @keyframes shimmer {
             0%   { background-position: -400px 0; }
@@ -576,6 +610,11 @@
 
             /* Remove hover slide on touch */
             .feed-row:hover { transform: none; }
+
+            /* Responsive micro layout overrides for tools */
+            .tools-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
 
         /* Tablet tweak */
@@ -701,6 +740,16 @@
             </div>
             <div class="feed-meta">Ultra Rumble</div>
         </a>
+
+        <!-- Secondary Internal Web Tools Anchor Track -->
+        <div class="panel-heading tools-heading">Web Tools</div>
+        <div class="tools-grid">
+            <a href="/anime-guess" class="tool-card">🔍 Anime Guess</a>
+            <a href="/splatfest" class="tool-card">🐙 Splatfest Gen</a>
+            <a href="/statcard" class="tool-card">🎴 Stat Card</a>
+            <a href="/streetpass" class="tool-card">🟢 StreetPass</a>
+            <a href="/switch-intro-merger" class="tool-card">🎬 Switch Merger</a>
+        </div>
     </div>
 
 </div>
