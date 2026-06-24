@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Codyverse Plaza Premium</title>
+    <title>Codyverse Plaza Premium - Ultra Edition</title>
     <style>
         :root[data-theme="light"] {
             --bg-dark: #f3f3f3; 
@@ -16,6 +16,7 @@
             --wiiu-green-hover: #76a500;
             --tab-bg: #e5e5ea;
             --tab-hover: #d1d1d6;
+            --poll-bar: #abd942;
         }
         :root[data-theme="dark"] {
             --bg-dark: #1b1b1d; 
@@ -28,16 +29,17 @@
             --wiiu-green-hover: #abd942;
             --tab-bg: #3f3f46;
             --tab-hover: #52525b;
+            --poll-bar: #8ec600;
         }
 
         body { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; background-color: var(--bg-dark); color: var(--text-main); margin: 0; padding: 0; display: flex; justify-content: center; -webkit-font-smoothing: antialiased; transition: background-color 0.2s, color 0.2s; }
-        .app-wrapper { width: 100%; max-width: 1200px; min-height: 100vh; display: flex; flex-direction: column; padding: 20px; box-sizing: border-box; gap: 20px; }
+        .app-wrapper { width: 100%; max-width: 1400px; min-height: 100vh; display: flex; flex-direction: column; padding: 20px; box-sizing: border-box; gap: 20px; }
         header { background: var(--card-bg); border-radius: 16px; padding: 15px 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border-color); }
         .logo-area { display: flex; align-items: center; gap: 8px; font-size: 1.5rem; font-weight: 800; color: var(--wiiu-green); letter-spacing: -0.5px; }
         .logo-dot { width: 12px; height: 12px; background-color: var(--wiiu-green); border-radius: 50%; display: inline-block; }
         
-        .main-layout { display: grid; grid-template-columns: 280px 1fr 240px; gap: 20px; align-items: start; }
-        @media (max-width: 1000px) { .main-layout { grid-template-columns: 280px 1fr; } }
+        .main-layout { display: grid; grid-template-columns: 280px 1fr 300px; gap: 20px; align-items: start; }
+        @media (max-width: 1150px) { .main-layout { grid-template-columns: 280px 1fr; } }
         @media (max-width: 780px) { .main-layout { grid-template-columns: 1fr; } }
         
         .sidebar { display: flex; flex-direction: column; gap: 20px; }
@@ -55,10 +57,10 @@
         .announcement-title { font-weight: bold; display: flex; align-items: center; gap: 6px; color: var(--wiiu-green); margin-bottom: 5px; }
 
         .feed-container { display: flex; flex-direction: column; gap: 15px; }
-        .post-composer textarea { width: 100%; height: 80px; border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; box-sizing: border-box; resize: none; font-family: inherit; font-size: 0.95rem; color: var(--text-main); background-color: var(--input-bg); transition: border-color 0.2s; }
+        .post-composer textarea { width: 100%; height: 90px; border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; box-sizing: border-box; resize: none; font-family: inherit; font-size: 0.95rem; color: var(--text-main); background-color: var(--input-bg); transition: border-color 0.2s; margin-bottom: 5px; }
         .post-composer textarea:focus { outline: none; border-color: var(--wiiu-green); }
         
-        .char-counter { font-size: 0.8rem; color: var(--text-muted); text-align: right; margin-top: -4px; }
+        .char-counter { font-size: 0.8rem; color: var(--text-muted); text-align: right; }
         .post { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 20px; display: flex; gap: 15px; position: relative; }
         .post-img { width: 100%; max-height: 320px; object-fit: cover; border-radius: 12px; margin-top: 12px; border: 1px solid var(--border-color); }
         
@@ -101,6 +103,16 @@
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 100; backdrop-filter: blur(4px); }
         .modal-body { background: var(--card-bg); padding: 25px; border-radius: 16px; width: 90%; max-width: 550px; border: 1px solid var(--border-color); box-shadow: 0 10px 30px rgba(0,0,0,0.3); color: var(--text-main); }
         .telemetry-clock { font-size: 0.85rem; font-weight: bold; color: var(--text-muted); background: var(--tab-bg); padding: 4px 10px; border-radius: 6px; border: 1px solid var(--border-color); }
+
+        /* Formatting bar / Poll widget features */
+        .fmt-btn { background: var(--tab-bg); border: 1px solid var(--border-color); color: var(--text-main); padding: 4px 8px; font-size: 0.75rem; font-weight: bold; border-radius: 4px; cursor: pointer; }
+        .fmt-btn:hover { background: var(--tab-hover); }
+        .poll-option-row { margin-bottom: 12px; cursor: pointer; }
+        .poll-bar-outer { width: 100%; background: var(--input-bg); height: 16px; border-radius: 8px; overflow: hidden; border: 1px solid var(--border-color); margin-top: 4px; position: relative; }
+        .poll-bar-inner { background: var(--poll-bar); height: 100%; width: 0%; transition: width 0.4s ease; }
+        .poll-pct { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); font-size: 0.7rem; font-weight: bold; color: var(--text-main); }
+        .spoiler-text { background: var(--text-main); color: var(--text-main); cursor: pointer; border-radius: 4px; padding: 0 2px; }
+        .spoiler-text.revealed { background: transparent; color: inherit; }
     </style>
 </head>
 <body>
@@ -137,15 +149,23 @@
                     <input type="text" id="new-comm-name" class="input-field" placeholder="Hub Name">
                     <button class="btn" style="width:100%; font-size:0.8rem;" onclick="createCommunity()">Launch Community</button>
                 </div>
+
+                <div class="card">
+                    <h4 style="margin-top:0; color:var(--text-muted); font-size:0.85rem; text-transform:uppercase;">📊 Plaza Telemetry</h4>
+                    <div style="font-size:0.8rem; display:grid; gap:6px;" id="telemetry-stats-body">
+                        <div>Loaded Channels: <strong id="stat-channels-count">3</strong></div>
+                        <div>Rendered Feed Size: <strong id="stat-posts-count">0 items</strong></div>
+                        <div>Client Protocol: <strong>HTTP/2 JSON-KV</strong></div>
+                    </div>
+                </div>
             </div>
 
             <div class="feed-container">
                 <div class="community-grid" id="communities-box"></div>
                 
-                <!-- Added autocomplete="off" and changed names/id structures to kill browser auto-fill bugs -->
                 <div class="card" style="padding: 12px 20px; display: flex; gap: 10px; align-items: center;">
-                    <span style="font-size: 0.9rem; color: var(--text-muted);">🔍 Search:</span>
-                    <input type="text" id="plaza-search-input" name="plaza-search-input" autocomplete="off" class="input-field" style="margin-bottom:0; flex: 1; padding: 6px 12px;" placeholder="Filter terms, keywords, authors..." oninput="filterPosts()">
+                    <span style="font-size: 0.9rem; color: var(--text-muted);">🔍 Filter:</span>
+                    <input type="search" id="system_plaza_search_override" name="system_plaza_search_override" autocomplete="new-password-override" class="input-field" style="margin-bottom:0; flex: 1; padding: 6px 12px;" placeholder="Filter terms, keywords, authors..." oninput="filterPosts()">
                 </div>
 
                 <div id="announcement-area" class="announcement-banner hidden"></div>
@@ -173,7 +193,12 @@
                 </div>
 
                 <div id="post-panel" class="card post-composer hidden">
-                    <textarea id="post-text" maxlength="280" placeholder="Share something elegant or completely ridiculous..." oninput="updateCharCount()"></textarea>
+                    <div style="display:flex; gap:6px; margin-bottom:6px;">
+                        <button class="fmt-btn" onclick="insertFormat('[b]', '[/b]')">Bold</button>
+                        <button class="fmt-btn" onclick="insertFormat('[i]', '[/i]')">Italic</button>
+                        <button class="fmt-btn" onclick="insertFormat('[spoiler]', '[/spoiler]')">Spoiler</button>
+                    </div>
+                    <textarea id="post-text" maxlength="280" placeholder="Share something elegant or completely ridiculous..." oninput="onComposerInput()"></textarea>
                     <div class="char-counter" id="post-char-count">0 / 280</div>
                     <input type="text" id="post-image-url" class="input-field" style="margin-top:10px; margin-bottom:0;" placeholder="Optional Embedded Graphic Link (https://...)">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-top:12px;">
@@ -186,6 +211,21 @@
             </div>
 
             <div class="sidebar">
+                <div class="card">
+                    <h4 style="margin-top:0; margin-bottom:4px;">🦑 Plaza Splat Poll</h4>
+                    <p style="font-size:0.75rem; color:var(--text-muted); margin:0 0 12px 0;">Which aesthetic has optimal comfort?</p>
+                    <div id="poll-widget-body">
+                        <div class="poll-option-row" onclick="votePoll('splat')">
+                            <div style="display:flex; justify-content:space-between; font-size:0.8rem;"><span>🦑 Ink-Splat Chaos</span><span id="poll-v-splat">0</span></div>
+                            <div class="poll-bar-outer"><div class="poll-bar-inner" id="pb-splat"></div><div class="poll-pct" id="pp-splat">0%</div></div>
+                        </div>
+                        <div class="poll-option-row" onclick="votePoll('cozy')">
+                            <div style="display:flex; justify-content:space-between; font-size:0.8rem;"><span>🍃 Cozy Island Life</span><span id="poll-v-cozy">0</span></div>
+                            <div class="poll-bar-outer"><div class="poll-bar-inner" id="pb-cozy"></div><div class="poll-pct" id="pp-cozy">0%</div></div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="card">
                     <h4 style="margin-top:0; border-bottom:1px solid var(--border-color); padding-bottom:6px;"><span class="online-dot"></span> Online Now</h4>
                     <div id="online-users-box" style="display:flex; flex-direction:column; gap:10px; font-size:0.85rem;">
@@ -226,6 +266,39 @@
 
         let isSignUp = false, currentUser = null, currentProfile = null, currentCommunity = "general", activePostId = null, loadedPostsCache = [];
 
+        // --- RETRO FX WEBAUDIO GENERATOR ENGINE ---
+        const sfxContext = new (window.AudioContext || window.webkitAudioContext)();
+        function playSfx(type) {
+            try {
+                const osc = sfxContext.createOscillator();
+                const gain = sfxContext.createGain();
+                osc.connect(gain);
+                gain.connect(sfxContext.destination);
+
+                if (type === 'click') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(400, sfxContext.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(120, sfxContext.currentTime + 0.08);
+                    gain.gain.setValueAtTime(0.1, sfxContext.currentTime);
+                    gain.gain.linearRampToValueAtTime(0.01, sfxContext.currentTime + 0.08);
+                    osc.start(); osc.stop(sfxContext.currentTime + 0.08);
+                } else if (type === 'chime') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(587.33, sfxContext.currentTime); // D5
+                    osc.frequency.setValueAtTime(880, sfxContext.currentTime + 0.08); // A5
+                    gain.gain.setValueAtTime(0.15, sfxContext.currentTime);
+                    gain.gain.linearRampToValueAtTime(0.01, sfxContext.currentTime + 0.25);
+                    osc.start(); osc.stop(sfxContext.currentTime + 0.25);
+                } else if (type === 'switch') {
+                    osc.type = 'square';
+                    osc.frequency.setValueAtTime(220, sfxContext.currentTime);
+                    gain.gain.setValueAtTime(0.05, sfxContext.currentTime);
+                    gain.gain.linearRampToValueAtTime(0.001, sfxContext.currentTime + 0.05);
+                    osc.start(); osc.stop(sfxContext.currentTime + 0.05);
+                }
+            } catch(e){}
+        }
+
         async function apiFetch(endpoint, options = {}) {
             options.credentials = 'include';
             if (options.body && typeof options.body === 'object') {
@@ -236,8 +309,25 @@
         }
 
         function toggleTheme() {
+            playSfx('switch');
             const current = document.documentElement.getAttribute('data-theme');
             document.documentElement.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+        }
+
+        // TEXT WRAPPER FORMATTING ENGINE
+        function insertFormat(openTag, closeTag) {
+            const textarea = document.getElementById('post-text');
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            const text = textarea.value;
+            textarea.value = text.substring(0, start) + openTag + text.substring(start, end) + closeTag + text.substring(end);
+            textarea.focus();
+            onComposerInput();
+        }
+
+        function onComposerInput() {
+            updateCharCount();
+            localStorage.setItem(`plaza_draft_${currentCommunity}`, document.getElementById('post-text').value);
         }
 
         function updateCharCount() {
@@ -250,9 +340,37 @@
         }
         setInterval(updateClock, 1000);
 
-        // Global check helper to see if active credential identity has platform administration rights
-        function isPlatformAdmin() {
-            return currentUser === "codymkw";
+        function isPlatformAdmin() { return currentUser === "codymkw"; }
+
+        // PARSER INTERPRETER FOR SPOILERS AND FORMATS
+        function parseCustomFormatting(str) {
+            let parsed = escapeHtml(str);
+            parsed = parsed.replace(/\[b\](.*?)\[\/b\]/gi, '<strong>$1</strong>');
+            parsed = parsed.replace(/\[i\](.*?)\[\/i\]/gi, '<em>$1</em>');
+            parsed = parsed.replace(/\[spoiler\](.*?)\[\/spoiler\]/gi, '<span class="spoiler-text" onclick="this.classList.toggle(\'revealed\')">$1</span>');
+            return parsed;
+        }
+
+        // POLL SYSTEM LOGIC STORAGE
+        function renderPoll() {
+            const votes = JSON.parse(localStorage.getItem('plaza_poll_cache') || '{"splat":12,"cozy":18}');
+            const total = votes.splat + votes.cozy;
+            const pctSplat = total ? Math.round((votes.splat / total) * 100) : 0;
+            const pctCozy = total ? Math.round((votes.cozy / total) * 100) : 0;
+            
+            document.getElementById('poll-v-splat').innerText = votes.splat;
+            document.getElementById('poll-v-cozy').innerText = votes.cozy;
+            document.getElementById('pb-splat').style.width = pctSplat + '%';
+            document.getElementById('pb-cozy').style.width = pctCozy + '%';
+            document.getElementById('pp-splat').innerText = pctSplat + '%';
+            document.getElementById('pp-cozy').innerText = pctCozy + '%';
+        }
+        function votePoll(key) {
+            playSfx('click');
+            const votes = JSON.parse(localStorage.getItem('plaza_poll_cache') || '{"splat":12,"cozy":18}');
+            votes[key]++;
+            localStorage.setItem('plaza_poll_cache', JSON.stringify(votes));
+            renderPoll();
         }
 
         async function checkAuth() {
@@ -296,6 +414,7 @@
             const res = await apiFetch('/api/communities');
             const list = await res.json();
             const box = document.getElementById('communities-box');
+            document.getElementById('stat-channels-count').innerText = list.length;
             
             box.innerHTML = list.map(c => {
                 const canDelete = isPlatformAdmin() || (!c.system && c.creator === currentUser);
@@ -364,6 +483,7 @@
         }
 
         async function inspectUser(username) {
+            playSfx('click');
             try {
                 const res = await apiFetch(`/api/user/lookup?username=${username}`);
                 if(!res.ok) return;
@@ -379,15 +499,22 @@
         function closeInspectorModal() { document.getElementById('user-inspector-modal').classList.add('hidden'); }
 
         function switchCommunity(target) {
+            playSfx('click');
             currentCommunity = target;
             loadCommunities();
             loadAnnouncement();
             loadPosts();
+
+            // Load saved drafts for channel if they exist
+            const savedDraft = localStorage.getItem(`plaza_draft_${currentCommunity}`) || '';
+            document.getElementById('post-text').value = savedDraft;
+            updateCharCount();
         }
 
         async function loadPosts() {
             const res = await apiFetch(`/api/posts?community=${currentCommunity}`);
             loadedPostsCache = await res.json();
+            document.getElementById('stat-posts-count').innerText = `${loadedPostsCache.length} items`;
             renderFeed(loadedPostsCache);
         }
 
@@ -414,7 +541,7 @@
                                 <span class="username" onclick="inspectUser('${post.username}')">@${post.username}</span>
                             </div>
                             <div class="post-body">
-                                ${escapeHtml(post.content)}
+                                ${parseCustomFormatting(post.content)}
                                 ${post.imageUrl ? `<img src="${escapeHtml(post.imageUrl)}" class="post-img" onerror="this.remove()">` : ''}
                             </div>
                             <div class="post-actions">
@@ -436,7 +563,7 @@
         }
 
         function filterPosts() {
-            const val = document.getElementById('plaza-search-input').value.toLowerCase();
+            const val = document.getElementById('system_plaza_search_override').value.toLowerCase();
             const filtered = loadedPostsCache.filter(p => p.content.toLowerCase().includes(val) || p.displayName.toLowerCase().includes(val) || p.username.toLowerCase().includes(val));
             renderFeed(filtered);
         }
@@ -446,11 +573,19 @@
             const imageUrl = document.getElementById('post-image-url').value;
             if(!content) return;
             const res = await apiFetch('/api/posts', { method: 'POST', body: { content, community: currentCommunity, imageUrl } });
-            if (res.ok) { document.getElementById('post-text').value = ''; document.getElementById('post-image-url').value = ''; updateCharCount(); loadPosts(); }
+            if (res.ok) { 
+                playSfx('chime');
+                document.getElementById('post-text').value = ''; 
+                document.getElementById('post-image-url').value = ''; 
+                localStorage.removeItem(`plaza_draft_${currentCommunity}`);
+                updateCharCount(); 
+                loadPosts(); 
+            }
         }
 
         async function applyReaction(postId, reactionType) {
             if(!currentUser) return alert('Identity authorization mapping configuration needed.');
+            playSfx('click');
             const res = await apiFetch('/api/react', { method: 'POST', body: { postId, community: currentCommunity, reactionType } });
             if(res.ok) loadPosts();
         }
@@ -510,7 +645,7 @@
             const password = document.getElementById('auth-password').value;
             const displayName = document.getElementById('auth-displayname').value;
             const res = await apiFetch(isSignUp ? '/api/register' : '/api/login', { method: 'POST', body: isSignUp ? { username, password, displayName } : { username, password } });
-            if(res.ok) { if(isSignUp) { toggleAuthMode(); } else { await checkAuth(); await loadCommunities(); loadPosts(); } } else { alert(await res.text()); }
+            if(res.ok) { if(isSignUp) { toggleAuthMode(); } else { window.location.reload(); } } else { alert(await res.text()); }
         }
 
         async function logout() { await apiFetch('/api/logout'); window.location.reload(); }
@@ -518,12 +653,18 @@
 
         (async () => { 
             updateClock();
+            renderPoll();
             await checkAuth(); 
             await loadCommunities(); 
             await loadAnnouncement(); 
             loadPosts(); 
             loadOnlineUsers();
             setInterval(loadOnlineUsers, 20000); 
+
+            // Load community draft if available on startup
+            const savedDraft = localStorage.getItem(`plaza_draft_${currentCommunity}`) || '';
+            document.getElementById('post-text').value = savedDraft;
+            updateCharCount();
         })();
     </script>
 </body>
