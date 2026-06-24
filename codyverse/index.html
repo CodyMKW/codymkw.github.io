@@ -6,17 +6,33 @@
     <title>Codyverse Plaza Premium</title>
     <style>
         :root[data-theme="light"] {
-            --bg-dark: #f3f3f3; --card-bg: #ffffff; --input-bg: #fafafa; --border-color: #e0e0e0;
-            --text-main: #3c3c3c; --text-muted: #8c8c8c; --wiiu-green: #8ec600; --wiiu-green-hover: #76a500;
+            --bg-dark: #f3f3f3; 
+            --card-bg: #ffffff; 
+            --input-bg: #fafafa; 
+            --border-color: #d1d1d6;
+            --text-main: #1c1c1e; 
+            --text-muted: #8e8e93; 
+            --wiiu-green: #8ec600; 
+            --wiiu-green-hover: #76a500;
+            --tab-bg: #e5e5ea;
+            --tab-hover: #d1d1d6;
         }
         :root[data-theme="dark"] {
-            --bg-dark: #1b1b1d; --card-bg: #2d2d31; --input-bg: #202023; --border-color: #3f3f46;
-            --text-main: #f4f4f5; --text-muted: #a1a1aa; --wiiu-green: #92e600; --wiiu-green-hover: #abd942;
+            --bg-dark: #1b1b1d; 
+            --card-bg: #2d2d31; 
+            --input-bg: #202023; 
+            --border-color: #3f3f46;
+            --text-main: #f4f4f5; 
+            --text-muted: #a1a1aa; 
+            --wiiu-green: #92e600; 
+            --wiiu-green-hover: #abd942;
+            --tab-bg: #3f3f46;
+            --tab-hover: #52525b;
         }
 
         body { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; background-color: var(--bg-dark); color: var(--text-main); margin: 0; padding: 0; display: flex; justify-content: center; -webkit-font-smoothing: antialiased; transition: background-color 0.2s, color 0.2s; }
         .app-wrapper { width: 100%; max-width: 1200px; min-height: 100vh; display: flex; flex-direction: column; padding: 20px; box-sizing: border-box; gap: 20px; }
-        header { background: var(--card-bg); border-radius: 16px; padding: 15px 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border-color); }
+        header { background: var(--card-bg); border-radius: 16px; padding: 15px 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border-color); }
         .logo-area { display: flex; align-items: center; gap: 8px; font-size: 1.5rem; font-weight: 800; color: var(--wiiu-green); letter-spacing: -0.5px; }
         .logo-dot { width: 12px; height: 12px; background-color: var(--wiiu-green); border-radius: 50%; display: inline-block; }
         
@@ -25,7 +41,7 @@
         @media (max-width: 780px) { .main-layout { grid-template-columns: 1fr; } }
         
         .sidebar { display: flex; flex-direction: column; gap: 20px; }
-        .card { background: var(--card-bg); border-radius: 16px; border: 1px solid var(--border-color); box-shadow: 0 4px 15px rgba(0,0,0,0.15); padding: 20px; box-sizing: border-box; }
+        .card { background: var(--card-bg); border-radius: 16px; border: 1px solid var(--border-color); box-shadow: 0 4px 15px rgba(0,0,0,0.1); padding: 20px; box-sizing: border-box; }
         .user-profile-summary { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 12px; }
         
         .community-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; margin-bottom: 5px; }
@@ -35,8 +51,7 @@
         .community-delete-btn { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: transparent; border: none; color: #ef4444; font-size: 0.9rem; cursor: pointer; display: none; }
         .community-card:hover .community-delete-btn { display: block; }
 
-        /* --- ANNOUNCEMENT BANNER --- */
-        .announcement-banner { background: rgba(146, 230, 0, 0.1); border: 2px dashed var(--wiiu-green); border-radius: 12px; padding: 15px; position: relative; color: var(--text-main); font-size: 0.9rem; line-height: 1.4; }
+        .announcement-banner { background: rgba(146, 230, 0, 0.08); border: 2px dashed var(--wiiu-green); border-radius: 12px; padding: 15px; position: relative; color: var(--text-main); font-size: 0.9rem; line-height: 1.4; }
         .announcement-title { font-weight: bold; display: flex; align-items: center; gap: 6px; color: var(--wiiu-green); margin-bottom: 5px; }
 
         .feed-container { display: flex; flex-direction: column; gap: 15px; }
@@ -44,34 +59,50 @@
         .post-composer textarea:focus { outline: none; border-color: var(--wiiu-green); }
         
         .char-counter { font-size: 0.8rem; color: var(--text-muted); text-align: right; margin-top: -4px; }
-        .post { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 20px; display: flex; gap: 15px; }
-        .post-img { width: 100%; max-height: 300px; object-fit: cover; border-radius: 8px; margin-top: 10px; border: 1px solid var(--border-color); }
+        .post { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 20px; display: flex; gap: 15px; position: relative; }
+        .post-img { width: 100%; max-height: 320px; object-fit: cover; border-radius: 12px; margin-top: 12px; border: 1px solid var(--border-color); }
         
-        .avatar { width: 54px; height: 54px; background: #4b5563; border-radius: 12px; border: 2px solid var(--wiiu-green); overflow: hidden; display: flex; align-items: center; justify-content: center; font-weight: bold; color: var(--text-main); font-size: 1.3rem; flex-shrink: 0; }
+        .avatar { width: 54px; height: 54px; background: #4b5563; border-radius: 12px; border: 2px solid var(--wiiu-green); overflow: hidden; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #fff; font-size: 1.3rem; flex-shrink: 0; cursor: pointer; transition: transform 0.1s; }
+        .avatar:hover { transform: scale(1.04); }
         .avatar img { width: 100%; height: 100%; object-fit: cover; }
+        
         .post-main { flex: 1; }
-        .post-header { display: flex; align-items: baseline; gap: 8px; margin-bottom: 6px; }
-        .display-name { font-weight: 700; font-size: 1rem; color: var(--text-main); }
-        .username { color: var(--text-muted); font-size: 0.85rem; }
+        .post-header { display: flex; align-items: baseline; gap: 8px; margin-bottom: 6px; padding-right: 24px; }
+        .display-name { font-weight: 700; font-size: 1rem; color: var(--text-main); cursor: pointer; }
+        .display-name:hover { text-decoration: underline; color: var(--wiiu-green); }
+        .username { color: var(--text-muted); font-size: 0.85rem; cursor: pointer; }
+        
         .post-body { font-size: 0.95rem; line-height: 1.5; color: var(--text-main); word-break: break-word; }
-        .post-actions { margin-top: 15px; display: flex; gap: 12px; }
+        .post-actions { margin-top: 15px; display: flex; flex-wrap: wrap; gap: 8px; }
 
-        .btn { background: var(--wiiu-green); color: #111; border: none; padding: 10px 20px; border-radius: 9999px; font-weight: 700; font-size: 0.9rem; cursor: pointer; box-shadow: 0 4px 10px rgba(146, 230, 0, 0.2); transition: background 0.15s, transform 0.1s; }
+        .btn { background: var(--wiiu-green); color: #111; border: none; padding: 10px 20px; border-radius: 9999px; font-weight: 700; font-size: 0.9rem; cursor: pointer; box-shadow: 0 4px 10px rgba(146, 230, 0, 0.15); transition: background 0.15s, transform 0.1s, color 0.15s; }
         .btn:hover { background: var(--wiiu-green-hover); }
         .btn:active { transform: scale(0.97); }
-        .btn-outline { background: transparent; color: var(--text-main); border: 1px solid var(--border-color); }
-        .btn-outline:hover { background: #3f3f46; border-color: #71717a; }
+        
+        /* Fully Re-themed Light/Dark Mode Reactive Outline Buttons */
+        .btn-outline { background: transparent; color: var(--text-main); border: 1px solid var(--border-color); box-shadow: none; }
+        .btn-outline:hover { background: var(--tab-hover); border-color: var(--text-muted); color: var(--text-main); }
 
-        .action-tab { background: #3f3f46; border: none; padding: 6px 14px; border-radius: 8px; font-size: 0.8rem; font-weight: bold; color: var(--text-main); cursor: pointer; display: flex; align-items: center; gap: 5px; }
-        .action-tab:hover { background: #52525b; }
-        .action-tab.yeah-active { background: #ff7f00; color: white; }
-        .action-tab.reply-tab { background: #1e3a8a; color: #60a5fa; }
+        .action-tab { background: var(--tab-bg); border: none; padding: 6px 12px; border-radius: 8px; font-size: 0.8rem; font-weight: bold; color: var(--text-main); cursor: pointer; display: flex; align-items: center; gap: 5px; transition: background-color 0.15s, color 0.15s; }
+        .action-tab:hover { background: var(--tab-hover); }
+        
+        /* Distinct Colored Custom Reaction Badges */
+        .action-tab.active-yeah { background: #ff7f00 !important; color: white !important; }
+        .action-tab.active-fresh { background: #00ddff !important; color: #111 !important; }
+        .action-tab.active-cozy { background: #ff55bb !important; color: white !important; }
+        .action-tab.reply-tab { background: #2f63ff; color: white; }
+        .action-tab.reply-tab:hover { background: #1e4cee; }
+
+        .post-delete-trigger { position: absolute; top: 18px; right: 18px; background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 1rem; padding: 2px 6px; border-radius: 4px; transition: background 0.1s; }
+        .post-delete-trigger:hover { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
 
         .hidden { display: none !important; }
-        .input-field { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 10px; box-sizing: border-box; background-color: var(--input-bg); color: var(--text-main); }
+        .input-field { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 10px; box-sizing: border-box; background-color: var(--input-bg); color: var(--text-main); font-family: inherit; }
         .online-dot { width: 8px; height: 8px; background-color: #22c55e; border-radius: 50%; display: inline-block; }
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 100; backdrop-filter: blur(2px); }
-        .modal-body { background: var(--card-bg); padding: 25px; border-radius: 16px; width: 90%; max-width: 550px; border: 1px solid var(--border-color); }
+        
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 100; backdrop-filter: blur(4px); }
+        .modal-body { background: var(--card-bg); padding: 25px; border-radius: 16px; width: 90%; max-width: 550px; border: 1px solid var(--border-color); box-shadow: 0 10px 30px rgba(0,0,0,0.3); color: var(--text-main); }
+        .telemetry-clock { font-size: 0.85rem; font-weight: bold; color: var(--text-muted); background: var(--tab-bg); padding: 4px 10px; border-radius: 6px; border: 1px solid var(--border-color); }
     </style>
 </head>
 <body>
@@ -79,13 +110,15 @@
     <div class="app-wrapper">
         <header>
             <div class="logo-area"><span class="logo-dot"></span> Codyverse Plaza</div>
-            <div style="display: flex; gap: 10px; align-items: center;">
+            <div style="display: flex; gap: 12px; align-items: center;">
+                <div class="telemetry-clock" id="live-telemetry-clock">00:00:00 UTC</div>
                 <button class="btn btn-outline" style="padding: 6px 12px; font-size: 0.8rem;" onclick="toggleTheme()">🌓 Theme</button>
                 <div id="user-nav-widget"></div>
             </div>
         </header>
 
         <div class="main-layout">
+            <!-- LEFT AREA: REGISTRY INFO -->
             <div class="sidebar">
                 <div id="user-info-card" class="card user-profile-summary hidden">
                     <div class="avatar" id="user-card-avatar">?</div>
@@ -109,27 +142,30 @@
                 </div>
             </div>
 
+            <!-- TIMELINE CHANNELS FEED -->
             <div class="feed-container">
                 <div class="community-grid" id="communities-box"></div>
                 
                 <div class="card" style="padding: 12px 20px; display: flex; gap: 10px; align-items: center;">
-                    <span style="font-size: 0.9rem; color: var(--text-muted);">🔍 Filter:</span>
-                    <input type="text" id="search-filter" class="input-field" style="margin-bottom:0; flex: 1; padding: 6px 12px;" placeholder="Search keywords..." oninput="filterPosts()">
+                    <span style="font-size: 0.9rem; color: var(--text-muted);">🔍 Search:</span>
+                    <input type="text" id="search-filter" class="input-field" style="margin-bottom:0; flex: 1; padding: 6px 12px;" placeholder="Filter terms, keywords, authors..." oninput="filterPosts()">
                 </div>
 
                 <div id="announcement-area" class="announcement-banner hidden"></div>
 
+                <!-- PROFILE UPDATING WRAPPER -->
                 <div id="profile-edit-panel" class="card hidden">
-                    <h3 style="margin-top:0;">🎨 Edit Profile</h3>
+                    <h3 style="margin-top:0;">🎨 Profile Preferences</h3>
                     <input type="text" id="prof-displayname" class="input-field" placeholder="Display Name">
-                    <input type="text" id="prof-avatar" class="input-field" placeholder="Avatar URL">
-                    <textarea id="prof-bio" class="input-field" style="height:60px; resize:none;" placeholder="Bio details..."></textarea>
+                    <input type="text" id="prof-avatar" class="input-field" placeholder="Avatar Direct Image URL Link">
+                    <textarea id="prof-bio" class="input-field" style="height:65px; resize:none;" placeholder="Bio summary metadata..."></textarea>
                     <div style="display:flex; gap:10px;">
                         <button class="btn" onclick="updateProfile()">Save Modifications</button>
                         <button class="btn btn-outline" onclick="toggleProfileEdit()">Cancel</button>
                     </div>
                 </div>
 
+                <!-- SECURITY HUB ENTRY -->
                 <div id="auth-panel" class="card hidden">
                     <h3 id="auth-panel-title" style="margin-top:0;">Sign In</h3>
                     <input type="text" id="auth-displayname" class="input-field hidden" placeholder="Display Name">
@@ -141,10 +177,11 @@
                     </div>
                 </div>
 
+                <!-- GRAPHIC COMPOSER COMPONENT -->
                 <div id="post-panel" class="card post-composer hidden">
                     <textarea id="post-text" maxlength="280" placeholder="Share something elegant or completely ridiculous..." oninput="updateCharCount()"></textarea>
                     <div class="char-counter" id="post-char-count">0 / 280</div>
-                    <input type="text" id="post-image-url" class="input-field" style="margin-top:10px; margin-bottom:0;" placeholder="Optional Embedded Image Link (https://...)">
+                    <input type="text" id="post-image-url" class="input-field" style="margin-top:10px; margin-bottom:0;" placeholder="Optional Embedded Graphic Link (https://...)">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-top:12px;">
                         <button class="btn btn-outline" id="manage-announcement-btn" style="font-size:0.8rem; padding:6px 12px;" onclick="promptAnnouncement()">📌 Set Board Pin</button>
                         <button class="btn" onclick="submitPost()">Post into Channel</button>
@@ -154,33 +191,47 @@
                 <div id="feed-stream"></div>
             </div>
 
-            <div class="sidebar online-sidebar">
+            <!-- RIGHT BAR PRESENCE MONITOR -->
+            <div class="sidebar">
                 <div class="card">
-                    <h4 style="margin-top:0; border-bottom:1px solid var(--border-color); padding-bottom:6px;"><span class="online-dot"></span> Matrix Online Now</h4>
+                    <h4 style="margin-top:0; border-bottom:1px solid var(--border-color); padding-bottom:6px;"><span class="online-dot"></span> Online Now</h4>
                     <div id="online-users-box" style="display:flex; flex-direction:column; gap:10px; font-size:0.85rem;">
-                        Loading registry...
+                        Loading matrix registry...
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="reply-modal" class="modal-overlay hidden">
-        <div class="modal-body">
-            <h3>Thread Status Hub</h3>
+    <!-- RESPONSES THREAD MODAL -->
+    <div id="reply-modal" class="modal-overlay hidden" onclick="closeReplyModal()">
+        <div class="modal-body" onclick="event.stopPropagation()">
+            <h3 style="margin-top:0;">Thread Discussion Status</h3>
             <div id="modal-parent-post-anchor"></div>
             <hr style="border:0; border-top:1px solid var(--border-color); margin:15px 0;">
-            <div id="modal-replies-stream" style="max-height:200px; overflow-y:auto; margin-bottom:15px; display:flex; flex-direction:column; gap:12px;"></div>
-            <textarea id="reply-text" class="input-field" style="height:70px; resize:none;" placeholder="Contribute insight..."></textarea>
+            <div id="modal-replies-stream" style="max-height:240px; overflow-y:auto; margin-bottom:15px; display:flex; flex-direction:column; gap:12px;"></div>
+            <textarea id="reply-text" class="input-field" style="height:70px; resize:none;" placeholder="Contribute insight to conversation..."></textarea>
             <div style="display:flex; justify-content:flex-end; gap:10px;">
-                <button class="btn btn-outline" onclick="closeReplyModal()">Close</button>
+                <button class="btn btn-outline" onclick="closeReplyModal()">Close Hub</button>
                 <button class="btn" onclick="submitReply()">Send Reply</button>
             </div>
         </div>
     </div>
 
+    <!-- NEW FEATURE: USER INSPECTOR CARD MODAL -->
+    <div id="user-inspector-modal" class="modal-overlay hidden" onclick="closeInspectorModal()">
+        <div class="modal-body" style="max-width:400px; text-align:center;" onclick="event.stopPropagation()">
+            <div class="avatar" id="inspect-avatar" style="width:72px; height:72px; font-size:1.8rem; margin:0 auto 12px auto; pointer-events:none;">?</div>
+            <h3 id="inspect-displayname" style="margin:0 0 4px 0;">-</h3>
+            <p id="inspect-username" style="color:var(--text-muted); margin:0 0 15px 0; font-size:0.9rem;">@-</p>
+            <div id="inspect-bio" style="background:var(--input-bg); padding:15px; border-radius:12px; font-size:0.9rem; text-align:left; border:1px solid var(--border-color); line-height:1.4; word-break:break-word; max-height:150px; overflow-y:auto;">-</div>
+            <br>
+            <button class="btn" style="width:100%;" onclick="closeInspectorModal()">Dismiss Card</button>
+        </div>
+    </div>
+
     <script>
-        const API_BASE = "https://codyverse.codymkw.workers.dev"; 
+        const API_BASE = "https://codyverse.YOUR_SUBDOMAIN.workers.dev"; 
 
         let isSignUp = false, currentUser = null, currentProfile = null, currentCommunity = "general", activePostId = null, loadedPostsCache = [];
 
@@ -202,6 +253,12 @@
             document.getElementById('post-char-count').innerText = `${document.getElementById('post-text').value.length} / 280`;
         }
 
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('live-telemetry-clock').innerText = now.toUTCString().replace('GMT', 'UTC');
+        }
+        setInterval(updateClock, 1000);
+
         async function checkAuth() {
             try {
                 const res = await apiFetch('/api/me');
@@ -218,6 +275,7 @@
                     document.getElementById('auth-panel').classList.add('hidden');
                     
                     document.getElementById('user-card-avatar').innerHTML = currentProfile?.avatarUrl ? `<img src="${currentProfile.avatarUrl}">` : currentUser.charAt(0).toUpperCase();
+                    document.getElementById('user-card-avatar').onclick = () => inspectUser(currentUser);
                     document.getElementById('user-card-name').innerText = currentProfile?.displayName || currentUser;
                     document.getElementById('user-card-handle').innerText = `@${currentUser}`;
                     document.getElementById('user-card-bio').innerText = currentProfile?.bio || 'No status bio cataloged.';
@@ -267,7 +325,7 @@
 
         async function deleteCommunity(event, id) {
             event.stopPropagation();
-            if(!confirm("Erase board? All embedded telemetry posts clear.")) return;
+            if(!confirm("Erase board entirely? All channel database logs clear.")) return;
             const res = await apiFetch('/api/communities/delete', { method: 'POST', body: { id } });
             if(res.ok) { if(currentCommunity === id) currentCommunity = "general"; await loadCommunities(); loadPosts(); }
         }
@@ -283,7 +341,7 @@
         }
 
         async function promptAnnouncement() {
-            const text = prompt("Enter announcement pin description text (Leave empty to erase existing banner):");
+            const text = prompt("Enter text definition (Keep blank to discard active panel pin):");
             if(text === null) return;
             await apiFetch('/api/announcement/set', { method: 'POST', body: { community: currentCommunity, content: text } });
             loadAnnouncement();
@@ -294,19 +352,35 @@
                 const res = await apiFetch('/api/online');
                 const users = await res.json();
                 const box = document.getElementById('online-users-box');
-                if(users.length === 0) { box.innerHTML = 'Grid empty.'; return; }
+                if(users.length === 0) { box.innerHTML = 'Grid telemetry clear.'; return; }
                 box.innerHTML = users.map(u => `
                     <div style="display:flex; align-items:center; gap:8px;">
-                        <div class="avatar" style="width:28px; height:28px; font-size:0.75rem; border:1px solid var(--wiiu-green);">
+                        <div class="avatar" style="width:28px; height:28px; font-size:0.75rem; border:1px solid var(--wiiu-green);" onclick="inspectUser('${u.username}')">
                             ${u.avatarUrl ? `<img src="${u.avatarUrl}">` : u.username.charAt(0).toUpperCase()}
                         </div>
                         <div style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
-                            <strong>${escapeHtml(u.displayName)}</strong> <span style="color:var(--text-muted); font-size:0.75rem;">@${u.username}</span>
+                            <strong class="display-name" style="font-size:0.85rem;" onclick="inspectUser('${u.username}')">${escapeHtml(u.displayName)}</strong>
+                            <br><span style="color:var(--text-muted); font-size:0.75rem; cursor:pointer;" onclick="inspectUser('${u.username}')">@${u.username}</span>
                         </div>
                     </div>
                 `).join('');
             } catch(e) {}
         }
+
+        async function inspectUser(username) {
+            try {
+                const res = await apiFetch(`/api/user/lookup?username=${username}`);
+                if(!res.ok) return;
+                const profile = await res.json();
+                document.getElementById('inspect-avatar').innerHTML = profile.avatarUrl ? `<img src="${profile.avatarUrl}" style="width:100%; height:100%; object-fit:cover; border-radius:12px;">` : username.charAt(0).toUpperCase();
+                document.getElementById('inspect-displayname').innerText = profile.displayName || username;
+                document.getElementById('inspect-username').innerText = `@${profile.username}`;
+                document.getElementById('inspect-bio').innerText = profile.bio || "No status bio logged by user.";
+                document.getElementById('user-inspector-modal').classList.remove('hidden');
+            } catch(e) {}
+        }
+
+        function closeInspectorModal() { document.getElementById('user-inspector-modal').classList.add('hidden'); }
 
         function switchCommunity(target) {
             currentCommunity = target;
@@ -323,30 +397,46 @@
 
         function renderFeed(posts) {
             const stream = document.getElementById('feed-stream');
-            if (posts.length === 0) { stream.innerHTML = '<div class="card" style="text-align:center; color:var(--text-muted)">No active telemetry matches found in this terminal space.</div>'; return; }
+            if (posts.length === 0) { stream.innerHTML = '<div class="card" style="text-align:center; color:var(--text-muted)">Empty channel telemetry.</div>'; return; }
 
             stream.innerHTML = posts.map(post => {
-                const checkedYeah = post.yeahedBy && post.yeahedBy.includes(currentUser);
+                const userReaction = post.reactedUsers ? post.reactedUsers[currentUser] : null;
+                const rx = post.reactions || { yeah: 0, fresh: 0, cozy: 0 };
+                
+                const isOwner = post.username === currentUser;
+                const deleteActionNode = isOwner ? `<button class="post-delete-trigger" onclick="deletePost('${post.id}')" title="Delete Post">🗑️</button>` : '';
+
                 return `
                     <div class="post">
-                        ${buildAvatar(post.avatarUrl, post.displayName)}
+                        ${deleteActionNode}
+                        <div class="avatar" onclick="inspectUser('${post.username}')">
+                            ${post.avatarUrl ? `<img src="${post.avatarUrl}" onerror="this.parentElement.innerHTML='${post.displayName.charAt(0).toUpperCase()}'">` : post.displayName.charAt(0).toUpperCase()}
+                        </div>
                         <div class="post-main">
                             <div class="post-header">
-                                <span class="display-name">${post.displayName}</span>
-                                <span class="username">@${post.username}</span>
+                                <span class="display-name" onclick="inspectUser('${post.username}')">${escapeHtml(post.displayName)}</span>
+                                <span class="username" onclick="inspectUser('${post.username}')">@${post.username}</span>
                             </div>
                             <div class="post-body">
                                 ${escapeHtml(post.content)}
                                 ${post.imageUrl ? `<img src="${escapeHtml(post.imageUrl)}" class="post-img" onerror="this.remove()">` : ''}
                             </div>
                             <div class="post-actions">
-                                <button class="action-tab ${checkedYeah ? 'yeah-active' : ''}" onclick="giveYeah('${post.id}')">💚 Yeah! (${post.yeahs || 0})</button>
+                                <button class="action-tab ${userReaction === 'yeah' ? 'active-yeah' : ''}" onclick="applyReaction('${post.id}', 'yeah')">💚 Yeah! (${rx.yeah || 0})</button>
+                                <button class="action-tab ${userReaction === 'fresh' ? 'active-fresh' : ''}" onclick="applyReaction('${post.id}', 'fresh')">🦑 Fresh! (${rx.fresh || 0})</button>
+                                <button class="action-tab ${userReaction === 'cozy' ? 'active-cozy' : ''}" onclick="applyReaction('${post.id}', 'cozy')">🍃 Cozy! (${rx.cozy || 0})</button>
                                 <button class="action-tab reply-tab" onclick="openReplyModal('${post.id}', '${post.displayName}', '${post.username}', \`${escapeHtml(post.content)}\`, '${post.avatarUrl}')">💬 Discussion (${post.replyCount || 0})</button>
                             </div>
                         </div>
                     </div>
                 `;
             }).join('');
+        }
+
+        async function deletePost(postId) {
+            if(!confirm("Erase this post completely from the board feed timeline?")) return;
+            const res = await apiFetch('/api/posts/delete', { method: 'POST', body: { postId, community: currentCommunity } });
+            if(res.ok) loadPosts();
         }
 
         function filterPosts() {
@@ -363,18 +453,19 @@
             if (res.ok) { document.getElementById('post-text').value = ''; document.getElementById('post-image-url').value = ''; updateCharCount(); loadPosts(); }
         }
 
-        async function giveYeah(postId) {
-            if(!currentUser) return alert('Identity authorization needed.');
-            const res = await apiFetch('/api/yeah', { method: 'POST', body: { postId, community: currentCommunity } });
+        async function applyReaction(postId, reactionType) {
+            if(!currentUser) return alert('Identity authorization mapping configuration needed.');
+            const res = await apiFetch('/api/react', { method: 'POST', body: { postId, community: currentCommunity, reactionType } });
             if(res.ok) loadPosts();
         }
 
         async function openReplyModal(postId, displayName, username, content, avatarUrl) {
             activePostId = postId;
+            const avatarHtml = avatarUrl ? `<div class="avatar" style="pointer-events:none;"><img src="${avatarUrl}"></div>` : `<div class="avatar" style="pointer-events:none;">${displayName.charAt(0).toUpperCase()}</div>`;
             document.getElementById('modal-parent-post-anchor').innerHTML = `
-                <div style="display:flex; gap:12px; opacity:0.85;">
-                    ${buildAvatar(avatarUrl, displayName)}
-                    <div><strong>${displayName}</strong> <span style="color:var(--text-muted)">@${username}</span><div>${content}</div></div>
+                <div style="display:flex; gap:12px; opacity:0.85; background:var(--input-bg); padding:12px; border-radius:12px; border:1px solid var(--border-color);">
+                    ${avatarHtml}
+                    <div><strong>${displayName}</strong> <span style="color:var(--text-muted)">@${username}</span><div style="margin-top:4px;">${content}</div></div>
                 </div>`;
             document.getElementById('reply-modal').classList.remove('hidden');
             loadReplies();
@@ -386,10 +477,12 @@
             const res = await apiFetch(`/api/replies?postId=${activePostId}`);
             const replies = await res.json();
             const listContainer = document.getElementById('modal-replies-stream');
-            if(replies.length === 0) { listContainer.innerHTML = '<p style="color:var(--text-muted); font-size:0.9rem; text-align:center;">No responses.</p>'; return; }
+            if(replies.length === 0) { listContainer.innerHTML = '<p style="color:var(--text-muted); font-size:0.9rem; text-align:center;">No responses logged.</p>'; return; }
             listContainer.innerHTML = replies.map(r => `
-                <div style="display:flex; gap:10px; font-size:0.9rem; background:var(--input-bg); padding:10px; border-radius:8px; border:1px solid var(--border-color);">
-                    ${buildAvatar(r.avatarUrl, r.displayName)}
+                <div style="display:flex; gap:10px; font-size:0.9rem; background:var(--card-bg); padding:10px; border-radius:8px; border:1px solid var(--border-color);">
+                    <div class="avatar" style="width:32px; height:32px; font-size:0.85rem; pointer-events:none;">
+                        ${r.avatarUrl ? `<img src="${r.avatarUrl}">` : r.displayName.charAt(0).toUpperCase()}
+                    </div>
                     <div><strong>${r.displayName}</strong> <span style="color:var(--text-muted)">@${r.username}</span><div style="color:var(--text-main); margin-top:2px;">${escapeHtml(r.content)}</div></div>
                 </div>
             `).join('');
@@ -425,16 +518,16 @@
         }
 
         async function logout() { await apiFetch('/api/logout'); window.location.reload(); }
-        function buildAvatar(url, fallbackName) { return url ? `<div class="avatar"><img src="${url}" onerror="this.parentElement.innerHTML='${fallbackName.charAt(0).toUpperCase()}'"></div>` : `<div class="avatar">${fallbackName.charAt(0).toUpperCase()}</div>`; }
         function escapeHtml(str) { return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
 
         (async () => { 
+            updateClock();
             await checkAuth(); 
             await loadCommunities(); 
             await loadAnnouncement(); 
             loadPosts(); 
             loadOnlineUsers();
-            setInterval(loadOnlineUsers, 30000); // Dynamic background poll loops
+            setInterval(loadOnlineUsers, 20000); 
         })();
     </script>
 </body>
