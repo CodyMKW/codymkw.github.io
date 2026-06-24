@@ -401,39 +401,53 @@
             ctx.lineTo(slantBot2, H);
             ctx.stroke();
 
-            // --- RENDER HEAVY STYLED TEXT ELEMENTS ---
-            const drawTeamText = (text, centerX, centerY) => {
+            // --- RENDER AUTO-SCALING HEAVY TEXT ---
+            const drawTeamText = (text, centerX, centerY, maxWidth) => {
                 ctx.save();
                 ctx.translate(centerX, centerY);
-                
-                // Street style slight tilt rotation
-                ctx.rotate(-0.04); 
+                ctx.rotate(-0.04); // Street style slight tilt rotation
 
-                // Setup robust typographic styling
-                ctx.font = 'black 72px Impact, system-ui, sans-serif';
-                if(!navigator.userAgent.includes("Impact")) {
-                    ctx.font = '900 64px system-ui, sans-serif';
+                let fontSize = 72;
+                const cleanText = text.toUpperCase();
+
+                // Apply initial target font configuration
+                ctx.font = `black ${fontSize}px Impact, system-ui, sans-serif`;
+                if (!navigator.userAgent.includes("Impact")) {
+                    ctx.font = `900 ${fontSize - 8}px system-ui, sans-serif`;
                 }
+
+                // Dynamic downscaling loop if string width overflows boundaries
+                while (ctx.measureText(cleanText).width > maxWidth && fontSize > 20) {
+                    fontSize -= 2;
+                    ctx.font = `black ${fontSize}px Impact, system-ui, sans-serif`;
+                    if (!navigator.userAgent.includes("Impact")) {
+                        ctx.font = `900 ${fontSize - 8}px system-ui, sans-serif`;
+                    }
+                }
+
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
 
-                // Core Black Outline Pass
+                // Core Black Outline Pass (scales stroke weight down with text size)
                 ctx.strokeStyle = '#000000';
-                ctx.lineWidth = 16;
+                ctx.lineWidth = fontSize > 45 ? 16 : (fontSize > 30 ? 10 : 6);
                 ctx.lineJoin = 'miter';
-                ctx.strokeText(text.toUpperCase(), 0, 0);
+                ctx.strokeText(cleanText, 0, 0);
 
                 // White Fill Pass
                 ctx.fillStyle = '#ffffff';
-                ctx.fillText(text.toUpperCase(), 0, 0);
+                ctx.fillText(cleanText, 0, 0);
 
                 ctx.restore();
             };
 
+            // Establish safe boundary margins based on average section widths (~400px)
+            const safeMaxTextWidth = (W / 3) - 95;
+
             // Calculate anchor weights matching the diagonal splits
-            drawTeamText(t1, (slantTop1 + slantBot1) / 4, H / 2);
-            drawTeamText(t2, (slantTop1 + slantBot1 + slantTop2 + slantBot2) / 4, H / 2);
-            drawTeamText(t3, (slantTop2 + slantBot2 + W + W) / 4, H / 2);
+            drawTeamText(t1, (slantTop1 + slantBot1) / 4, H / 2, safeMaxTextWidth);
+            drawTeamText(t2, (slantTop1 + slantBot1 + slantTop2 + slantBot2) / 4, H / 2, safeMaxTextWidth);
+            drawTeamText(t3, (slantTop2 + slantBot2 + W + W) / 4, H / 2, safeMaxTextWidth);
         }
 
         generateBtn.addEventListener('click', () => {
