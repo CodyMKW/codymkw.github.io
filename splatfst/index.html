@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:,">
+
+    <meta property="og:title" content="Splatfest Debate Generator">
+    <meta property="og:description" content="Instantly generate custom 3-way neon debate banners for your local arguments. Done completely in-browser.">
+    <meta property="og:type" content="website">
+    <meta name="theme-color" content="#311042">
+
+    <title>Splatfest Debate Generator</title>
+
+    <style>
+        :root {
+            --bg-main: #060607;
+            --bg-card: #0D0E10;
+            --bg-input: #131417;
+            --border-color: #1F2126;
+            --text-main: #F4F5F6;
+            --text-muted: #82868F;
+            --accent-purple: #6b21a8;
+            --accent-glow: rgba(107, 33, 168, 0.35);
+            --success-green: #24A148;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 40px 24px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 680px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .workspace {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 24px 48px rgba(0, 0, 0, 0.8);
+            text-align: center;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            margin-bottom: 36px;
+        }
+
+        .brand h1 {
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-bottom: 28px;
+            text-align: left;
+        }
+
+        .team-row {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            background-color: var(--bg-input);
+            border: 1px solid var(--border-color);
+            padding: 10px 14px;
+            border-radius: 14px;
+        }
+
+        .team-row label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+            min-width: 65px;
+        }
+
+        .team-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            font-size: 15px;
+            font-weight: 500;
+            outline: none;
+        }
+
+        .team-input::placeholder {
+            color: #4b4e56;
+        }
+
+        .color-picker-wrapper {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2px solid var(--border-color);
+            position: relative;
+            cursor: pointer;
+        }
+
+        .color-picker {
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            width: 46px;
+            height: 46px;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+
+        .preview-box {
+            display: none;
+            background: #000;
+            border-radius: 14px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            margin-bottom: 28px;
+            aspect-ratio: 16 / 9;
+            position: relative;
+        }
+
+        canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: contain;
+        }
+
+        .action-tray {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 16px 24px;
+            font-size: 15px;
+            font-weight: 600;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            text-decoration: none;
+        }
+
+        #generateBtn {
+            background-color: var(--accent-purple);
+            color: #ffffff;
+        }
+
+        #generateBtn:hover {
+            background-color: #7c2d12;
+            background-image: linear-gradient(135deg, #7e22ce, #6b21a8);
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        #downloadBtn {
+            display: none;
+            background-color: var(--success-green);
+            color: white;
+        }
+
+        #downloadBtn:hover {
+            background-color: #2cbc5b;
+        }
+
+        #resetBtn {
+            display: none;
+            background-color: var(--bg-input);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+        }
+
+        #resetBtn:hover {
+            background-color: #1c1e22;
+            border-color: #31353d;
+        }
+
+        /* FAQ Section Formatting */
+        .faq-section {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 32px 40px;
+        }
+
+        .faq-section h2 {
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            margin-bottom: 20px;
+            color: var(--text-main);
+            text-align: left;
+        }
+
+        .faq-item {
+            border-bottom: 1px solid var(--border-color);
+            padding: 16px 0;
+            text-align: left;
+        }
+
+        .faq-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .faq-question {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 6px;
+        }
+
+        .faq-answer {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        footer {
+            margin-top: 24px;
+            text-align: center;
+            padding: 16px 0;
+        }
+
+        footer p {
+            font-size: 12px;
+            color: var(--text-muted);
+            letter-spacing: 0.3px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="workspace">
+            <div class="brand">
+                <h1>Splatfest Debate Generator</h1>
+            </div>
+
+            <div class="input-group">
+                <div class="team-row">
+                    <label for="team1Text">TEAM A</label>
+                    <input type="text" id="team1Text" class="team-input" placeholder="e.g., Soggy Cereal">
+                    <div class="color-picker-wrapper">
+                        <input type="color" id="team1Color" class="color-picker" value="#ff0055">
+                    </div>
+                </div>
+
+                <div class="team-row">
+                    <label for="team2Text">TEAM B</label>
+                    <input type="text" id="team2Text" class="team-input" placeholder="e.g., Crunchy Cereal">
+                    <div class="color-picker-wrapper">
+                        <input type="color" id="team2Color" class="color-picker" value="#00ff66">
+                    </div>
+                </div>
+
+                <div class="team-row">
+                    <label for="team3Text">TEAM C</label>
+                    <input type="text" id="team3Text" class="team-input" placeholder="e.g., Eat it Raw">
+                    <div class="color-picker-wrapper">
+                        <input type="color" id="team3Color" class="color-picker" value="#0099ff">
+                    </div>
+                </div>
+            </div>
+
+            <div class="preview-box" id="previewBox">
+                <canvas id="splatfestCanvas" width="1200" height="675"></canvas>
+            </div>
+
+            <div class="action-tray">
+                <button id="generateBtn" class="btn">Generate Splatfest Board</button>
+                <a id="downloadBtn" class="btn">Download High-Res Graphic</a>
+                <button id="resetBtn" class="btn">Start New Debate</button>
+            </div>
+        </div>
+
+        <div class="faq-section">
+            <h2>Frequently Asked Questions</h2>
+            
+            <div class="faq-item">
+                <div class="faq-question">What is this?</div>
+                <div class="faq-answer">Another random thing made out of pure boredom lol. It lets you generate customized 3-panel festival banners to settle incredibly low-stakes arguments with friends, complete with aggressive diagonal division slashes.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">How does the rendering work?</div>
+                <div class="faq-answer">Instead of sending your text data to a backend server, it uses the local HTML5 Canvas coordinate context matrix directly inside your browser window. This compiles a clean, lossless PNG asset on the fly.</div>
+            </div>
+        </div>
+
+        <footer>
+            <p>&copy; 2026 CodyMKW &bull; Powered by Canvas API</p>
+        </footer>
+    </div>
+
+    <script>
+        const team1Text = document.getElementById('team1Text');
+        const team2Text = document.getElementById('team2Text');
+        const team3Text = document.getElementById('team3Text');
+        const team1Color = document.getElementById('team1Color');
+        const team2Color = document.getElementById('team2Color');
+        const team3Color = document.getElementById('team3Color');
+
+        const previewBox = document.getElementById('previewBox');
+        const canvas = document.getElementById('splatfestCanvas');
+        const ctx = canvas.getContext('2d');
+
+        const generateBtn = document.getElementById('generateBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const resetBtn = document.getElementById('resetBtn');
+
+        function drawSplatfest() {
+            const W = canvas.width;
+            const H = canvas.height;
+
+            // Gather inputs or fall back to placeholders
+            const t1 = team1Text.value.trim() || "Soggy Cereal";
+            const t2 = team2Text.value.trim() || "Crunchy Cereal";
+            const t3 = team3Text.value.trim() || "Eat it Raw";
+
+            const c1 = team1Color.value;
+            const c2 = team2Color.value;
+            const c3 = team3Color.value;
+
+            // Define sharp angled boundary coordinates
+            const slantTop1 = (W / 3) + 60;
+            const slantBot1 = (W / 3) - 60;
+            const slantTop2 = (2 * W / 3) + 60;
+            const slantBot2 = (2 * W / 3) - 60;
+
+            ctx.clearRect(0, 0, W, H);
+
+            // --- PANEL 1 (Left Team) ---
+            ctx.fillStyle = c1;
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.lineTo(slantTop1, 0);
+            ctx.lineTo(slantBot1, H);
+            ctx.lineTo(0, H);
+            ctx.closePath();
+            ctx.fill();
+
+            // --- PANEL 2 (Middle Team) ---
+            ctx.fillStyle = c2;
+            ctx.beginPath();
+            ctx.moveTo(slantTop1, 0);
+            ctx.lineTo(slantTop2, 0);
+            ctx.lineTo(slantBot2, H);
+            ctx.lineTo(slantBot1, H);
+            ctx.closePath();
+            ctx.fill();
+
+            // --- PANEL 3 (Right Team) ---
+            ctx.fillStyle = c3;
+            ctx.beginPath();
+            ctx.moveTo(slantTop2, 0);
+            ctx.lineTo(W, 0);
+            ctx.lineTo(W, H);
+            ctx.lineTo(slantBot2, H);
+            ctx.closePath();
+            ctx.fill();
+
+            // --- DRAW DIVIDER SLITS ---
+            ctx.strokeStyle = '#060607';
+            ctx.lineWidth = 14;
+            
+            ctx.beginPath();
+            ctx.moveTo(slantTop1, 0);
+            ctx.lineTo(slantBot1, H);
+            ctx.moveTo(slantTop2, 0);
+            ctx.lineTo(slantBot2, H);
+            ctx.stroke();
+
+            // --- RENDER HEAVY STYLED TEXT ELEMENTS ---
+            const drawTeamText = (text, centerX, centerY) => {
+                ctx.save();
+                ctx.translate(centerX, centerY);
+                
+                // Street style slight tilt rotation
+                ctx.rotate(-0.04); 
+
+                // Setup robust typographic styling
+                ctx.font = 'black 72px Impact, system-ui, sans-serif';
+                if(!navigator.userAgent.includes("Impact")) {
+                    ctx.font = '900 64px system-ui, sans-serif';
+                }
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+
+                // Core Black Outline Pass
+                ctx.strokeStyle = '#000000';
+                ctx.lineWidth = 16;
+                ctx.lineJoin = 'miter';
+                ctx.strokeText(text.toUpperCase(), 0, 0);
+
+                // White Fill Pass
+                ctx.fillStyle = '#ffffff';
+                ctx.fillText(text.toUpperCase(), 0, 0);
+
+                ctx.restore();
+            };
+
+            // Calculate anchor weights matching the diagonal splits
+            drawTeamText(t1, (slantTop1 + slantBot1) / 4, H / 2);
+            drawTeamText(t2, (slantTop1 + slantBot1 + slantTop2 + slantBot2) / 4, H / 2);
+            drawTeamText(t3, (slantTop2 + slantBot2 + W + W) / 4, H / 2);
+        }
+
+        generateBtn.addEventListener('click', () => {
+            previewBox.style.display = 'block';
+            drawSplatfest();
+
+            // Convert canvas content to downloadable binary anchor target
+            downloadBtn.href = canvas.toDataURL('image/png');
+            downloadBtn.download = `splatfest_debate_${Date.now()}.png`;
+
+            // Adjust interface deck
+            generateBtn.style.display = 'none';
+            downloadBtn.style.display = 'inline-flex';
+            resetBtn.style.display = 'inline-flex';
+        });
+
+        resetBtn.addEventListener('click', () => {
+            team1Text.value = '';
+            team2Text.value = '';
+            team3Text.value = '';
+            
+            previewBox.style.display = 'none';
+            generateBtn.style.display = 'inline-flex';
+            downloadBtn.style.display = 'none';
+            resetBtn.style.display = 'none';
+        });
+    </script>
+</body>
+</html>
