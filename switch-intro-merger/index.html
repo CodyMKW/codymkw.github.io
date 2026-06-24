@@ -191,6 +191,12 @@
             display: block;
         }
 
+        .action-tray {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
         .btn {
             display: inline-flex;
             align-items: center;
@@ -230,6 +236,18 @@
 
         #downloadBtn:hover {
             background-color: #2cbc5b;
+        }
+
+        #resetBtn {
+            display: none;
+            background-color: var(--bg-input);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+        }
+
+        #resetBtn:hover {
+            background-color: #1c1e22;
+            border-color: #31353d;
         }
 
         .status-tray {
@@ -378,8 +396,11 @@
                 <video id="videoPreview" controls></video>
             </div>
 
-            <button id="mergeBtn" class="btn" disabled>Merge Intro Sequence</button>
-            <a id="downloadBtn" class="btn">Download Finished Clip</a>
+            <div class="action-tray">
+                <button id="mergeBtn" class="btn" disabled>Merge Intro Sequence</button>
+                <a id="downloadBtn" class="btn">Download Finished Clip</a>
+                <button id="resetBtn" class="btn">Merge Another Clip</button>
+            </div>
 
             <div class="status-tray">
                 <p class="status-text" id="statusMessage">Awaiting asset selection.</p>
@@ -423,6 +444,7 @@
         const videoPreview = document.getElementById('videoPreview');
         const mergeBtn = document.getElementById('mergeBtn');
         const downloadBtn = document.getElementById('downloadBtn');
+        const resetBtn = document.getElementById('resetBtn');
         const statusMessage = document.getElementById('statusMessage');
         const progressContainer = document.getElementById('progressContainer');
         const progressBar = document.getElementById('progressBar');
@@ -486,6 +508,7 @@
                         downloadBtn.download = `merged_${targetFile.name}`;
                         
                         downloadBtn.style.display = 'inline-flex';
+                        resetBtn.style.display = 'inline-flex';
                         mergeBtn.style.display = 'none';
                     });
                     break;
@@ -511,6 +534,7 @@
                 mergeBtn.disabled = false;
                 mergeBtn.style.display = 'inline-flex';
                 downloadBtn.style.display = 'none';
+                resetBtn.style.display = 'none';
                 logTerminal.style.display = 'none';
                 progressContainer.style.display = 'none';
                 progressBar.style.width = '0%';
@@ -548,6 +572,27 @@
                 statusMessage.textContent = "Failed to process target video stream data.";
                 mergeBtn.disabled = false;
             }
+        });
+
+        // App State Reset Sequence 
+        resetBtn.addEventListener('click', () => {
+            targetFile = null;
+            videoInput.value = '';
+            fileNameText.textContent = "Select target video file";
+            previewBox.style.display = 'none';
+            videoPreview.src = '';
+            
+            mergeBtn.disabled = true;
+            mergeBtn.style.display = 'inline-flex';
+            downloadBtn.style.display = 'none';
+            resetBtn.style.display = 'none';
+            
+            logTerminal.style.display = 'none';
+            progressContainer.style.display = 'none';
+            progressBar.style.width = '0%';
+            systemLogs = [];
+            isDone = false;
+            statusMessage.textContent = "Awaiting asset selection.";
         });
     </script>
 </body>
