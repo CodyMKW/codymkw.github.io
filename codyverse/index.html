@@ -18,106 +18,68 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg-dark);
             color: var(--text-main);
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
+            margin: 0; padding: 0;
+            display: flex; justify-content: center;
         }
         .container {
-            width: 100%;
-            max-width: 600px;
+            width: 100%; max-width: 600px;
             border-left: 1px solid var(--border-color);
             border-right: 1px solid var(--border-color);
-            min-height: 100vh;
-            padding-bottom: 50px;
+            min-height: 100vh; padding-bottom: 50px;
         }
         header {
-            position: sticky;
-            top: 0;
-            background: rgba(21, 32, 43, 0.85);
-            backdrop-filter: blur(5px);
-            padding: 15px;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 10;
+            position: sticky; top: 0;
+            background: rgba(21, 32, 43, 0.85); backdrop-filter: blur(5px);
+            padding: 15px; border-bottom: 1px solid var(--border-color);
+            display: flex; justify-content: space-between; align-items: center; z-index: 10;
         }
-        h1 { font-size: 1.3rem; margin: 0; color: var(--miiverse-green); font-weight: 800; letter-spacing: 0.5px; }
+        h1 { font-size: 1.3rem; margin: 0; color: var(--miiverse-green); font-weight: 800; }
         .btn {
-            background-color: var(--miiverse-green);
-            color: #000;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 9999px;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 0.9rem;
-            transition: background 0.2s;
+            background-color: var(--miiverse-green); color: #000; border: none;
+            padding: 8px 16px; border-radius: 9999px; font-weight: bold;
+            cursor: pointer; font-size: 0.9rem; transition: background 0.2s;
         }
         .btn:hover { background-color: var(--miiverse-green-hover); }
-        .btn-outline {
-            background: transparent;
-            color: var(--text-main);
-            border: 1px solid var(--border-color);
-        }
+        .btn-outline { background: transparent; color: var(--text-main); border: 1px solid var(--border-color); }
         .btn-outline:hover { background: rgba(255,255,255,0.1); }
-        .auth-box, .post-creator {
-            padding: 20px;
-            border-bottom: 1px solid var(--border-color);
-            background: var(--card-dark);
-        }
+        .panel { padding: 20px; border-bottom: 1px solid var(--border-color); background: var(--card-dark); }
         .input-group { margin-bottom: 12px; }
         input, textarea {
-            width: 100%;
-            padding: 12px;
-            background: var(--bg-dark);
-            border: 1px solid var(--border-color);
-            color: white;
-            border-radius: 8px;
-            box-sizing: border-box;
-            font-size: 1rem;
+            width: 100%; padding: 12px; background: var(--bg-dark);
+            border: 1px solid var(--border-color); color: white;
+            border-radius: 8px; box-sizing: border-box; font-size: 1rem;
         }
-        textarea { resize: none; height: 100px; font-family: inherit; }
-        .feed { display: flex; flex-direction: column; }
-        .post {
-            padding: 15px;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            gap: 12px;
-        }
+        textarea { resize: none; height: 80px; font-family: inherit; }
+        .post { padding: 15px; border-bottom: 1px solid var(--border-color); display: flex; gap: 12px; }
         .avatar {
-            width: 48px;
-            height: 48px;
-            background: #4b5563;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            color: white;
-            font-size: 1.2rem;
-            border: 2px solid var(--miiverse-green);
+            width: 48px; height: 48px; background: #4b5563; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: bold; color: white; font-size: 1.2rem;
+            border: 2px solid var(--miiverse-green); overflow: hidden; object-fit: cover;
         }
+        .avatar img { width: 100%; height: 100%; object-fit: cover; }
         .post-content { flex: 1; }
         .post-header { display: flex; gap: 8px; align-items: center; margin-bottom: 4px; }
         .display-name { font-weight: bold; }
         .username { color: var(--text-muted); font-size: 0.9rem; }
         .timestamp { color: var(--text-muted); font-size: 0.85rem; margin-left: auto; }
         .post-body { line-height: 1.4; font-size: 1rem; word-break: break-word; }
-        .post-actions { margin-top: 10px; }
-        .yeah-btn {
-            background: transparent;
-            border: 1px solid #ff7f00;
-            color: #ff7f00;
-            padding: 4px 12px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 0.85rem;
+        .post-actions { margin-top: 10px; display: flex; gap: 15px; }
+        .action-btn {
+            background: transparent; border: 1px solid var(--border-color);
+            color: var(--text-muted); padding: 4px 12px; border-radius: 6px;
+            cursor: pointer; font-weight: bold; font-size: 0.85rem;
         }
+        .yeah-btn { border-color: #ff7f00; color: #ff7f00; }
         .yeah-btn.active { background: #ff7f00; color: white; }
+        .reply-btn { border-color: #00a2ff; color: #00a2ff; }
+        .modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 100;
+        }
+        .modal-content { background: var(--card-dark); padding: 20px; border-radius: 12px; width: 90%; max-width: 500px; border: 1px solid var(--border-color); }
         .hidden { display: none; }
+        .reply-box { margin-top: 10px; padding-left: 20px; border-left: 2px solid var(--border-color); }
     </style>
 </head>
 <body>
@@ -127,41 +89,57 @@
             <div id="user-header"></div>
         </header>
 
-        <div id="auth-section" class="auth-box hidden">
-            <h3 id="auth-title">Sign In to Codyverse</h3>
-            <div class="input-group" id="dn-group" style="display:none;">
-                <input type="text" id="auth-displayname" placeholder="Display Name">
-            </div>
-            <div class="input-group">
-                <input type="text" id="auth-username" placeholder="Username">
-            </div>
-            <div class="input-group">
-                <input type="password" id="auth-password" placeholder="Password">
-            </div>
-            <button class="btn" id="auth-main-btn" onclick="handleAuth()">Sign In</button>
-            <button class="btn btn-outline" id="auth-toggle-btn" onclick="toggleAuthMode()" style="margin-left: 10px;">Create an Account</button>
+        <div id="profile-section" class="panel hidden">
+            <h3>🎨 Edit Your Profile Status</h3>
+            <div class="input-group"><input type="text" id="prof-displayname" placeholder="Display Name"></div>
+            <div class="input-group"><input type="text" id="prof-avatar" placeholder="Direct Image URL for Avatar"></div>
+            <div class="input-group"><textarea id="prof-bio" placeholder="Bio description..."></textarea></div>
+            <button class="btn" onclick="updateProfile()">Save Profile</button>
+            <button class="btn btn-outline" onclick="toggleProfileEdit()">Cancel</button>
         </div>
 
-        <div id="post-section" class="post-creator hidden">
-            <textarea id="post-text" placeholder="Share a post or something completely silly..."></textarea>
-            <div style="text-align: right; margin-top: 8px;">
-                <button class="btn" onclick="submitPost()">Post to the Universe</button>
+        <div id="auth-section" class="panel hidden">
+            <h3 id="auth-title">Sign In to Codyverse</h3>
+            <div class="input-group" id="dn-group" style="display:none;"><input type="text" id="auth-displayname" placeholder="Display Name"></div>
+            <div class="input-group"><input type="text" id="auth-username" placeholder="Username"></div>
+            <div class="input-group"><input type="password" id="auth-password" placeholder="Password"></div>
+            <button class="btn" id="auth-main-btn" onclick="handleAuth()">Sign In</button>
+            <button class="btn btn-outline" id="auth-toggle-btn" onclick="toggleAuthMode()" style="margin-left: 10px;">Create Account</button>
+        </div>
+
+        <div id="post-section" class="panel hidden">
+            <textarea id="post-text" placeholder="Share a post to the universe..."></textarea>
+            <div style="display: flex; justify-content: space-between; margin-top: 8px; align-items: center;">
+                <button class="btn btn-outline" onclick="toggleProfileEdit()">Settings / Profile</button>
+                <button class="btn" onclick="submitPost()">Post</button>
             </div>
         </div>
 
         <div id="feed" class="feed">
-            <div style="padding: 20px; text-align: center; color: var(--text-muted);">Loading posts...</div>
+            <div style="padding: 20px; text-align: center; color: var(--text-muted);">Loading system posts...</div>
+        </div>
+    </div>
+
+    <div id="reply-modal" class="modal hidden">
+        <div class="modal-content">
+            <h3 style="margin-top:0;">Discussions & Replies</h3>
+            <div id="modal-parent-post"></div>
+            <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 15px 0;">
+            <div id="modal-replies-list" style="max-height: 200px; overflow-y: auto; margin-bottom: 15px;"></div>
+            <div class="input-group">
+                <textarea id="reply-text" placeholder="Write a response..."></textarea>
+            </div>
+            <button class="btn" onclick="submitReply()">Send Reply</button>
+            <button class="btn btn-outline" onclick="closeReplyModal()">Close</button>
         </div>
     </div>
 
     <script>
-        // 🌟 CHANGE THIS TO YOUR LIVE WORKER URL!
+        // 🌟 UPDATE THIS TO YOUR DEPLOYED WORKER BACKEND URL
         const API_BASE = "https://codyverse.codymkw.workers.dev"; 
 
-        let isSignUp = false;
-        let currentUser = null;
+        let isSignUp = false, currentUser = null, activePostId = null;
 
-        // Custom fetch wrapper to always pass cross-site authentication cookies
         async function apiFetch(endpoint, options = {}) {
             options.credentials = 'include'; 
             if (options.body && typeof options.body === 'object') {
@@ -181,82 +159,82 @@
                     document.getElementById('user-header').innerHTML = `<span style="margin-right:10px; color:var(--text-muted)">@${currentUser}</span><button class="btn btn-outline" onclick="logout()">Log Out</button>`;
                     document.getElementById('post-section').classList.remove('hidden');
                     document.getElementById('auth-section').classList.add('hidden');
+                    loadProfileData();
                 } else {
                     document.getElementById('user-header').innerHTML = '';
                     document.getElementById('auth-section').classList.remove('hidden');
                     document.getElementById('post-section').classList.add('hidden');
                 }
-            } catch(e) {
-                console.error("Auth check failed", e);
+            } catch(e) { console.error(e); }
+        }
+
+        async function loadProfileData() {
+            const res = await apiFetch('/api/profile');
+            if (res.ok) {
+                const data = await res.json();
+                document.getElementById('prof-displayname').value = data.displayName || '';
+                document.getElementById('prof-avatar').value = data.avatarUrl || '';
+                document.getElementById('prof-bio').value = data.bio || '';
             }
         }
 
+        async function updateProfile() {
+            await apiFetch('/api/profile/update', {
+                method: 'POST',
+                body: {
+                    displayName: document.getElementById('prof-displayname').value,
+                    avatarUrl: document.getElementById('prof-avatar').value,
+                    bio: document.getElementById('prof-bio').value
+                }
+            });
+            toggleProfileEdit();
+            loadPosts();
+        }
+
+        function toggleProfileEdit() { document.getElementById('profile-section').classList.toggle('hidden'); }
         function toggleAuthMode() {
             isSignUp = !isSignUp;
             document.getElementById('auth-title').innerText = isSignUp ? 'Create Codyverse Account' : 'Sign In to Codyverse';
             document.getElementById('dn-group').style.display = isSignUp ? 'block' : 'none';
             document.getElementById('auth-main-btn').innerText = isSignUp ? 'Register' : 'Sign In';
-            document.getElementById('auth-toggle-btn').innerText = isSignUp ? 'Have an Account? Login' : 'Create an Account';
         }
 
         async function handleAuth() {
             const username = document.getElementById('auth-username').value;
             const password = document.getElementById('auth-password').value;
             const displayName = document.getElementById('auth-displayname').value;
-
-            const endpoint = isSignUp ? '/api/register' : '/api/login';
-            const payload = isSignUp ? { username, password, displayName } : { username, password };
-
-            const res = await apiFetch(endpoint, { method: 'POST', body: payload });
-
-            if(res.ok) {
-                if(isSignUp) {
-                    alert('Account registered! Switching to login mode.');
-                    toggleAuthMode();
-                } else {
-                    await checkAuth();
-                    loadPosts();
-                }
-            } else {
-                alert(await res.text());
-            }
+            const res = await apiFetch(isSignUp ? '/api/register' : '/api/login', {
+                method: 'POST', body: isSignUp ? { username, password, displayName } : { username, password }
+            });
+            if(res.ok) { if(isSignUp) { toggleAuthMode(); } else { await checkAuth(); loadPosts(); } } else { alert(await res.text()); }
         }
 
-        async function logout() {
-            await apiFetch('/api/logout');
-            await checkAuth();
-            loadPosts();
+        async function logout() { await apiFetch('/api/logout'); window.location.reload(); }
+
+        function renderAvatar(url, name) {
+            return url ? `<div class="avatar"><img src="${url}" alt="avatar"></div>` : `<div class="avatar">${name.charAt(0).toUpperCase()}</div>`;
         }
 
         async function loadPosts() {
             const res = await apiFetch('/api/posts');
             const posts = await res.json();
             const feedEl = document.getElementById('feed');
-            
-            if (posts.length === 0) {
-                feedEl.innerHTML = '<div style="padding: 40px; text-align: center; color: var(--text-muted);">No posts yet. Be the first to post something!</div>';
-                return;
-            }
+            if (posts.length === 0) { feedEl.innerHTML = '<div style="padding:40px; text-align:center; color:var(--text-muted)">No ecosystem notes yet.</div>'; return; }
 
             feedEl.innerHTML = posts.map(post => {
-                const initial = post.displayName ? post.displayName.charAt(0).toUpperCase() : '?';
                 const isYeahed = post.yeahedBy && post.yeahedBy.includes(currentUser);
-                const timeStr = new Date(post.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-                
                 return `
                     <div class="post">
-                        <div class="avatar">${initial}</div>
+                        ${renderAvatar(post.avatarUrl, post.displayName)}
                         <div class="post-content">
                             <div class="post-header">
                                 <span class="display-name">${post.displayName}</span>
                                 <span class="username">@${post.username}</span>
-                                <span class="timestamp">${timeStr}</span>
                             </div>
                             <div class="post-body">${escapeHtml(post.content)}</div>
                             <div class="post-actions">
-                                <button class="yeah-btn ${isYeahed ? 'active' : ''}" onclick="giveYeah('${post.id}')">
-                                    💚 Yeah! (${post.yeahs || 0})
-                                </button>
+                                <button class="action-btn yeah-btn ${isYeahed ? 'active' : ''}" onclick="giveYeah('${post.id}')">💚 Yeah! (${post.yeahs || 0})</button>
+                                <button class="action-btn reply-btn" onclick="openReplyModal('${post.id}', '${post.displayName}', '${post.username}', \`${escapeHtml(post.content)}\`, '${post.avatarUrl}')">💬 Replies (${post.replyCount || 0})</button>
                             </div>
                         </div>
                     </div>
@@ -267,35 +245,59 @@
         async function submitPost() {
             const content = document.getElementById('post-text').value;
             if(!content) return;
-
             const res = await apiFetch('/api/posts', { method: 'POST', body: { content } });
-
-            if (res.ok) {
-                document.getElementById('post-text').value = '';
-                loadPosts();
-            } else {
-                alert(await res.text());
-            }
+            if (res.ok) { document.getElementById('post-text').value = ''; loadPosts(); }
         }
 
         async function giveYeah(postId) {
-            if(!currentUser) {
-                alert('You must be signed in to give a "Yeah!"');
-                return;
-            }
+            if(!currentUser) return alert('Log in to drop a Yeah!');
             const res = await apiFetch('/api/yeah', { method: 'POST', body: { postId } });
             if(res.ok) loadPosts();
         }
 
-        function escapeHtml(str) {
-            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+        async function openReplyModal(postId, displayName, username, content, avatarUrl) {
+            activePostId = postId;
+            document.getElementById('modal-parent-post').innerHTML = `
+                <div style="display:flex; gap:10px; opacity:0.8;">
+                    ${renderAvatar(avatarUrl, displayName)}
+                    <div>
+                        <strong>${displayName}</strong> <span style="color:var(--text-muted)">@${username}</span>
+                        <div style="margin-top:4px;">${content}</div>
+                    </div>
+                </div>`;
+            document.getElementById('reply-modal').classList.remove('hidden');
+            loadReplies();
         }
 
-        // Init
-        (async () => {
-            await checkAuth();
-            loadPosts();
-        })();
+        function closeReplyModal() { document.getElementById('reply-modal').classList.add('hidden'); activePostId = null; }
+
+        async function loadReplies() {
+            const res = await apiFetch(`/api/replies?postId=${activePostId}`);
+            const replies = await res.json();
+            const listEl = document.getElementById('modal-replies-list');
+            if(replies.length === 0) { listEl.innerHTML = '<p style="color:var(--text-muted); text-align:center;">Be the first to reply!</p>'; return; }
+            
+            listEl.innerHTML = replies.map(r => `
+                <div style="display:flex; gap:10px; margin-bottom:12px; font-size:0.95rem;">
+                    ${renderAvatar(r.avatarUrl, r.displayName)}
+                    <div>
+                        <strong>${r.displayName}</strong> <span style="color:var(--text-muted)">@${r.username}</span>
+                        <div style="margin-top:2px;">${escapeHtml(r.content)}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function submitReply() {
+            const content = document.getElementById('reply-text').value;
+            if(!content || !activePostId) return;
+            const res = await apiFetch('/api/replies/create', { method: 'POST', body: { postId: activePostId, content } });
+            if(res.ok) { document.getElementById('reply-text').value = ''; loadReplies(); loadPosts(); }
+        }
+
+        function escapeHtml(str) { return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+
+        (async () => { await checkAuth(); loadPosts(); })();
     </script>
 </body>
 </html>
