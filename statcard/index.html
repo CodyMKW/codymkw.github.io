@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:,">
+
+    <meta property="og:title" content="Unhinged Gamer Stat Card Scaler">
+    <meta property="og:description" content="Generate highly critical, absurd profile stat overview cards. Completely client-side.">
+    <meta property="og:type" content="website">
+    <meta name="theme-color" content="#00F0FF">
+
+    <title>Unhinged Gamer Stat Card Scaler</title>
+
+    <style>
+        :root {
+            --bg-main: #060607;
+            --bg-card: #0D0E10;
+            --bg-input: #131417;
+            --border-color: #1F2126;
+            --text-main: #F4F5F6;
+            --text-muted: #82868F;
+            --neon-cyan: #00F0FF;
+            --neon-glow: rgba(0, 240, 255, 0.35);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 40px 24px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 680px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .workspace {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 24px 48px rgba(0, 0, 0, 0.8);
+            text-align: center;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 32px;
+        }
+
+        .brand h1 {
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-bottom: 24px;
+            text-align: left;
+        }
+
+        .input-row {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            background-color: var(--bg-input);
+            border: 1px solid var(--border-color);
+            padding: 14px;
+            border-radius: 14px;
+        }
+
+        .input-row label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+            color: var(--text-muted);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .text-field {
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            font-size: 15px;
+            font-weight: 500;
+            outline: none;
+            width: 100%;
+        }
+
+        .slider-control {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: #23252d;
+            outline: none;
+            margin-top: 6px;
+        }
+
+        .slider-control::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--neon-cyan);
+            cursor: pointer;
+            box-shadow: 0 0 8px var(--neon-glow);
+        }
+
+        .utility-tray {
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .random-btn {
+            background: transparent;
+            border: 1px dashed #3e4251;
+            color: var(--text-muted);
+            font-size: 12px;
+            font-weight: 600;
+            padding: 8px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .random-btn:hover {
+            border-color: var(--neon-cyan);
+            color: var(--text-main);
+        }
+
+        .preview-box {
+            display: none;
+            background: #000;
+            border-radius: 14px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            margin-bottom: 28px;
+            aspect-ratio: 4 / 5;
+        }
+
+        canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .action-tray {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 16px 24px;
+            font-size: 15px;
+            font-weight: 600;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            text-decoration: none;
+        }
+
+        #generateBtn {
+            background-color: var(--neon-cyan);
+            color: #060607;
+            box-shadow: 0 0 14px rgba(0, 240, 255, 0.2);
+        }
+
+        #generateBtn:hover {
+            background-color: #33f3ff;
+            box-shadow: 0 0 20px var(--neon-glow);
+        }
+
+        #downloadBtn {
+            display: none;
+            background-color: #24A148;
+            color: white;
+        }
+
+        #downloadBtn:hover { background-color: #2cbc5b; }
+
+        #resetBtn {
+            display: none;
+            background-color: var(--bg-input);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+        }
+
+        #resetBtn:hover { background-color: #1c1e22; }
+
+        .faq-section {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 32px 40px;
+        }
+
+        .faq-section h2 { font-size: 16px; font-weight: 700; margin-bottom: 20px; text-align: left; }
+        .faq-item { border-bottom: 1px solid var(--border-color); padding: 16px 0; text-align: left; }
+        .faq-item:last-child { border-bottom: none; }
+        .faq-question { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+        .faq-answer { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+
+        footer { margin-top: 24px; text-align: center; padding: 16px 0; font-size: 12px; color: var(--text-muted); }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="workspace">
+            <div class="brand">
+                <h1>Gamer Stat Card Scaler</h1>
+            </div>
+
+            <div class="input-group">
+                <div class="input-row">
+                    <label>Player Persona ID</label>
+                    <input type="text" id="playerTag" class="text-field" placeholder="e.g., [SND] Cody" maxlength="16">
+                </div>
+                <div class="input-row">
+                    <label>Title Classification</label>
+                    <input type="text" id="playerClass" class="text-field" placeholder="e.g., Wii U Menu Historian" maxlength="24">
+                </div>
+                
+                <div class="utility-tray">
+                    <button class="random-btn" id="randomizeBtn">Randomize out of Boredom</button>
+                </div>
+
+                <div class="input-row">
+                    <label>Clam Blitz Awareness <span id="val1">75</span></label>
+                    <input type="range" id="stat1" class="slider-control" min="0" max="100" value="75">
+                </div>
+                <div class="input-row">
+                    <label>Legacy Modding Competency <span id="val2">90</span></label>
+                    <input type="range" id="stat2" class="slider-control" min="0" max="100" value="90">
+                </div>
+                <div class="input-row">
+                    <label>Brainrot Resistance Matrix <span id="val3">100</span></label>
+                    <input type="range" id="stat3" class="slider-control" min="0" max="100" value="100">
+                </div>
+                <div class="input-row">
+                    <label>Anime Dub Tolerance Index <span id="val4">85</span></label>
+                    <input type="range" id="stat4" class="slider-control" min="0" max="100" value="85">
+                </div>
+            </div>
+
+            <div class="preview-box" id="previewBox">
+                <canvas id="statCanvas" width="800" height="1000"></canvas>
+            </div>
+
+            <div class="action-tray">
+                <button id="generateBtn" class="btn">Compile Stat Matrix</button>
+                <a id="downloadBtn" class="btn">Download Profile Card</a>
+                <button id="resetBtn" class="btn">Re-scale Stats</button>
+            </div>
+        </div>
+
+        <div class="faq-section">
+            <h2>Frequently Asked Questions</h2>
+            <div class="faq-item">
+                <div class="faq-question">How is the Overall Level calculated?</div>
+                <div class="faq-answer">It averages your configured unhinged sliders locally inside the DOM logic container window context, scaling you from a basic Level 1 up to a highly critical Level 99 profile tier.</div>
+            </div>
+        </div>
+
+        <footer>
+            <p>&copy; 2026 CodyMKW &bull; Stat Scale Engine</p>
+        </footer>
+    </div>
+
+    <script>
+        const playerTag = document.getElementById('playerTag');
+        const playerClass = document.getElementById('playerClass');
+        const generateBtn = document.getElementById('generateBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const randomizeBtn = document.getElementById('randomizeBtn');
+        const previewBox = document.getElementById('previewBox');
+        const canvas = document.getElementById('statCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Connect sliders to live label text updates
+        const stats = ['stat1', 'stat2', 'stat3', 'stat4'];
+        stats.forEach((id, i) => {
+            const slider = document.getElementById(id);
+            const valLabel = document.getElementById(`val${i+1}`);
+            slider.addEventListener('input', () => { valLabel.textContent = slider.value; });
+        });
+
+        randomizeBtn.addEventListener('click', () => {
+            stats.forEach((id, i) => {
+                const slider = document.getElementById(id);
+                const valLabel = document.getElementById(`val${i+1}`);
+                const rng = Math.floor(Math.random() * 61) + 40; // Funny values skewed higher
+                slider.value = rng;
+                valLabel.textContent = rng;
+            });
+        });
+
+        function renderStatCard() {
+            const W = canvas.width;
+            const H = canvas.height;
+            
+            const tag = playerTag.value.trim() || "[SND] Cody";
+            const klass = playerClass.value.trim() || "Wii U Menu Historian";
+
+            const s1 = parseInt(document.getElementById('stat1').value);
+            const s2 = parseInt(document.getElementById('stat2').value);
+            const s3 = parseInt(document.getElementById('stat3').value);
+            const s4 = parseInt(document.getElementById('stat4').value);
+
+            // Compute actual weighted level variable
+            const average = Math.round((s1 + s2 + s3 + s4) / 4);
+            const lvlValue = Math.round((average / 100) * 99);
+
+            ctx.clearRect(0, 0, W, H);
+
+            // Base Card Sheet Layout
+            ctx.fillStyle = '#0d0e11';
+            ctx.fillRect(0, 0, W, H);
+            
+            // Outer bounding border accent frame
+            ctx.strokeStyle = '#1f2127';
+            ctx.lineWidth = 16;
+            ctx.strokeRect(8, 8, W - 16, H - 16);
+
+            // Neon header bracket indicator link
+            ctx.fillStyle = '#00F0FF';
+            ctx.fillRect(40, 40, 6, 90);
+
+            // Player Identification Labels text stream
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 42px system-ui, sans-serif';
+            ctx.fillText(tag.toUpperCase(), 65, 82);
+
+            ctx.fillStyle = '#82868f';
+            ctx.font = '600 22px system-ui, sans-serif';
+            ctx.fillText(klass.toUpperCase(), 65, 120);
+
+            // Large numeric stat calculation presentation widget block
+            ctx.fillStyle = '#14151b';
+            ctx.fillRect(40, 180, W - 80, 160);
+            ctx.strokeStyle = '#22242d';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(40, 180, W - 80, 160);
+
+            ctx.fillStyle = '#82868f';
+            ctx.font = 'bold 20px system-ui, sans-serif';
+            ctx.fillText("OVERALL PROFILE SCALE MATRIX", 70, 230);
+
+            ctx.fillStyle = '#00F0FF';
+            ctx.font = 'black 96px Impact, system-ui, sans-serif';
+            ctx.textAlign = 'right';
+            ctx.fillText(`LV. ${lvlValue}`, W - 70, 290);
+            ctx.textAlign = 'left'; // Restore alignment balance
+
+            // Modular Stat Rendering Loop Blocks
+            const list = [
+                { name: "CLAM BLITZ AWARENESS", val: s1 },
+                { name: "LEGACY MODDING COMPETENCY", val: s2 },
+                { name: "BRAINROT RESISTANCE MATRIX", val: s3 },
+                { name: "ANIME DUB TOLERANCE INDEX", val: s4 }
+            ];
+
+            let startY = 430;
+            list.forEach(item => {
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'bold 22px system-ui, sans-serif';
+                ctx.fillText(item.name, 40, startY);
+
+                ctx.fillStyle = '#00F0FF';
+                ctx.font = 'bold 22px system-ui, sans-serif';
+                ctx.textAlign = 'right';
+                ctx.fillText(`${item.val}%`, W - 40, startY);
+                ctx.textAlign = 'left';
+
+                // Raw background tracks for monitoring levels
+                ctx.fillStyle = '#1c1d24';
+                ctx.fillRect(40, startY + 16, W - 80, 16);
+
+                // Neon rendering active gauge block indicators
+                ctx.fillStyle = '#00F0FF';
+                const fillWidth = ((W - 80) * item.val) / 100;
+                ctx.fillRect(40, startY + 16, fillWidth, 16);
+
+                startY += 120;
+            });
+        }
+
+        generateBtn.addEventListener('click', () => {
+            previewBox.style.display = 'block';
+            renderStatCard();
+            downloadBtn.href = canvas.toDataURL('image/png');
+            downloadBtn.download = `gamer_stat_card_${Date.now()}.png`;
+
+            generateBtn.style.display = 'none';
+            downloadBtn.style.display = 'inline-flex';
+            resetBtn.style.display = 'inline-flex';
+            randomizeBtn.style.display = 'none';
+        });
+
+        resetBtn.addEventListener('click', () => {
+            playerTag.value = '';
+            playerClass.value = '';
+            previewBox.style.display = 'none';
+            generateBtn.style.display = 'inline-flex';
+            downloadBtn.style.display = 'none';
+            resetBtn.style.display = 'none';
+            randomizeBtn.style.display = 'inline-flex';
+        });
+    </script>
+</body>
+</html>
