@@ -6,14 +6,14 @@
     <title>Codyverse Plaza</title>
     <style>
         :root {
-            --wiiu-green: #8ec600;
-            --wiiu-green-hover: #76a500;
-            --nintendo-red: #e60012;
-            --bg-light: #f3f3f3;
-            --card-bg: #ffffff;
-            --border-color: #e0e0e0;
-            --text-main: #3c3c3c;
-            --text-muted: #8c8c8c;
+            --wiiu-green: #92e600;
+            --wiiu-green-hover: #abd942;
+            --bg-dark: #1b1b1d;
+            --card-bg: #2d2d31;
+            --input-bg: #202023;
+            --border-color: #3f3f46;
+            --text-main: #f4f4f5;
+            --text-muted: #a1a1aa;
             --radius-lg: 16px;
             --radius-md: 12px;
             --radius-sm: 8px;
@@ -21,7 +21,7 @@
 
         body {
             font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-            background-color: var(--bg-light);
+            background-color: var(--bg-dark);
             color: var(--text-main);
             margin: 0;
             padding: 0;
@@ -46,7 +46,7 @@
             background: var(--card-bg);
             border-radius: var(--radius-lg);
             padding: 15px 25px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -96,7 +96,7 @@
             background: var(--card-bg);
             border-radius: var(--radius-lg);
             border: 1px solid var(--border-color);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
             padding: 20px;
             box-sizing: border-box;
         }
@@ -126,18 +126,20 @@
             cursor: pointer;
             font-weight: bold;
             font-size: 0.9rem;
-            transition: transform 0.15s, border-color 0.15s;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+            color: var(--text-main);
+            transition: transform 0.15s, border-color 0.15s, background-color 0.15s;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
         }
 
         .community-card:hover {
             transform: translateY(-2px);
             border-color: var(--wiiu-green);
+            background-color: #35353a;
         }
 
         .community-card.active {
             background: var(--wiiu-green);
-            color: white;
+            color: #111;
             border-color: var(--wiiu-green);
         }
 
@@ -158,14 +160,15 @@
             resize: none;
             font-family: inherit;
             font-size: 0.95rem;
-            background-color: #fafafa;
-            transition: border-color 0.2s;
+            color: var(--text-main);
+            background-color: var(--input-bg);
+            transition: border-color 0.2s, background-color 0.2s;
         }
 
         .post-composer textarea:focus {
             outline: none;
             border-color: var(--wiiu-green);
-            background-color: white;
+            background-color: #27272b;
         }
 
         .post {
@@ -175,13 +178,13 @@
             padding: 20px;
             display: flex;
             gap: 15px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
 
         .avatar {
             width: 54px;
             height: 54px;
-            background: #e2e8f0;
+            background: #4b5563;
             border-radius: var(--radius-md);
             border: 2px solid var(--wiiu-green);
             overflow: hidden;
@@ -189,10 +192,10 @@
             align-items: center;
             justify-content: center;
             font-weight: bold;
-            color: #4a5568;
+            color: var(--text-main);
             font-size: 1.3rem;
             flex-shrink: 0;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
         }
 
         .avatar img {
@@ -226,7 +229,7 @@
         .post-body {
             font-size: 0.95rem;
             line-height: 1.5;
-            color: #2c2c2c;
+            color: #e4e4e7;
             word-break: break-word;
         }
 
@@ -239,14 +242,14 @@
         /* --- NINTENDO SIGNATURE BUTTONS --- */
         .btn {
             background: var(--wiiu-green);
-            color: white;
+            color: #111;
             border: none;
             padding: 10px 20px;
             border-radius: 9999px;
             font-weight: 700;
             font-size: 0.9rem;
             cursor: pointer;
-            box-shadow: 0 2px 5px rgba(142,198,0,0.3);
+            box-shadow: 0 4px 10px rgba(146, 230, 0, 0.2);
             transition: background 0.15s, transform 0.1s;
         }
 
@@ -254,26 +257,28 @@
         .btn:active { transform: scale(0.97); }
 
         .btn-outline {
-            background: white;
+            background: transparent;
             color: var(--text-main);
             border: 1px solid var(--border-color);
             box-shadow: none;
         }
-        .btn-outline:hover { background: #f9f9f9; border-color: #b5b5b5; }
+        .btn-outline:hover { background: #3f3f46; border-color: #71717a; }
 
         .action-tab {
-            background: #f0f0f0;
+            background: #3f3f46;
             border: none;
             padding: 6px 14px;
             border-radius: var(--radius-sm);
             font-size: 0.8rem;
             font-weight: bold;
-            color: #666;
+            color: var(--text-main);
             cursor: pointer;
             display: flex;
             align-items: center;
             gap: 5px;
         }
+
+        .action-tab:hover { background: #52525b; }
 
         .action-tab.yeah-active {
             background: #ff7f00;
@@ -281,9 +286,10 @@
         }
 
         .action-tab.reply-tab {
-            background: #e1f5fe;
-            color: #0288d1;
+            background: #1e3a8a;
+            color: #60a5fa;
         }
+        .action-tab.reply-tab:hover { background: #1e40af; }
 
         /* --- COMPONENT STUTTER FIXES --- */
         .hidden { display: none !important; }
@@ -294,22 +300,30 @@
             border-radius: var(--radius-sm);
             margin-bottom: 10px;
             box-sizing: border-box;
+            background-color: var(--input-bg);
+            color: var(--text-main);
+        }
+        .input-field:focus {
+            outline: none;
+            border-color: var(--wiiu-green);
         }
 
         /* --- MODAL DIALOG --- */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; z-index: 100;
+            background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 100;
+            backdrop-filter: blur(2px);
         }
         .modal-body {
-            background: white; padding: 25px; border-radius: var(--radius-lg); width: 90%; max-width: 550px;
-            border: 1px solid var(--border-color); box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            background: var(--card-bg); padding: 25px; border-radius: var(--radius-lg); width: 90%; max-width: 550px;
+            border: 1px solid var(--border-color); box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
     </style>
 </head>
 <body>
 
     <div class="app-wrapper">
+        <!-- GLOBAL HEADBOARD HEADER -->
         <header>
             <div class="logo-area">
                 <span class="logo-dot"></span> Codyverse Plaza
@@ -317,9 +331,12 @@
             <div id="user-nav-widget"></div>
         </header>
 
+        <!-- DASHBOARD CONTAINER GRID -->
         <div class="main-layout">
             
+            <!-- LEFT COLUMN STACK -->
             <div class="sidebar">
+                <!-- User Meta Information Card -->
                 <div id="user-info-card" class="card user-profile-summary hidden">
                     <div class="avatar" id="user-card-avatar">?</div>
                     <div>
@@ -327,17 +344,20 @@
                         <div id="user-card-handle" class="username">-</div>
                     </div>
                     <div id="user-card-bio" style="font-size:0.85rem; color:var(--text-muted); line-height:1.4;"></div>
-                    <button class="btn btn-outline" style="width:100%; font-size:0.8rem;" onclick="toggleProfileEdit()">Settings Profile</button>
+                    <button class="btn btn-outline" style="width:100%; font-size:0.8rem;" onclick="toggleProfileEdit()">Profile Settings</button>
                 </div>
 
+                <!-- Info panel if signed out -->
                 <div id="guest-info-card" class="card style-text" style="text-align: center;">
                     <h4 style="margin-top:0;">Welcome Traveler!</h4>
                     <p style="font-size:0.85rem; color:var(--text-muted); line-height:1.4;">Sign in to select communities and save posts inside the network matrix.</p>
                 </div>
             </div>
 
+            <!-- RIGHT TIMELINE CONTENT BLOCK -->
             <div class="feed-container">
                 
+                <!-- Nintendo Community Central Plaza Select Bar -->
                 <div class="community-grid" id="communities-box">
                     <div class="community-card active" onclick="switchCommunity('general')">💬 General</div>
                     <div class="community-card" onclick="switchCommunity('splatoon')">🦑 Splatoon</div>
@@ -346,20 +366,22 @@
                     <div class="community-card" onclick="switchCommunity('anime')">📺 Dubbed Anime</div>
                 </div>
 
+                <!-- Profile Customization Panel Subcard -->
                 <div id="profile-edit-panel" class="card hidden">
                     <h3 style="margin-top:0; border-bottom:1px solid var(--border-color); padding-bottom:8px;">🎨 Edit User Profile</h3>
-                    <label style="font-size:0.8rem; font-weight:bold;">Display Name</label>
+                    <label style="font-size:0.8rem; font-weight:bold; display:block; margin-bottom:4px;">Display Name</label>
                     <input type="text" id="prof-displayname" class="input-field">
-                    <label style="font-size:0.8rem; font-weight:bold;">Avatar Image Link</label>
+                    <label style="font-size:0.8rem; font-weight:bold; display:block; margin-bottom:4px;">Avatar Image Link</label>
                     <input type="text" id="prof-avatar" class="input-field" placeholder="https://domain.com/pic.png">
-                    <label style="font-size:0.8rem; font-weight:bold;">Bio Text Description</label>
-                    <textarea id="prof-bio" class="input-field" style="height:60px;"></textarea>
+                    <label style="font-size:0.8rem; font-weight:bold; display:block; margin-bottom:4px;">Bio Text Description</label>
+                    <textarea id="prof-bio" class="input-field" style="height:60px; resize:none;"></textarea>
                     <div style="margin-top:10px; display:flex; gap:10px;">
                         <button class="btn" onclick="updateProfile()">Save Modifications</button>
                         <button class="btn btn-outline" onclick="toggleProfileEdit()">Cancel</button>
                     </div>
                 </div>
 
+                <!-- Gate Authentication Form Interface -->
                 <div id="auth-panel" class="card hidden">
                     <h3 id="auth-panel-title" style="margin-top:0;">Sign In</h3>
                     <input type="text" id="auth-displayname" class="input-field hidden" placeholder="Display Name">
@@ -371,6 +393,7 @@
                     </div>
                 </div>
 
+                <!-- Messaging Composer Input Box -->
                 <div id="post-panel" class="card post-composer hidden">
                     <textarea id="post-text" placeholder="Write something elegant or completely ridiculous..."></textarea>
                     <div style="display:flex; justify-content:flex-end; margin-top:10px;">
@@ -378,12 +401,14 @@
                     </div>
                 </div>
 
+                <!-- Central Timeline Content Stream output -->
                 <div id="feed-stream"></div>
             </div>
 
         </div>
     </div>
 
+    <!-- REPLIES COMPONENT MODULE BOX -->
     <div id="reply-modal" class="modal-overlay hidden">
         <div class="modal-body">
             <h3 style="margin-top:0; color:var(--text-main);">Thread Status Hub</h3>
@@ -556,11 +581,11 @@
             if(replies.length === 0) { listContainer.innerHTML = '<p style="color:var(--text-muted); text-align:center; font-size:0.9rem;">No response nodes found on this thread line.</p>'; return; }
             
             listContainer.innerHTML = replies.map(r => `
-                <div style="display:flex; gap:10px; font-size:0.9rem; background:#f7f9fa; padding:10px; border-radius:var(--radius-sm); border:1px solid var(--border-color);">
+                <div style="display:flex; gap:10px; font-size:0.9rem; background:var(--input-bg); padding:10px; border-radius:var(--radius-sm); border:1px solid var(--border-color);">
                     ${buildAvatar(r.avatarUrl, r.displayName)}
                     <div>
                         <strong>${r.displayName}</strong> <span style="color:var(--text-muted)">@${r.username}</span>
-                        <div style="margin-top:3px; color:#222;">${escapeHtml(r.content)}</div>
+                        <div style="margin-top:3px; color:#e4e4e7;">${escapeHtml(r.content)}</div>
                     </div>
                 </div>
             `).join('');
