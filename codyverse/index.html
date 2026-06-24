@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Codyverse</title>
+    <style>
+        :root {
+            --miiverse-green: #92e600;
+            --miiverse-green-hover: #7bc200;
+            --bg-dark: #15202b;
+            --card-dark: #1e2732;
+            --border-color: #38444d;
+            --text-main: #ffffff;
+            --text-muted: #8899a6;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            border-left: 1px solid var(--border-color);
+            border-right: 1px solid var(--border-color);
+            min-height: 100vh;
+            padding-bottom: 50px;
+        }
+        header {
+            position: sticky;
+            top: 0;
+            background: rgba(21, 32, 43, 0.85);
+            backdrop-filter: blur(5px);
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+        }
+        h1 { font-size: 1.3rem; margin: 0; color: var(--miiverse-green); font-weight: 800; letter-spacing: 0.5px; }
+        .btn {
+            background-color: var(--miiverse-green);
+            color: #000;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 9999px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.2s;
+        }
+        .btn:hover { background-color: var(--miiverse-green-hover); }
+        .btn-outline {
+            background: transparent;
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+        }
+        .btn-outline:hover { background: rgba(255,255,255,0.1); }
+        .auth-box, .post-creator {
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
+            background: var(--card-dark);
+        }
+        .input-group { margin-bottom: 12px; }
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            background: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            color: white;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 1rem;
+        }
+        textarea { resize: none; height: 100px; font-family: inherit; }
+        .feed { display: flex; flex-direction: column; }
+        .post {
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            gap: 12px;
+        }
+        .avatar {
+            width: 48px;
+            height: 48px;
+            background: #4b5563;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            font-size: 1.2rem;
+            border: 2px solid var(--miiverse-green);
+        }
+        .post-content { flex: 1; }
+        .post-header { display: flex; gap: 8px; align-items: center; margin-bottom: 4px; }
+        .display-name { font-weight: bold; }
+        .username { color: var(--text-muted); font-size: 0.9rem; }
+        .timestamp { color: var(--text-muted); font-size: 0.85rem; margin-left: auto; }
+        .post-body { line-height: 1.4; font-size: 1rem; word-break: break-word; }
+        .post-actions { margin-top: 10px; }
+        .yeah-btn {
+            background: transparent;
+            border: 1px solid #ff7f00;
+            color: #ff7f00;
+            padding: 4px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.85rem;
+        }
+        .yeah-btn.active { background: #ff7f00; color: white; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>💚 Codyverse</h1>
+            <div id="user-header"></div>
+        </header>
+
+        <div id="auth-section" class="auth-box hidden">
+            <h3 id="auth-title">Sign In to Codyverse</h3>
+            <div class="input-group" id="dn-group" style="display:none;">
+                <input type="text" id="auth-displayname" placeholder="Display Name">
+            </div>
+            <div class="input-group">
+                <input type="text" id="auth-username" placeholder="Username">
+            </div>
+            <div class="input-group">
+                <input type="password" id="auth-password" placeholder="Password">
+            </div>
+            <button class="btn" id="auth-main-btn" onclick="handleAuth()">Sign In</button>
+            <button class="btn btn-outline" id="auth-toggle-btn" onclick="toggleAuthMode()" style="margin-left: 10px;">Create an Account</button>
+        </div>
+
+        <div id="post-section" class="post-creator hidden">
+            <textarea id="post-text" placeholder="Share a post or something completely silly..."></textarea>
+            <div style="text-align: right; margin-top: 8px;">
+                <button class="btn" onclick="submitPost()">Post to the Universe</button>
+            </div>
+        </div>
+
+        <div id="feed" class="feed">
+            <div style="padding: 20px; text-align: center; color: var(--text-muted);">Loading posts...</div>
+        </div>
+    </div>
+
+    <script>
+        // 🌟 CHANGE THIS TO YOUR LIVE WORKER URL!
+        const API_BASE = "https://codyverse.codymkw.workers.dev"; 
+
+        let isSignUp = false;
+        let currentUser = null;
+
+        // Custom fetch wrapper to always pass cross-site authentication cookies
+        async function apiFetch(endpoint, options = {}) {
+            options.credentials = 'include'; 
+            if (options.body && typeof options.body === 'object') {
+                options.body = JSON.stringify(options.body);
+                options.headers = { ...options.headers, 'Content-Type': 'application/json' };
+            }
+            return fetch(`${API_BASE}${endpoint}`, options);
+        }
+
+        async function checkAuth() {
+            try {
+                const res = await apiFetch('/api/me');
+                const data = await res.json();
+                currentUser = data.username;
+                
+                if (currentUser) {
+                    document.getElementById('user-header').innerHTML = `<span style="margin-right:10px; color:var(--text-muted)">@${currentUser}</span><button class="btn btn-outline" onclick="logout()">Log Out</button>`;
+                    document.getElementById('post-section').classList.remove('hidden');
+                    document.getElementById('auth-section').classList.add('hidden');
+                } else {
+                    document.getElementById('user-header').innerHTML = '';
+                    document.getElementById('auth-section').classList.remove('hidden');
+                    document.getElementById('post-section').classList.add('hidden');
+                }
+            } catch(e) {
+                console.error("Auth check failed", e);
+            }
+        }
+
+        function toggleAuthMode() {
+            isSignUp = !isSignUp;
+            document.getElementById('auth-title').innerText = isSignUp ? 'Create Codyverse Account' : 'Sign In to Codyverse';
+            document.getElementById('dn-group').style.display = isSignUp ? 'block' : 'none';
+            document.getElementById('auth-main-btn').innerText = isSignUp ? 'Register' : 'Sign In';
+            document.getElementById('auth-toggle-btn').innerText = isSignUp ? 'Have an Account? Login' : 'Create an Account';
+        }
+
+        async function handleAuth() {
+            const username = document.getElementById('auth-username').value;
+            const password = document.getElementById('auth-password').value;
+            const displayName = document.getElementById('auth-displayname').value;
+
+            const endpoint = isSignUp ? '/api/register' : '/api/login';
+            const payload = isSignUp ? { username, password, displayName } : { username, password };
+
+            const res = await apiFetch(endpoint, { method: 'POST', body: payload });
+
+            if(res.ok) {
+                if(isSignUp) {
+                    alert('Account registered! Switching to login mode.');
+                    toggleAuthMode();
+                } else {
+                    await checkAuth();
+                    loadPosts();
+                }
+            } else {
+                alert(await res.text());
+            }
+        }
+
+        async function logout() {
+            await apiFetch('/api/logout');
+            await checkAuth();
+            loadPosts();
+        }
+
+        async function loadPosts() {
+            const res = await apiFetch('/api/posts');
+            const posts = await res.json();
+            const feedEl = document.getElementById('feed');
+            
+            if (posts.length === 0) {
+                feedEl.innerHTML = '<div style="padding: 40px; text-align: center; color: var(--text-muted);">No posts yet. Be the first to post something!</div>';
+                return;
+            }
+
+            feedEl.innerHTML = posts.map(post => {
+                const initial = post.displayName ? post.displayName.charAt(0).toUpperCase() : '?';
+                const isYeahed = post.yeahedBy && post.yeahedBy.includes(currentUser);
+                const timeStr = new Date(post.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                
+                return `
+                    <div class="post">
+                        <div class="avatar">${initial}</div>
+                        <div class="post-content">
+                            <div class="post-header">
+                                <span class="display-name">${post.displayName}</span>
+                                <span class="username">@${post.username}</span>
+                                <span class="timestamp">${timeStr}</span>
+                            </div>
+                            <div class="post-body">${escapeHtml(post.content)}</div>
+                            <div class="post-actions">
+                                <button class="yeah-btn ${isYeahed ? 'active' : ''}" onclick="giveYeah('${post.id}')">
+                                    💚 Yeah! (${post.yeahs || 0})
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function submitPost() {
+            const content = document.getElementById('post-text').value;
+            if(!content) return;
+
+            const res = await apiFetch('/api/posts', { method: 'POST', body: { content } });
+
+            if (res.ok) {
+                document.getElementById('post-text').value = '';
+                loadPosts();
+            } else {
+                alert(await res.text());
+            }
+        }
+
+        async function giveYeah(postId) {
+            if(!currentUser) {
+                alert('You must be signed in to give a "Yeah!"');
+                return;
+            }
+            const res = await apiFetch('/api/yeah', { method: 'POST', body: { postId } });
+            if(res.ok) loadPosts();
+        }
+
+        function escapeHtml(str) {
+            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+        }
+
+        // Init
+        (async () => {
+            await checkAuth();
+            loadPosts();
+        })();
+    </script>
+</body>
+</html>
