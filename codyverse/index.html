@@ -79,14 +79,12 @@
         .btn:hover { background: var(--wiiu-green-hover); }
         .btn:active { transform: scale(0.97); }
         
-        /* Fully Re-themed Light/Dark Mode Reactive Outline Buttons */
         .btn-outline { background: transparent; color: var(--text-main); border: 1px solid var(--border-color); box-shadow: none; }
         .btn-outline:hover { background: var(--tab-hover); border-color: var(--text-muted); color: var(--text-main); }
 
         .action-tab { background: var(--tab-bg); border: none; padding: 6px 12px; border-radius: 8px; font-size: 0.8rem; font-weight: bold; color: var(--text-main); cursor: pointer; display: flex; align-items: center; gap: 5px; transition: background-color 0.15s, color 0.15s; }
         .action-tab:hover { background: var(--tab-hover); }
         
-        /* Distinct Colored Custom Reaction Badges */
         .action-tab.active-yeah { background: #ff7f00 !important; color: white !important; }
         .action-tab.active-fresh { background: #00ddff !important; color: #111 !important; }
         .action-tab.active-cozy { background: #ff55bb !important; color: white !important; }
@@ -118,7 +116,6 @@
         </header>
 
         <div class="main-layout">
-            <!-- LEFT AREA: REGISTRY INFO -->
             <div class="sidebar">
                 <div id="user-info-card" class="card user-profile-summary hidden">
                     <div class="avatar" id="user-card-avatar">?</div>
@@ -142,18 +139,17 @@
                 </div>
             </div>
 
-            <!-- TIMELINE CHANNELS FEED -->
             <div class="feed-container">
                 <div class="community-grid" id="communities-box"></div>
                 
+                <!-- Added autocomplete="off" and changed names/id structures to kill browser auto-fill bugs -->
                 <div class="card" style="padding: 12px 20px; display: flex; gap: 10px; align-items: center;">
                     <span style="font-size: 0.9rem; color: var(--text-muted);">🔍 Search:</span>
-                    <input type="text" id="search-filter" class="input-field" style="margin-bottom:0; flex: 1; padding: 6px 12px;" placeholder="Filter terms, keywords, authors..." oninput="filterPosts()">
+                    <input type="text" id="plaza-search-input" name="plaza-search-input" autocomplete="off" class="input-field" style="margin-bottom:0; flex: 1; padding: 6px 12px;" placeholder="Filter terms, keywords, authors..." oninput="filterPosts()">
                 </div>
 
                 <div id="announcement-area" class="announcement-banner hidden"></div>
 
-                <!-- PROFILE UPDATING WRAPPER -->
                 <div id="profile-edit-panel" class="card hidden">
                     <h3 style="margin-top:0;">🎨 Profile Preferences</h3>
                     <input type="text" id="prof-displayname" class="input-field" placeholder="Display Name">
@@ -165,7 +161,6 @@
                     </div>
                 </div>
 
-                <!-- SECURITY HUB ENTRY -->
                 <div id="auth-panel" class="card hidden">
                     <h3 id="auth-panel-title" style="margin-top:0;">Sign In</h3>
                     <input type="text" id="auth-displayname" class="input-field hidden" placeholder="Display Name">
@@ -177,7 +172,6 @@
                     </div>
                 </div>
 
-                <!-- GRAPHIC COMPOSER COMPONENT -->
                 <div id="post-panel" class="card post-composer hidden">
                     <textarea id="post-text" maxlength="280" placeholder="Share something elegant or completely ridiculous..." oninput="updateCharCount()"></textarea>
                     <div class="char-counter" id="post-char-count">0 / 280</div>
@@ -191,7 +185,6 @@
                 <div id="feed-stream"></div>
             </div>
 
-            <!-- RIGHT BAR PRESENCE MONITOR -->
             <div class="sidebar">
                 <div class="card">
                     <h4 style="margin-top:0; border-bottom:1px solid var(--border-color); padding-bottom:6px;"><span class="online-dot"></span> Online Now</h4>
@@ -203,7 +196,6 @@
         </div>
     </div>
 
-    <!-- RESPONSES THREAD MODAL -->
     <div id="reply-modal" class="modal-overlay hidden" onclick="closeReplyModal()">
         <div class="modal-body" onclick="event.stopPropagation()">
             <h3 style="margin-top:0;">Thread Discussion Status</h3>
@@ -218,7 +210,6 @@
         </div>
     </div>
 
-    <!-- NEW FEATURE: USER INSPECTOR CARD MODAL -->
     <div id="user-inspector-modal" class="modal-overlay hidden" onclick="closeInspectorModal()">
         <div class="modal-body" style="max-width:400px; text-align:center;" onclick="event.stopPropagation()">
             <div class="avatar" id="inspect-avatar" style="width:72px; height:72px; font-size:1.8rem; margin:0 auto 12px auto; pointer-events:none;">?</div>
@@ -231,7 +222,7 @@
     </div>
 
     <script>
-        const API_BASE = "https://codyverse.YOUR_SUBDOMAIN.workers.dev"; 
+        const API_BASE = "https://codyverse.codymkw.workers.dev"; 
 
         let isSignUp = false, currentUser = null, currentProfile = null, currentCommunity = "general", activePostId = null, loadedPostsCache = [];
 
@@ -258,6 +249,11 @@
             document.getElementById('live-telemetry-clock').innerText = now.toUTCString().replace('GMT', 'UTC');
         }
         setInterval(updateClock, 1000);
+
+        // Global check helper to see if active credential identity has platform administration rights
+        function isPlatformAdmin() {
+            return currentUser === "codymkw";
+        }
 
         async function checkAuth() {
             try {
@@ -302,7 +298,7 @@
             const box = document.getElementById('communities-box');
             
             box.innerHTML = list.map(c => {
-                const canDelete = !c.system && c.creator === currentUser;
+                const canDelete = isPlatformAdmin() || (!c.system && c.creator === currentUser);
                 return `
                     <div class="community-card ${c.id === currentCommunity ? 'active' : ''}" onclick="switchCommunity('${c.id}')">
                         ${escapeHtml(c.name)}
@@ -312,7 +308,7 @@
             }).join('');
             
             const targetObj = list.find(c => c.id === currentCommunity);
-            const showPinBtn = currentUser && (targetObj?.system || targetObj?.creator === currentUser);
+            const showPinBtn = currentUser && (isPlatformAdmin() || targetObj?.system || targetObj?.creator === currentUser);
             document.getElementById('manage-announcement-btn').classList.toggle('hidden', !showPinBtn);
         }
 
@@ -403,8 +399,8 @@
                 const userReaction = post.reactedUsers ? post.reactedUsers[currentUser] : null;
                 const rx = post.reactions || { yeah: 0, fresh: 0, cozy: 0 };
                 
-                const isOwner = post.username === currentUser;
-                const deleteActionNode = isOwner ? `<button class="post-delete-trigger" onclick="deletePost('${post.id}')" title="Delete Post">🗑️</button>` : '';
+                const canDeletePost = isPlatformAdmin() || post.username === currentUser;
+                const deleteActionNode = canDeletePost ? `<button class="post-delete-trigger" onclick="deletePost('${post.id}')" title="Delete Post">🗑️</button>` : '';
 
                 return `
                     <div class="post">
@@ -440,7 +436,7 @@
         }
 
         function filterPosts() {
-            const val = document.getElementById('search-filter').value.toLowerCase();
+            const val = document.getElementById('plaza-search-input').value.toLowerCase();
             const filtered = loadedPostsCache.filter(p => p.content.toLowerCase().includes(val) || p.displayName.toLowerCase().includes(val) || p.username.toLowerCase().includes(val));
             renderFeed(filtered);
         }
