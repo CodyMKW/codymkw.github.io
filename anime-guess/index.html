@@ -763,7 +763,7 @@ function revealHint(type) {
     }
 }
 
-// ─── Phase 4: Audio Streaming Integration Architecture (FIXED) ───────────────
+// ─── Phase 4: Audio Streaming Integration Architecture (EXACT MATCH) ─────────
 function toggleAudioStream() {
     if (!currentTarget) return;
     
@@ -779,15 +779,20 @@ function toggleAudioStream() {
     readout.innerText = "Querying Open Audio Infrastructure...";
     playBtn.innerText = "⏳";
 
-    // Pinging the proper Global Search Endpoint using parameter 'q'
-    fetch(`https://api.animethemes.moe/search?q=${encodeURIComponent(titleStr)}`)
+    // Requesting global search but forcing explicit relation inclusion for the anime type
+    const apiUrl = `https://api.animethemes.moe/search?q=${encodeURIComponent(titleStr)}&include[anime]=animethemes.animethemeentries.videos`;
+
+    fetch(apiUrl)
     .then(res => res.json())
     .then(data => {
-        // Extracting the first matching video object from the search payload
-        const videoNode = data?.search?.videos?.[0];
+        // Target the first exact anime result match
+        const topAnimeMatch = data?.search?.anime?.[0];
         
-        if (videoNode && videoNode.link) {
-            audioPlayer.src = videoNode.link;
+        // Safely drill down through the show's nested themes and video entries
+        const videoLink = topAnimeMatch?.animethemes?.[0]?.animethemeentries?.[0]?.videos?.[0]?.link;
+        
+        if (videoLink) {
+            audioPlayer.src = videoLink;
             audioPlayer.volume = 0.45;
             audioPlayer.play()
             .then(() => {
