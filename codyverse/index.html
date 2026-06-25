@@ -406,6 +406,25 @@
         .reply-textarea::placeholder { color: var(--text-3); }
         .reply-actions-row { display: flex; justify-content: flex-end; gap: 6px; }
 
+        /* NOTIFICATIONS */
+        .notif-bell-btn { position: relative; background: none; border: 1px solid var(--border); color: var(--text-2); padding: 5px 10px; border-radius: var(--radius-sm); font-size: 1rem; cursor: pointer; transition: all 0.15s; line-height: 1; }
+        .notif-bell-btn:hover { border-color: var(--green); color: var(--text); }
+        .notif-bell-btn.has-unread { border-color: var(--green); color: var(--green); animation: bell-ring 0.6s ease 0s 2; }
+        @keyframes bell-ring { 0%,100%{transform:rotate(0)} 20%{transform:rotate(-12deg)} 40%{transform:rotate(12deg)} 60%{transform:rotate(-8deg)} 80%{transform:rotate(8deg)} }
+        .notif-badge { position: absolute; top: -6px; right: -6px; background: var(--danger); color: #fff; font-size: 0.6rem; font-weight: 900; min-width: 16px; height: 16px; border-radius: 9999px; display: flex; align-items: center; justify-content: center; padding: 0 3px; line-height: 1; pointer-events: none; }
+        .notif-item { display: flex; gap: 10px; padding: 10px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--surface2); cursor: pointer; transition: all 0.15s; position: relative; }
+        .notif-item:hover { border-color: var(--border-bright); }
+        .notif-item.unread { background: var(--green-glow); border-color: var(--green); }
+        .notif-icon { font-size: 1.1rem; flex-shrink: 0; padding-top: 2px; }
+        .notif-body { flex: 1; min-width: 0; }
+        .notif-text { font-size: 0.82rem; line-height: 1.4; color: var(--text); }
+        .notif-text strong { color: var(--green); }
+        .notif-preview { font-size: 0.76rem; color: var(--text-3); margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .notif-time { font-size: 0.68rem; color: var(--text-3); margin-top: 4px; }
+        .notif-unread-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); flex-shrink: 0; margin-top: 6px; }
+        .notif-empty { text-align: center; padding: 32px 16px; color: var(--text-3); }
+        .notif-empty-icon { font-size: 2rem; margin-bottom: 8px; }
+
         .toast-stack { position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 8px; z-index: 500; }
         .toast {
             padding: 11px 18px; border-radius: 10px; font-size: 0.82rem; font-weight: 700;
@@ -452,6 +471,12 @@
         <div class="topbar-right">
             <span class="clock" id="clock">--:--:-- UTC</span>
             <button class="btn btn-ghost btn-sm" onclick="toggleTheme()">🌓</button>
+            <div id="notif-bell" class="hidden">
+                <button class="notif-bell-btn" onclick="openNotifModal()" id="notif-bell-btn" title="Notifications">
+                    🔔
+                    <span class="notif-badge hidden" id="notif-badge">0</span>
+                </button>
+            </div>
             <div id="nav-auth"></div>
         </div>
     </header>
@@ -697,6 +722,23 @@
     </div>
 </div>
 
+<!-- NOTIFICATION MODAL -->
+<div class="overlay hidden" id="modal-notif" onclick="closeModal('modal-notif')">
+    <div class="modal" onclick="event.stopPropagation()" style="max-width:460px; max-height:85vh; display:flex; flex-direction:column;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+            <div class="modal-title" style="margin-bottom:0;">🔔 Notifications</div>
+            <button class="btn btn-ghost btn-xs" onclick="markAllRead()">Mark all read</button>
+        </div>
+        <div id="notif-list" style="overflow-y:auto; flex:1; display:flex; flex-direction:column; gap:8px;">
+            <div style="color:var(--text-3); font-size:0.85rem; text-align:center; padding:20px;">Loading…</div>
+        </div>
+        <div style="margin-top:16px; display:flex; gap:8px;">
+            <button class="btn btn-ghost btn-sm" style="flex:1;" onclick="clearAllNotifs()">Clear all</button>
+            <button class="btn btn-sm" style="flex:1;" onclick="closeModal('modal-notif')">Close</button>
+        </div>
+    </div>
+</div>
+
 <!-- TOAST STACK -->
 <div class="toast-stack" id="toast-stack"></div>
 
@@ -807,6 +849,7 @@ async function boot() {
 function renderAuthUI() {
     if (me) {
         document.getElementById("nav-auth").innerHTML = `<button class="btn btn-ghost btn-sm" onclick="doLogout()">Sign out</button>`;
+        document.getElementById("notif-bell").classList.remove("hidden");
         document.getElementById("composer").classList.remove("hidden");
         document.getElementById("btn-new-comm").classList.remove("hidden");
         document.getElementById("btn-new-poll").classList.remove("hidden");
@@ -897,6 +940,9 @@ async function doLogout() {
     saveToken(null);
     sfx("switch");
     toast("Signed out.", "info");
+    document.getElementById("notif-bell").classList.add("hidden");
+    document.getElementById("notif-badge").classList.add("hidden");
+    notifCache = [];
     renderAuthUI();
     document.getElementById("composer").classList.add("hidden");
     document.getElementById("btn-new-comm").classList.add("hidden");
@@ -1394,6 +1440,9 @@ function startHeartbeat() {
     setInterval(beat, 60000);
     setInterval(loadOnline, 30000);
     loadOnline();
+    // Poll notifications every 30s, load immediately on boot silently
+    loadNotifications(true);
+    setInterval(() => loadNotifications(false), 30000);
 }
 
 // ── SEGMENTED CONTROLS ──────────────────────────────────
@@ -1415,6 +1464,107 @@ function getSegVal(groupId) {
 
 function copyFC(code) {
     navigator.clipboard.writeText(code).then(() => toast("Friend code copied!", "ok")).catch(() => toast("Couldn't copy.", "err"));
+}
+
+// ── NOTIFICATIONS ────────────────────────────────────────
+let notifCache = [];
+
+async function loadNotifications(silent = false) {
+    if (!me) return;
+    const res = await api("/api/notifications").catch(() => null);
+    if (!res?.ok) return;
+    notifCache = await res.json();
+    const unread = notifCache.filter(n => !n.read).length;
+    const badge = document.getElementById("notif-badge");
+    const bellBtn = document.getElementById("notif-bell-btn");
+    if (badge) {
+        if (unread > 0) {
+            badge.textContent = unread > 99 ? "99+" : unread;
+            badge.classList.remove("hidden");
+            bellBtn?.classList.add("has-unread");
+            if (!silent) sfx("click");
+        } else {
+            badge.classList.add("hidden");
+            bellBtn?.classList.remove("has-unread");
+        }
+    }
+}
+
+function openNotifModal() {
+    document.getElementById("modal-notif").classList.remove("hidden");
+    renderNotifList();
+    // Mark all as read after a short delay so user sees which were new
+    setTimeout(markAllRead, 1200);
+}
+
+function renderNotifList() {
+    const el = document.getElementById("notif-list");
+    if (!notifCache.length) {
+        el.innerHTML = `<div class="notif-empty"><div class="notif-empty-icon">🔔</div><div>All caught up!</div><div class="text-muted" style="margin-top:6px; font-size:0.78rem;">Reactions and replies to your posts will show up here.</div></div>`;
+        return;
+    }
+    const iconMap = { reply: "💬", yeah: "🔥", fresh: "✨", cozy: "🌿" };
+    el.innerHTML = notifCache.map(n => `
+        <div class="notif-item ${n.read ? "" : "unread"}" onclick="handleNotifClick('${esc(n.postId)}', '${esc(n.community)}')">
+            <div class="notif-icon">${iconMap[n.type] || "🔔"}</div>
+            <div class="notif-body">
+                <div class="notif-text">${buildNotifText(n)}</div>
+                ${n.preview ? `<div class="notif-preview">${esc(n.preview)}</div>` : ""}
+                <div class="notif-time">${ago(n.timestamp)}</div>
+            </div>
+            ${!n.read ? `<div class="notif-unread-dot"></div>` : ""}
+        </div>
+    `).join("");
+}
+
+function buildNotifText(n) {
+    const actor = `<strong>${esc(n.actorDisplay || n.actor)}</strong>`;
+    if (n.type === "reply") return `${actor} replied to your post`;
+    if (n.type === "yeah")  return `${actor} reacted 🔥 Yeah to your post`;
+    if (n.type === "fresh") return `${actor} reacted ✨ Fresh to your post`;
+    if (n.type === "cozy")  return `${actor} reacted 🌿 Cozy to your post`;
+    return `${actor} interacted with your post`;
+}
+
+async function handleNotifClick(postId, notifCommunity) {
+    closeModal("modal-notif");
+    // Switch to the right channel if needed
+    if (notifCommunity && notifCommunity !== community) {
+        await switchChannel(notifCommunity);
+        // Wait for feed to render
+        await new Promise(r => setTimeout(r, 400));
+    }
+    // Scroll to and highlight the post
+    const postEl = document.getElementById(`p-${postId}`);
+    if (postEl) {
+        postEl.scrollIntoView({ behavior: "smooth", block: "center" });
+        postEl.style.transition = "box-shadow 0.3s";
+        postEl.style.boxShadow = "0 0 0 2px var(--green)";
+        setTimeout(() => { postEl.style.boxShadow = ""; }, 2000);
+    }
+}
+
+async function markAllRead() {
+    if (!me || !notifCache.some(n => !n.read)) return;
+    await api("/api/notifications/read", { method: "POST" }).catch(() => {});
+    notifCache.forEach(n => n.read = true);
+    const badge = document.getElementById("notif-badge");
+    badge?.classList.add("hidden");
+    document.getElementById("notif-bell-btn")?.classList.remove("has-unread");
+    // Re-render if modal is still open
+    if (!document.getElementById("modal-notif").classList.contains("hidden")) {
+        renderNotifList();
+    }
+}
+
+async function clearAllNotifs() {
+    if (!me) return;
+    if (!confirm("Clear all notifications?")) return;
+    await api("/api/notifications/clear", { method: "POST" }).catch(() => {});
+    notifCache = [];
+    document.getElementById("notif-badge")?.classList.add("hidden");
+    document.getElementById("notif-bell-btn")?.classList.remove("has-unread");
+    renderNotifList();
 }
 
 // ── MODAL ───────────────────────────────────────────────
