@@ -776,6 +776,49 @@ function revealHint(type) {
 }
 
 // ─── Phase 4: Audio Streaming & Metadata Integration ────────────────────────
+// ─── Dynamic Text Scrubbing Engine (Anti-Spoilers) ───────────────────────────
+function censorSynopsisText(text, target) {
+    if (!text) return "No description available in archive.";
+    
+    let censored = text;
+    let componentsToScrub = new Set();
+    
+    // Gather full title variants
+    if (target.title.english) componentsToScrub.add(target.title.english.toLowerCase());
+    if (target.title.romaji) componentsToScrub.add(target.title.romaji.toLowerCase());
+    
+    // Break titles down into individual unique words to catch partial mentions
+    const fillerWords = ['the', 'and', 'for', 'you', 'that', 'with', 'this', 'from', 'into', 'der', 'von', 'the', 'abc'];
+    
+    [target.title.english, target.title.romaji].forEach(title => {
+        if (!title) return;
+        // Strip out punctuation and split by spaces
+        let words = title.toLowerCase().replace(/[^a-z0-9\s]/g, '').split(/\s+/);
+        words.forEach(word => {
+            if (word.length > 2 && !fillerWords.includes(word)) {
+                componentsToScrub.add(word);
+            }
+        });
+    });
+
+    // Scrub out studio names if they exist in the target pool data structure
+    if (target.studios?.nodes?.[0]?.name) {
+        componentsToScrub.add(target.studios.nodes[0].name.toLowerCase());
+    }
+
+    // Execute regex replacement loop across the description body text
+    componentsToScrub.forEach(item => {
+        // Escape characters for regular expression safety
+        let escapedItem = item.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+        
+        // Match exact words or full strings case-insensitively
+        let regex = new RegExp('\\b' + escapedItem + '\\b', 'gi');
+        censored = censored.replace(regex, '██████');
+    });
+
+    return censored;
+}
+    
 function toggleAudioStream() {
     if (!currentTarget) return;
     
@@ -801,13 +844,11 @@ function toggleAudioStream() {
     .then(data => {
         const topAnimeMatch = data?.search?.anime?.[0];
         
-        // Reveal the description card and insert the synopsis text
-        if (topAnimeMatch?.synopsis) {
-            if (descReadout) descReadout.innerHTML = topAnimeMatch.synopsis;
-            if (descBox) descBox.style.display = 'block';
-        } else {
-            if (descReadout) descReadout.innerText = "No description available in archive.";
-            if (descBox) descBox.style.display = 'block';
+        // Pass raw text through the censor loop before pushing to screen
+        if (descReadout && descBox) {
+            const cleanDescription = censorSynopsisText(topAnimeMatch?.synopsis, currentTarget);
+            descReadout.innerHTML = cleanDescription;
+            descBox.style.display = 'block';
         }
         
         const videoLink = topAnimeMatch?.animethemes?.[0]?.animethemeentries?.[0]?.videos?.[0]?.link;
