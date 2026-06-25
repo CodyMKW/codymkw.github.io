@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>CodyMKW // Anime Guessing Engine</title>
+    <title>CodyMKW // Advanced Anime Guessing Engine</title>
     <style>
         :root {
             --bg-main: #060913;
@@ -37,7 +37,7 @@
 
         .page-wrap {
             width: 100%;
-            max-width: 900px;
+            max-width: 950px;
             margin: 0 auto;
             padding: 40px 20px;
         }
@@ -66,12 +66,11 @@
 
         .game-grid {
             display: grid;
-            grid-template-columns: 280px 1fr;
+            grid-template-columns: 290px 1fr;
             gap: 24px;
             align-items: start;
         }
 
-        /* Cards */
         .card {
             background: var(--bg-card);
             backdrop-filter: blur(24px);
@@ -82,18 +81,9 @@
             box-shadow: 0 16px 48px rgba(0,0,0,0.35);
         }
 
-        /* Config Panel */
-        .panel-flex {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
+        .panel-flex { display: flex; flex-direction: column; gap: 16px; }
 
-        .input-group {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
+        .input-group { display: flex; flex-direction: column; gap: 6px; }
 
         .input-group label {
             font-size: 0.72rem;
@@ -112,39 +102,48 @@
             font-family: inherit;
             font-size: 0.88rem;
             outline: none;
-            transition: border-color 0.2s;
         }
 
-        .input-field:focus {
-            border-color: var(--accent-cyan);
-        }
+        .input-field:focus { border-color: var(--accent-cyan); }
 
-        /* Mode Selection Buttons */
-        .radio-tabs {
+        .radio-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1fr;
+            gap: 6px;
             background: rgba(0,0,0,0.2);
-            padding: 4px;
-            border-radius: 10px;
+            padding: 6px;
+            border-radius: 12px;
             border: 1px solid var(--border-line);
         }
 
         .radio-tab {
-            padding: 8px;
-            text-align: center;
-            font-size: 0.8rem;
+            padding: 10px;
+            text-align: left;
+            font-size: 0.82rem;
             font-weight: 600;
             color: var(--text-muted);
             cursor: pointer;
-            border-radius: 7px;
+            border-radius: 8px;
             transition: all 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .radio-tab.active {
-            background: rgba(255,255,255,0.05);
+            background: rgba(255,255,255,0.06);
             color: #fff;
             box-shadow: 0 2px 8px rgba(0,0,0,0.2);
         }
+
+        .radio-tab::after {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: transparent;
+        }
+        .radio-tab.active::after { background: var(--accent-cyan); }
 
         .btn-action {
             background: linear-gradient(90deg, var(--accent-green), var(--accent-cyan));
@@ -155,13 +154,10 @@
             font-weight: 700;
             font-size: 0.9rem;
             cursor: pointer;
-            text-align: center;
             transition: transform 0.15s;
         }
-
         .btn-action:active { transform: scale(0.98); }
 
-        /* Stats Track */
         .stats-row {
             display: flex;
             justify-content: space-between;
@@ -172,14 +168,8 @@
         .stats-row:last-child { border: none; }
         .stats-val { font-family: monospace; color: var(--accent-cyan); font-weight: 700; }
 
-        /* Main Stage Layout */
-        .stage {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
+        .stage { display: flex; flex-direction: column; gap: 20px; }
 
-        /* Scoreboard Bar */
         .scoreboard {
             display: flex;
             justify-content: space-between;
@@ -190,17 +180,11 @@
             border-radius: 16px;
         }
 
-        .score-block {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
-
+        .score-block { display: flex; flex-direction: column; gap: 2px; }
         .score-lbl { font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
         .score-val { font-size: 1.2rem; font-family: monospace; font-weight: 800; color: #fff; }
         .score-val.streak { color: var(--accent-green); }
 
-        /* Timer Bar */
         .timer-container {
             width: 100%;
             height: 4px;
@@ -209,30 +193,26 @@
             overflow: hidden;
             display: none;
         }
+        .timer-bar { width: 100%; height: 100%; background: var(--accent-cyan); transition: width 0.1s linear; }
 
-        .timer-bar {
-            width: 100%;
-            height: 100%;
-            background: var(--accent-cyan);
-            transition: width 0.1s linear;
-        }
-
-        /* Question Viewer Card */
+        /* Viewer & Media Containers */
         .viewer {
             display: grid;
-            grid-template-columns: 200px 1fr;
-            gap: 20px;
+            grid-template-columns: 210px 1fr;
+            gap: 24px;
         }
 
         .artwork-frame {
-            width: 200px;
-            height: 280px;
+            width: 210px;
+            height: 295px;
             background: #111625;
             border-radius: 14px;
             border: 1px solid rgba(255,255,255,0.06);
-            box-shadow: inset 0 4px 12px rgba(0,0,0,0.5);
             overflow: hidden;
             position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .artwork-frame img {
@@ -241,20 +221,33 @@
             object-fit: cover;
             transition: filter 0.3s ease;
         }
+        .artwork-frame img.silhouette { filter: brightness(0) contrast(2); }
 
-        /* The Pure Silhouette CSS Vector Transform Filter */
-        .artwork-frame img.silhouette {
-            filter: brightness(0) contrast(2);
-        }
-
-        .interaction-box {
-            display: flex;
+        /* Terminal Matrix Card for Text/Quotes Mode */
+        .text-matrix-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #090e1a;
+            display: none;
             flex-direction: column;
-            gap: 16px;
-            justify-content: space-between;
+            justify-content: center;
+            align-items: center;
+            padding: 16px;
+            text-align: center;
+            border-radius: 14px;
+            border: 1px dashed rgba(96, 239, 255, 0.2);
         }
 
-        /* Hints Engine Track */
+        .matrix-icon {
+            font-size: 1.5rem;
+            color: var(--accent-cyan);
+            margin-bottom: 8px;
+            font-family: monospace;
+        }
+
+        .interaction-box { display: flex; flex-direction: column; gap: 16px; justify-content: space-between; }
+
+        /* Advanced Data Buffer Hooks */
         .hints-panel {
             background: rgba(0,0,0,0.2);
             border: 1px solid var(--border-line);
@@ -262,35 +255,78 @@
             padding: 14px;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 10px;
         }
 
-        .hint-item {
-            font-size: 0.85rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
+        .hint-item { font-size: 0.85rem; display: flex; align-items: center; gap: 8px; min-height: 28px; }
+        
         .btn-hint {
             background: rgba(255,255,255,0.04);
             border: 1px solid var(--border-line);
             color: var(--text-primary);
             font-size: 0.72rem;
             font-weight: 600;
-            padding: 4px 10px;
+            padding: 5px 10px;
             border-radius: 6px;
             cursor: pointer;
         }
-
         .btn-hint:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.15); }
 
-        /* Multiple Choice Grid */
-        .choices-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 10px;
+        /* Phase 4 Audio Streaming Interface */
+        .audio-deck {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(96, 239, 255, 0.03);
+            border: 1px dashed rgba(96, 239, 255, 0.15);
+            padding: 12px;
+            border-radius: 10px;
         }
+
+        .btn-audio-node {
+            background: #060913;
+            border: 1px solid var(--accent-cyan);
+            color: var(--accent-cyan);
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        .btn-audio-node:hover { background: rgba(96, 239, 255, 0.1); }
+
+        .audio-status-text { font-size: 0.75rem; color: var(--text-muted); font-family: monospace; }
+
+        /* Quote Space Layout */
+        .quote-bubble {
+            background: rgba(0,0,0,0.2);
+            border-left: 3px solid var(--accent-cyan);
+            padding: 12px;
+            border-radius: 0 10px 10px 0;
+            font-size: 0.95rem;
+            font-style: italic;
+            line-height: 1.4;
+            display: none;
+            position: relative;
+        }
+
+        .toggle-sub-dub {
+            position: absolute;
+            top: -12px; right: 10px;
+            background: #111625;
+            border: 1px solid var(--border-line);
+            padding: 2px 8px;
+            font-size: 0.65rem;
+            border-radius: 4px;
+            color: var(--accent-cyan);
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        .choices-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
 
         .btn-choice {
             background: rgba(5,8,16,0.4);
@@ -304,28 +340,16 @@
             cursor: pointer;
             transition: all 0.2s;
         }
-
         .btn-choice:hover:not(:disabled) {
             background: var(--bg-card-hover);
             border-color: rgba(255,255,255,0.15);
             transform: translateX(2px);
         }
+        .btn-choice.correct { background: rgba(0, 255, 135, 0.15) !important; border-color: var(--accent-green) !important; color: var(--accent-green); }
+        .btn-choice.wrong { background: rgba(255, 74, 90, 0.15) !important; border-color: var(--accent-red) !important; color: var(--accent-red); }
 
-        .btn-choice.correct {
-            background: rgba(0, 255, 135, 0.15) !important;
-            border-color: var(--accent-green) !important;
-            color: var(--accent-green);
-        }
-
-        .btn-choice.wrong {
-            background: rgba(255, 74, 90, 0.15) !important;
-            border-color: var(--accent-red) !important;
-            color: var(--accent-red);
-        }
-
-        /* Responsive Mobile Layout Override */
         @media (max-width: 768px) {
-            .game-grid { grid-template-columns: 1fr; gap: 20px; }
+            .game-grid { grid-template-columns: 1fr; }
             .viewer { grid-template-columns: 1fr; }
             .artwork-frame { width: 100%; height: 220px; }
         }
@@ -335,13 +359,12 @@
 <div class="page-wrap">
 
     <header>
-        <h1>CodyMKW // Anime Guessing Engine</h1>
+        <h1>CodyMKW // Advanced Guessing Matrix</h1>
         <a href="/" class="back-link">← Return Hub</a>
     </header>
 
     <div class="game-grid">
         
-        <!-- Left Panel: Engine Adjustments & Stats Profile -->
         <div class="panel-flex">
             <div class="card">
                 <div class="panel-flex">
@@ -351,10 +374,12 @@
                     </div>
 
                     <div class="input-group">
-                        <label>Game Engine Mode</label>
-                        <div class="radio-tabs">
-                            <div class="radio-tab active" id="mode-classic" onclick="setMode('classic')">Classic</div>
-                            <div class="radio-tab" id="mode-time" onclick="setMode('time')">Time Attack</div>
+                        <label>Matrix Execution Modes</label>
+                        <div class="radio-grid">
+                            <div class="radio-tab active" id="mode-classic" onclick="setEngineMode('classic')"><span>Classic Visual</span></div>
+                            <div class="radio-tab" id="mode-time" onclick="setEngineMode('time')"><span>Time Attack Speedrun</span></div>
+                            <div class="radio-tab" id="mode-quote" onclick="setEngineMode('quote')"><span>Quote Translation Trivia</span></div>
+                            <div class="radio-tab" id="mode-tag" onclick="setEngineMode('tag')"><span>Incremental Tag Elimination</span></div>
                         </div>
                     </div>
 
@@ -368,16 +393,13 @@
             </div>
 
             <div class="card">
-                <div class="input-group" style="margin-bottom: 10px;">
-                    <label>Terminal Record Log</label>
-                </div>
+                <div class="input-group" style="margin-bottom: 10px;"><label>Terminal Record Log</label></div>
                 <div class="stats-row"><span>Highest Streak</span><span class="stats-val" id="stat-streak">0</span></div>
                 <div class="stats-row"><span>Total Correct</span><span class="stats-val" id="stat-correct">0</span></div>
                 <div class="stats-row"><span>Total Attempts</span><span class="stats-val" id="stat-total">0</span></div>
             </div>
         </div>
 
-        <!-- Right Panel: Main Stage Target Execution -->
         <div class="stage">
             <div class="scoreboard">
                 <div class="score-block">
@@ -394,19 +416,31 @@
                 </div>
             </div>
 
-            <div class="timer-container" id="timer-track">
-                <div class="timer-bar" id="timer-fill"></div>
-            </div>
+            <div class="timer-container" id="timer-track"><div class="timer-bar" id="timer-fill"></div></div>
 
             <div class="card">
                 <div class="viewer">
                     <div class="artwork-frame">
                         <img src="" alt="Target Frame" id="target-art" class="silhouette">
+                        <div class="text-matrix-overlay" id="matrix-text-cover">
+                            <div class="matrix-icon">[⚡]</div>
+                            <div class="score-lbl" id="matrix-status-lbl">Hiding Visual Context</div>
+                        </div>
                     </div>
                     
                     <div class="interaction-box">
+                        <div class="quote-bubble" id="quote-block-space">
+                            <button class="toggle-sub-dub" id="sub-dub-btn" onclick="toggleQuoteTranslation()">Language: DUB</button>
+                            <span id="quote-text-render">"..."</span>
+                        </div>
+
+                        <div class="audio-deck" id="audio-deck-track">
+                            <button class="btn-audio-node" id="audio-playback-btn" onclick="toggleAudioStream()">▶</button>
+                            <div class="audio-status-text" id="audio-status-readout">Audio Stream: Idle Buffers</div>
+                        </div>
+
                         <div class="hints-panel">
-                            <div class="score-lbl" style="margin-bottom: 4px;">Data Buffers</div>
+                            <div class="score-lbl" style="margin-bottom: 2px;" id="buffer-header-lbl">Data Buffers</div>
                             <div class="hint-item" id="hint-year-box">
                                 <button class="btn-hint" onclick="revealHint('year')">Unlock Timeline</button>
                                 <span style="display:none;" id="hint-year-val"></span>
@@ -421,9 +455,7 @@
                             </div>
                         </div>
 
-                        <div class="choices-grid" id="choices-box">
-                            <!-- Injected Choice Nodes -->
-                        </div>
+                        <div class="choices-grid" id="choices-box"></div>
                     </div>
                 </div>
             </div>
@@ -433,31 +465,60 @@
 </div>
 
 <script>
-// ─── Core State Engine Configuration ─────────────────────────────────────────
+// ─── Master Native Fallback Quote Database (Phase 3 Linkage) ─────────────────
+const INTEGRATED_QUOTES = {
+    "Soul Eater": {
+        dub: "A sound soul dwells within a sound mind and a sound body.",
+        sub: "健全なる魂は、健全なる精神と、健全なる肉体に宿る。"
+    },
+    "My Hero Academia": {
+        dub: "Whether you win or lose, looking back and learning from your experience is a part of life!",
+        sub: "勝つにしろ負けるにしろ、振り返って経験から学ぶことは人生の一部だ！"
+    },
+    "Dr. Stone": {
+        dub: "I'm ten billion percent sure!",
+        sub: "100億パーセント間違いない！"
+    },
+    "Naruto": {
+        dub: "If you don't like your destiny, don't accept it. Instead, have the courage to change it the way you want it to be!",
+        sub: "運命なんてのは、他人に言われて決めるもんじゃない。"
+    },
+    "Attack on Titan": {
+        dub: "If you win, you live. If you lose, you die. If you don't fight, you can't win!",
+        sub: "勝てば生きる。負ければ死ぬ。戦わなければ勝てない！"
+    },
+    "Fullmetal Alchemist: Brotherhood": {
+        dub: "A lesson without pain is meaningless. For you cannot gain anything without sacrificing something else in return.",
+        sub: "痛みを伴わない教訓には意義がない。人は何かの犠牲なしに何も得ることはできないのだから。"
+    }
+};
+
 let gamePool = [];
 let currentTarget = null;
 let score = 0;
 let currentStreak = 0;
 let multiplier = 1.0;
-let gameMode = 'classic'; // 'classic' or 'time'
+let gameMode = 'classic'; 
 let silhouetteEnabled = true;
+let currentQuoteLanguage = 'dub'; // 'dub' or 'sub'
 
-// Time Attack Loop Scalars
+// Theme Streaming Loop Properties
+let audioPlayer = new Audio();
+let audioIsPlaying = false;
+
+// Time Clock Core Values
 let timerInterval = null;
-let maxTime = 20; // Seconds per matrix execution
+let maxTime = 20; 
 let timeLeft = maxTime;
 
-// Local Archive Records
-let records = {
-    highestStreak: 0,
-    totalCorrect: 0,
-    totalAttempts: 0
-};
+// Increment Tag Management Tracking Metrics
+let tagRevealIndex = 0;
 
-// ─── GraphQL Queries ────────────────────────────────────────────────────────
+let records = { highestStreak: 0, totalCorrect: 0, totalAttempts: 0 };
+
 const GLOBAL_POPULAR_QUERY = `
 query {
-  Page(page: 1, perPage: 80) {
+  Page(page: 1, perPage: 100) {
     media(type: ANIME, sort: POPULARITY_DESC) {
       id title { english romaji } coverImage { extraLarge } startDate { year } studios(isMain: true) { nodes { name } } genres
     }
@@ -477,7 +538,6 @@ query ($username: String) {
   }
 }`;
 
-// ─── Initialization Engine ───────────────────────────────────────────────────
 window.addEventListener('DOMContentLoaded', () => {
     loadLocalRecords();
     initializeGamePool();
@@ -485,10 +545,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 function loadLocalRecords() {
     const saved = localStorage.getItem('cody_anime_guess_records');
-    if (saved) {
-        records = JSON.parse(saved);
-        updateRecordsUI();
-    }
+    if (saved) { records = JSON.parse(saved); updateRecordsUI(); }
 }
 
 function updateRecordsUI() {
@@ -497,109 +554,113 @@ function updateRecordsUI() {
     document.getElementById('stat-total').innerText = records.totalAttempts;
 }
 
-function setMode(mode) {
+function setEngineMode(mode) {
     gameMode = mode;
-    document.getElementById('mode-classic').classList.toggle('active', mode === 'classic');
-    document.getElementById('mode-time').classList.toggle('active', mode === 'time');
+    ['classic', 'time', 'quote', 'tag'].forEach(m => {
+        document.getElementById(`mode-${m}`).classList.toggle('active', m === mode);
+    });
     document.getElementById('timer-track').style.display = (mode === 'time') ? 'block' : 'none';
     resetState();
+    if (gamePool.length > 0) injectNextRound();
 }
 
 function toggleSilhouetteStyle() {
     silhouetteEnabled = !silhouetteEnabled;
     const btn = document.getElementById('silhouette-toggle');
     const img = document.getElementById('target-art');
-    
-    if (silhouetteEnabled) {
-        btn.innerText = "Silhouette: ON";
-        img.classList.add('silhouette');
-    } else {
-        btn.innerText = "Silhouette: OFF";
-        img.classList.remove('silhouette');
+    btn.innerText = silhouetteEnabled ? "Silhouette: ON" : "Silhouette: OFF";
+    if (gameMode === 'classic' || gameMode === 'time') {
+        img.classList.toggle('silhouette', silhouetteEnabled);
     }
 }
 
 function resetState() {
-    score = 0;
-    currentStreak = 0;
-    multiplier = 1.0;
+    score = 0; currentStreak = 0; multiplier = 1.0;
     clearInterval(timerInterval);
+    killAudioPlayback();
     updateScoreboardUI();
 }
 
-// ─── Pool Acquisition ────────────────────────────────────────────────────────
 function initializeGamePool() {
     const username = document.getElementById('user-input').value.trim();
     const isCustomUser = username.length > 0;
     
-    const endpoint = 'https://graphql.anilist.co';
-    const bodyConfig = isCustomUser 
-        ? { query: USER_COMPLETED_QUERY, variables: { username } }
-        : { query: GLOBAL_POPULAR_QUERY };
-
-    fetch(endpoint, {
+    fetch('https://graphql.anilist.co', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(bodyConfig)
+        body: JSON.stringify(isCustomUser ? { query: USER_COMPLETED_QUERY, variables: { username } } : { query: GLOBAL_POPULAR_QUERY })
     })
     .then(res => res.json())
     .then(payload => {
         if (isCustomUser) {
             const rawLists = payload?.data?.MediaListCollection?.lists;
-            if (!rawLists || rawLists.length === 0) throw new Error("Empty user pool array context");
+            if (!rawLists || rawLists.length === 0) throw new Error();
             gamePool = [];
-            rawLists.forEach(list => {
-                list.entries.forEach(entry => { if (entry.media) gamePool.push(entry.media); });
-            });
+            rawLists.forEach(list => list.entries.forEach(e => { if (e.media) gamePool.push(e.media); }));
         } else {
             gamePool = payload?.data?.Page?.media || [];
         }
-
-        if (gamePool.length < 4) {
-            alert("Pool execution limits compromised. Ensure target user has adequate completed items.");
-            return;
-        }
-        
+        if (gamePool.length < 4) return alert("Insufficient pool parameters.");
         resetState();
         injectNextRound();
     })
-    .catch(err => {
-        console.error(err);
-        alert("GraphQL handshake failed. Reverting baseline operations.");
-    });
+    .catch(() => alert("GraphQL baseline handshake failed. Check configuration."));
 }
 
-// ─── Round Processing & Generation ───────────────────────────────────────────
+// ─── Phase 3 & 4 Matrix Injection Architecture ───────────────────────────────
 function injectNextRound() {
     if (gamePool.length < 4) return;
-    
-    // Clear dynamic hint nodes
+    killAudioPlayback();
     resetHintPanels();
 
-    // Select random correct answer
+    // Select Target
     const randIndex = Math.floor(Math.random() * gamePool.length);
     currentTarget = gamePool[randIndex];
 
-    // Build unique multi-choice configuration
+    // Build Choice Array Variants
     let selections = [currentTarget];
     while (selections.length < 4) {
-        const fallbackChoice = gamePool[Math.floor(Math.random() * gamePool.length)];
-        if (!selections.some(item => item.id === fallbackChoice.id)) {
-            selections.push(fallbackChoice);
-        }
+        const fallback = gamePool[Math.floor(Math.random() * gamePool.length)];
+        if (!selections.some(item => item.id === fallback.id)) selections.push(fallback);
     }
-
-    // Shuffle variants Array array
     selections.sort(() => Math.random() - 0.5);
 
-    // Render UI structures
+    // Reset Display Layout Filters
     const artNode = document.getElementById('target-art');
+    const textMatrixNode = document.getElementById('matrix-text-cover');
+    const quoteNode = document.getElementById('quote-block-space');
+    
     artNode.src = currentTarget.coverImage.extraLarge;
-    if (silhouetteEnabled) artNode.classList.add('silhouette');
+    artNode.style.display = 'block';
+    textMatrixNode.style.display = 'none';
+    quoteNode.style.display = 'none';
+    artNode.classList.remove('silhouette');
 
+    // Initialize Active Mode Parameters
+    if (gameMode === 'classic' || gameMode === 'time') {
+        if (silhouetteEnabled) artNode.classList.add('silhouette');
+        if (gameMode === 'time') initiateTimeAttackCountdown();
+    } 
+    else if (gameMode === 'quote') {
+        artNode.style.display = 'none';
+        textMatrixNode.style.display = 'flex';
+        document.getElementById('matrix-status-lbl').innerText = "Text Matrix Evaluation Active";
+        quoteNode.style.display = 'block';
+        setupQuoteTriviaEngine();
+    } 
+    else if (gameMode === 'tag') {
+        artNode.style.display = 'none';
+        textMatrixNode.style.display = 'flex';
+        document.getElementById('matrix-status-lbl').innerText = "Decrypting Tag Matrix...";
+        setupTagEliminationEngine();
+    }
+
+    // Auto Buffers Theme Lookup Stream Preparation (Phase 4 Hook Ready)
+    document.getElementById('audio-status-readout').innerText = "Stream Track: Ready to Load";
+
+    // Build Selection Nodes
     const choiceBox = document.getElementById('choices-box');
     choiceBox.innerHTML = '';
-
     selections.forEach(choice => {
         const btn = document.createElement('button');
         btn.className = 'btn-choice';
@@ -607,50 +668,155 @@ function injectNextRound() {
         btn.onclick = () => evaluationExecution(choice.id, btn);
         choiceBox.appendChild(btn);
     });
+}
 
-    if (gameMode === 'time') {
-        initiateTimeAttackCountdown();
+// ─── Phase 3: Specialized Subsystem Configs ──────────────────────────────────
+function setupQuoteTriviaEngine() {
+    const titleKey = currentTarget.title.english || currentTarget.title.romaji;
+    let quoteData = INTEGRATED_QUOTES[titleKey];
+    
+    if (!quoteData) {
+        // Dynamic Fallback Generator if missing from curated array
+        quoteData = {
+            dub: `This production features core themes of ${currentTarget.genres?.slice(0,2).join(' and ') || 'Action'}. Can you identify this digital archive target?`,
+            sub: `この作品は、主に、次のジャンルです： ${currentTarget.genres?.slice(0,2).join(' & ') || 'アニメ'}`
+        };
+    }
+    
+    currentTarget.activeQuote = quoteData;
+    renderQuoteText();
+}
+
+function renderQuoteText() {
+    if (!currentTarget?.activeQuote) return;
+    const txtNode = document.getElementById('quote-text-render');
+    const langBtn = document.getElementById('sub-dub-btn');
+    
+    if (currentQuoteLanguage === 'dub') {
+        txtNode.innerText = `"${currentTarget.activeQuote.dub}"`;
+        langBtn.innerText = "Language: DUB (EN)";
+    } else {
+        txtNode.innerText = `"${currentTarget.activeQuote.sub}"`;
+        langBtn.innerText = "Language: SUB (JP)";
     }
 }
 
-// ─── Hint Logic Module ───────────────────────────────────────────────────────
+function toggleQuoteTranslation() {
+    currentQuoteLanguage = currentQuoteLanguage === 'dub' ? 'sub' : 'dub';
+    renderQuoteText();
+}
+
+function setupTagEliminationEngine() {
+    tagRevealIndex = 1;
+    document.getElementById('buffer-header-lbl').innerText = "Buffer Framework (Revealing Clues)";
+    
+    // Auto populate the first tag block dynamically
+    const genreVal = document.getElementById('hint-genres-val');
+    const tags = currentTarget.genres ? currentTarget.genres.slice(0, tagRevealIndex).join(', ') : 'Unknown';
+    genreVal.innerText = `Semantic Tags: ${tags}`;
+    genreVal.style.display = 'inline';
+    document.getElementById('hint-genres-box').querySelector('button').innerText = "Reveal Additional Tag Layer";
+}
+
+// ─── Hint Subsystem Module ───────────────────────────────────────────────────
 function resetHintPanels() {
-    document.getElementById('hint-year-box').querySelector('button').style.display = 'inline-block';
-    document.getElementById('hint-year-val').style.display = 'none';
-    document.getElementById('hint-studio-box').querySelector('button').style.display = 'inline-block';
-    document.getElementById('hint-studio-val').style.display = 'none';
-    document.getElementById('hint-genres-box').querySelector('button').style.display = 'inline-block';
-    document.getElementById('hint-genres-val').style.display = 'none';
+    document.getElementById('buffer-header-lbl').innerText = "Data Buffers";
+    ['year', 'studio', 'genres'].forEach(type => {
+        const box = document.getElementById(`hint-${type}-box`);
+        box.querySelector('button').style.display = 'inline-block';
+        box.querySelector('button').innerText = type === 'genres' ? "Unlock Semantic Tags" : `Unlock ${type.charAt(0).toUpperCase() + type.slice(1)}`;
+        box.querySelector('span').style.display = 'none';
+    });
 }
 
 function revealHint(type) {
     if (!currentTarget) return;
-
-    // Apply minor multiplier penalty for unlocking a dynamic buffer link
-    multiplier = Math.max(1.0, multiplier - 0.2);
+    multiplier = Math.max(1.0, multiplier - 0.15);
     updateScoreboardUI();
 
     if (type === 'year') {
         const display = document.getElementById('hint-year-val');
-        display.innerText = `Released: ${currentTarget.startDate?.year || 'Unknown'}`;
+        display.innerText = `Released Timeline: ${currentTarget.startDate?.year || 'Unknown'}`;
         display.style.display = 'inline';
         document.getElementById('hint-year-box').querySelector('button').style.display = 'none';
     } else if (type === 'studio') {
         const display = document.getElementById('hint-studio-val');
-        const studioName = currentTarget.studios?.nodes?.[0]?.name || 'Independent/Unknown';
-        display.innerText = `Studio: ${studioName}`;
+        const studioName = currentTarget.studios?.nodes?.[0]?.name || 'Independent Archive';
+        display.innerText = `Architecture Studio: ${studioName}`;
         display.style.display = 'inline';
         document.getElementById('hint-studio-box').querySelector('button').style.display = 'none';
     } else if (type === 'genres') {
-        const display = document.getElementById('hint-genres-val');
-        const labels = currentTarget.genres ? currentTarget.genres.slice(0, 3).join(', ') : 'None';
-        display.innerText = `Tags: ${labels}`;
-        display.style.display = 'inline';
-        document.getElementById('hint-genres-box').querySelector('button').style.display = 'none';
+        if (gameMode === 'tag') {
+            tagRevealIndex++;
+            const maxTags = currentTarget.genres ? currentTarget.genres.length : 0;
+            const tags = currentTarget.genres ? currentTarget.genres.slice(0, tagRevealIndex).join(', ') : 'None';
+            document.getElementById('hint-genres-val').innerText = `Semantic Tags: ${tags}`;
+            if (tagRevealIndex >= maxTags || tagRevealIndex >= 4) {
+                document.getElementById('hint-genres-box').querySelector('button').style.display = 'none';
+            }
+        } else {
+            const display = document.getElementById('hint-genres-val');
+            display.innerText = `Semantic Tags: ${currentTarget.genres?.slice(0, 3).join(', ') || 'None'}`;
+            display.style.display = 'inline';
+            document.getElementById('hint-genres-box').querySelector('button').style.display = 'none';
+        }
     }
 }
 
-// ─── Time Attack Countdown Tracker ──────────────────────────────────────────
+// ─── Phase 4: Audio Streaming Integration Architecture ───────────────────────
+function toggleAudioStream() {
+    if (!currentTarget) return;
+    
+    if (audioIsPlaying) {
+        killAudioPlayback();
+        return;
+    }
+
+    const titleStr = currentTarget.title.english || currentTarget.title.romaji;
+    const readout = document.getElementById('audio-status-readout');
+    const playBtn = document.getElementById('audio-playback-btn');
+    
+    readout.innerText = "Querying Open Audio Infrastructure...";
+    playBtn.innerText = "⏳";
+
+    // Pinging AnimeThemes API dynamically to pull high-quality asset links
+    fetch(`https://api.animethemes.moe/anime?filter[search]=${encodeURIComponent(titleStr)}&include=animethemes.animethemeentries.videos`)
+    .then(res => res.json())
+    .then(data => {
+        const videoNode = data?.anime?.[0]?.animethemes?.[0]?.animethemeentries?.[0]?.videos?.[0];
+        if (videoNode && videoNode.link) {
+            audioPlayer.src = videoNode.link;
+            audioPlayer.volume = 0.45;
+            audioPlayer.play()
+            .then(() => {
+                audioIsPlaying = true;
+                playBtn.innerText = "■";
+                readout.innerText = "Streaming Open Audio Track Live...";
+            })
+            .catch(() => fallbackSynthesizerBuffer());
+        } else {
+            fallbackSynthesizerBuffer();
+        }
+    })
+    .catch(() => fallbackSynthesizerBuffer());
+}
+
+function fallbackSynthesizerBuffer() {
+    const readout = document.getElementById('audio-status-readout');
+    const playBtn = document.getElementById('audio-playback-btn');
+    readout.innerText = "Handshake Error: Stream Locked or CORS Secure.";
+    playBtn.innerText = "▶";
+}
+
+function killAudioPlayback() {
+    audioPlayer.pause();
+    audioPlayer.src = "";
+    audioIsPlaying = false;
+    document.getElementById('audio-playback-btn').innerText = "▶";
+    document.getElementById('audio-status-readout').innerText = "Audio Stream: Idle Buffers";
+}
+
+// ─── Core Logic Matrix Verification loops ────────────────────────────────────
 function initiateTimeAttackCountdown() {
     clearInterval(timerInterval);
     timeLeft = maxTime;
@@ -659,26 +825,19 @@ function initiateTimeAttackCountdown() {
 
     timerInterval = setInterval(() => {
         timeLeft -= 0.1;
-        const pct = (timeLeft / maxTime) * 100;
-        bar.style.width = `${pct}%`;
-
-        if (timeLeft <= 0) {
-            clearInterval(timerInterval);
-            handleRoundFailure();
-        }
+        bar.style.width = `${(timeLeft / maxTime) * 100}%`;
+        if (timeLeft <= 0) { clearInterval(timerInterval); handleRoundFailure(); }
     }, 100);
 }
 
-// ─── Scoring and Verification Engine ─────────────────────────────────────────
 function evaluationExecution(selectedId, buttonNode) {
     clearInterval(timerInterval);
+    killAudioPlayback();
     
-    // Disable alternative inputs
-    const alternatives = document.querySelectorAll('.btn-choice');
-    alternatives.forEach(btn => btn.disabled = true);
-
-    // Strip silhouette mask context visually on select
+    document.querySelectorAll('.btn-choice').forEach(btn => btn.disabled = true);
     document.getElementById('target-art').classList.remove('silhouette');
+    document.getElementById('target-art').style.display = 'block';
+    document.getElementById('matrix-text-cover').style.display = 'none';
 
     records.totalAttempts++;
 
@@ -687,56 +846,41 @@ function evaluationExecution(selectedId, buttonNode) {
         currentStreak++;
         records.totalCorrect++;
         
-        // Compute dynamically updated scoring factors
-        const addedBase = gameMode === 'time' ? Math.round(timeLeft * 10) : 100;
-        score += Math.round(addedBase * multiplier);
-        
-        // Multiplier progression tracker
+        const baseMath = gameMode === 'time' ? Math.round(timeLeft * 10) : 100;
+        score += Math.round(baseMath * multiplier);
         multiplier = parseFloat((multiplier + 0.1).toFixed(1));
         
-        if (currentStreak > records.highestStreak) {
-            records.highestStreak = currentStreak;
-        }
+        if (currentStreak > records.highestStreak) records.highestStreak = currentStreak;
     } else {
         buttonNode.classList.add('wrong');
         highlightCorrectOption();
-        currentStreak = 0;
-        multiplier = 1.0;
+        currentStreak = 0; multiplier = 1.0;
     }
 
     localStorage.setItem('cody_anime_guess_records', JSON.stringify(records));
-    updateScoreboardUI();
-    updateRecordsUI();
-
-    setTimeout(injectNextRound, 1800);
+    updateScoreboardUI(); updateRecordsUI();
+    setTimeout(injectNextRound, 2000);
 }
 
 function handleRoundFailure() {
-    const alternatives = document.querySelectorAll('.btn-choice');
-    alternatives.forEach(btn => btn.disabled = true);
+    killAudioPlayback();
+    document.querySelectorAll('.btn-choice').forEach(btn => btn.disabled = true);
     document.getElementById('target-art').classList.remove('silhouette');
+    document.getElementById('target-art').style.display = 'block';
+    document.getElementById('matrix-text-cover').style.display = 'none';
 
-    records.totalAttempts++;
-    currentStreak = 0;
-    multiplier = 1.0;
-
+    records.totalAttempts++; currentStreak = 0; multiplier = 1.0;
     highlightCorrectOption();
 
     localStorage.setItem('cody_anime_guess_records', JSON.stringify(records));
-    updateScoreboardUI();
-    updateRecordsUI();
-
-    setTimeout(injectNextRound, 1800);
+    updateScoreboardUI(); updateRecordsUI();
+    setTimeout(injectNextRound, 2000);
 }
 
 function highlightCorrectOption() {
-    const alternatives = document.querySelectorAll('.btn-choice');
-    alternatives.forEach(btn => {
-        // Fallback title checks matching array generation patterns
-        const correctTitle = currentTarget.title.english || currentTarget.title.romaji;
-        if (btn.innerText === correctTitle) {
-            btn.classList.add('correct');
-        }
+    const correctTitle = currentTarget.title.english || currentTarget.title.romaji;
+    document.querySelectorAll('.btn-choice').forEach(btn => {
+        if (btn.innerText === correctTitle) btn.classList.add('correct');
     });
 }
 
