@@ -56,7 +56,8 @@ self.onmessage = async (e) => {
 
             self.postMessage({ type: 'STATUS', message: 'Aligning stream parameters and compiling...' });
             
-            await ffmpeg.run(
+            // Core FFmpeg compilation arguments
+            let ffmpegArgs = [
                 '-i', 'intro.mp4', 
                 '-i', 'user.mp4', 
                 '-filter_complex', 
@@ -69,12 +70,44 @@ self.onmessage = async (e) => {
                 '-map', '[outa]', 
                 '-c:v', 'libx264',
                 '-preset', 'ultrafast',
-                '-pix_fmt', 'yuv420p',
-                '-c:a', 'aac',
+                '-pix_fmt', 'yuv420p'
+            ];
+
+            // If 8MB Optimization Toggle is active, calculate an aggressive target bitrate
+            if (e.data.limitTo8MB && e.data.duration) {
+                const targetSizeBits = 7.8 * 1024 * 1024 * 8; // Aim for 7.8MB safely under the 8MB wire
+                const totalDuration = e.data.duration + 3.0;   // Add ~3 seconds for the Switch intro animation
+                
+                // Allocate 96kbps for audio, rest goes to video
+                const audioBitrateKbps = 96;
+                let videoBitrateKbps = Math.floor((targetSizeBits / totalDuration) / 1000) - audioBitrateKbps;
+                
+                // Bound check minimum bitrate requirements so video doesn't break entirely
+                if (videoBitrateKbps < 150) videoBitrateKbps = 150; 
+
+                ffmpegArgs.push(
+                    '-b:v', `${videoBitrateKbps}k`,
+                    '-maxrate', `${videoBitrateKbps * 1.2}k`,
+                    '-bufsize', `${videoBitrateKbps}k`,
+                    '-c:a', 'aac',
+                    '-b:a', `${audioBitrateKbps}k`
+                );
+            } else {
+                // Default high quality settings
+                ffmpegArgs.push(
+                    '-crf', '23',
+                    '-c:a', 'aac'
+                );
+            }
+
+            // Append threading and standard output parameters
+            ffmpegArgs.push(
                 '-threads', '1',
                 '-movflags', '+faststart',
                 'output.mp4'
             );
+            
+            await ffmpeg.run(...ffmpegArgs);
 
             self.postMessage({ type: 'STATUS', message: 'Validating binary stream output...' });
             const data = ffmpeg.FS('readFile', 'output.mp4');

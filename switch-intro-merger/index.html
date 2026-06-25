@@ -100,7 +100,7 @@
             padding: 5px;
             border-radius: 12px;
             border: 1px solid var(--border-color);
-            margin-bottom: 28px;
+            margin-bottom: 24px;
         }
 
         .selector-option {
@@ -128,6 +128,74 @@
             background-color: var(--switch-grey);
             color: white;
             border: 1px solid #444852;
+        }
+
+        /* Experimental Toggle Component Layout */
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: var(--bg-input);
+            border: 1px solid var(--border-color);
+            padding: 16px 20px;
+            border-radius: 12px;
+            margin-bottom: 28px;
+            text-align: left;
+        }
+
+        .toggle-meta h3 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 2px;
+        }
+
+        .toggle-meta p {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .switch-input-element {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+            flex-shrink: 0;
+        }
+
+        .switch-input-element input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: var(--switch-grey);
+            transition: .2s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .2s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--success-green);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(20px);
         }
 
         .upload-zone {
@@ -297,7 +365,6 @@
             line-height: 1.6;
         }
 
-        /* FAQ Section Formatting */
         .faq-section {
             background-color: var(--bg-card);
             border: 1px solid var(--border-color);
@@ -338,7 +405,6 @@
             line-height: 1.6;
         }
 
-        /* Nice Footer Styling */
         footer {
             margin-top: 24px;
             text-align: center;
@@ -380,6 +446,17 @@
                 <label>
                     <input type="radio" name="introType" value="nintendoswitch2intro.mp4" class="selector-option">
                     <div class="selector-button switch-2">Nintendo Switch 2</div>
+                </label>
+            </div>
+
+            <div class="toggle-container">
+                <div class="toggle-meta">
+                    <h3>Bypass Discord Nitro Limit</h3>
+                    <p>Compresses the video stream down to sit right below 8MB.</p>
+                </div>
+                <label class="switch-input-element">
+                    <input type="checkbox" id="nitroBypassToggle">
+                    <span class="slider"></span>
                 </label>
             </div>
 
@@ -449,8 +526,10 @@
         const progressContainer = document.getElementById('progressContainer');
         const progressBar = document.getElementById('progressBar');
         const logTerminal = document.getElementById('logTerminal');
+        const nitroBypassToggle = document.getElementById('nitroBypassToggle');
 
         let targetFile = null;
+        let targetDuration = 0;
         let systemLogs = [];
         let lastUiUpdateTime = 0;
         let isDone = false;
@@ -531,6 +610,11 @@
                 videoPreview.src = url;
                 previewBox.style.display = 'block';
                 
+                // Track total input clip runtime for dynamic bit-rate tracking
+                videoPreview.onloadedmetadata = () => {
+                    targetDuration = videoPreview.duration;
+                };
+
                 mergeBtn.disabled = false;
                 mergeBtn.style.display = 'inline-flex';
                 downloadBtn.style.display = 'none';
@@ -564,7 +648,9 @@
                 ffmpegWorker.postMessage({
                     type: 'START',
                     userFile: arrayBuffer,
-                    introUrl: cleanIntroUrl
+                    introUrl: cleanIntroUrl,
+                    limitTo8MB: nitroBypassToggle.checked,
+                    duration: targetDuration
                 }, [arrayBuffer]);
 
             } catch (err) {
@@ -574,9 +660,9 @@
             }
         });
 
-        // App State Reset Sequence 
         resetBtn.addEventListener('click', () => {
             targetFile = null;
+            targetDuration = 0;
             videoInput.value = '';
             fileNameText.textContent = "Select target video file";
             previewBox.style.display = 'none';
