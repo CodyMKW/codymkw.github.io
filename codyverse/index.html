@@ -348,7 +348,35 @@
         .modal-ava { width: 80px; height: 80px; border-radius: 18px; background: var(--surface2); border: 2px solid var(--green); margin: 0 auto 14px; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 900; color: var(--green); overflow: hidden; }
         .modal-ava img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* ── TOAST ── */
+        .seg-group { display: flex; gap: 6px; flex-wrap: wrap; }
+        .seg-btn {
+            padding: 6px 12px; border-radius: var(--radius-pill);
+            border: 1px solid var(--border); background: var(--surface2);
+            color: var(--text-2); font-size: 0.78rem; font-weight: 700; cursor: pointer;
+            transition: all 0.15s;
+        }
+        .seg-btn:hover { border-color: var(--border-bright); color: var(--text); }
+        .seg-btn.selected { background: var(--green-glow); border-color: var(--green); color: var(--green); }
+
+        /* profile badge chips */
+        .profile-chips { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-bottom: 12px; }
+        .chip {
+            display: inline-flex; align-items: center; gap: 4px;
+            background: var(--surface2); border: 1px solid var(--border);
+            border-radius: var(--radius-pill); padding: 3px 10px;
+            font-size: 0.72rem; font-weight: 700; color: var(--text-2);
+        }
+        .chip.chip-green { border-color: var(--green); color: var(--green); background: var(--green-glow); }
+        .chip.chip-yeah { border-color: var(--yeah); color: var(--yeah); background: rgba(255,127,0,0.08); }
+        .chip.chip-fresh { border-color: var(--fresh); color: var(--fresh); background: rgba(0,212,240,0.08); }
+
+        /* inspect modal extra fields */
+        .inspect-field { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px 14px; margin-bottom: 8px; font-size: 0.82rem; display: flex; align-items: center; gap: 10px; }
+        .inspect-field-icon { font-size: 1rem; flex-shrink: 0; }
+        .inspect-field-label { font-size: 0.68rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-3); display: block; margin-bottom: 1px; }
+        .inspect-field-val { color: var(--text); font-weight: 600; }
+        .fc-copy { background: none; border: none; color: var(--text-3); cursor: pointer; font-size: 0.75rem; margin-left: auto; padding: 2px 6px; border-radius: 4px; transition: all 0.12s; }
+        .fc-copy:hover { background: var(--border); color: var(--green); }
         .toast-stack { position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 8px; z-index: 500; }
         .toast {
             padding: 11px 18px; border-radius: 10px; font-size: 0.82rem; font-weight: 700;
@@ -559,15 +587,67 @@
 
 <!-- PROFILE EDIT MODAL -->
 <div class="overlay hidden" id="modal-profile" onclick="closeModal('modal-profile')">
-    <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal" onclick="event.stopPropagation()" style="max-width:480px; max-height:90vh; overflow-y:auto;">
         <div class="modal-title">Edit Profile</div>
+
         <div class="field-label">Display Name</div>
         <input type="text" class="field" id="edit-name" placeholder="Display name" maxlength="40">
+
         <div class="field-label">Avatar URL</div>
         <input type="url" class="field" id="edit-avatar" placeholder="https://…">
+
         <div class="field-label">Bio</div>
         <textarea class="field" id="edit-bio" style="height:72px; resize:none;" maxlength="200" placeholder="Short bio…"></textarea>
-        <div class="row" style="justify-content:flex-end; gap:8px; margin-top:4px;">
+
+        <hr class="sep">
+        <div style="font-size:0.72rem; font-weight:800; text-transform:uppercase; letter-spacing:0.1em; color:var(--green); margin-bottom:12px;">🎮 Gaming Info</div>
+
+        <div class="field-label">Switch Friend Code</div>
+        <input type="text" class="field" id="edit-fc" placeholder="SW-XXXX-XXXX-XXXX" maxlength="20">
+
+        <div class="field-label">Favorite Game</div>
+        <input type="text" class="field" id="edit-fav-game" placeholder="e.g. Splatoon 3, Animal Crossing…" maxlength="50">
+
+        <div class="field-label">Game Experience</div>
+        <div class="seg-group" id="edit-experience">
+            <button class="seg-btn" data-val="Beginner" onclick="setSeg('edit-experience', this)">🌱 Beginner</button>
+            <button class="seg-btn" data-val="Intermediate" onclick="setSeg('edit-experience', this)">⚔️ Intermediate</button>
+            <button class="seg-btn" data-val="Expert" onclick="setSeg('edit-experience', this)">🏆 Expert</button>
+        </div>
+
+        <div class="field-label" style="margin-top:10px;">Play Style</div>
+        <div class="seg-group" id="edit-playstyle">
+            <button class="seg-btn" data-val="Casual" onclick="setSeg('edit-playstyle', this)">😌 Casual</button>
+            <button class="seg-btn" data-val="Competitive" onclick="setSeg('edit-playstyle', this)">🔥 Competitive</button>
+            <button class="seg-btn" data-val="Speedrunner" onclick="setSeg('edit-playstyle', this)">⚡ Speedrunner</button>
+            <button class="seg-btn" data-val="Collector" onclick="setSeg('edit-playstyle', this)">🗃️ Collector</button>
+        </div>
+
+        <div class="field-label" style="margin-top:10px;">Timezone</div>
+        <select class="field" id="edit-timezone">
+            <option value="">— Not set —</option>
+            <option value="UTC-12">UTC-12 (Baker Island)</option>
+            <option value="UTC-11">UTC-11 (Samoa)</option>
+            <option value="UTC-10">UTC-10 (Hawaii)</option>
+            <option value="UTC-9">UTC-9 (Alaska)</option>
+            <option value="UTC-8">UTC-8 (Pacific)</option>
+            <option value="UTC-7">UTC-7 (Mountain)</option>
+            <option value="UTC-6">UTC-6 (Central)</option>
+            <option value="UTC-5">UTC-5 (Eastern)</option>
+            <option value="UTC-4">UTC-4 (Atlantic)</option>
+            <option value="UTC-3">UTC-3 (Brazil)</option>
+            <option value="UTC+0">UTC+0 (London)</option>
+            <option value="UTC+1">UTC+1 (Central Europe)</option>
+            <option value="UTC+2">UTC+2 (Eastern Europe)</option>
+            <option value="UTC+3">UTC+3 (Moscow)</option>
+            <option value="UTC+5:30">UTC+5:30 (India)</option>
+            <option value="UTC+8">UTC+8 (China/Singapore)</option>
+            <option value="UTC+9">UTC+9 (Japan/Korea)</option>
+            <option value="UTC+10">UTC+10 (Australia East)</option>
+            <option value="UTC+12">UTC+12 (New Zealand)</option>
+        </select>
+
+        <div class="row" style="justify-content:flex-end; gap:8px; margin-top:6px;">
             <button class="btn btn-ghost btn-sm" onclick="closeModal('modal-profile')">Cancel</button>
             <button class="btn btn-sm" onclick="saveProfile()">Save</button>
         </div>
@@ -576,11 +656,13 @@
 
 <!-- USER INSPECTOR MODAL -->
 <div class="overlay hidden" id="modal-user" onclick="closeModal('modal-user')">
-    <div class="modal" onclick="event.stopPropagation()" style="text-align:center;">
+    <div class="modal" onclick="event.stopPropagation()" style="text-align:center; max-height:90vh; overflow-y:auto;">
         <div class="modal-ava" id="inspect-ava">?</div>
-        <div style="font-size:1.1rem; font-weight:900; margin-bottom:4px;" id="inspect-name">-</div>
-        <div style="color:var(--text-3); font-size:0.82rem; margin-bottom:14px;" id="inspect-handle">@-</div>
-        <div style="background:var(--surface2); border:1px solid var(--border); border-radius:var(--radius-sm); padding:14px; font-size:0.85rem; line-height:1.6; text-align:left; margin-bottom:16px; min-height:40px;" id="inspect-bio">-</div>
+        <div style="font-size:1.1rem; font-weight:900; margin-bottom:2px;" id="inspect-name">-</div>
+        <div style="color:var(--text-3); font-size:0.82rem; margin-bottom:10px;" id="inspect-handle">@-</div>
+        <div class="profile-chips" id="inspect-chips"></div>
+        <div style="background:var(--surface2); border:1px solid var(--border); border-radius:var(--radius-sm); padding:14px; font-size:0.85rem; line-height:1.6; text-align:left; margin-bottom:10px; min-height:40px;" id="inspect-bio">-</div>
+        <div id="inspect-extra"></div>
         <div style="font-size:0.72rem; color:var(--text-3); margin-bottom:16px;" id="inspect-joined"></div>
         <button class="btn" style="width:100%;" onclick="closeModal('modal-user')">Close</button>
     </div>
@@ -709,6 +791,21 @@ function renderAuthUI() {
         document.getElementById("profile-name").textContent = myProfile?.displayName || me;
         document.getElementById("profile-handle").textContent = `@${me}`;
         document.getElementById("profile-bio").textContent = myProfile?.bio || "";
+
+        // Chips under bio
+        const chipMap = { "Beginner":"chip","Intermediate":"chip chip-fresh","Expert":"chip chip-yeah","Casual":"chip","Competitive":"chip chip-yeah","Speedrunner":"chip chip-fresh","Collector":"chip chip-green" };
+        const chipIcon = { "Beginner":"🌱","Intermediate":"⚔️","Expert":"🏆","Casual":"😌","Competitive":"🔥","Speedrunner":"⚡","Collector":"🗃️" };
+        const myChips = [myProfile?.experience, myProfile?.playStyle].filter(Boolean);
+        let chipsHtml = myChips.map(c => `<span class="${chipMap[c]||"chip"}">${chipIcon[c]||""} ${esc(c)}</span>`).join("");
+        if (myProfile?.friendCode) chipsHtml += `<span class="chip chip-green">🎮 ${esc(myProfile.friendCode)}</span>`;
+        let chipsEl = document.getElementById("profile-chips-sidebar");
+        if (!chipsEl) {
+            chipsEl = document.createElement("div");
+            chipsEl.id = "profile-chips-sidebar";
+            chipsEl.className = "profile-chips";
+            document.getElementById("profile-bio").after(chipsEl);
+        }
+        chipsEl.innerHTML = chipsHtml;
         document.getElementById("btn-profile-action").textContent = "Edit Profile";
         document.getElementById("btn-profile-action").onclick = openProfileEdit;
 
@@ -785,6 +882,12 @@ function openProfileEdit() {
     document.getElementById("edit-name").value = myProfile?.displayName || "";
     document.getElementById("edit-avatar").value = myProfile?.avatarUrl || "";
     document.getElementById("edit-bio").value = myProfile?.bio || "";
+    document.getElementById("edit-fc").value = myProfile?.friendCode || "";
+    document.getElementById("edit-fav-game").value = myProfile?.favGame || "";
+    document.getElementById("edit-timezone").value = myProfile?.timezone || "";
+    // Restore segmented selections
+    setSeg("edit-experience", null, myProfile?.experience || "");
+    setSeg("edit-playstyle", null, myProfile?.playStyle || "");
     document.getElementById("modal-profile").classList.remove("hidden");
 }
 
@@ -792,7 +895,18 @@ async function saveProfile() {
     const displayName = document.getElementById("edit-name").value.trim();
     const avatarUrl = document.getElementById("edit-avatar").value.trim();
     const bio = document.getElementById("edit-bio").value.trim();
-    const res = await api("/api/me/profile", { method: "POST", body: { displayName, avatarUrl, bio } });
+    const friendCode = document.getElementById("edit-fc").value.trim();
+    const favGame = document.getElementById("edit-fav-game").value.trim();
+    const experience = getSegVal("edit-experience");
+    const playStyle = getSegVal("edit-playstyle");
+    const timezone = document.getElementById("edit-timezone").value;
+
+    // Validate friend code format if provided
+    if (friendCode && !/^SW-\d{4}-\d{4}-\d{4}$/i.test(friendCode)) {
+        toast("Friend code must be SW-XXXX-XXXX-XXXX", "err"); return;
+    }
+
+    const res = await api("/api/me/profile", { method: "POST", body: { displayName, avatarUrl, bio, friendCode, favGame, experience, playStyle, timezone } });
     if (res.ok) {
         const d = await res.json();
         myProfile = d.profile;
@@ -973,6 +1087,50 @@ async function inspectUser(username) {
     document.getElementById("inspect-handle").textContent = `@${p.username}`;
     document.getElementById("inspect-bio").textContent = p.bio || "No bio.";
     document.getElementById("inspect-joined").textContent = p.joinedAt ? `Joined ${new Date(p.joinedAt).toLocaleDateString(undefined,{year:"numeric",month:"long",day:"numeric"})}` : "";
+
+    // Chips (experience + playstyle)
+    const chipMap = {
+        "Beginner": "chip", "Intermediate": "chip chip-fresh", "Expert": "chip chip-yeah",
+        "Casual": "chip", "Competitive": "chip chip-yeah", "Speedrunner": "chip chip-fresh", "Collector": "chip chip-green"
+    };
+    const chipIcon = {
+        "Beginner":"🌱","Intermediate":"⚔️","Expert":"🏆",
+        "Casual":"😌","Competitive":"🔥","Speedrunner":"⚡","Collector":"🗃️"
+    };
+    const chips = [p.experience, p.playStyle].filter(Boolean);
+    document.getElementById("inspect-chips").innerHTML = chips.map(c =>
+        `<span class="${chipMap[c]||"chip"}">${chipIcon[c]||""} ${esc(c)}</span>`
+    ).join("");
+
+    // Extra info fields
+    let extra = "";
+    if (p.friendCode) extra += `
+        <div class="inspect-field">
+            <span class="inspect-field-icon">🎮</span>
+            <div style="flex:1; text-align:left;">
+                <span class="inspect-field-label">Switch Friend Code</span>
+                <span class="inspect-field-val">${esc(p.friendCode)}</span>
+            </div>
+            <button class="fc-copy" onclick="copyFC('${esc(p.friendCode)}')" title="Copy">📋</button>
+        </div>`;
+    if (p.favGame) extra += `
+        <div class="inspect-field">
+            <span class="inspect-field-icon">⭐</span>
+            <div style="text-align:left;">
+                <span class="inspect-field-label">Favorite Game</span>
+                <span class="inspect-field-val">${esc(p.favGame)}</span>
+            </div>
+        </div>`;
+    if (p.timezone) extra += `
+        <div class="inspect-field">
+            <span class="inspect-field-icon">🕐</span>
+            <div style="text-align:left;">
+                <span class="inspect-field-label">Timezone</span>
+                <span class="inspect-field-val">${esc(p.timezone)}</span>
+            </div>
+        </div>`;
+    document.getElementById("inspect-extra").innerHTML = extra;
+
     document.getElementById("modal-user").classList.remove("hidden");
 }
 
@@ -1090,6 +1248,27 @@ function startHeartbeat() {
     setInterval(beat, 60000);
     setInterval(loadOnline, 30000);
     loadOnline();
+}
+
+// ── SEGMENTED CONTROLS ──────────────────────────────────
+function setSeg(groupId, clickedBtn, valueToSet) {
+    const group = document.getElementById(groupId);
+    if (!group) return;
+    group.querySelectorAll(".seg-btn").forEach(b => {
+        b.classList.remove("selected");
+        if (clickedBtn && b === clickedBtn) b.classList.add("selected");
+        if (valueToSet && b.dataset.val === valueToSet) b.classList.add("selected");
+    });
+}
+function getSegVal(groupId) {
+    const group = document.getElementById(groupId);
+    if (!group) return "";
+    const sel = group.querySelector(".seg-btn.selected");
+    return sel ? sel.dataset.val : "";
+}
+
+function copyFC(code) {
+    navigator.clipboard.writeText(code).then(() => toast("Friend code copied!", "ok")).catch(() => toast("Couldn't copy.", "err"));
 }
 
 // ── MODAL ───────────────────────────────────────────────
