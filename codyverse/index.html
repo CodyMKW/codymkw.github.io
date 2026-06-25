@@ -594,11 +594,16 @@ const API = "https://codyverse.codymkw.workers.dev";
 let me = null, myProfile = null, community = "general", postsCache = [], authMode = "login";
 
 // ── API ──────────────────────────────────────────────
+function getToken() { return localStorage.getItem("plaza_token"); }
+function saveToken(t) { if (t) localStorage.setItem("plaza_token", t); else localStorage.removeItem("plaza_token"); }
+
 async function api(path, opts = {}) {
-    opts.credentials = "include";
+    const token = getToken();
+    opts.headers = { ...opts.headers };
+    if (token) opts.headers["Authorization"] = `Bearer ${token}`;
     if (opts.body && typeof opts.body === "object") {
         opts.body = JSON.stringify(opts.body);
-        opts.headers = { ...opts.headers, "Content-Type": "application/json" };
+        opts.headers["Content-Type"] = "application/json";
     }
     return fetch(`${API}${path}`, opts);
 }
@@ -670,10 +675,15 @@ function toggleTheme() {
 
 // ── AUTH ───────────────────────────────────────────────
 async function boot() {
-    const res = await api("/api/me").catch(()=>null);
-    if (res?.ok) {
-        const d = await res.json();
-        me = d.username; myProfile = d.profile;
+    if (getToken()) {
+        const res = await api("/api/me").catch(()=>null);
+        if (res?.ok) {
+            const d = await res.json();
+            if (d.username) { me = d.username; myProfile = d.profile; }
+            else saveToken(null); // token expired/invalid, clear it
+        } else {
+            saveToken(null);
+        }
     }
     renderAuthUI();
     await loadChannels();
@@ -742,6 +752,7 @@ async function doAuth() {
     if (res.ok) {
         const d = await res.json();
         me = d.username; myProfile = d.profile;
+        saveToken(d.token);
         sfx("post"); toast(`Welcome, ${myProfile?.displayName || me}!`, "ok");
         closeModal("modal-auth");
         renderAuthUI();
@@ -757,6 +768,7 @@ async function doAuth() {
 async function doLogout() {
     await api("/api/logout", { method: "POST" });
     me = null; myProfile = null;
+    saveToken(null);
     sfx("switch");
     toast("Signed out.", "info");
     renderAuthUI();
