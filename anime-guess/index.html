@@ -434,6 +434,12 @@
                             <span id="quote-text-render">"..."</span>
                         </div>
 
+                        <!-- Anime Synopsis Metadata Box -->
+                        <div class="hints-panel" id="description-box" style="display: none; background: rgba(5, 8, 16, 0.6); border-color: rgba(96, 239, 255, 0.15);">
+                            <div class="score-lbl" style="color: var(--accent-cyan); margin-bottom: 6px;">Target Database Synopsis</div>
+                            <div id="anime-description-readout" style="font-size: 0.82rem; line-height: 1.4; color: var(--text-primary);"></div>
+                        </div>
+
                         <div class="audio-deck" id="audio-deck-track">
                             <button class="btn-audio-node" id="audio-playback-btn" onclick="toggleAudioStream()">▶</button>
                             <div class="audio-status-text" id="audio-status-readout">Audio Stream: Idle Buffers</div>
@@ -613,6 +619,12 @@ function injectNextRound() {
     killAudioPlayback();
     resetHintPanels();
 
+    // Hide and clear the description box for the new round
+    const descBox = document.getElementById('description-box');
+    const descReadout = document.getElementById('anime-description-readout');
+    if (descBox) descBox.style.display = 'none';
+    if (descReadout) descReadout.innerText = '';
+
     // Select Target
     const randIndex = Math.floor(Math.random() * gamePool.length);
     currentTarget = gamePool[randIndex];
@@ -655,7 +667,7 @@ function injectNextRound() {
         setupTagEliminationEngine();
     }
 
-    // Auto Buffers Theme Lookup Stream Preparation (Phase 4 Hook Ready)
+    // Auto Buffers Theme Lookup Stream Preparation
     document.getElementById('audio-status-readout').innerText = "Stream Track: Ready to Load";
 
     // Build Selection Nodes
@@ -775,7 +787,8 @@ function toggleAudioStream() {
     const titleStr = currentTarget.title.english || currentTarget.title.romaji;
     const readout = document.getElementById('audio-status-readout');
     const playBtn = document.getElementById('audio-playback-btn');
-    // DOM target for displaying the anime description
+    
+    const descBox = document.getElementById('description-box');
     const descReadout = document.getElementById('anime-description-readout'); 
     
     readout.innerText = "Querying Open Audio Infrastructure...";
@@ -788,12 +801,15 @@ function toggleAudioStream() {
     .then(data => {
         const topAnimeMatch = data?.search?.anime?.[0];
         
-        // Extract and render the synopsis description text
-        if (descReadout) {
-            descReadout.innerText = topAnimeMatch?.synopsis || "No description available.";
+        // Reveal the description card and insert the synopsis text
+        if (topAnimeMatch?.synopsis) {
+            if (descReadout) descReadout.innerHTML = topAnimeMatch.synopsis;
+            if (descBox) descBox.style.display = 'block';
+        } else {
+            if (descReadout) descReadout.innerText = "No description available in archive.";
+            if (descBox) descBox.style.display = 'block';
         }
         
-        // Track down the validated video link
         const videoLink = topAnimeMatch?.animethemes?.[0]?.animethemeentries?.[0]?.videos?.[0]?.link;
         
         if (videoLink) {
