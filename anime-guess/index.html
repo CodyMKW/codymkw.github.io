@@ -2,567 +2,749 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="data:,">
-
-    <!-- Social Media Embeds -->
-    <meta property="og:title" content="Infinite Anime Guessing Game">
-    <meta property="og:description" content="Test your anime knowledge against a dynamic, API-driven progressive trivia engine.">
-    <meta property="og:type" content="website">
-    <meta name="theme-color" content="#00FF66">
-
-    <title>Anime Guessing Game</title>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>CodyMKW // Anime Guessing Engine</title>
     <style>
         :root {
-            --bg-main: #060607;
-            --bg-card: #0D0E10;
-            --bg-input: #131417;
-            --border-color: #1F2126;
-            --text-main: #F4F5F6;
-            --text-muted: #82868F;
-            --accent-green: #00FF66;
-            --accent-red: #FF3333;
+            --bg-main: #060913;
+            --bg-card: rgba(10, 15, 30, 0.75);
+            --bg-card-hover: rgba(16, 24, 48, 0.85);
+            --border-line: rgba(255, 255, 255, 0.05);
+            --text-primary: #f0f4f8;
+            --text-muted: #7e8c9a;
+            --accent-green: #00ff87;
+            --accent-cyan: #60efff;
+            --accent-red: #ff4a5a;
+            --font-stack: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            --safe-bottom: env(safe-area-inset-bottom, 0px);
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             background-color: var(--bg-main);
-            color: var(--text-main);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            background-image:
+                radial-gradient(circle at 15% 15%, rgba(0, 255, 135, 0.07) 0%, transparent 45%),
+                radial-gradient(circle at 85% 85%, rgba(96, 239, 255, 0.06) 0%, transparent 45%),
+                linear-gradient(to bottom, #060913, #02040a);
+            background-attachment: fixed;
+            color: var(--text-primary);
+            font-family: var(--font-stack);
             min-height: 100vh;
-            padding: 40px 24px;
+            overflow-x: hidden;
+            padding-bottom: var(--safe-bottom);
         }
 
-        .container {
+        .page-wrap {
             width: 100%;
-            max-width: 720px;
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
         }
 
-        .game-header {
-            background-color: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            padding: 24px 32px;
+        header {
+            margin-bottom: 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 12px 24px rgba(0,0,0,0.5);
         }
 
-        .brand h1 {
-            font-size: 20px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
+        header h1 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(to right, #fff 40%, var(--text-muted));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        .brand span {
-            font-size: 12px;
-            color: var(--accent-green);
+
+        .back-link {
+            color: var(--accent-cyan);
+            text-decoration: none;
+            font-size: 0.85rem;
             font-weight: 600;
+        }
+
+        .game-grid {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 24px;
+            align-items: start;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--bg-card);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid var(--border-line);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 16px 48px rgba(0,0,0,0.35);
+        }
+
+        /* Config Panel */
+        .panel-flex {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .input-group label {
+            font-size: 0.72rem;
+            color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 1px;
+            font-weight: 700;
         }
 
-        .scoreboard {
+        .input-field {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--border-line);
+            border-radius: 10px;
+            padding: 10px 12px;
+            color: #fff;
+            font-family: inherit;
+            font-size: 0.88rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .input-field:focus {
+            border-color: var(--accent-cyan);
+        }
+
+        /* Mode Selection Buttons */
+        .radio-tabs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            background: rgba(0,0,0,0.2);
+            padding: 4px;
+            border-radius: 10px;
+            border: 1px solid var(--border-line);
+        }
+
+        .radio-tab {
+            padding: 8px;
+            text-align: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-radius: 7px;
+            transition: all 0.2s;
+        }
+
+        .radio-tab.active {
+            background: rgba(255,255,255,0.05);
+            color: #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .btn-action {
+            background: linear-gradient(90deg, var(--accent-green), var(--accent-cyan));
+            color: #04060c;
+            border: none;
+            border-radius: 10px;
+            padding: 12px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            text-align: center;
+            transition: transform 0.15s;
+        }
+
+        .btn-action:active { transform: scale(0.98); }
+
+        /* Stats Track */
+        .stats-row {
             display: flex;
+            justify-content: space-between;
+            font-size: 0.82rem;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border-line);
+        }
+        .stats-row:last-child { border: none; }
+        .stats-val { font-family: monospace; color: var(--accent-cyan); font-weight: 700; }
+
+        /* Main Stage Layout */
+        .stage {
+            display: flex;
+            flex-direction: column;
             gap: 20px;
         }
 
-        .score-box {
-            text-align: right;
-        }
-
-        .score-label {
-            font-size: 11px;
-            text-transform: uppercase;
-            color: var(--text-muted);
-            letter-spacing: 1px;
-            font-weight: 700;
-        }
-
-        .score-value {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--text-main);
-        }
-
-        .game-card {
-            background-color: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 24px;
-            padding: 36px;
-            box-shadow: 0 24px 48px rgba(0, 0, 0, 0.7);
+        /* Scoreboard Bar */
+        .scoreboard {
             display: flex;
-            flex-direction: column;
-            gap: 24px;
-            position: relative;
-        }
-
-        /* Loading Overlay Overlay */
-        .loader-screen {
-            display: flex;
-            flex-direction: column;
+            justify-content: space-between;
             align-items: center;
-            justify-content: center;
-            gap: 16px;
-            padding: 60px 0;
+            background: rgba(5,8,16,0.4);
+            border: 1px solid var(--border-line);
+            padding: 14px 20px;
+            border-radius: 16px;
         }
 
-        .spinner {
-            width: 40px;
-            height: 40px;
-            border: 4px solid var(--bg-input);
-            border-top: 4px solid var(--accent-green);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
+        .score-block {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
         }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .score-lbl { font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+        .score-val { font-size: 1.2rem; font-family: monospace; font-weight: 800; color: #fff; }
+        .score-val.streak { color: var(--accent-green); }
+
+        /* Timer Bar */
+        .timer-container {
+            width: 100%;
+            height: 4px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 2px;
+            overflow: hidden;
+            display: none;
         }
 
-        .clue-layout {
+        .timer-bar {
+            width: 100%;
+            height: 100%;
+            background: var(--accent-cyan);
+            transition: width 0.1s linear;
+        }
+
+        /* Question Viewer Card */
+        .viewer {
             display: grid;
-            grid-template-columns: 180px 1fr;
-            gap: 28px;
+            grid-template-columns: 200px 1fr;
+            gap: 20px;
         }
 
-        @media (max-width: 580px) {
-            .clue-layout {
-                grid-template-columns: 1fr;
-                justify-items: center;
-            }
-        }
-
-        .poster-frame {
-            width: 180px;
-            height: 260px;
-            background-color: var(--bg-input);
-            border: 1px solid var(--border-color);
+        .artwork-frame {
+            width: 200px;
+            height: 280px;
+            background: #111625;
             border-radius: 14px;
+            border: 1px solid rgba(255,255,255,0.06);
+            box-shadow: inset 0 4px 12px rgba(0,0,0,0.5);
             overflow: hidden;
             position: relative;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.4);
         }
 
-        .poster-img {
+        .artwork-frame img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: filter 0.4s ease;
+            transition: filter 0.3s ease;
         }
 
-        .clue-details {
+        /* The Pure Silhouette CSS Vector Transform Filter */
+        .artwork-frame img.silhouette {
+            filter: brightness(0) contrast(2);
+        }
+
+        .interaction-box {
             display: flex;
             flex-direction: column;
-            gap: 14px;
-            justify-content: center;
+            gap: 16px;
+            justify-content: space-between;
         }
 
-        .meta-tags {
+        /* Hints Engine Track */
+        .hints-panel {
+            background: rgba(0,0,0,0.2);
+            border: 1px solid var(--border-line);
+            border-radius: 12px;
+            padding: 14px;
             display: flex;
-            flex-wrap: wrap;
+            flex-direction: column;
             gap: 8px;
         }
 
-        .tag {
-            background-color: var(--bg-input);
-            border: 1px solid var(--border-color);
-            padding: 6px 12px;
-            border-radius: 8px;
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--text-muted);
-        }
-
-        .tag.year-tag {
-            color: var(--accent-green);
-            border-color: rgba(0, 255, 102, 0.2);
-        }
-
-        .synopsis-box {
-            background-color: var(--bg-input);
-            border-left: 3px solid var(--border-color);
-            padding: 16px;
-            border-radius: 0 12px 12px 0;
-            font-size: 14px;
-            line-height: 1.6;
-            color: #d1d5db;
-            max-height: 180px;
-            overflow-y: auto;
-        }
-
-        .redacted {
-            background-color: #374151;
-            color: #374151;
-            border-radius: 4px;
-            padding: 0 4px;
-            user-select: none;
-        }
-
-        .hint-action-row {
+        .hint-item {
+            font-size: 0.85rem;
             display: flex;
-            justify-content: flex-end;
+            align-items: center;
+            gap: 8px;
         }
 
         .btn-hint {
-            background: transparent;
-            border: none;
-            color: var(--text-muted);
-            font-size: 12px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border-line);
+            color: var(--text-primary);
+            font-size: 0.72rem;
             font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 6px;
             cursor: pointer;
-            text-decoration: underline;
         }
 
-        .btn-hint:hover {
-            color: var(--text-main);
-        }
+        .btn-hint:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.15); }
 
-        .options-grid {
+        /* Multiple Choice Grid */
+        .choices-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 14px;
+            grid-template-columns: 1fr;
+            gap: 10px;
         }
 
-        @media (max-width: 480px) {
-            .options-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .btn-option {
-            background-color: var(--bg-input);
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            padding: 16px 20px;
+        .btn-choice {
+            background: rgba(5,8,16,0.4);
+            border: 1px solid var(--border-line);
             border-radius: 12px;
-            font-size: 14px;
-            font-weight: 600;
+            padding: 14px;
+            color: #fff;
             text-align: left;
+            font-size: 0.9rem;
+            font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.2s;
         }
 
-        .btn-option:hover:not(:disabled) {
-            background-color: #1c1e24;
-            border-color: #31353f;
-            transform: translateY(-1px);
+        .btn-choice:hover:not(:disabled) {
+            background: var(--bg-card-hover);
+            border-color: rgba(255,255,255,0.15);
+            transform: translateX(2px);
         }
 
-        .btn-option:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-        }
-
-        /* Context Answer Feedback Rules */
-        .btn-option.correct {
-            background-color: rgba(0, 255, 102, 0.15) !important;
+        .btn-choice.correct {
+            background: rgba(0, 255, 135, 0.15) !important;
             border-color: var(--accent-green) !important;
-            color: var(--accent-green) !important;
+            color: var(--accent-green);
         }
 
-        .btn-option.wrong {
-            background-color: rgba(255, 51, 51, 0.15) !important;
+        .btn-choice.wrong {
+            background: rgba(255, 74, 90, 0.15) !important;
             border-color: var(--accent-red) !important;
-            color: var(--accent-red) !important;
+            color: var(--accent-red);
         }
 
-        .feedback-tray {
-            display: none;
-            text-align: center;
-            padding: 12px 0;
-            border-top: 1px solid var(--border-color);
-            animation: fadeIn 0.3s ease forwards;
-        }
-
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        .feedback-text {
-            font-size: 16px;
-            font-weight: 700;
-            margin-bottom: 14px;
-        }
-
-        .btn-next {
-            background-color: var(--accent-green);
-            color: #000;
-            border: none;
-            padding: 14px 28px;
-            font-size: 14px;
-            font-weight: 700;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: transform 0.1s ease;
-        }
-
-        .btn-next:hover {
-            transform: scale(1.02);
-        }
-
-        footer {
-            text-align: center;
-            font-size: 12px;
-            color: var(--text-muted);
-            margin-top: 12px;
+        /* Responsive Mobile Layout Override */
+        @media (max-width: 768px) {
+            .game-grid { grid-template-columns: 1fr; gap: 20px; }
+            .viewer { grid-template-columns: 1fr; }
+            .artwork-frame { width: 100%; height: 220px; }
         }
     </style>
 </head>
 <body>
+<div class="page-wrap">
 
-    <div class="container">
-        <!-- Game Stats Dash Widget -->
-        <div class="game-header">
-            <div class="brand">
-                <h1>Anime Guesser</h1>
-                <span>Trivia Module</span>
+    <header>
+        <h1>CodyMKW // Anime Guessing Engine</h1>
+        <a href="/" class="back-link">← Return Hub</a>
+    </header>
+
+    <div class="game-grid">
+        
+        <!-- Left Panel: Engine Adjustments & Stats Profile -->
+        <div class="panel-flex">
+            <div class="card">
+                <div class="panel-flex">
+                    <div class="input-group">
+                        <label>AniList Target Profile</label>
+                        <input type="text" id="user-input" class="input-field" placeholder="Blank for Global Top Pool">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Game Engine Mode</label>
+                        <div class="radio-tabs">
+                            <div class="radio-tab active" id="mode-classic" onclick="setMode('classic')">Classic</div>
+                            <div class="radio-tab" id="mode-time" onclick="setMode('time')">Time Attack</div>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Display Rules</label>
+                        <button class="btn-action" style="background: rgba(255,255,255,0.03); color:#fff; border: 1px solid var(--border-line);" id="silhouette-toggle" onclick="toggleSilhouetteStyle()">Silhouette: ON</button>
+                    </div>
+
+                    <button class="btn-action" onclick="initializeGamePool()">Engage Pool</button>
+                </div>
             </div>
+
+            <div class="card">
+                <div class="input-group" style="margin-bottom: 10px;">
+                    <label>Terminal Record Log</label>
+                </div>
+                <div class="stats-row"><span>Highest Streak</span><span class="stats-val" id="stat-streak">0</span></div>
+                <div class="stats-row"><span>Total Correct</span><span class="stats-val" id="stat-correct">0</span></div>
+                <div class="stats-row"><span>Total Attempts</span><span class="stats-val" id="stat-total">0</span></div>
+            </div>
+        </div>
+
+        <!-- Right Panel: Main Stage Target Execution -->
+        <div class="stage">
             <div class="scoreboard">
-                <div class="score-box">
-                    <div class="score-label">Score</div>
-                    <div class="score-value" id="currentScore">0</div>
+                <div class="score-block">
+                    <div class="score-lbl">Score Vector</div>
+                    <div class="score-val" id="score-display">0000</div>
                 </div>
-                <div class="score-box">
-                    <div class="score-label">Streak</div>
-                    <div class="score-value" id="currentStreak">0</div>
+                <div class="score-block" style="text-align: center;">
+                    <div class="score-lbl">Multiplier</div>
+                    <div class="score-val" id="multiplier-display">x1.0</div>
+                </div>
+                <div class="score-block" style="text-align: right;">
+                    <div class="score-lbl">Current Streak</div>
+                    <div class="score-val streak" id="streak-display">0</div>
+                </div>
+            </div>
+
+            <div class="timer-container" id="timer-track">
+                <div class="timer-bar" id="timer-fill"></div>
+            </div>
+
+            <div class="card">
+                <div class="viewer">
+                    <div class="artwork-frame">
+                        <img src="" alt="Target Frame" id="target-art" class="silhouette">
+                    </div>
+                    
+                    <div class="interaction-box">
+                        <div class="hints-panel">
+                            <div class="score-lbl" style="margin-bottom: 4px;">Data Buffers</div>
+                            <div class="hint-item" id="hint-year-box">
+                                <button class="btn-hint" onclick="revealHint('year')">Unlock Timeline</button>
+                                <span style="display:none;" id="hint-year-val"></span>
+                            </div>
+                            <div class="hint-item" id="hint-studio-box">
+                                <button class="btn-hint" onclick="revealHint('studio')">Unlock Studio Architecture</button>
+                                <span style="display:none;" id="hint-studio-val"></span>
+                            </div>
+                            <div class="hint-item" id="hint-genres-box">
+                                <button class="btn-hint" onclick="revealHint('genres')">Unlock Semantic Tags</button>
+                                <span style="display:none;" id="hint-genres-val"></span>
+                            </div>
+                        </div>
+
+                        <div class="choices-grid" id="choices-box">
+                            <!-- Injected Choice Nodes -->
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Main Card Workspace -->
-        <div class="game-card" id="mainGameCard">
-            <!-- Loader Screen Container -->
-            <div class="loader-screen" id="loader">
-                <div class="spinner"></div>
-                <p style="color: var(--text-muted); font-size: 14px; font-weight: 500;">Caching Pop Anime Registry...</p>
-            </div>
-
-            <!-- Main Play Arena (Populated via Script) -->
-            <div id="gamePlayArena" style="display: none; flex-direction: column; gap: 24px;">
-                <div class="clue-layout">
-                    <div class="poster-frame">
-                        <img id="poster" class="poster-img" src="" alt="Anime Clue Frame">
-                    </div>
-                    <div class="clue-details">
-                        <div class="meta-tags" id="metaTagsContainer">
-                            <!-- Injected programmatically -->
-                        </div>
-                        <div class="synopsis-box" id="synopsis">
-                            <!-- Injected programmatically -->
-                        </div>
-                        <div class="hint-action-row">
-                            <button class="btn-hint" id="hintBtn" onclick="useHint()">Reveal Poster Hint</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Input Selection Panel Grid -->
-                <div class="options-grid" id="optionsGrid">
-                    <!-- Choice nodes appended here -->
-                </div>
-
-                <!-- Next Phase Advance Control Anchor -->
-                <div class="feedback-tray" id="feedbackTray">
-                    <div class="feedback-text" id="feedbackMessage">Correct! Out of absolute nowhere!</div>
-                    <button class="btn-next" onclick="generateRound()">Advance Next Round</button>
-                </div>
-            </div>
-        </div>
-
-        <footer>
-            <p>&copy; 2026 CodyMKW &bull; Content pulled dynamically from public index pipelines</p>
-        </footer>
     </div>
+</div>
 
-    <script>
-        // High fidelity failsafe index arrays to ensure game robustness if API triggers 429s
-        const fallbackAnimePool = [
-            { title: "My Hero Academia", title_english: "My Hero Academia", synopsis: "In a world where superpowers called Quirks are common, Izuku Midoriya dreams of becoming a Hero despite being born without one. After a fateful encounter with the legendary All Might, he inherits a grand power.", genres: [{name: "Action"}, {name: "Sci-Fi"}], year: 2016, images: {jpg: {image_url: "https://cdn.myanimelist.net/images/anime/10/78745.jpg"}} },
-            { title: "Dr. Stone", title_english: "Dr. Stone", synopsis: "Several thousand years after a mysterious phenomenon turns all of humanity to stone, the extraordinarily intelligent, science-driven boy, Senku Ishigami, awakens. Facing a stone world, he resolves to rebuild civilization.", genres: [{name: "Adventure"}, {name: "Sci-Fi"}], year: 2019, images: {jpg: {image_url: "https://cdn.myanimelist.net/images/anime/1613/102577.jpg"}} },
-            { title: "Soul Eater", title_english: "Soul Eater", synopsis: "Maka is a Meister and Soul is her Weapon. Along with other students at Death Weapon Meister Academy, they turn human souls into Death Scythes to protect the world from evil forces.", genres: [{name: "Action"}, {name: "Fantasy"}], year: 2008, images: {jpg: {image_url: "https://cdn.myanimelist.net/images/anime/1188/141977.jpg"}} },
-            { title: "Attack on Titan", title_english: "Attack on Titan", synopsis: "Humanity is forced to live inside cities surrounded by enormous walls due to the Titans, gigantic humanoid creatures who devour humans seemingly without reason.", genres: [{name: "Action"}, {name: "Drama"}], year: 2013, images: {jpg: {image_url: "https://cdn.myanimelist.net/images/anime/10/47347.jpg"}} },
-            { title: "Death Note", title_english: "Death Note", synopsis: "A high school student discovers a supernatural notebook that grants him the ability to kill anyone by writing their name while picturing their face.", genres: [{name: "Suspense"}, {name: "Psychological"}], year: 2006, images: {jpg: {image_url: "https://cdn.myanimelist.net/images/anime/9/9453.jpg"}} },
-            { title: "Fullmetal Alchemist: Brotherhood", title_english: "Fullmetal Alchemist: Brotherhood", synopsis: "Two brothers receive scars both physical and mental after a failed alchemy ritual to revive their deceased mother. They search for the Philosopher's Stone to restore their bodies.", genres: [{name: "Action"}, {name: "Fantasy"}], year: 2009, images: {jpg: {image_url: "https://cdn.myanimelist.net/images/anime/1223/96541.jpg"}} }
-        ];
+<script>
+// ─── Core State Engine Configuration ─────────────────────────────────────────
+let gamePool = [];
+let currentTarget = null;
+let score = 0;
+let currentStreak = 0;
+let multiplier = 1.0;
+let gameMode = 'classic'; // 'classic' or 'time'
+let silhouetteEnabled = true;
 
-        let animePool = [];
-        let currentRoundTarget = null;
-        let currentBlurValue = 24;
-        let gameScore = 0;
-        let gameStreak = 0;
+// Time Attack Loop Scalars
+let timerInterval = null;
+let maxTime = 20; // Seconds per matrix execution
+let timeLeft = maxTime;
 
-        // Core dynamic asynchronous population call loop
-        async function fetchAnimeRegistry() {
-            try {
-                // Fetch top popular anime (Page 1 and Page 2 handles high-volume recognizable shows)
-                const resPage1 = await fetch('https://api.jikan.moe/v4/top/anime?filter=bypopularity&page=1');
-                const data1 = await resPage1.json();
-                
-                // Buffer out execution slightly to respect API call windows smoothly
-                await new Promise(r => setTimeout(r, 400));
-                
-                const resPage2 = await fetch('https://api.jikan.moe/v4/top/anime?filter=bypopularity&page=2');
-                const data2 = await resPage2.json();
+// Local Archive Records
+let records = {
+    highestStreak: 0,
+    totalCorrect: 0,
+    totalAttempts: 0
+};
 
-                let combined = [...(data1.data || []), ...(data2.data || [])];
-                
-                // Cleanup models to keep tracking metadata clean
-                animePool = combined.filter(item => item.synopsis && item.title);
-                
-                if(animePool.length < 10) { throw new Error("API return empty arrays"); }
-            } catch (err) {
-                console.warn("Jikan API rate window limits reached or network drop. Engaging internal fallback catalog assets.", err);
-                animePool = [...fallbackAnimePool];
-            } finally {
-                document.getElementById('loader').style.display = 'none';
-                document.getElementById('gamePlayArena').style.display = 'flex';
-                generateRound();
-            }
+// ─── GraphQL Queries ────────────────────────────────────────────────────────
+const GLOBAL_POPULAR_QUERY = `
+query {
+  Page(page: 1, perPage: 80) {
+    media(type: ANIME, sort: POPULARITY_DESC) {
+      id title { english romaji } coverImage { extraLarge } startDate { year } studios(isMain: true) { nodes { name } } genres
+    }
+  }
+}`;
+
+const USER_COMPLETED_QUERY = `
+query ($username: String) {
+  MediaListCollection(userName: $username, type: ANIME, status: COMPLETED) {
+    lists {
+      entries {
+        media {
+          id title { english romaji } coverImage { extraLarge } startDate { year } studios(isMain: true) { nodes { name } } genres
         }
+      }
+    }
+  }
+}`;
 
-        // Programmatic character script text string filter masks
-        function redactTextBody(synopsisText, targetTitle, englishTitle) {
-            if (!synopsisText) return "";
-            let clean = synopsisText;
-            
-            const titlesToRedact = [targetTitle, englishTitle].filter(Boolean);
-            
-            // Break down complex sub-phrases within long names to avoid simple giveaways
-            titlesToRedact.forEach(t => {
-                const words = t.split(/\s+/).filter(w => w.length > 2);
-                words.forEach(word => {
-                    const cleanWord = word.replace(/[^a-zA-Z0-9]/g, "");
-                    if(cleanWord.length > 2) {
-                        const regex = new RegExp(cleanWord, 'gi');
-                        clean = clean.replace(regex, "█████");
-                    }
-                });
+// ─── Initialization Engine ───────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+    loadLocalRecords();
+    initializeGamePool();
+});
+
+function loadLocalRecords() {
+    const saved = localStorage.getItem('cody_anime_guess_records');
+    if (saved) {
+        records = JSON.parse(saved);
+        updateRecordsUI();
+    }
+}
+
+function updateRecordsUI() {
+    document.getElementById('stat-streak').innerText = records.highestStreak;
+    document.getElementById('stat-correct').innerText = records.totalCorrect;
+    document.getElementById('stat-total').innerText = records.totalAttempts;
+}
+
+function setMode(mode) {
+    gameMode = mode;
+    document.getElementById('mode-classic').classList.toggle('active', mode === 'classic');
+    document.getElementById('mode-time').classList.toggle('active', mode === 'time');
+    document.getElementById('timer-track').style.display = (mode === 'time') ? 'block' : 'none';
+    resetState();
+}
+
+function toggleSilhouetteStyle() {
+    silhouetteEnabled = !silhouetteEnabled;
+    const btn = document.getElementById('silhouette-toggle');
+    const img = document.getElementById('target-art');
+    
+    if (silhouetteEnabled) {
+        btn.innerText = "Silhouette: ON";
+        img.classList.add('silhouette');
+    } else {
+        btn.innerText = "Silhouette: OFF";
+        img.classList.remove('silhouette');
+    }
+}
+
+function resetState() {
+    score = 0;
+    currentStreak = 0;
+    multiplier = 1.0;
+    clearInterval(timerInterval);
+    updateScoreboardUI();
+}
+
+// ─── Pool Acquisition ────────────────────────────────────────────────────────
+function initializeGamePool() {
+    const username = document.getElementById('user-input').value.trim();
+    const isCustomUser = username.length > 0;
+    
+    const endpoint = 'https://graphql.anilist.co';
+    const bodyConfig = isCustomUser 
+        ? { query: USER_COMPLETED_QUERY, variables: { username } }
+        : { query: GLOBAL_POPULAR_QUERY };
+
+    fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(bodyConfig)
+    })
+    .then(res => res.json())
+    .then(payload => {
+        if (isCustomUser) {
+            const rawLists = payload?.data?.MediaListCollection?.lists;
+            if (!rawLists || rawLists.length === 0) throw new Error("Empty user pool array context");
+            gamePool = [];
+            rawLists.forEach(list => {
+                list.entries.forEach(entry => { if (entry.media) gamePool.push(entry.media); });
             });
-            return clean;
+        } else {
+            gamePool = payload?.data?.Page?.media || [];
         }
 
-        function useHint() {
-            currentBlurValue = Math.max(0, currentBlurValue - 8);
-            document.getElementById('poster').style.filter = `blur(${currentBlurValue}px) brightness(0.7)`;
-            document.getElementById('hintBtn').disabled = currentBlurValue === 0;
+        if (gamePool.length < 4) {
+            alert("Pool execution limits compromised. Ensure target user has adequate completed items.");
+            return;
         }
+        
+        resetState();
+        injectNextRound();
+    })
+    .catch(err => {
+        console.error(err);
+        alert("GraphQL handshake failed. Reverting baseline operations.");
+    });
+}
 
-        function generateRound() {
-            // Reset interface state variables
-            currentBlurValue = 24;
-            document.getElementById('feedbackTray').style.display = 'none';
-            document.getElementById('hintBtn').disabled = false;
-            
-            const poster = document.getElementById('poster');
-            poster.style.filter = `blur(${currentBlurValue}px) brightness(0.6)`;
+// ─── Round Processing & Generation ───────────────────────────────────────────
+function injectNextRound() {
+    if (gamePool.length < 4) return;
+    
+    // Clear dynamic hint nodes
+    resetHintPanels();
 
-            // Select random answer asset target node
-            const randomIndex = Math.floor(Math.random() * animePool.length);
-            currentRoundTarget = animePool[randomIndex];
+    // Select random correct answer
+    const randIndex = Math.floor(Math.random() * gamePool.length);
+    currentTarget = gamePool[randIndex];
 
-            // Render contextual visuals
-            poster.src = currentRoundTarget.images.jpg.image_url;
-
-            // Process text blocks securely
-            const cleanSynopsis = redactTextBody(
-                currentRoundTarget.synopsis, 
-                currentRoundTarget.title, 
-                currentRoundTarget.title_english
-            );
-            document.getElementById('synopsis').innerHTML = cleanSynopsis;
-
-            // Reset and build meta-tags array rows
-            const metaContainer = document.getElementById('metaTagsContainer');
-            metaContainer.innerHTML = '';
-            
-            if(currentRoundTarget.year) {
-                const yearTag = document.createElement('span');
-                yearTag.className = 'tag year-tag';
-                yearTag.innerText = currentRoundTarget.year;
-                metaContainer.appendChild(yearTag);
-            }
-
-            if(currentRoundTarget.genres) {
-                currentRoundTarget.genres.slice(0, 3).forEach(g => {
-                    const genreTag = document.createElement('span');
-                    genreTag.className = 'tag';
-                    genreTag.innerText = g.name;
-                    metaContainer.appendChild(genreTag);
-                });
-            }
-
-            // Build out multi-option grid targets array
-            let choices = [currentRoundTarget];
-            while(choices.length < 4) {
-                const dummy = animePool[Math.floor(Math.random() * animePool.length)];
-                if(!choices.some(c => c.title === dummy.title)) {
-                    choices.push(dummy);
-                }
-            }
-
-            // Shuffle array choices sequence
-            choices.sort(() => Math.random() - 0.5);
-
-            // Rebuild selection button layout tracks
-            const grid = document.getElementById('optionsGrid');
-            grid.innerHTML = '';
-
-            choices.forEach(choice => {
-                const btn = document.createElement('button');
-                btn.className = 'btn-option';
-                btn.innerText = choice.title_english || choice.title;
-                btn.onclick = () => verifyUserGuess(btn, choice.title === currentRoundTarget.title);
-                grid.appendChild(btn);
-            });
+    // Build unique multi-choice configuration
+    let selections = [currentTarget];
+    while (selections.length < 4) {
+        const fallbackChoice = gamePool[Math.floor(Math.random() * gamePool.length)];
+        if (!selections.some(item => item.id === fallbackChoice.id)) {
+            selections.push(fallbackChoice);
         }
+    }
 
-        function verifyUserGuess(selectedBtn, isCorrect) {
-            const allOptions = document.querySelectorAll('.btn-option');
-            
-            if(isCorrect) {
-                selectedBtn.classList.add('correct');
-                document.getElementById('poster').style.filter = 'blur(0px) brightness(1)';
-                
-                gameScore += 10;
-                gameStreak += 1;
-                
-                document.getElementById('currentScore').innerText = gameScore;
-                document.getElementById('currentStreak').innerText = gameStreak;
-                
-                document.getElementById('feedbackMessage').innerText = "Correct! Spot on analysis.";
-                document.getElementById('feedbackMessage').style.color = "var(--accent-green)";
-                
-                // Freeze alternatives track options
-                allOptions.forEach(btn => btn.disabled = true);
-                document.getElementById('feedbackTray').style.display = 'block';
-                document.getElementById('hintBtn').disabled = true;
-            } else {
-                selectedBtn.classList.add('wrong');
-                selectedBtn.disabled = true;
-                
-                // Break streak metrics
-                gameStreak = 0;
-                document.getElementById('currentStreak').innerText = gameStreak;
+    // Shuffle variants Array array
+    selections.sort(() => Math.random() - 0.5);
 
-                // Provide secondary relief by unblurring frame incrementally per wrong strike
-                useHint();
-            }
+    // Render UI structures
+    const artNode = document.getElementById('target-art');
+    artNode.src = currentTarget.coverImage.extraLarge;
+    if (silhouetteEnabled) artNode.classList.add('silhouette');
+
+    const choiceBox = document.getElementById('choices-box');
+    choiceBox.innerHTML = '';
+
+    selections.forEach(choice => {
+        const btn = document.createElement('button');
+        btn.className = 'btn-choice';
+        btn.innerText = choice.title.english || choice.title.romaji;
+        btn.onclick = () => evaluationExecution(choice.id, btn);
+        choiceBox.appendChild(btn);
+    });
+
+    if (gameMode === 'time') {
+        initiateTimeAttackCountdown();
+    }
+}
+
+// ─── Hint Logic Module ───────────────────────────────────────────────────────
+function resetHintPanels() {
+    document.getElementById('hint-year-box').querySelector('button').style.display = 'inline-block';
+    document.getElementById('hint-year-val').style.display = 'none';
+    document.getElementById('hint-studio-box').querySelector('button').style.display = 'inline-block';
+    document.getElementById('hint-studio-val').style.display = 'none';
+    document.getElementById('hint-genres-box').querySelector('button').style.display = 'inline-block';
+    document.getElementById('hint-genres-val').style.display = 'none';
+}
+
+function revealHint(type) {
+    if (!currentTarget) return;
+
+    // Apply minor multiplier penalty for unlocking a dynamic buffer link
+    multiplier = Math.max(1.0, multiplier - 0.2);
+    updateScoreboardUI();
+
+    if (type === 'year') {
+        const display = document.getElementById('hint-year-val');
+        display.innerText = `Released: ${currentTarget.startDate?.year || 'Unknown'}`;
+        display.style.display = 'inline';
+        document.getElementById('hint-year-box').querySelector('button').style.display = 'none';
+    } else if (type === 'studio') {
+        const display = document.getElementById('hint-studio-val');
+        const studioName = currentTarget.studios?.nodes?.[0]?.name || 'Independent/Unknown';
+        display.innerText = `Studio: ${studioName}`;
+        display.style.display = 'inline';
+        document.getElementById('hint-studio-box').querySelector('button').style.display = 'none';
+    } else if (type === 'genres') {
+        const display = document.getElementById('hint-genres-val');
+        const labels = currentTarget.genres ? currentTarget.genres.slice(0, 3).join(', ') : 'None';
+        display.innerText = `Tags: ${labels}`;
+        display.style.display = 'inline';
+        document.getElementById('hint-genres-box').querySelector('button').style.display = 'none';
+    }
+}
+
+// ─── Time Attack Countdown Tracker ──────────────────────────────────────────
+function initiateTimeAttackCountdown() {
+    clearInterval(timerInterval);
+    timeLeft = maxTime;
+    const bar = document.getElementById('timer-fill');
+    bar.style.width = '100%';
+
+    timerInterval = setInterval(() => {
+        timeLeft -= 0.1;
+        const pct = (timeLeft / maxTime) * 100;
+        bar.style.width = `${pct}%`;
+
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            handleRoundFailure();
         }
+    }, 100);
+}
 
-        // Initialize game mechanics pipeline on page display state entry
-        window.addEventListener('DOMContentLoaded', fetchAnimeRegistry);
-    </script>
+// ─── Scoring and Verification Engine ─────────────────────────────────────────
+function evaluationExecution(selectedId, buttonNode) {
+    clearInterval(timerInterval);
+    
+    // Disable alternative inputs
+    const alternatives = document.querySelectorAll('.btn-choice');
+    alternatives.forEach(btn => btn.disabled = true);
+
+    // Strip silhouette mask context visually on select
+    document.getElementById('target-art').classList.remove('silhouette');
+
+    records.totalAttempts++;
+
+    if (selectedId === currentTarget.id) {
+        buttonNode.classList.add('correct');
+        currentStreak++;
+        records.totalCorrect++;
+        
+        // Compute dynamically updated scoring factors
+        const addedBase = gameMode === 'time' ? Math.round(timeLeft * 10) : 100;
+        score += Math.round(addedBase * multiplier);
+        
+        // Multiplier progression tracker
+        multiplier = parseFloat((multiplier + 0.1).toFixed(1));
+        
+        if (currentStreak > records.highestStreak) {
+            records.highestStreak = currentStreak;
+        }
+    } else {
+        buttonNode.classList.add('wrong');
+        highlightCorrectOption();
+        currentStreak = 0;
+        multiplier = 1.0;
+    }
+
+    localStorage.setItem('cody_anime_guess_records', JSON.stringify(records));
+    updateScoreboardUI();
+    updateRecordsUI();
+
+    setTimeout(injectNextRound, 1800);
+}
+
+function handleRoundFailure() {
+    const alternatives = document.querySelectorAll('.btn-choice');
+    alternatives.forEach(btn => btn.disabled = true);
+    document.getElementById('target-art').classList.remove('silhouette');
+
+    records.totalAttempts++;
+    currentStreak = 0;
+    multiplier = 1.0;
+
+    highlightCorrectOption();
+
+    localStorage.setItem('cody_anime_guess_records', JSON.stringify(records));
+    updateScoreboardUI();
+    updateRecordsUI();
+
+    setTimeout(injectNextRound, 1800);
+}
+
+function highlightCorrectOption() {
+    const alternatives = document.querySelectorAll('.btn-choice');
+    alternatives.forEach(btn => {
+        // Fallback title checks matching array generation patterns
+        const correctTitle = currentTarget.title.english || currentTarget.title.romaji;
+        if (btn.innerText === correctTitle) {
+            btn.classList.add('correct');
+        }
+    });
+}
+
+function updateScoreboardUI() {
+    document.getElementById('score-display').innerText = String(score).padStart(4, '0');
+    document.getElementById('streak-display').innerText = currentStreak;
+    document.getElementById('multiplier-display').innerText = `x${multiplier.toFixed(1)}`;
+}
+</script>
 </body>
 </html>
