@@ -507,6 +507,11 @@
                 <div class="faq-question">Why does the first video take a moment to start?</div>
                 <div class="faq-answer">The very first time you click "Merge", the page has to boot up the video processing engine inside a separate background worker thread. Once that engine is warmed up and sitting in memory, any other videos you process in the same session will start moving immediately.</div>
             </div>
+
+            <div class="faq-item">
+                <div class="faq-question">How does the "Bypass Discord Nitro Limit" option work?</div>
+                <div class="faq-answer">When you turn this on, the tool checks the total runtime of your video and automatically calculates an optimized target bitrate. It then tells the rendering engine to aggressively compress the video stream so that the final file safely lands around 7.8MB—just under Discord's standard 8MB upload limit for non-Nitro users. Keep in mind that for very long video clips, the quality will drop significantly to force it under the size limit!</div>
+            </div>
         </div>
 
         <footer>
