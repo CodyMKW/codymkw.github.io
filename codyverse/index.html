@@ -377,6 +377,35 @@
         .inspect-field-val { color: var(--text); font-weight: 600; }
         .fc-copy { background: none; border: none; color: var(--text-3); cursor: pointer; font-size: 0.75rem; margin-left: auto; padding: 2px 6px; border-radius: 4px; transition: all 0.12s; }
         .fc-copy:hover { background: var(--border); color: var(--green); }
+
+        /* REPLIES */
+        .reply-btn { background: none; border: none; color: var(--text-3); font-size: 0.78rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 4px; padding: 5px 8px; border-radius: 6px; transition: all 0.15s; }
+        .reply-btn:hover { background: var(--surface2); color: var(--text-2); }
+        .reply-thread { margin-top: 12px; border-top: 1px solid var(--border); padding-top: 12px; display: flex; flex-direction: column; gap: 10px; }
+        .reply-item { display: flex; gap: 10px; }
+        .reply-avatar { width: 32px; height: 32px; border-radius: 8px; background: var(--surface2); border: 1px solid var(--border-bright); overflow: hidden; display: flex; align-items: center; justify-content: center; font-size: 0.78rem; font-weight: 800; color: var(--text-2); flex-shrink: 0; cursor: pointer; transition: border-color 0.12s; }
+        .reply-avatar:hover { border-color: var(--green); }
+        .reply-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .reply-body { flex: 1; min-width: 0; }
+        .reply-meta { display: flex; align-items: baseline; gap: 6px; margin-bottom: 4px; flex-wrap: wrap; }
+        .reply-name { font-size: 0.82rem; font-weight: 700; color: var(--text); cursor: pointer; }
+        .reply-name:hover { color: var(--green); }
+        .reply-handle { font-size: 0.72rem; color: var(--text-3); }
+        .reply-time { font-size: 0.68rem; color: var(--text-3); margin-left: auto; }
+        .reply-content { font-size: 0.84rem; line-height: 1.5; color: var(--text); word-break: break-word; }
+        .reply-del { background: none; border: none; color: var(--text-3); cursor: pointer; font-size: 0.72rem; padding: 2px 5px; border-radius: 4px; transition: all 0.12s; }
+        .reply-del:hover { color: var(--danger); background: rgba(239,68,68,0.1); }
+        .show-replies-btn { background: none; border: none; color: var(--green); font-size: 0.76rem; font-weight: 700; cursor: pointer; padding: 4px 0; display: flex; align-items: center; gap: 5px; transition: opacity 0.12s; }
+        .show-replies-btn:hover { opacity: 0.75; }
+        .reply-composer { margin-top: 10px; border-top: 1px solid var(--border); padding-top: 10px; display: flex; gap: 8px; align-items: flex-start; }
+        .reply-composer-ava { width: 28px; height: 28px; border-radius: 7px; background: var(--surface2); border: 1px solid var(--green); overflow: hidden; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 800; color: var(--green); flex-shrink: 0; }
+        .reply-composer-ava img { width: 100%; height: 100%; object-fit: cover; }
+        .reply-input-wrap { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+        .reply-textarea { width: 100%; padding: 8px 10px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text); font-family: var(--font); font-size: 0.82rem; resize: none; min-height: 52px; transition: border-color 0.15s; line-height: 1.5; }
+        .reply-textarea:focus { outline: none; border-color: var(--green); }
+        .reply-textarea::placeholder { color: var(--text-3); }
+        .reply-actions-row { display: flex; justify-content: flex-end; gap: 6px; }
+
         .toast-stack { position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 8px; z-index: 500; }
         .toast {
             padding: 11px 18px; border-radius: 10px; font-size: 0.82rem; font-weight: 700;
@@ -983,6 +1012,7 @@ function renderFeed(posts) {
     el.innerHTML = posts.map(p => {
         const myR = me && p.reactedUsers?.[me];
         const canDel = me && (me === p.username || isAdmin());
+        const replyCount = p.replyCount || 0;
         return `<div class="post" id="p-${esc(p.id)}">
             <div class="post-avatar" onclick="inspectUser('${esc(p.username)}')">${p.avatarUrl ? `<img src="${esc(p.avatarUrl)}" onerror="this.parentElement.textContent='${esc(initials(p.displayName))}'">` : esc(initials(p.displayName))}</div>
             <div class="post-body">
@@ -993,15 +1023,40 @@ function renderFeed(posts) {
                     <span class="post-time">${ago(p.timestamp)}</span>
                 </div>
                 <div class="post-content">${fmt_content(p.content)}${p.imageUrl ? `<img src="${esc(p.imageUrl)}" class="post-img" onerror="this.style.display='none'">` : ""}</div>
-                ${me ? `<div class="post-reactions">
+                <div style="display:flex; align-items:center; gap:6px; margin-top:10px; flex-wrap:wrap;">
+                    ${me ? `
                     <button class="react-btn ${myR==="yeah"?"active-yeah":""}" onclick="react('${esc(p.id)}','yeah')">🔥 Yeah <span>${p.reactions?.yeah||0}</span></button>
                     <button class="react-btn ${myR==="fresh"?"active-fresh":""}" onclick="react('${esc(p.id)}','fresh')">✨ Fresh <span>${p.reactions?.fresh||0}</span></button>
                     <button class="react-btn ${myR==="cozy"?"active-cozy":""}" onclick="react('${esc(p.id)}','cozy')">🌿 Cozy <span>${p.reactions?.cozy||0}</span></button>
-                </div>` : ""}
+                    ` : ""}
+                    <button class="reply-btn" onclick="toggleReplies('${esc(p.id)}')">
+                        💬 ${replyCount > 0 ? replyCount + " repl" + (replyCount===1?"y":"ies") : "Reply"}
+                    </button>
+                </div>
+                <div class="reply-thread hidden" id="replies-${esc(p.id)}">
+                    <div id="reply-list-${esc(p.id)}"></div>
+                    ${me ? `
+                    <div class="reply-composer">
+                        <div class="reply-composer-ava" id="reply-ava-${esc(p.id)}">${me ? initials(myProfile?.displayName||me) : "?"}</div>
+                        <div class="reply-input-wrap">
+                            <textarea class="reply-textarea" id="reply-input-${esc(p.id)}" placeholder="Write a reply…" maxlength="280" rows="2"></textarea>
+                            <div class="reply-actions-row">
+                                <button class="btn btn-ghost btn-xs" onclick="toggleReplies('${esc(p.id)}')">Cancel</button>
+                                <button class="btn btn-xs" onclick="submitReply('${esc(p.id)}')">Reply</button>
+                            </div>
+                        </div>
+                    </div>` : ""}
+                </div>
             </div>
             ${canDel ? `<button class="post-del-btn" onclick="delPost('${esc(p.id)}')">✕</button>` : ""}
         </div>`;
     }).join("");
+    // Hydrate reply-composer avatars with actual image if available
+    if (me && myProfile?.avatarUrl) {
+        document.querySelectorAll('[id^="reply-ava-"]').forEach(el => {
+            el.innerHTML = `<img src="${esc(myProfile.avatarUrl)}" onerror="this.parentElement.textContent='${esc(initials(myProfile?.displayName||me))}'">`;
+        });
+    }
 }
 
 function filterFeed() {
@@ -1056,6 +1111,97 @@ async function delPost(id) {
     const res = await api("/api/posts/delete", { method: "POST", body: { community, postId: id } });
     if (res.ok) { sfx("click"); loadFeed(); }
     else { sfx("error"); toast("Couldn't delete.", "err"); }
+}
+
+// ── REPLIES ─────────────────────────────────────────────
+const openReplies = new Set(); // track which post threads are expanded
+
+async function toggleReplies(postId) {
+    const thread = document.getElementById(`replies-${postId}`);
+    if (!thread) return;
+    const isOpen = !thread.classList.contains("hidden");
+    if (isOpen) {
+        thread.classList.add("hidden");
+        openReplies.delete(postId);
+        return;
+    }
+    thread.classList.remove("hidden");
+    openReplies.add(postId);
+    await loadReplies(postId);
+    // Focus textarea if signed in
+    const ta = document.getElementById(`reply-input-${postId}`);
+    if (ta) setTimeout(() => ta.focus(), 50);
+}
+
+async function loadReplies(postId) {
+    const listEl = document.getElementById(`reply-list-${postId}`);
+    if (!listEl) return;
+    listEl.innerHTML = `<div style="color:var(--text-3); font-size:0.8rem; padding:6px 0;">Loading…</div>`;
+    const res = await api(`/api/replies?community=${community}&postId=${encodeURIComponent(postId)}`);
+    if (!res.ok) { listEl.innerHTML = ""; return; }
+    const replies = await res.json();
+    if (!replies.length) { listEl.innerHTML = `<div style="color:var(--text-3); font-size:0.78rem; padding:4px 0;">No replies yet. Be the first!</div>`; return; }
+    listEl.innerHTML = replies.map(r => {
+        const canDel = me && (me === r.username || isAdmin());
+        return `<div class="reply-item" id="r-${esc(r.id)}">
+            <div class="reply-avatar" onclick="inspectUser('${esc(r.username)}')">
+                ${r.avatarUrl ? `<img src="${esc(r.avatarUrl)}" onerror="this.parentElement.textContent='${esc(initials(r.displayName))}'">` : esc(initials(r.displayName))}
+            </div>
+            <div class="reply-body">
+                <div class="reply-meta">
+                    <span class="reply-name" onclick="inspectUser('${esc(r.username)}')">${esc(r.displayName||r.username)}</span>
+                    <span class="reply-handle">@${esc(r.username)}</span>
+                    <span class="reply-time">${ago(r.timestamp)}</span>
+                    ${canDel ? `<button class="reply-del" onclick="delReply('${esc(postId)}','${esc(r.id)}')">✕</button>` : ""}
+                </div>
+                <div class="reply-content">${fmt_content(r.content)}</div>
+            </div>
+        </div>`;
+    }).join("");
+}
+
+async function submitReply(postId) {
+    const ta = document.getElementById(`reply-input-${postId}`);
+    const content = ta?.value.trim();
+    if (!content) return;
+    const btn = ta.closest(".reply-input-wrap").querySelector(".btn:not(.btn-ghost)");
+    if (btn) btn.disabled = true;
+    const res = await api("/api/replies", { method: "POST", body: { community, postId, content } });
+    if (btn) btn.disabled = false;
+    if (res.ok) {
+        sfx("post");
+        ta.value = "";
+        // Update reply count in cache
+        const post = postsCache.find(p => p.id === postId);
+        if (post) post.replyCount = (post.replyCount || 0) + 1;
+        // Re-render reply count badge on the button without full feed reload
+        const replyBtn = document.querySelector(`#p-${postId} .reply-btn`);
+        if (replyBtn) {
+            const count = post?.replyCount || 1;
+            replyBtn.innerHTML = `💬 ${count} repl${count===1?"y":"ies"}`;
+        }
+        await loadReplies(postId);
+    } else {
+        sfx("error"); toast(await res.text() || "Couldn't post reply.", "err");
+    }
+}
+
+async function delReply(postId, replyId) {
+    if (!confirm("Delete this reply?")) return;
+    const res = await api("/api/replies/delete", { method: "POST", body: { community, postId, replyId } });
+    if (res.ok) {
+        sfx("click");
+        const post = postsCache.find(p => p.id === postId);
+        if (post) post.replyCount = Math.max(0, (post.replyCount || 1) - 1);
+        const replyBtn = document.querySelector(`#p-${postId} .reply-btn`);
+        if (replyBtn) {
+            const count = post?.replyCount || 0;
+            replyBtn.innerHTML = count > 0 ? `💬 ${count} repl${count===1?"y":"ies"}` : "💬 Reply";
+        }
+        await loadReplies(postId);
+    } else {
+        sfx("error"); toast("Couldn't delete reply.", "err");
+    }
 }
 
 async function react(postId, reaction) {
