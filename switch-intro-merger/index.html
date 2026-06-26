@@ -212,7 +212,31 @@
         }
 
         .quality-warning.visible {
-            display: block;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .quality-warning-text {
+            flex: 1;
+        }
+
+        .est-size-pill {
+            display: none;
+            background-color: rgba(230, 0, 18, 0.15);
+            border: 1px solid rgba(230, 0, 18, 0.4);
+            border-radius: 6px;
+            padding: 3px 8px;
+            font-size: 11px;
+            font-weight: 700;
+            color: #f0737d;
+            white-space: nowrap;
+            flex-shrink: 0;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .est-size-pill.visible {
+            display: inline-block;
         }
 
         @keyframes spin {
@@ -504,7 +528,8 @@
             </div>
 
             <div class="quality-warning" id="qualityWarning">
-                ⚠️ <strong>Heads up:</strong> For videos longer than ~30 seconds, quality will drop noticeably to hit the 8MB target. Best for short clips.
+                <span class="quality-warning-text">⚠️ <strong>Heads up:</strong> For videos longer than ~30 seconds, quality will drop noticeably to hit the 8MB target. Best for short clips.</span>
+                <span class="est-size-pill" id="estSizePill">~7.8 MB</span>
             </div>
 
             <label class="upload-zone" id="dropArea">
@@ -581,6 +606,7 @@
         const nitroBypassToggle = document.getElementById('nitroBypassToggle');
         const dropArea = document.getElementById('dropArea');
         const qualityWarning = document.getElementById('qualityWarning');
+        const estSizePill = document.getElementById('estSizePill');
 
         let targetFile = null;
         let targetDuration = 0;
@@ -591,10 +617,53 @@
 
         const ffmpegWorker = new Worker('worker.js');
 
-        // Show/hide quality warning when Nitro toggle changes
-        nitroBypassToggle.addEventListener('change', () => {
-            qualityWarning.classList.toggle('visible', nitroBypassToggle.checked);
-        });
+        function updateNitroUI() {
+            const on = nitroBypassToggle.checked;
+            qualityWarning.classList.toggle('visible', on);
+            if (on && targetDuration > 0) {
+                const totalDuration = targetDuration + 3.0;
+                const estMB = (7.8).toFixed(1); // always targets 7.8MB
+                estSizePill.textContent = `~${estMB} MB`;
+                estSizePill.classList.add('visible');
+            } else {
+                estSizePill.classList.remove('visible');
+            }
+        }
+
+        nitroBypassToggle.addEventListener('change', updateNitroUI);
+
+        // Staged FFmpeg boot message sequence
+        const bootStages = [
+            'Downloading video engine...',
+            'Initializing codec runtime...',
+            'Loading WASM module...',
+            'Ready to compile!'
+        ];
+        let bootStageIndex = 0;
+        let bootInterval = null;
+
+        function startBootSequence() {
+            bootStageIndex = 0;
+            statusMessage.innerHTML = `<span class="spinner"></span>${bootStages[0]}`;
+            bootInterval = setInterval(() => {
+                bootStageIndex++;
+                if (bootStageIndex < bootStages.length - 1) {
+                    statusMessage.innerHTML = `<span class="spinner"></span>${bootStages[bootStageIndex]}`;
+                } else {
+                    clearInterval(bootInterval);
+                    bootInterval = null;
+                    // "Ready!" shown briefly — actual progress takes over from here
+                    statusMessage.textContent = bootStages[bootStages.length - 1];
+                }
+            }, 2200);
+        }
+
+        function stopBootSequence() {
+            if (bootInterval) {
+                clearInterval(bootInterval);
+                bootInterval = null;
+            }
+        }
 
         ffmpegWorker.onmessage = (e) => {
             const { type, message, ratio, logType, data, error } = e.data;
@@ -602,30 +671,35 @@
             switch (type) {
                 case 'STATUS':
                     if (!isDone) {
-                        // Once FFmpeg actually starts loading, mark it as the "warming up" phase
                         if (!ffmpegReady && message.includes('Loading')) {
-                            statusMessage.innerHTML = `<span class="spinner"></span>Warming up the processing engine (first run only)...`;
-                        } else {
+                            startBootSequence();
+                        } else if (ffmpegReady) {
                             statusMessage.textContent = message;
                         }
                     }
                     break;
                     
                 case 'PROGRESS':
-                    if (!ffmpegReady) ffmpegReady = true;
+                    if (!ffmpegReady) {
+                        ffmpegReady = true;
+                        stopBootSequence();
+                    }
                     if (ratio >= 0 && ratio <= 1 && !isDone) {
                         const percentage = Math.round(ratio * 100);
                         requestAnimationFrame(() => {
                             if (!isDone) {
                                 progressBar.style.width = `${percentage}%`;
-                                statusMessage.textContent = `Processing clip matrix... ${percentage}%`;
+                                statusMessage.textContent = `Processing video... ${percentage}%`;
                             }
                         });
                     }
                     break;
                     
                 case 'LOG':
-                    if (!ffmpegReady) ffmpegReady = true;
+                    if (!ffmpegReady) {
+                        ffmpegReady = true;
+                        stopBootSequence();
+                    }
                     systemLogs.push(`[${logType}] ${message}`);
                     const now = Date.now();
                     if (now - lastUiUpdateTime > 100) {
@@ -641,6 +715,7 @@
                 case 'DONE':
                     isDone = true;
                     ffmpegReady = true;
+                    stopBootSequence();
                     
                     requestAnimationFrame(() => {
                         statusMessage.textContent = "Render complete.";
@@ -664,6 +739,7 @@
                     
                 case 'ERROR':
                     console.error(error);
+                    stopBootSequence();
                     statusMessage.innerHTML = `<span style="color:#e60012; font-weight:700;">Compilation Failed!</span><br>Error dropped to diagnostics console container.`;
                     progressBar.style.width = '0%';
                     mergeBtn.disabled = false;
@@ -682,6 +758,7 @@
             
             videoPreview.onloadedmetadata = () => {
                 targetDuration = videoPreview.duration;
+                updateNitroUI(); // refresh size estimate now that we have duration
             };
 
             mergeBtn.disabled = false;
@@ -771,6 +848,7 @@
             progressBar.style.width = '0%';
             systemLogs = [];
             isDone = false;
+            estSizePill.classList.remove('visible');
             statusMessage.textContent = "Awaiting asset selection.";
         });
     </script>
