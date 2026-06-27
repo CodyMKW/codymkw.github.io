@@ -214,67 +214,71 @@
         <div class="output-grid" id="output-grid"></div>
     </div>
 
-    <script>
-        const dropZone = document.getElementById('drop-zone');
-        const fileInput = document.getElementById('file-input');
-        const outputGrid = document.getElementById('output-grid');
-        const actionsBar = document.getElementById('actions-bar');
-        const downloadAllBtn = document.getElementById('download-all-btn');
+<script>
+    const dropZone = document.getElementById('drop-zone');
+    const fileInput = document.getElementById('file-input');
+    const outputGrid = document.getElementById('output-grid');
+    const actionsBar = document.getElementById('actions-bar');
+    const downloadAllBtn = document.getElementById('download-all-btn');
 
-        let convertedQueue = [];
+    let convertedQueue = [];
 
-        // Handle click and drag/drop events
-        dropZone.onclick = () => fileInput.click();
+    // Handle click and drag/drop events
+    dropZone.onclick = () => fileInput.click();
 
-        dropZone.ondragover = (e) => {
-            e.preventDefault();
-            dropZone.classList.add('drag-over');
-        };
+    dropZone.ondragover = (e) => {
+        e.preventDefault();
+        dropZone.classList.add('drag-over');
+    };
 
-        dropZone.ondragleave = () => {
-            dropZone.classList.remove('drag-over');
-        };
+    dropZone.ondragleave = () => {
+        dropZone.classList.remove('drag-over');
+    };
 
-        dropZone.ondrop = (e) => {
-            e.preventDefault();
-            dropZone.classList.remove('drag-over');
-            if (e.dataTransfer.files.length) handleFiles(e.dataTransfer.files);
-        };
+    dropZone.ondrop = (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('drag-over');
+        if (e.dataTransfer.files.length) handleFiles(e.dataTransfer.files);
+    };
 
-        fileInput.onchange = (e) => {
-            if (e.target.files.length) handleFiles(e.target.files);
-        };
+    fileInput.onchange = (e) => {
+        if (e.target.files.length) handleFiles(e.target.files);
+    };
 
-        function handleFiles(files) {
-            Array.from(files).forEach(file => {
-                if (!file.name.toLowerCase().endsWith('.bmp')) return;
-                processBmpConversion(file);
-            });
-        }
+    function handleFiles(files) {
+        Array.from(files).forEach(file => {
+            if (!file.name.toLowerCase().endsWith('.bmp')) return;
+            processBmpConversion(file);
+        });
+    }
 
-        // Convert BMP to JPG using HTML5 Canvas
-        function processBmpConversion(file) {
-            const reader = new FileReader();
-            reader.onload = function(event) {
-                const img = new Image();
-                img.onload = function() {
-                    const canvas = document.createElement('canvas');
-                    canvas.width = img.width;
-                    canvas.height = img.height;
+    // Convert BMP to JPG (for downloads) and PNG (for clipboard compatibility)
+    function processBmpConversion(file) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            const img = new Image();
+            img.onload = function() {
+                const canvas = document.createElement('canvas');
+                canvas.width = img.width;
+                canvas.height = img.height;
+                
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0);
+
+                // 1. Generate the JPEG blob for downloading
+                canvas.toBlob(function(jpgBlob) {
                     
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0);
-
-                    // Output as standard JPEG
-                    canvas.toBlob(function(blob) {
+                    // 2. Generate a PNG blob specifically for clipboard compatibility
+                    canvas.toBlob(function(pngBlob) {
                         const targetName = file.name.replace(/\.bmp$/i, '.jpg');
-                        const jpgUrl = URL.createObjectURL(blob);
+                        const jpgUrl = URL.createObjectURL(jpgBlob);
                         
                         const fileMetrics = {
                             name: targetName,
                             url: jpgUrl,
-                            blob: blob,
-                            size: (blob.size / 1024).toFixed(1) + ' KB'
+                            jpgBlob: jpgBlob,
+                            pngBlob: pngBlob, // Saved for Discord pasting
+                            size: (jpgBlob.size / 1024).toFixed(1) + ' KB'
                         };
 
                         convertedQueue.push(fileMetrics);
@@ -283,68 +287,79 @@
                         if (convertedQueue.length > 0) {
                             actionsBar.style.display = 'flex';
                         }
-                    }, 'image/jpeg', 0.92); // 92% quality for a good balance of size and crispness
-                };
-                img.src = event.target.result;
+                    }, 'image/png');
+
+                }, 'image/jpeg', 0.92);
             };
-            reader.readAsDataURL(file);
-        }
-
-        // Render each image card on the screen
-        function renderPreviewCard(item) {
-            const card = document.createElement('div');
-            card.className = 'preview-card';
-
-            card.innerHTML = `
-                <div class="img-wrapper">
-                    <img src="${item.url}" alt="${item.name}">
-                </div>
-                <div class="meta-info">
-                    <div class="file-name">${item.name}</div>
-                    <div class="file-size">${item.size}</div>
-                </div>
-                <div class="card-actions">
-                    <button class="btn-action copy-btn">Copy to Clipboard</button>
-                    <a href="${item.url}" download="${item.name}" class="btn-action">Download</a>
-                </div>
-            `;
-
-            // Clipboard functionality for pasting straight into Discord
-            const copyBtn = card.querySelector('.copy-btn');
-            copyBtn.onclick = async () => {
-                try {
-                    await navigator.clipboard.write([
-                        new ClipboardItem({ [item.blob.type]: item.blob })
-                    ]);
-                    copyBtn.innerText = "Copied!";
-                    copyBtn.style.borderColor = "var(--accent-green)";
-                    copyBtn.style.color = "var(--accent-green)";
-                    setTimeout(() => {
-                        copyBtn.innerText = "Copy to Clipboard";
-                        copyBtn.style.borderColor = "";
-                        copyBtn.style.color = "";
-                    }, 1500);
-                } catch (err) {
-                    copyBtn.innerText = "Error";
-                }
-            };
-
-            outputGrid.appendChild(card);
-        }
-
-        // Download all images at once with a small delay to avoid browser blocking
-        downloadAllBtn.onclick = () => {
-            convertedQueue.forEach((item, index) => {
-                setTimeout(() => {
-                    const link = document.createElement('a');
-                    link.href = item.url;
-                    link.download = item.name;
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                }, index * 200);
-            });
+            img.src = event.target.result;
         };
-    </script>
+        reader.readAsDataURL(file);
+    }
+
+    // Render each image card on the screen
+    function renderPreviewCard(item) {
+        const card = document.createElement('div');
+        card.className = 'preview-card';
+
+        card.innerHTML = `
+            <div class="img-wrapper">
+                <img src="${item.url}" alt="${item.name}">
+            </div>
+            <div class="meta-info">
+                <div class="file-name">${item.name}</div>
+                <div class="file-size">${item.size}</div>
+            </div>
+            <div class="card-actions">
+                <button class="btn-action copy-btn">Copy to Clipboard</button>
+                <a href="${item.url}" download="${item.name}" class="btn-action">Download</a>
+            </div>
+        `;
+
+        const copyBtn = card.querySelector('.copy-btn');
+        copyBtn.onclick = async () => {
+            // Security check: Guard against file:/// running locally
+            if (!navigator.clipboard) {
+                copyBtn.innerText = "Requires HTTPS";
+                copyBtn.style.borderColor = "#ef4444";
+                copyBtn.style.color = "#ef4444";
+                return;
+            }
+
+            try {
+                // We pass the pngBlob here so browsers accept it natively
+                await navigator.clipboard.write([
+                    new ClipboardItem({ 'image/png': item.pngBlob })
+                ]);
+                copyBtn.innerText = "Copied!";
+                copyBtn.style.borderColor = "var(--accent-green)";
+                copyBtn.style.color = "var(--accent-green)";
+                setTimeout(() => {
+                    copyBtn.innerText = "Copy to Clipboard";
+                    copyBtn.style.borderColor = "";
+                    copyBtn.style.color = "";
+                }, 1500);
+            } catch (err) {
+                console.error(err);
+                copyBtn.innerText = "Copy Failed";
+            }
+        };
+
+        outputGrid.appendChild(card);
+    }
+
+    // Download all images at once
+    downloadAllBtn.onclick = () => {
+        convertedQueue.forEach((item, index) => {
+            setTimeout(() => {
+                const link = document.createElement('a');
+                link.href = item.url;
+                link.download = item.name;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }, index * 200);
+        });
+    };
+</script>
 </body>
 </html>
