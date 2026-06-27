@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+    <title>3DS BMP to JPG Converter</title>
+    <style>
+        :root {
+            --bg-main: #0f121d;
+            --bg-card: #181c2b;
+            --bg-card-hover: #1f2438;
+            --border-line: rgba(255, 255, 255, 0.08);
+            --text-primary: #f0f4f8;
+            --text-muted: #a0aec0;
+            --accent-blue: #3b82f6;
+            --accent-green: #10b981;
+            --font-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            font-family: var(--font-stack);
+            min-height: 100vh;
+            padding: 2rem 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .wrapper {
+            width: 100%;
+            max-width: 900px;
+        }
+
+        header {
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border-line);
+            padding-bottom: 1.5rem;
+        }
+
+        h1 {
+            font-size: 1.75rem;
+            font-weight: 600;
+        }
+
+        .subtitle {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+        }
+
+        /* Drag & Drop Zone */
+        .drop-zone {
+            background: var(--bg-card);
+            border: 2px dashed rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            padding: 3rem 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 1.5rem;
+        }
+
+        .drop-zone:hover, .drop-zone.drag-over {
+            border-color: var(--accent-blue);
+            background: var(--bg-card-hover);
+        }
+
+        .drop-zone p {
+            font-size: 1.05rem;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .drop-zone span {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        #file-input { display: none; }
+
+        /* Actions Bar */
+        .actions-bar {
+            display: none;
+            justify-content: flex-end;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn-main {
+            background: var(--accent-blue);
+            border: none;
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: background 0.15s ease;
+        }
+
+        .btn-main:hover {
+            background: #2563eb;
+        }
+
+        /* Grid Layout */
+        .output-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 1.5rem;
+            width: 100%;
+        }
+
+        .preview-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-line);
+            border-radius: 8px;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .img-wrapper {
+            width: 100%;
+            aspect-ratio: 4 / 3;
+            background: #0b0d14;
+            border-radius: 6px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .img-wrapper img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .meta-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .file-name {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .file-size {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .card-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            margin-top: auto;
+        }
+
+        .btn-action {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-line);
+            color: var(--text-primary);
+            padding: 0.5rem;
+            font-size: 0.8rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.1s ease;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .btn-action:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-action.copy-btn:hover {
+            border-color: var(--accent-blue);
+            color: var(--accent-blue);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="wrapper">
+        <header>
+            <h1>3DS Screenshot Converter</h1>
+            <div class="subtitle">Convert your 3DS .bmp files to .jpg so they display properly on Discord.</div>
+        </header>
+
+        <!-- Drop Zone -->
+        <div class="drop-zone" id="drop-zone">
+            <p>Drag and drop your .bmp images here, or click to browse</p>
+            <span>You can upload multiple files at the same time</span>
+            <input type="file" id="file-input" accept=".bmp" multiple />
+        </div>
+
+        <!-- Global Action Row -->
+        <div class="actions-bar" id="actions-bar">
+            <button class="btn-main" id="download-all-btn">Download All Images</button>
+        </div>
+
+        <!-- Previews Grid -->
+        <div class="output-grid" id="output-grid"></div>
+    </div>
+
+    <script>
+        const dropZone = document.getElementById('drop-zone');
+        const fileInput = document.getElementById('file-input');
+        const outputGrid = document.getElementById('output-grid');
+        const actionsBar = document.getElementById('actions-bar');
+        const downloadAllBtn = document.getElementById('download-all-btn');
+
+        let convertedQueue = [];
+
+        // Handle click and drag/drop events
+        dropZone.onclick = () => fileInput.click();
+
+        dropZone.ondragover = (e) => {
+            e.preventDefault();
+            dropZone.classList.add('drag-over');
+        };
+
+        dropZone.ondragleave = () => {
+            dropZone.classList.remove('drag-over');
+        };
+
+        dropZone.ondrop = (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('drag-over');
+            if (e.dataTransfer.files.length) handleFiles(e.dataTransfer.files);
+        };
+
+        fileInput.onchange = (e) => {
+            if (e.target.files.length) handleFiles(e.target.files);
+        };
+
+        function handleFiles(files) {
+            Array.from(files).forEach(file => {
+                if (!file.name.toLowerCase().endsWith('.bmp')) return;
+                processBmpConversion(file);
+            });
+        }
+
+        // Convert BMP to JPG using HTML5 Canvas
+        function processBmpConversion(file) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0);
+
+                    // Output as standard JPEG
+                    canvas.toBlob(function(blob) {
+                        const targetName = file.name.replace(/\.bmp$/i, '.jpg');
+                        const jpgUrl = URL.createObjectURL(blob);
+                        
+                        const fileMetrics = {
+                            name: targetName,
+                            url: jpgUrl,
+                            blob: blob,
+                            size: (blob.size / 1024).toFixed(1) + ' KB'
+                        };
+
+                        convertedQueue.push(fileMetrics);
+                        renderPreviewCard(fileMetrics);
+                        
+                        if (convertedQueue.length > 0) {
+                            actionsBar.style.display = 'flex';
+                        }
+                    }, 'image/jpeg', 0.92); // 92% quality for a good balance of size and crispness
+                };
+                img.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Render each image card on the screen
+        function renderPreviewCard(item) {
+            const card = document.createElement('div');
+            card.className = 'preview-card';
+
+            card.innerHTML = `
+                <div class="img-wrapper">
+                    <img src="${item.url}" alt="${item.name}">
+                </div>
+                <div class="meta-info">
+                    <div class="file-name">${item.name}</div>
+                    <div class="file-size">${item.size}</div>
+                </div>
+                <div class="card-actions">
+                    <button class="btn-action copy-btn">Copy to Clipboard</button>
+                    <a href="${item.url}" download="${item.name}" class="btn-action">Download</a>
+                </div>
+            `;
+
+            // Clipboard functionality for pasting straight into Discord
+            const copyBtn = card.querySelector('.copy-btn');
+            copyBtn.onclick = async () => {
+                try {
+                    await navigator.clipboard.write([
+                        new ClipboardItem({ [item.blob.type]: item.blob })
+                    ]);
+                    copyBtn.innerText = "Copied!";
+                    copyBtn.style.borderColor = "var(--accent-green)";
+                    copyBtn.style.color = "var(--accent-green)";
+                    setTimeout(() => {
+                        copyBtn.innerText = "Copy to Clipboard";
+                        copyBtn.style.borderColor = "";
+                        copyBtn.style.color = "";
+                    }, 1500);
+                } catch (err) {
+                    copyBtn.innerText = "Error";
+                }
+            };
+
+            outputGrid.appendChild(card);
+        }
+
+        // Download all images at once with a small delay to avoid browser blocking
+        downloadAllBtn.onclick = () => {
+            convertedQueue.forEach((item, index) => {
+                setTimeout(() => {
+                    const link = document.createElement('a');
+                    link.href = item.url;
+                    link.download = item.name;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                }, index * 200);
+            });
+        };
+    </script>
+</body>
+</html>
