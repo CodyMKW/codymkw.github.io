@@ -22,6 +22,7 @@
             --fresh: #00d4f0;
             --cozy: #e040a0;
             --danger: #ef4444;
+            --warn: #f59e0b;
             --radius: 14px;
             --radius-sm: 8px;
             --radius-pill: 9999px;
@@ -56,15 +57,13 @@
             transition: background 0.2s, color 0.2s;
         }
 
-        /* ── SCROLLBAR ── */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: var(--border-bright); border-radius: 3px; }
 
-        /* ── LAYOUT ── */
         .shell { max-width: 1380px; margin: 0 auto; padding: 16px; display: flex; flex-direction: column; gap: 16px; }
 
-        /* ── HEADER ── */
+        /* ── TOPBAR ── */
         .topbar {
             background: var(--surface);
             border: 1px solid var(--border);
@@ -87,7 +86,7 @@
         }
         @keyframes pip-pulse { 0%,100% { opacity:1; } 50% { opacity:0.4; } }
         .logo-sub { font-size: 0.65rem; font-weight: 600; color: var(--text-3); letter-spacing: 0.08em; text-transform: uppercase; margin-left: 2px; }
-        .topbar-right { display: flex; align-items: center; gap: 10px; }
+        .topbar-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
         .clock { font-size: 0.75rem; font-weight: 700; color: var(--text-3); background: var(--surface2); border: 1px solid var(--border); padding: 4px 10px; border-radius: var(--radius-sm); font-variant-numeric: tabular-nums; letter-spacing: 0.03em; }
 
         /* ── GRID ── */
@@ -130,11 +129,11 @@
         .stat-num { font-size: 1.1rem; font-weight: 900; color: var(--green); }
         .stat-label { font-size: 0.65rem; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.06em; }
 
-        /* ── COMMUNITY TABS ── */
-        .comm-grid { display: flex; flex-direction: column; gap: 6px; }
+        /* ── CHANNELS ── */
+        .comm-grid { display: flex; flex-direction: column; gap: 4px; }
         .comm-btn {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 10px 14px; border-radius: var(--radius-sm);
+            display: flex; align-items: center; gap: 8px;
+            padding: 9px 12px; border-radius: var(--radius-sm);
             border: 1px solid transparent;
             background: transparent; color: var(--text-2);
             font-size: 0.85rem; font-weight: 600; cursor: pointer;
@@ -142,13 +141,24 @@
         }
         .comm-btn:hover { background: var(--surface2); color: var(--text); border-color: var(--border); }
         .comm-btn.active { background: var(--green-glow); color: var(--green); border-color: var(--green); }
-        .comm-btn .comm-del { color: var(--danger); opacity: 0; font-size: 0.75rem; transition: opacity 0.15s; background: none; border: none; cursor: pointer; padding: 0 0 0 6px; }
+        .comm-btn .comm-name { flex: 1; }
+        .comm-del {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 20px; height: 20px;
+            color: var(--text-3); opacity: 0;
+            font-size: 0.75rem; font-weight: 900;
+            background: var(--surface2); border: 1px solid var(--border);
+            border-radius: 5px; cursor: pointer;
+            transition: all 0.15s; flex-shrink: 0;
+            line-height: 1;
+        }
         .comm-btn:hover .comm-del { opacity: 1; }
+        .comm-del:hover { background: rgba(239,68,68,0.15); border-color: rgba(239,68,68,0.5); color: var(--danger); }
 
-        /* ── MAIN FEED ── */
+        /* ── FEED ── */
         .feed-col { display: flex; flex-direction: column; gap: 14px; }
 
-        /* ── SEARCH BAR ── */
+        /* ── SEARCH ── */
         .search-wrap { position: relative; }
         .search-wrap svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-3); pointer-events: none; }
         .search-input {
@@ -159,6 +169,17 @@
         }
         .search-input:focus { outline: none; border-color: var(--green); }
         .search-input::placeholder { color: var(--text-3); }
+
+        /* ── FEED TOOLBAR ── */
+        .feed-toolbar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        .filter-btn {
+            padding: 5px 12px; border-radius: var(--radius-pill);
+            border: 1px solid var(--border); background: var(--surface2);
+            color: var(--text-2); font-size: 0.75rem; font-weight: 700; cursor: pointer;
+            transition: all 0.15s;
+        }
+        .filter-btn:hover { border-color: var(--border-bright); color: var(--text); }
+        .filter-btn.active { background: var(--green-glow); border-color: var(--green); color: var(--green); }
 
         /* ── ANNOUNCEMENT ── */
         .announcement {
@@ -205,6 +226,31 @@
         .img-url-input:focus { outline: none; border-color: var(--green); }
         .img-url-input::placeholder { color: var(--text-3); }
 
+        /* image preview */
+        .img-preview-wrap { position: relative; border-radius: 10px; overflow: hidden; border: 1px solid var(--border); }
+        .img-preview-wrap img { width: 100%; max-height: 200px; object-fit: cover; display: block; }
+        .img-preview-clear {
+            position: absolute; top: 8px; right: 8px;
+            background: rgba(0,0,0,0.7); border: none; color: #fff;
+            width: 24px; height: 24px; border-radius: 50%;
+            font-size: 0.8rem; cursor: pointer; display: flex; align-items: center; justify-content: center;
+        }
+
+        /* mention autocomplete */
+        .mention-dropdown {
+            position: absolute; z-index: 100;
+            background: var(--surface); border: 1px solid var(--border-bright);
+            border-radius: var(--radius-sm); box-shadow: var(--shadow);
+            overflow: hidden; max-width: 220px;
+        }
+        .mention-item {
+            padding: 8px 12px; font-size: 0.82rem; cursor: pointer;
+            display: flex; align-items: center; gap: 8px; transition: background 0.1s;
+        }
+        .mention-item:hover, .mention-item.selected { background: var(--green-glow); color: var(--green); }
+        .mention-ava { width: 24px; height: 24px; border-radius: 6px; background: var(--surface2); border: 1px solid var(--border); overflow: hidden; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 800; color: var(--text-2); flex-shrink: 0; }
+        .mention-ava img { width: 100%; height: 100%; object-fit: cover; }
+
         /* ── POSTS ── */
         .post {
             display: flex; gap: 13px; padding: 18px;
@@ -225,15 +271,19 @@
         .post-avatar:hover { border-color: var(--green); }
         .post-avatar img { width: 100%; height: 100%; object-fit: cover; }
         .post-body { flex: 1; min-width: 0; }
-        .post-meta { display: flex; align-items: baseline; gap: 8px; margin-bottom: 8px; padding-right: 30px; flex-wrap: wrap; }
+        .post-meta { display: flex; align-items: baseline; gap: 8px; margin-bottom: 8px; padding-right: 60px; flex-wrap: wrap; }
         .post-name { font-weight: 800; font-size: 0.9rem; cursor: pointer; color: var(--text); transition: color 0.12s; }
         .post-name:hover { color: var(--green); }
         .post-handle { font-size: 0.78rem; color: var(--text-3); }
-        .post-time { font-size: 0.72rem; color: var(--text-3); margin-left: auto; }
+        .post-time { font-size: 0.72rem; color: var(--text-3); margin-left: auto; cursor: default; }
+        .post-time:hover { color: var(--text-2); }
         .post-admin-badge { background: var(--danger); color: #fff; font-size: 0.6rem; font-weight: 800; padding: 1px 5px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.05em; }
         .post-content { font-size: 0.88rem; line-height: 1.6; color: var(--text); word-break: break-word; }
         .post-content strong { color: var(--text); }
-        .post-img { width: 100%; max-height: 300px; object-fit: cover; border-radius: 10px; margin-top: 12px; border: 1px solid var(--border); }
+        .post-content .mention { color: var(--fresh); font-weight: 700; cursor: pointer; }
+        .post-content .mention:hover { text-decoration: underline; }
+        .post-img { width: 100%; max-height: 300px; object-fit: cover; border-radius: 10px; margin-top: 12px; border: 1px solid var(--border); cursor: pointer; transition: opacity 0.15s; }
+        .post-img:hover { opacity: 0.9; }
         .post-reactions { display: flex; gap: 6px; margin-top: 12px; flex-wrap: wrap; }
         .react-btn {
             display: flex; align-items: center; gap: 5px;
@@ -245,16 +295,23 @@
         .react-btn.active-yeah { background: rgba(255,127,0,0.15); border-color: var(--yeah); color: var(--yeah); }
         .react-btn.active-fresh { background: rgba(0,212,240,0.12); border-color: var(--fresh); color: var(--fresh); }
         .react-btn.active-cozy { background: rgba(224,64,160,0.12); border-color: var(--cozy); color: var(--cozy); }
-        .post-del-btn {
+        .post-actions {
             position: absolute; top: 14px; right: 14px;
-            background: none; border: none; color: var(--text-3);
-            font-size: 0.9rem; cursor: pointer; padding: 3px 6px; border-radius: 5px;
+            display: flex; align-items: center; gap: 4px;
+        }
+        .post-action-btn {
+            background: none; border: 1px solid transparent; color: var(--text-3);
+            font-size: 0.85rem; cursor: pointer; padding: 4px 7px; border-radius: 6px;
             transition: all 0.12s; line-height: 1;
         }
-        .post-del-btn:hover { background: rgba(239,68,68,0.12); color: var(--danger); }
+        .post-action-btn:hover { background: var(--surface2); border-color: var(--border); color: var(--text); }
+        .post-action-btn.bookmarked { color: var(--warn); }
+        .post-action-btn.del-btn:hover { background: rgba(239,68,68,0.12); color: var(--danger); border-color: rgba(239,68,68,0.3); }
 
         .spoiler { background: var(--text); color: var(--text); border-radius: 3px; padding: 0 2px; cursor: pointer; transition: background 0.2s; }
         .spoiler.open { background: transparent; color: inherit; }
+
+        .post.bookmarked-glow { border-color: var(--warn) !important; }
 
         .empty-feed { text-align: center; padding: 48px 20px; color: var(--text-3); }
         .empty-feed-icon { font-size: 2.5rem; margin-bottom: 10px; }
@@ -277,11 +334,21 @@
             box-shadow: none;
         }
         .btn-ghost:hover { background: var(--surface2); border-color: var(--border-bright); color: var(--text); transform: none; }
+        .btn-danger {
+            background: var(--danger); color: #fff;
+            box-shadow: 0 2px 12px rgba(239,68,68,0.25);
+        }
+        .btn-danger:hover { background: #dc2626; }
         .btn-danger-ghost {
             background: transparent; color: var(--danger); border: 1px solid rgba(239,68,68,0.3);
             box-shadow: none;
         }
-        .btn-danger-ghost:hover { background: rgba(239,68,68,0.1); }
+        .btn-danger-ghost:hover { background: rgba(239,68,68,0.1); transform: none; }
+        .btn-warn-ghost {
+            background: transparent; color: var(--warn); border: 1px solid rgba(245,158,11,0.3);
+            box-shadow: none;
+        }
+        .btn-warn-ghost:hover { background: rgba(245,158,11,0.1); transform: none; }
         .btn-sm { padding: 6px 12px; font-size: 0.78rem; }
         .btn-xs { padding: 3px 9px; font-size: 0.72rem; }
         .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
@@ -296,10 +363,25 @@
         }
         .field:focus { outline: none; border-color: var(--green); }
         .field::placeholder { color: var(--text-3); }
+        select.field { cursor: pointer; }
         .field-label { font-size: 0.72rem; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 4px; }
 
         /* ── RIGHT SIDEBAR ── */
         .right-col { display: flex; flex-direction: column; gap: 14px; }
+
+        /* ── TRENDING ── */
+        .trending-item {
+            display: flex; align-items: flex-start; gap: 10px;
+            padding: 8px 0; border-bottom: 1px solid var(--border); cursor: pointer;
+            transition: opacity 0.12s;
+        }
+        .trending-item:last-child { border-bottom: none; padding-bottom: 0; }
+        .trending-item:hover { opacity: 0.8; }
+        .trending-rank { font-size: 1rem; font-weight: 900; color: var(--text-3); width: 20px; flex-shrink: 0; text-align: center; }
+        .trending-info { flex: 1; min-width: 0; }
+        .trending-name { font-size: 0.82rem; font-weight: 700; color: var(--text); margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .trending-meta { font-size: 0.7rem; color: var(--text-3); }
+        .trending-fire { font-size: 0.75rem; color: var(--yeah); font-weight: 800; }
 
         /* ── POLL ── */
         .poll-question { font-size: 0.88rem; font-weight: 700; line-height: 1.4; margin-bottom: 14px; color: var(--text); }
@@ -319,7 +401,7 @@
         .poll-empty { text-align: center; padding: 20px 10px; color: var(--text-3); font-size: 0.82rem; }
         .poll-empty-icon { font-size: 1.8rem; margin-bottom: 8px; }
 
-        /* ── ONLINE LIST ── */
+        /* ── ONLINE ── */
         .online-user {
             display: flex; align-items: center; gap: 10px; padding: 6px 0;
             cursor: pointer; transition: opacity 0.12s;
@@ -358,7 +440,6 @@
         .seg-btn:hover { border-color: var(--border-bright); color: var(--text); }
         .seg-btn.selected { background: var(--green-glow); border-color: var(--green); color: var(--green); }
 
-        /* profile badge chips */
         .profile-chips { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-bottom: 12px; }
         .chip {
             display: inline-flex; align-items: center; gap: 4px;
@@ -370,7 +451,6 @@
         .chip.chip-yeah { border-color: var(--yeah); color: var(--yeah); background: rgba(255,127,0,0.08); }
         .chip.chip-fresh { border-color: var(--fresh); color: var(--fresh); background: rgba(0,212,240,0.08); }
 
-        /* inspect modal extra fields */
         .inspect-field { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px 14px; margin-bottom: 8px; font-size: 0.82rem; display: flex; align-items: center; gap: 10px; }
         .inspect-field-icon { font-size: 1rem; flex-shrink: 0; }
         .inspect-field-label { font-size: 0.68rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-3); display: block; margin-bottom: 1px; }
@@ -395,8 +475,6 @@
         .reply-content { font-size: 0.84rem; line-height: 1.5; color: var(--text); word-break: break-word; }
         .reply-del { background: none; border: none; color: var(--text-3); cursor: pointer; font-size: 0.72rem; padding: 2px 5px; border-radius: 4px; transition: all 0.12s; }
         .reply-del:hover { color: var(--danger); background: rgba(239,68,68,0.1); }
-        .show-replies-btn { background: none; border: none; color: var(--green); font-size: 0.76rem; font-weight: 700; cursor: pointer; padding: 4px 0; display: flex; align-items: center; gap: 5px; transition: opacity 0.12s; }
-        .show-replies-btn:hover { opacity: 0.75; }
         .reply-composer { margin-top: 10px; border-top: 1px solid var(--border); padding-top: 10px; display: flex; gap: 8px; align-items: flex-start; }
         .reply-composer-ava { width: 28px; height: 28px; border-radius: 7px; background: var(--surface2); border: 1px solid var(--green); overflow: hidden; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 800; color: var(--green); flex-shrink: 0; }
         .reply-composer-ava img { width: 100%; height: 100%; object-fit: cover; }
@@ -425,6 +503,9 @@
         .notif-empty { text-align: center; padding: 32px 16px; color: var(--text-3); }
         .notif-empty-icon { font-size: 2rem; margin-bottom: 8px; }
 
+        /* DM NOTIF STYLE */
+        .notif-item.dm-notif { border-color: rgba(0,212,240,0.4); background: rgba(0,212,240,0.06); }
+
         .toast-stack { position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 8px; z-index: 500; }
         .toast {
             padding: 11px 18px; border-radius: 10px; font-size: 0.82rem; font-weight: 700;
@@ -447,6 +528,65 @@
         .telem-val { font-size: 1.2rem; font-weight: 900; color: var(--green); }
         .telem-lbl { font-size: 0.65rem; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.07em; margin-top: 1px; }
 
+        /* ── ADMIN PANEL ── */
+        .admin-section { margin-bottom: 18px; }
+        .admin-section-title { font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-3); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+        .admin-section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+        .user-row {
+            display: flex; align-items: center; gap: 10px; padding: 8px 10px;
+            background: var(--surface2); border: 1px solid var(--border);
+            border-radius: var(--radius-sm); margin-bottom: 6px; transition: border-color 0.15s;
+        }
+        .user-row:hover { border-color: var(--border-bright); }
+        .user-row.banned { border-color: rgba(239,68,68,0.4); background: rgba(239,68,68,0.05); }
+        .user-row-ava { width: 32px; height: 32px; border-radius: 8px; background: var(--surface); border: 1px solid var(--border-bright); overflow: hidden; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 800; color: var(--text-2); flex-shrink: 0; }
+        .user-row-ava img { width: 100%; height: 100%; object-fit: cover; }
+        .user-row-info { flex: 1; min-width: 0; }
+        .user-row-name { font-size: 0.82rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .user-row-handle { font-size: 0.7rem; color: var(--text-3); }
+        .user-row-actions { display: flex; gap: 4px; flex-shrink: 0; }
+
+        .banned-chip { background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.4); color: var(--danger); font-size: 0.62rem; font-weight: 800; padding: 1px 6px; border-radius: 4px; text-transform: uppercase; }
+
+        /* broadcast banner style */
+        .broadcast-notice {
+            background: rgba(245,158,11,0.1); border: 1.5px solid var(--warn);
+            border-radius: var(--radius); padding: 12px 16px; margin-bottom: 10px;
+            display: flex; align-items: flex-start; gap: 10px;
+        }
+        .broadcast-notice-icon { font-size: 1.2rem; }
+        .broadcast-notice-text { font-size: 0.84rem; color: var(--text); line-height: 1.5; }
+
+        /* DM composer */
+        .dm-target { background: var(--green-glow); border: 1px solid var(--green); border-radius: var(--radius-sm); padding: 8px 12px; font-size: 0.8rem; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; }
+        .dm-target strong { color: var(--green); }
+
+        /* image lightbox */
+        #lightbox {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.92);
+            z-index: 999; display: flex; align-items: center; justify-content: center;
+            cursor: zoom-out; animation: lb-in 0.15s ease;
+        }
+        @keyframes lb-in { from { opacity:0; } to { opacity:1; } }
+        #lightbox img { max-width: 92vw; max-height: 92vh; border-radius: 10px; object-fit: contain; }
+        #lightbox-close { position: absolute; top: 20px; right: 24px; background: none; border: none; color: #fff; font-size: 2rem; cursor: pointer; line-height: 1; }
+
+        /* back to top */
+        #back-top {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            background: var(--surface); border: 1px solid var(--border-bright);
+            color: var(--text-2); padding: 7px 16px; border-radius: var(--radius-pill);
+            font-size: 0.78rem; font-weight: 700; cursor: pointer; box-shadow: var(--shadow);
+            opacity: 0; pointer-events: none; transition: opacity 0.2s;
+            z-index: 50;
+        }
+        #back-top.visible { opacity: 1; pointer-events: auto; }
+        #back-top:hover { background: var(--surface2); color: var(--text); }
+
+        /* keyboard hint */
+        .kbd { display: inline-block; background: var(--surface2); border: 1px solid var(--border-bright); border-radius: 4px; padding: 1px 5px; font-size: 0.68rem; font-family: monospace; color: var(--text-3); }
+
         /* ── MISC ── */
         .sep { border: none; border-top: 1px solid var(--border); margin: 14px 0; }
         .hidden { display: none !important; }
@@ -455,6 +595,8 @@
         .mt-10 { margin-top: 10px; }
         .text-muted { color: var(--text-3); font-size: 0.8rem; }
         .admin-note { font-size: 0.68rem; color: var(--text-3); font-style: italic; }
+        .danger-zone { border: 1px solid rgba(239,68,68,0.3); border-radius: var(--radius-sm); padding: 12px; background: rgba(239,68,68,0.04); }
+        .danger-zone-title { font-size: 0.68rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--danger); margin-bottom: 10px; }
     </style>
 </head>
 <body>
@@ -470,12 +612,16 @@
         </a>
         <div class="topbar-right">
             <span class="clock" id="clock">--:--:-- UTC</span>
-            <button class="btn btn-ghost btn-sm" onclick="toggleTheme()">🌓</button>
+            <button class="btn btn-ghost btn-sm" onclick="toggleTheme()" title="Toggle theme">🌓</button>
+            <button class="btn btn-ghost btn-sm" onclick="openBookmarksModal()" title="Bookmarks">🔖</button>
             <div id="notif-bell" class="hidden">
                 <button class="notif-bell-btn" onclick="openNotifModal()" id="notif-bell-btn" title="Notifications">
                     🔔
                     <span class="notif-badge hidden" id="notif-badge">0</span>
                 </button>
+            </div>
+            <div id="admin-btn-wrap" class="hidden">
+                <button class="btn btn-sm" style="background:var(--danger); color:#fff; box-shadow:none;" onclick="openAdminPanel()">⚡ Admin</button>
             </div>
             <div id="nav-auth"></div>
         </div>
@@ -487,7 +633,7 @@
         <!-- LEFT COL -->
         <aside class="left-col">
 
-            <!-- PROFILE / GUEST CARD -->
+            <!-- PROFILE CARD -->
             <div class="card profile-card" id="card-profile">
                 <div class="profile-avatar" id="profile-ava" onclick="openProfileEdit()">?</div>
                 <div class="profile-name" id="profile-name">Guest</div>
@@ -496,6 +642,7 @@
                 <div class="stat-row hidden" id="stat-row">
                     <div class="stat-item"><div class="stat-num" id="stat-posts">0</div><div class="stat-label">Posts</div></div>
                     <div class="stat-item"><div class="stat-num" id="stat-channels">0</div><div class="stat-label">Channels</div></div>
+                    <div class="stat-item"><div class="stat-num" id="stat-bookmarks">0</div><div class="stat-label">Saved</div></div>
                 </div>
                 <button class="btn btn-ghost" style="width:100%; font-size:0.8rem;" id="btn-profile-action" onclick="openAuthModal()">Sign In</button>
             </div>
@@ -506,10 +653,10 @@
                 <div class="comm-grid" id="comm-list"></div>
                 <div class="hidden mt-10" id="new-comm-form">
                     <hr class="sep">
-                    <input type="text" class="field" id="new-comm-input" placeholder="New hub name..." maxlength="40">
+                    <input type="text" class="field" id="new-comm-input" placeholder="New channel name…" maxlength="40">
                     <button class="btn" style="width:100%;" onclick="createComm()">Launch Channel</button>
                 </div>
-                <button class="btn btn-ghost btn-sm hidden mt-10" id="btn-new-comm" style="width:100%;" onclick="document.getElementById('new-comm-form').classList.toggle('hidden'); document.getElementById('new-comm-input').focus()">+ New Hub</button>
+                <button class="btn btn-ghost btn-sm hidden mt-10" id="btn-new-comm" style="width:100%;" onclick="document.getElementById('new-comm-form').classList.toggle('hidden'); document.getElementById('new-comm-input').focus()">+ New Channel</button>
             </div>
 
             <!-- TELEMETRY -->
@@ -523,16 +670,40 @@
                 </div>
             </div>
 
+            <!-- KEYBOARD HINTS -->
+            <div class="card" style="padding:12px 16px;">
+                <div class="card-title">Shortcuts</div>
+                <div style="display:flex; flex-direction:column; gap:6px; font-size:0.75rem; color:var(--text-2);">
+                    <div><span class="kbd">N</span> New post</div>
+                    <div><span class="kbd">/</span> Search</div>
+                    <div><span class="kbd">Esc</span> Close modal</div>
+                    <div><span class="kbd">B</span> Bookmarks</div>
+                    <div><span class="kbd">@</span> Mention user</div>
+                </div>
+            </div>
+
         </aside>
 
         <!-- FEED COL -->
         <main class="feed-col">
 
-            <!-- SEARCH -->
-            <div class="card" style="padding: 12px 16px;">
-                <div class="search-wrap">
+            <!-- SEARCH + FILTERS -->
+            <div class="card" style="padding: 12px 16px; display:flex; flex-direction:column; gap:10px;">
+                <div class="search-wrap" style="position:relative;">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-                    <input type="search" class="search-input" id="search" placeholder="Search posts and authors…" oninput="filterFeed()">
+                    <input type="search" class="search-input" id="search" placeholder="Search posts and authors… (or press /)" oninput="filterFeed()">
+                </div>
+                <div class="feed-toolbar">
+                    <button class="filter-btn active" id="filter-all" onclick="setFilter('all', this)">All</button>
+                    <button class="filter-btn" id="filter-media" onclick="setFilter('media', this)">📷 Media</button>
+                    <button class="filter-btn" id="filter-bookmarks" onclick="setFilter('bookmarks', this)">🔖 Saved</button>
+                    <button class="filter-btn" id="filter-mine" onclick="setFilter('mine', this)">👤 Mine</button>
+                    <div style="margin-left:auto;">
+                        <select class="field" id="sort-select" style="margin-bottom:0; padding:4px 8px; font-size:0.75rem; width:auto;" onchange="filterFeed()">
+                            <option value="new">Newest</option>
+                            <option value="top">Top Reacted</option>
+                        </select>
+                    </div>
                 </div>
             </div>
 
@@ -543,7 +714,7 @@
             </div>
 
             <!-- COMPOSER -->
-            <div class="card hidden" id="composer">
+            <div class="card hidden" id="composer" style="position:relative;">
                 <div class="composer-header">
                     <div class="composer-avatar" id="composer-ava">?</div>
                     <div style="flex:1; font-size:0.82rem; color:var(--text-2);">Posting to <strong id="composer-comm-label" style="color:var(--green);">#general</strong></div>
@@ -552,14 +723,21 @@
                     <button class="fmt-btn" onclick="fmt('[b]','[/b]')"><b>B</b></button>
                     <button class="fmt-btn" onclick="fmt('[i]','[/i]')"><em>I</em></button>
                     <button class="fmt-btn" onclick="fmt('[spoiler]','[/spoiler]')">👁 Spoiler</button>
-                    <button class="img-toggle-btn" onclick="toggleImgField()">🖼 Image</button>
+                    <button class="img-toggle-btn" id="img-toggle-btn" onclick="toggleImgField()">🖼 Image</button>
                     <button class="btn btn-ghost btn-xs hidden" id="btn-pin" onclick="promptPin()">📌 Set Pin</button>
                 </div>
-                <textarea class="composer-textarea mt-10" id="post-input" maxlength="280" placeholder="What's happening in the plaza…" oninput="onType()"></textarea>
-                <input type="url" class="img-url-input hidden" id="img-url" placeholder="Image URL (https://…)">
+                <div style="position:relative;">
+                    <textarea class="composer-textarea mt-10" id="post-input" maxlength="280" placeholder="What's happening in the plaza… (@ to mention)" oninput="onType()" onkeydown="handleComposerKey(event)"></textarea>
+                    <div class="mention-dropdown hidden" id="mention-dropdown" style="position:absolute; bottom:0; left:0; min-width:180px;"></div>
+                </div>
+                <div id="img-preview" class="hidden mt-10"></div>
+                <input type="url" class="img-url-input hidden mt-10" id="img-url" placeholder="Image URL (https://…)" oninput="previewImage()">
                 <div class="composer-footer mt-10">
                     <span class="char-meter" id="char-count">0 / 280</span>
-                    <button class="btn btn-sm" onclick="submitPost()">Post</button>
+                    <div style="display:flex; gap:6px;">
+                        <button class="btn btn-ghost btn-sm" onclick="clearDraft()" title="Clear draft">🗑</button>
+                        <button class="btn btn-sm" onclick="submitPost()">Post</button>
+                    </div>
                 </div>
             </div>
 
@@ -571,6 +749,12 @@
         <!-- RIGHT COL -->
         <aside class="right-col">
 
+            <!-- TRENDING -->
+            <div class="card" id="trending-card">
+                <div class="card-title">🔥 Trending Posts</div>
+                <div id="trending-list"><span class="text-muted">Loading…</span></div>
+            </div>
+
             <!-- POLL -->
             <div class="card" id="poll-card">
                 <div class="row-between" style="margin-bottom:12px;">
@@ -578,7 +762,6 @@
                     <button class="btn btn-ghost btn-xs hidden" id="btn-new-poll" onclick="togglePollCreator()">+ New Poll</button>
                 </div>
 
-                <!-- Poll creator (hidden by default) -->
                 <div class="hidden" id="poll-creator">
                     <input type="text" class="field" id="poll-q" placeholder="Question…" maxlength="200">
                     <input type="text" class="field" id="poll-o1" placeholder="Option 1" maxlength="80">
@@ -592,12 +775,10 @@
                     <hr class="sep">
                 </div>
 
-                <!-- Poll display -->
                 <div id="poll-display">
                     <div class="poll-empty">
                         <div class="poll-empty-icon">📊</div>
                         <div>No poll active in this channel.</div>
-                        <div class="text-muted mt-10" id="poll-empty-hint"></div>
                     </div>
                 </div>
             </div>
@@ -619,7 +800,12 @@
     </div>
 </div>
 
-<!-- ── MODALS ── -->
+<!-- BACK TO TOP -->
+<button id="back-top" onclick="window.scrollTo({top:0, behavior:'smooth'})">↑ Back to top</button>
+
+<!-- ══════════════════════════════════════
+     MODALS
+═══════════════════════════════════════ -->
 
 <!-- AUTH MODAL -->
 <div class="overlay hidden" id="modal-auth" onclick="closeModal('modal-auth')">
@@ -718,7 +904,8 @@
         <div style="background:var(--surface2); border:1px solid var(--border); border-radius:var(--radius-sm); padding:14px; font-size:0.85rem; line-height:1.6; text-align:left; margin-bottom:10px; min-height:40px;" id="inspect-bio">-</div>
         <div id="inspect-extra"></div>
         <div style="font-size:0.72rem; color:var(--text-3); margin-bottom:16px;" id="inspect-joined"></div>
-        <button class="btn" style="width:100%;" onclick="closeModal('modal-user')">Close</button>
+        <div id="inspect-dm-btn-wrap"></div>
+        <button class="btn" style="width:100%; margin-top:8px;" onclick="closeModal('modal-user')">Close</button>
     </div>
 </div>
 
@@ -739,12 +926,135 @@
     </div>
 </div>
 
+<!-- BOOKMARKS MODAL -->
+<div class="overlay hidden" id="modal-bookmarks" onclick="closeModal('modal-bookmarks')">
+    <div class="modal" onclick="event.stopPropagation()" style="max-width:500px; max-height:85vh; display:flex; flex-direction:column;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+            <div class="modal-title" style="margin-bottom:0;">🔖 Bookmarks</div>
+            <button class="btn btn-danger-ghost btn-xs" onclick="clearAllBookmarks()">Clear all</button>
+        </div>
+        <div id="bookmarks-list" style="overflow-y:auto; flex:1; display:flex; flex-direction:column; gap:8px;"></div>
+        <button class="btn btn-ghost btn-sm mt-10" onclick="closeModal('modal-bookmarks')">Close</button>
+    </div>
+</div>
+
+<!-- ADMIN PANEL MODAL -->
+<div class="overlay hidden" id="modal-admin" onclick="closeModal('modal-admin')">
+    <div class="modal" onclick="event.stopPropagation()" style="max-width:560px; max-height:90vh; overflow-y:auto;">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:20px;">
+            <div style="background:var(--danger); width:32px; height:32px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:1.1rem;">⚡</div>
+            <div class="modal-title" style="margin-bottom:0; color:var(--danger);">Admin Panel</div>
+        </div>
+
+        <!-- BROADCAST -->
+        <div class="admin-section">
+            <div class="admin-section-title">📢 Global Broadcast</div>
+            <p style="font-size:0.8rem; color:var(--text-2); margin-bottom:10px;">Send a system notification to all online users (appears in their notification bell).</p>
+            <textarea class="field" id="broadcast-text" style="height:60px; resize:none; margin-bottom:8px;" maxlength="300" placeholder="Broadcast message…"></textarea>
+            <button class="btn btn-sm btn-warn-ghost" onclick="sendBroadcast()" style="border-color:var(--warn); color:var(--warn);">📢 Send Broadcast</button>
+        </div>
+
+        <!-- DM USERS -->
+        <div class="admin-section">
+            <div class="admin-section-title">💬 Direct Message User</div>
+            <input type="text" class="field" id="dm-username-input" placeholder="Username to DM…" style="margin-bottom:6px;">
+            <textarea class="field" id="dm-message-input" style="height:60px; resize:none; margin-bottom:8px;" maxlength="500" placeholder="Message…"></textarea>
+            <button class="btn btn-ghost btn-sm" onclick="sendAdminDM()">Send DM</button>
+        </div>
+
+        <!-- USER MANAGEMENT -->
+        <div class="admin-section">
+            <div class="admin-section-title">👥 User Management</div>
+            <div style="display:flex; gap:8px; margin-bottom:10px;">
+                <input type="text" class="field" id="admin-search-user" placeholder="Filter users…" style="margin-bottom:0; flex:1;" oninput="filterAdminUsers()">
+                <button class="btn btn-ghost btn-sm" onclick="loadAdminUsers()">↺ Refresh</button>
+            </div>
+            <div id="admin-user-list" style="max-height:280px; overflow-y:auto; display:flex; flex-direction:column; gap:6px;">
+                <span class="text-muted">Loading…</span>
+            </div>
+        </div>
+
+        <!-- CHANNEL TOOLS -->
+        <div class="admin-section">
+            <div class="admin-section-title">📋 Channel Tools</div>
+            <div style="display:flex; gap:8px; align-items:flex-end; flex-wrap:wrap;">
+                <div style="flex:1;">
+                    <div class="field-label">Channel ID</div>
+                    <select class="field" id="admin-channel-select" style="margin-bottom:0;">
+                        <option value="general">general</option>
+                        <option value="splatoon">splatoon</option>
+                        <option value="animal-crossing">animal-crossing</option>
+                    </select>
+                </div>
+                <button class="btn btn-danger-ghost btn-sm" onclick="adminNukePosts()">🗑 Wipe All Posts</button>
+            </div>
+            <p class="admin-note mt-10">Wiping posts removes all posts in the selected channel permanently.</p>
+        </div>
+
+        <!-- PIN MANAGEMENT -->
+        <div class="admin-section">
+            <div class="admin-section-title">📌 Board Pin</div>
+            <input type="text" class="field" id="admin-pin-input" placeholder="Pin text for current channel…" maxlength="500">
+            <div style="display:flex; gap:6px;">
+                <button class="btn btn-sm" onclick="adminSetPin()">Set Pin</button>
+                <button class="btn btn-ghost btn-sm" onclick="adminClearPin()">Clear Pin</button>
+            </div>
+        </div>
+
+        <!-- POLL MANAGEMENT -->
+        <div class="admin-section">
+            <div class="admin-section-title">📊 Poll Management</div>
+            <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                <button class="btn btn-ghost btn-sm" onclick="openAdminPollCreator()">+ New Poll (Current Channel)</button>
+                <button class="btn btn-danger-ghost btn-sm" onclick="nukePoll()">🗑 Nuke Poll</button>
+            </div>
+        </div>
+
+        <!-- DANGER ZONE -->
+        <div class="danger-zone">
+            <div class="danger-zone-title">⚠️ Danger Zone</div>
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                <button class="btn btn-danger btn-sm" onclick="adminForceLogoutAll()">Force Logout All</button>
+                <button class="btn btn-danger-ghost btn-sm" onclick="adminExportKV()">📤 Export Telemetry</button>
+            </div>
+            <p class="admin-note mt-10">Force logout invalidates all active sessions. Users must sign in again.</p>
+        </div>
+
+        <div style="margin-top:20px; text-align:right;">
+            <button class="btn btn-ghost btn-sm" onclick="closeModal('modal-admin')">Close</button>
+        </div>
+    </div>
+</div>
+
+<!-- DM MODAL -->
+<div class="overlay hidden" id="modal-dm" onclick="closeModal('modal-dm')">
+    <div class="modal" onclick="event.stopPropagation()" style="max-width:400px;">
+        <div class="modal-title">💬 Send Message</div>
+        <div class="dm-target" id="dm-target-display"><strong>@-</strong></div>
+        <textarea class="field" id="dm-modal-text" style="height:80px; resize:none; margin-bottom:10px;" maxlength="500" placeholder="Your message…"></textarea>
+        <div style="display:flex; gap:8px; justify-content:flex-end;">
+            <button class="btn btn-ghost btn-sm" onclick="closeModal('modal-dm')">Cancel</button>
+            <button class="btn btn-sm" onclick="sendDMFromModal()">Send</button>
+        </div>
+    </div>
+</div>
+
+<!-- IMAGE LIGHTBOX -->
+<div id="lightbox" style="display:none;" onclick="closeLightbox()">
+    <button id="lightbox-close" onclick="closeLightbox()">✕</button>
+    <img id="lightbox-img" src="" alt="">
+</div>
+
 <!-- TOAST STACK -->
 <div class="toast-stack" id="toast-stack"></div>
 
 <script>
 const API = "https://codyverse.codymkw.workers.dev";
 let me = null, myProfile = null, community = "general", postsCache = [], authMode = "login";
+let activeFilter = "all", allUsers = [];
+let dmTargetUsername = null;
+let mentionUsers = [], mentionIndex = 0, mentionQuery = "";
+let mentionActive = false;
 
 // ── API ──────────────────────────────────────────────
 function getToken() { return localStorage.getItem("plaza_token"); }
@@ -791,6 +1101,7 @@ function fmt_content(s) {
     r = r.replace(/\[b\](.*?)\[\/b\]/gis, "<strong>$1</strong>");
     r = r.replace(/\[i\](.*?)\[\/i\]/gis, "<em>$1</em>");
     r = r.replace(/\[spoiler\](.*?)\[\/spoiler\]/gis, '<span class="spoiler" onclick="this.classList.toggle(\'open\')">$1</span>');
+    r = r.replace(/@([a-zA-Z0-9_]{2,24})/g, '<span class="mention" onclick="inspectUser(\'$1\')">@$1</span>');
     return r;
 }
 function ago(ts) {
@@ -802,6 +1113,7 @@ function ago(ts) {
     if (d < 86400000) return `${Math.floor(d/3600000)}h`;
     return new Date(ts).toLocaleDateString(undefined, { month:"short", day:"numeric" });
 }
+function fullDate(ts) { return ts ? new Date(ts).toLocaleString(undefined, { dateStyle:"medium", timeStyle:"short" }) : ""; }
 function isAdmin() { return me === "codymkw"; }
 function initials(s) { return (s||"?").charAt(0).toUpperCase(); }
 
@@ -826,6 +1138,103 @@ function toggleTheme() {
 }
 (function(){ const t = localStorage.getItem("plaza_theme"); if(t) document.documentElement.setAttribute("data-theme", t); })();
 
+// ── BOOKMARKS ─────────────────────────────────────────
+function getBookmarks() { return JSON.parse(localStorage.getItem("plaza_bookmarks") || "[]"); }
+function saveBookmarks(b) { localStorage.setItem("plaza_bookmarks", JSON.stringify(b)); updateBookmarkCount(); }
+function isBookmarked(id) { return getBookmarks().includes(id); }
+function toggleBookmark(postId) {
+    let b = getBookmarks();
+    if (b.includes(postId)) {
+        b = b.filter(x => x !== postId);
+        toast("Bookmark removed.", "info");
+    } else {
+        b.push(postId);
+        toast("Saved!", "ok");
+        sfx("click");
+    }
+    saveBookmarks(b);
+    // Re-render just the bookmark button state
+    const btn = document.querySelector(`#p-${postId} .bookmark-btn`);
+    if (btn) {
+        btn.classList.toggle("bookmarked", b.includes(postId));
+        btn.title = b.includes(postId) ? "Remove bookmark" : "Bookmark";
+        btn.textContent = b.includes(postId) ? "🔖" : "🏷";
+    }
+}
+function updateBookmarkCount() {
+    const count = getBookmarks().length;
+    const el = document.getElementById("stat-bookmarks");
+    if (el) el.textContent = count;
+}
+
+function openBookmarksModal() {
+    const bookmarks = getBookmarks();
+    const el = document.getElementById("bookmarks-list");
+    if (!bookmarks.length) {
+        el.innerHTML = `<div style="text-align:center; padding:32px; color:var(--text-3);"><div style="font-size:2rem; margin-bottom:8px;">🔖</div>No bookmarks yet.<br><span style="font-size:0.78rem;">Tap 🏷 on any post to save it.</span></div>`;
+    } else {
+        const saved = postsCache.filter(p => bookmarks.includes(p.id));
+        if (!saved.length) {
+            el.innerHTML = `<div style="text-align:center; padding:32px; color:var(--text-3);">Saved posts aren't in this channel.<br><span style="font-size:0.78rem;">${bookmarks.length} bookmark(s) stored.</span></div>`;
+        } else {
+            el.innerHTML = saved.map(p => `
+                <div style="padding:12px; background:var(--surface2); border:1px solid var(--border); border-radius:var(--radius-sm);">
+                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+                        <span style="font-weight:800; font-size:0.85rem; cursor:pointer; color:var(--text);" onclick="closeModal('modal-bookmarks'); jumpToPost('${esc(p.id)}')">${esc(p.displayName||p.username)}</span>
+                        <span style="font-size:0.72rem; color:var(--text-3);">@${esc(p.username)} · ${ago(p.timestamp)}</span>
+                    </div>
+                    <div style="font-size:0.84rem; color:var(--text); line-height:1.5;">${fmt_content(p.content)}</div>
+                    <button class="btn btn-danger-ghost btn-xs" style="margin-top:8px;" onclick="toggleBookmark('${esc(p.id)}'); openBookmarksModal();">Remove</button>
+                </div>
+            `).join("");
+        }
+    }
+    document.getElementById("modal-bookmarks").classList.remove("hidden");
+}
+
+function clearAllBookmarks() {
+    if (!confirm("Clear all bookmarks?")) return;
+    saveBookmarks([]);
+    openBookmarksModal();
+}
+
+function jumpToPost(postId) {
+    const el = document.getElementById(`p-${postId}`);
+    if (el) {
+        el.scrollIntoView({ behavior:"smooth", block:"center" });
+        el.style.transition = "box-shadow 0.3s";
+        el.style.boxShadow = "0 0 0 2px var(--warn)";
+        setTimeout(() => el.style.boxShadow = "", 2000);
+    }
+}
+
+// ── BACK TO TOP ────────────────────────────────────────
+window.addEventListener("scroll", () => {
+    document.getElementById("back-top").classList.toggle("visible", window.scrollY > 600);
+});
+
+// ── KEYBOARD SHORTCUTS ────────────────────────────────
+document.addEventListener("keydown", e => {
+    // Don't fire if typing in a field
+    const tag = document.activeElement.tagName;
+    if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") {
+        if (e.key === "Escape") document.querySelectorAll(".overlay:not(.hidden)").forEach(m => m.classList.add("hidden"));
+        return;
+    }
+    if (e.key === "Escape") document.querySelectorAll(".overlay:not(.hidden)").forEach(m => m.classList.add("hidden"));
+    if (e.key === "n" || e.key === "N") {
+        const ta = document.getElementById("post-input");
+        if (ta && !document.getElementById("composer").classList.contains("hidden")) {
+            ta.focus();
+        }
+    }
+    if (e.key === "/") {
+        e.preventDefault();
+        document.getElementById("search").focus();
+    }
+    if (e.key === "b" || e.key === "B") openBookmarksModal();
+});
+
 // ── AUTH ───────────────────────────────────────────────
 async function boot() {
     if (getToken()) {
@@ -833,7 +1242,7 @@ async function boot() {
         if (res?.ok) {
             const d = await res.json();
             if (d.username) { me = d.username; myProfile = d.profile; }
-            else saveToken(null); // token expired/invalid, clear it
+            else saveToken(null);
         } else {
             saveToken(null);
         }
@@ -856,15 +1265,14 @@ function renderAuthUI() {
         document.getElementById("stat-row").classList.remove("hidden");
         if (isAdmin()) {
             document.getElementById("btn-pin").classList.remove("hidden");
+            document.getElementById("admin-btn-wrap").classList.remove("hidden");
         }
-        // Profile card
         const ava = document.getElementById("profile-ava");
         renderAvatar(myProfile?.avatarUrl, me, ava);
         document.getElementById("profile-name").textContent = myProfile?.displayName || me;
         document.getElementById("profile-handle").textContent = `@${me}`;
         document.getElementById("profile-bio").textContent = myProfile?.bio || "";
 
-        // Chips under bio
         const chipMap = { "Beginner":"chip","Intermediate":"chip chip-fresh","Expert":"chip chip-yeah","Casual":"chip","Competitive":"chip chip-yeah","Speedrunner":"chip chip-fresh","Collector":"chip chip-green" };
         const chipIcon = { "Beginner":"🌱","Intermediate":"⚔️","Expert":"🏆","Casual":"😌","Competitive":"🔥","Speedrunner":"⚡","Collector":"🗃️" };
         const myChips = [myProfile?.experience, myProfile?.playStyle].filter(Boolean);
@@ -881,9 +1289,9 @@ function renderAuthUI() {
         document.getElementById("btn-profile-action").textContent = "Edit Profile";
         document.getElementById("btn-profile-action").onclick = openProfileEdit;
 
-        // Composer avatar
         const ca = document.getElementById("composer-ava");
         renderAvatar(myProfile?.avatarUrl, me, ca);
+        updateBookmarkCount();
     } else {
         document.getElementById("nav-auth").innerHTML = `<button class="btn btn-sm" onclick="openAuthModal()">Sign In</button>`;
         document.getElementById("profile-name").textContent = "Guest";
@@ -942,6 +1350,7 @@ async function doLogout() {
     toast("Signed out.", "info");
     document.getElementById("notif-bell").classList.add("hidden");
     document.getElementById("notif-badge").classList.add("hidden");
+    document.getElementById("admin-btn-wrap").classList.add("hidden");
     notifCache = [];
     renderAuthUI();
     document.getElementById("composer").classList.add("hidden");
@@ -960,7 +1369,6 @@ function openProfileEdit() {
     document.getElementById("edit-fc").value = myProfile?.friendCode || "";
     document.getElementById("edit-fav-game").value = myProfile?.favGame || "";
     document.getElementById("edit-timezone").value = myProfile?.timezone || "";
-    // Restore segmented selections
     setSeg("edit-experience", null, myProfile?.experience || "");
     setSeg("edit-playstyle", null, myProfile?.playStyle || "");
     document.getElementById("modal-profile").classList.remove("hidden");
@@ -976,7 +1384,6 @@ async function saveProfile() {
     const playStyle = getSegVal("edit-playstyle");
     const timezone = document.getElementById("edit-timezone").value;
 
-    // Validate friend code format if provided
     if (friendCode && !/^SW-\d{4}-\d{4}-\d{4}$/i.test(friendCode)) {
         toast("Friend code must be SW-XXXX-XXXX-XXXX", "err"); return;
     }
@@ -998,14 +1405,23 @@ async function loadChannels() {
     const list = await res.json();
     document.getElementById("tel-channels").textContent = list.length;
     document.getElementById("stat-channels").textContent = list.length;
+
+    // Populate admin channel select
+    const adminSel = document.getElementById("admin-channel-select");
+    if (adminSel) {
+        const currentVal = adminSel.value;
+        adminSel.innerHTML = list.map(c => `<option value="${esc(c.id)}">${esc(c.name)}</option>`).join("");
+        if (currentVal) adminSel.value = currentVal;
+    }
+
     const box = document.getElementById("comm-list");
     box.innerHTML = list.map(c => `
         <button class="comm-btn ${c.id === community ? "active" : ""}" onclick="switchChannel('${esc(c.id)}')">
-            <span>${esc(c.name)}</span>
-            ${(!c.system && isAdmin()) ? `<button class="comm-del" onclick="event.stopPropagation();delComm('${esc(c.id)}')">✕</button>` : ""}
+            <span class="comm-name">${esc(c.name)}</span>
+            ${(!c.system && isAdmin()) ? `<button class="comm-del" onclick="event.stopPropagation();delComm('${esc(c.id)}')" title="Delete channel">✕</button>` : ""}
         </button>
     `).join("");
-    // Update composer label
+
     const current = list.find(c => c.id === community);
     document.getElementById("composer-comm-label").textContent = `#${current?.name || community}`;
 }
@@ -1034,7 +1450,7 @@ async function createComm() {
 }
 
 async function delComm(id) {
-    if (!confirm(`Delete channel "${id}"? Posts will remain in KV but the channel won't appear.`)) return;
+    if (!confirm(`Delete channel "${id}"?`)) return;
     const res = await api("/api/communities/delete", { method: "POST", body: { id } });
     if (res.ok) { if (community === id) switchChannel("general"); else loadChannels(); }
 }
@@ -1047,10 +1463,74 @@ async function loadFeed() {
     document.getElementById("tel-posts").textContent = postsCache.length;
     document.getElementById("stat-posts").textContent = postsCache.length;
     renderFeed(postsCache);
+    renderTrending();
 }
 
+// ── FILTER / SORT ──────────────────────────────────────
+function setFilter(f, btn) {
+    activeFilter = f;
+    document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    filterFeed();
+}
+
+function filterFeed() {
+    const q = document.getElementById("search").value.toLowerCase();
+    const sort = document.getElementById("sort-select").value;
+    const bookmarks = getBookmarks();
+
+    let posts = [...postsCache];
+
+    if (activeFilter === "media") posts = posts.filter(p => p.imageUrl);
+    else if (activeFilter === "bookmarks") posts = posts.filter(p => bookmarks.includes(p.id));
+    else if (activeFilter === "mine") posts = posts.filter(p => p.username === me);
+
+    if (q) posts = posts.filter(p =>
+        p.content.toLowerCase().includes(q) ||
+        (p.displayName||"").toLowerCase().includes(q) ||
+        p.username.toLowerCase().includes(q)
+    );
+
+    if (sort === "top") {
+        posts = [...posts].sort((a, b) => {
+            const ar = (a.reactions?.yeah||0)+(a.reactions?.fresh||0)+(a.reactions?.cozy||0);
+            const br = (b.reactions?.yeah||0)+(b.reactions?.fresh||0)+(b.reactions?.cozy||0);
+            return br - ar;
+        });
+    }
+
+    renderFeed(posts);
+}
+
+// ── TRENDING ───────────────────────────────────────────
+function renderTrending() {
+    const el = document.getElementById("trending-list");
+    const scored = postsCache.map(p => ({
+        ...p,
+        score: (p.reactions?.yeah||0)*3 + (p.reactions?.fresh||0)*2 + (p.reactions?.cozy||0)*1 + (p.replyCount||0)*2
+    })).filter(p => p.score > 0).sort((a,b) => b.score - a.score).slice(0, 5);
+
+    if (!scored.length) {
+        el.innerHTML = `<div class="text-muted" style="padding:8px 0; font-size:0.8rem;">No trending posts yet.</div>`;
+        return;
+    }
+
+    const ranks = ["🥇","🥈","🥉","4","5"];
+    el.innerHTML = scored.map((p, i) => `
+        <div class="trending-item" onclick="jumpToPost('${esc(p.id)}')">
+            <div class="trending-rank">${ranks[i]}</div>
+            <div class="trending-info">
+                <div class="trending-name">${esc(p.displayName||p.username)}: ${esc(p.content.slice(0, 48))}${p.content.length > 48 ? "…" : ""}</div>
+                <div class="trending-meta">@${esc(p.username)} · <span class="trending-fire">🔥 ${p.score} pts</span></div>
+            </div>
+        </div>
+    `).join("");
+}
+
+// ── RENDER FEED ─────────────────────────────────────────
 function renderFeed(posts) {
     const el = document.getElementById("feed");
+    const bookmarks = getBookmarks();
     if (!posts.length) {
         el.innerHTML = `<div class="empty-feed"><div class="empty-feed-icon">🌿</div><h3>This channel is quiet.</h3><p>${me ? "Be the first to post something!" : "Sign in to start the conversation."}</p></div>`;
         return;
@@ -1059,16 +1539,19 @@ function renderFeed(posts) {
         const myR = me && p.reactedUsers?.[me];
         const canDel = me && (me === p.username || isAdmin());
         const replyCount = p.replyCount || 0;
-        return `<div class="post" id="p-${esc(p.id)}">
+        const bookmarked = bookmarks.includes(p.id);
+        const totalReactions = (p.reactions?.yeah||0)+(p.reactions?.fresh||0)+(p.reactions?.cozy||0);
+        return `<div class="post${bookmarked ? " bookmarked-glow" : ""}" id="p-${esc(p.id)}">
             <div class="post-avatar" onclick="inspectUser('${esc(p.username)}')">${p.avatarUrl ? `<img src="${esc(p.avatarUrl)}" onerror="this.parentElement.textContent='${esc(initials(p.displayName))}'">` : esc(initials(p.displayName))}</div>
             <div class="post-body">
                 <div class="post-meta">
                     <span class="post-name" onclick="inspectUser('${esc(p.username)}')">${esc(p.displayName||p.username)}</span>
                     <span class="post-handle">@${esc(p.username)}</span>
                     ${p.username==="codymkw" ? `<span class="post-admin-badge">Admin</span>` : ""}
-                    <span class="post-time">${ago(p.timestamp)}</span>
+                    ${totalReactions > 5 ? `<span style="font-size:0.68rem; color:var(--yeah);">🔥 Hot</span>` : ""}
+                    <span class="post-time" title="${esc(fullDate(p.timestamp))}">${ago(p.timestamp)}</span>
                 </div>
-                <div class="post-content">${fmt_content(p.content)}${p.imageUrl ? `<img src="${esc(p.imageUrl)}" class="post-img" onerror="this.style.display='none'">` : ""}</div>
+                <div class="post-content">${fmt_content(p.content)}${p.imageUrl ? `<img src="${esc(p.imageUrl)}" class="post-img" onclick="openLightbox('${esc(p.imageUrl)}')" onerror="this.style.display='none'">` : ""}</div>
                 <div style="display:flex; align-items:center; gap:6px; margin-top:10px; flex-wrap:wrap;">
                     ${me ? `
                     <button class="react-btn ${myR==="yeah"?"active-yeah":""}" onclick="react('${esc(p.id)}','yeah')">🔥 Yeah <span>${p.reactions?.yeah||0}</span></button>
@@ -1094,10 +1577,13 @@ function renderFeed(posts) {
                     </div>` : ""}
                 </div>
             </div>
-            ${canDel ? `<button class="post-del-btn" onclick="delPost('${esc(p.id)}')">✕</button>` : ""}
+            <div class="post-actions">
+                <button class="post-action-btn bookmark-btn ${bookmarked ? "bookmarked" : ""}" onclick="toggleBookmark('${esc(p.id)}')" title="${bookmarked ? "Remove bookmark" : "Bookmark"}">${bookmarked ? "🔖" : "🏷"}</button>
+                ${canDel ? `<button class="post-action-btn del-btn" onclick="delPost('${esc(p.id)}')" title="Delete post">✕</button>` : ""}
+            </div>
         </div>`;
     }).join("");
-    // Hydrate reply-composer avatars with actual image if available
+
     if (me && myProfile?.avatarUrl) {
         document.querySelectorAll('[id^="reply-ava-"]').forEach(el => {
             el.innerHTML = `<img src="${esc(myProfile.avatarUrl)}" onerror="this.parentElement.textContent='${esc(initials(myProfile?.displayName||me))}'">`;
@@ -1105,14 +1591,15 @@ function renderFeed(posts) {
     }
 }
 
-function filterFeed() {
-    const q = document.getElementById("search").value.toLowerCase();
-    if (!q) { renderFeed(postsCache); return; }
-    renderFeed(postsCache.filter(p =>
-        p.content.toLowerCase().includes(q) ||
-        (p.displayName||"").toLowerCase().includes(q) ||
-        p.username.toLowerCase().includes(q)
-    ));
+// ── LIGHTBOX ───────────────────────────────────────────
+function openLightbox(url) {
+    document.getElementById("lightbox-img").src = url;
+    document.getElementById("lightbox").style.display = "flex";
+    document.body.style.overflow = "hidden";
+}
+function closeLightbox() {
+    document.getElementById("lightbox").style.display = "none";
+    document.body.style.overflow = "";
 }
 
 // ── COMPOSER ────────────────────────────────────────────
@@ -1122,30 +1609,138 @@ function fmt(open, close) {
     ta.value = ta.value.slice(0,s) + open + ta.value.slice(s,e) + close + ta.value.slice(e);
     ta.focus(); updateCharCount();
 }
-function onType() { updateCharCount(); localStorage.setItem(`draft:${community}`, document.getElementById("post-input").value); }
+function onType() { updateCharCount(); localStorage.setItem(`draft:${community}`, document.getElementById("post-input").value); handleMentionDetect(); }
 function updateCharCount() {
     const len = document.getElementById("post-input").value.length;
     const el = document.getElementById("char-count");
     el.textContent = `${len} / 280`;
-    el.className = `char-meter${len>=260?"over":len>=200?" warn":""}`;
+    el.className = `char-meter${len>=260?" over":len>=200?" warn":""}`;
 }
-function toggleImgField() { document.getElementById("img-url").classList.toggle("hidden"); }
+function clearDraft() {
+    document.getElementById("post-input").value = "";
+    document.getElementById("img-url").value = "";
+    document.getElementById("img-preview").innerHTML = "";
+    document.getElementById("img-preview").classList.add("hidden");
+    document.getElementById("img-url").classList.add("hidden");
+    document.getElementById("img-toggle-btn").style.borderColor = "";
+    localStorage.removeItem(`draft:${community}`);
+    updateCharCount();
+}
+function toggleImgField() {
+    const field = document.getElementById("img-url");
+    field.classList.toggle("hidden");
+    if (!field.classList.contains("hidden")) {
+        field.focus();
+        document.getElementById("img-toggle-btn").style.borderColor = "var(--green)";
+    } else {
+        field.value = "";
+        document.getElementById("img-preview").classList.add("hidden");
+        document.getElementById("img-toggle-btn").style.borderColor = "";
+    }
+}
+function previewImage() {
+    const url = document.getElementById("img-url").value.trim();
+    const wrap = document.getElementById("img-preview");
+    if (!url) { wrap.classList.add("hidden"); wrap.innerHTML = ""; return; }
+    wrap.classList.remove("hidden");
+    wrap.innerHTML = `<div class="img-preview-wrap">
+        <img src="${esc(url)}" onerror="this.parentElement.innerHTML='<span style=&quot;font-size:0.78rem; color:var(--danger); padding:8px;&quot;>Image failed to load</span>'">
+        <button class="img-preview-clear" onclick="clearDraft(); document.getElementById('img-url').classList.add('hidden');">✕</button>
+    </div>`;
+}
+
+// ── MENTION SYSTEM ─────────────────────────────────────
+function handleMentionDetect() {
+    const ta = document.getElementById("post-input");
+    const val = ta.value;
+    const caret = ta.selectionStart;
+    const before = val.slice(0, caret);
+    const match = before.match(/@([a-zA-Z0-9_]*)$/);
+    if (match) {
+        mentionQuery = match[1].toLowerCase();
+        mentionActive = true;
+        showMentionDropdown(mentionQuery);
+    } else {
+        mentionActive = false;
+        hideMentionDropdown();
+    }
+}
+
+function showMentionDropdown(query) {
+    // Filter from online users + known users from posts
+    const candidates = [...new Set([
+        ...postsCache.map(p => ({ username: p.username, displayName: p.displayName, avatarUrl: p.avatarUrl }))
+    ])].filter(u => u.username.toLowerCase().startsWith(query) || (u.displayName||"").toLowerCase().startsWith(query)).slice(0, 6);
+
+    const el = document.getElementById("mention-dropdown");
+    if (!candidates.length) { hideMentionDropdown(); return; }
+    mentionUsers = candidates;
+    mentionIndex = 0;
+    el.innerHTML = candidates.map((u, i) => `
+        <div class="mention-item ${i===0?"selected":""}" data-idx="${i}" onclick="insertMention(${i})">
+            <div class="mention-ava">${u.avatarUrl ? `<img src="${esc(u.avatarUrl)}" onerror="this.parentElement.textContent='${esc(initials(u.displayName))}'">` : esc(initials(u.displayName))}</div>
+            <div>
+                <div style="font-weight:700;">${esc(u.displayName||u.username)}</div>
+                <div style="font-size:0.7rem; color:var(--text-3);">@${esc(u.username)}</div>
+            </div>
+        </div>
+    `).join("");
+    el.classList.remove("hidden");
+}
+
+function hideMentionDropdown() {
+    document.getElementById("mention-dropdown").classList.add("hidden");
+    mentionUsers = [];
+}
+
+function insertMention(idx) {
+    const user = mentionUsers[idx];
+    if (!user) return;
+    const ta = document.getElementById("post-input");
+    const val = ta.value;
+    const caret = ta.selectionStart;
+    const before = val.slice(0, caret).replace(/@([a-zA-Z0-9_]*)$/, `@${user.username} `);
+    ta.value = before + val.slice(caret);
+    ta.focus();
+    hideMentionDropdown();
+    mentionActive = false;
+    updateCharCount();
+}
+
+function handleComposerKey(e) {
+    if (!mentionActive || !mentionUsers.length) return;
+    if (e.key === "ArrowDown") {
+        e.preventDefault();
+        mentionIndex = (mentionIndex + 1) % mentionUsers.length;
+        updateMentionSelection();
+    } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        mentionIndex = (mentionIndex - 1 + mentionUsers.length) % mentionUsers.length;
+        updateMentionSelection();
+    } else if (e.key === "Enter" || e.key === "Tab") {
+        e.preventDefault();
+        insertMention(mentionIndex);
+    } else if (e.key === "Escape") {
+        hideMentionDropdown();
+        mentionActive = false;
+    }
+}
+
+function updateMentionSelection() {
+    document.querySelectorAll(".mention-item").forEach((el, i) => el.classList.toggle("selected", i === mentionIndex));
+}
 
 async function submitPost() {
     const content = document.getElementById("post-input").value.trim();
     const imageUrl = document.getElementById("img-url").value.trim();
     if (!content) return;
-    const btn = document.querySelector(".composer-footer .btn");
+    const btn = document.querySelector(".composer-footer .btn:last-child");
     btn.disabled = true;
     const res = await api("/api/posts", { method: "POST", body: { content, community, imageUrl } });
     btn.disabled = false;
     if (res.ok) {
         sfx("post");
-        document.getElementById("post-input").value = "";
-        document.getElementById("img-url").value = "";
-        document.getElementById("img-url").classList.add("hidden");
-        localStorage.removeItem(`draft:${community}`);
-        updateCharCount();
+        clearDraft();
         loadFeed();
     } else {
         sfx("error"); toast(await res.text() || "Couldn't post.", "err");
@@ -1160,21 +1755,16 @@ async function delPost(id) {
 }
 
 // ── REPLIES ─────────────────────────────────────────────
-const openReplies = new Set(); // track which post threads are expanded
+const openReplies = new Set();
 
 async function toggleReplies(postId) {
     const thread = document.getElementById(`replies-${postId}`);
     if (!thread) return;
     const isOpen = !thread.classList.contains("hidden");
-    if (isOpen) {
-        thread.classList.add("hidden");
-        openReplies.delete(postId);
-        return;
-    }
+    if (isOpen) { thread.classList.add("hidden"); openReplies.delete(postId); return; }
     thread.classList.remove("hidden");
     openReplies.add(postId);
     await loadReplies(postId);
-    // Focus textarea if signed in
     const ta = document.getElementById(`reply-input-${postId}`);
     if (ta) setTimeout(() => ta.focus(), 50);
 }
@@ -1197,7 +1787,7 @@ async function loadReplies(postId) {
                 <div class="reply-meta">
                     <span class="reply-name" onclick="inspectUser('${esc(r.username)}')">${esc(r.displayName||r.username)}</span>
                     <span class="reply-handle">@${esc(r.username)}</span>
-                    <span class="reply-time">${ago(r.timestamp)}</span>
+                    <span class="reply-time" title="${esc(fullDate(r.timestamp))}">${ago(r.timestamp)}</span>
                     ${canDel ? `<button class="reply-del" onclick="delReply('${esc(postId)}','${esc(r.id)}')">✕</button>` : ""}
                 </div>
                 <div class="reply-content">${fmt_content(r.content)}</div>
@@ -1217,10 +1807,8 @@ async function submitReply(postId) {
     if (res.ok) {
         sfx("post");
         ta.value = "";
-        // Update reply count in cache
         const post = postsCache.find(p => p.id === postId);
         if (post) post.replyCount = (post.replyCount || 0) + 1;
-        // Re-render reply count badge on the button without full feed reload
         const replyBtn = document.querySelector(`#p-${postId} .reply-btn`);
         if (replyBtn) {
             const count = post?.replyCount || 1;
@@ -1263,7 +1851,8 @@ async function react(postId, reaction) {
             if (d.myReaction) post.reactedUsers[me] = d.myReaction;
             else delete post.reactedUsers[me];
         }
-        renderFeed(postsCache);
+        filterFeed();
+        renderTrending();
     }
 }
 
@@ -1280,21 +1869,13 @@ async function inspectUser(username) {
     document.getElementById("inspect-bio").textContent = p.bio || "No bio.";
     document.getElementById("inspect-joined").textContent = p.joinedAt ? `Joined ${new Date(p.joinedAt).toLocaleDateString(undefined,{year:"numeric",month:"long",day:"numeric"})}` : "";
 
-    // Chips (experience + playstyle)
-    const chipMap = {
-        "Beginner": "chip", "Intermediate": "chip chip-fresh", "Expert": "chip chip-yeah",
-        "Casual": "chip", "Competitive": "chip chip-yeah", "Speedrunner": "chip chip-fresh", "Collector": "chip chip-green"
-    };
-    const chipIcon = {
-        "Beginner":"🌱","Intermediate":"⚔️","Expert":"🏆",
-        "Casual":"😌","Competitive":"🔥","Speedrunner":"⚡","Collector":"🗃️"
-    };
+    const chipMap = { "Beginner":"chip","Intermediate":"chip chip-fresh","Expert":"chip chip-yeah","Casual":"chip","Competitive":"chip chip-yeah","Speedrunner":"chip chip-fresh","Collector":"chip chip-green" };
+    const chipIcon = { "Beginner":"🌱","Intermediate":"⚔️","Expert":"🏆","Casual":"😌","Competitive":"🔥","Speedrunner":"⚡","Collector":"🗃️" };
     const chips = [p.experience, p.playStyle].filter(Boolean);
     document.getElementById("inspect-chips").innerHTML = chips.map(c =>
         `<span class="${chipMap[c]||"chip"}">${chipIcon[c]||""} ${esc(c)}</span>`
     ).join("");
 
-    // Extra info fields
     let extra = "";
     if (p.friendCode) extra += `
         <div class="inspect-field">
@@ -1322,6 +1903,14 @@ async function inspectUser(username) {
             </div>
         </div>`;
     document.getElementById("inspect-extra").innerHTML = extra;
+
+    // DM button (logged in, not self)
+    const dmWrap = document.getElementById("inspect-dm-btn-wrap");
+    if (me && username !== me) {
+        dmWrap.innerHTML = `<button class="btn btn-ghost btn-sm" style="width:100%; margin-bottom:4px;" onclick="openDMModal('${esc(p.username)}', '${esc(p.displayName||p.username)}')">💬 Send Message</button>`;
+    } else {
+        dmWrap.innerHTML = "";
+    }
 
     document.getElementById("modal-user").classList.remove("hidden");
 }
@@ -1359,7 +1948,6 @@ async function loadPoll() {
 function renderPoll() {
     const el = document.getElementById("poll-display");
     if (!currentPoll) {
-        // Show empty state, with hint if admin
         const hint = isAdmin() ? "Create one with the + New Poll button above." : (me ? "" : "Sign in to vote.");
         el.innerHTML = `<div class="poll-empty"><div class="poll-empty-icon">📊</div><div>No poll active in this channel.</div>${hint ? `<div class="text-muted" style="margin-top:8px;">${hint}</div>` : ""}</div>`;
         return;
@@ -1440,7 +2028,6 @@ function startHeartbeat() {
     setInterval(beat, 60000);
     setInterval(loadOnline, 30000);
     loadOnline();
-    // Poll notifications every 30s, load immediately on boot silently
     loadNotifications(true);
     setInterval(() => loadNotifications(false), 30000);
 }
@@ -1461,7 +2048,6 @@ function getSegVal(groupId) {
     const sel = group.querySelector(".seg-btn.selected");
     return sel ? sel.dataset.val : "";
 }
-
 function copyFC(code) {
     navigator.clipboard.writeText(code).then(() => toast("Friend code copied!", "ok")).catch(() => toast("Couldn't copy.", "err"));
 }
@@ -1493,19 +2079,18 @@ async function loadNotifications(silent = false) {
 function openNotifModal() {
     document.getElementById("modal-notif").classList.remove("hidden");
     renderNotifList();
-    // Mark all as read after a short delay so user sees which were new
     setTimeout(markAllRead, 1200);
 }
 
 function renderNotifList() {
     const el = document.getElementById("notif-list");
     if (!notifCache.length) {
-        el.innerHTML = `<div class="notif-empty"><div class="notif-empty-icon">🔔</div><div>All caught up!</div><div class="text-muted" style="margin-top:6px; font-size:0.78rem;">Reactions and replies to your posts will show up here.</div></div>`;
+        el.innerHTML = `<div class="notif-empty"><div class="notif-empty-icon">🔔</div><div>All caught up!</div><div class="text-muted" style="margin-top:6px; font-size:0.78rem;">Reactions and replies to your posts show up here.</div></div>`;
         return;
     }
-    const iconMap = { reply: "💬", yeah: "🔥", fresh: "✨", cozy: "🌿" };
+    const iconMap = { reply: "💬", yeah: "🔥", fresh: "✨", cozy: "🌿", dm: "💌", broadcast: "📢" };
     el.innerHTML = notifCache.map(n => `
-        <div class="notif-item ${n.read ? "" : "unread"}" onclick="handleNotifClick('${esc(n.postId)}', '${esc(n.community)}')">
+        <div class="notif-item ${n.read ? "" : "unread"} ${n.type==="dm"?"dm-notif":""}" onclick="handleNotifClick('${esc(n.postId||"")}', '${esc(n.community||"")}')">
             <div class="notif-icon">${iconMap[n.type] || "🔔"}</div>
             <div class="notif-body">
                 <div class="notif-text">${buildNotifText(n)}</div>
@@ -1518,23 +2103,23 @@ function renderNotifList() {
 }
 
 function buildNotifText(n) {
-    const actor = `<strong>${esc(n.actorDisplay || n.actor)}</strong>`;
+    const actor = `<strong>${esc(n.actorDisplay || n.actor || "System")}</strong>`;
     if (n.type === "reply") return `${actor} replied to your post`;
     if (n.type === "yeah")  return `${actor} reacted 🔥 Yeah to your post`;
     if (n.type === "fresh") return `${actor} reacted ✨ Fresh to your post`;
     if (n.type === "cozy")  return `${actor} reacted 🌿 Cozy to your post`;
+    if (n.type === "dm")    return `💌 Message from ${actor}`;
+    if (n.type === "broadcast") return `📢 Announcement from <strong>Admin</strong>`;
     return `${actor} interacted with your post`;
 }
 
 async function handleNotifClick(postId, notifCommunity) {
     closeModal("modal-notif");
-    // Switch to the right channel if needed
+    if (!postId) return;
     if (notifCommunity && notifCommunity !== community) {
         await switchChannel(notifCommunity);
-        // Wait for feed to render
         await new Promise(r => setTimeout(r, 400));
     }
-    // Scroll to and highlight the post
     const postEl = document.getElementById(`p-${postId}`);
     if (postEl) {
         postEl.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -1548,13 +2133,9 @@ async function markAllRead() {
     if (!me || !notifCache.some(n => !n.read)) return;
     await api("/api/notifications/read", { method: "POST" }).catch(() => {});
     notifCache.forEach(n => n.read = true);
-    const badge = document.getElementById("notif-badge");
-    badge?.classList.add("hidden");
+    document.getElementById("notif-badge")?.classList.add("hidden");
     document.getElementById("notif-bell-btn")?.classList.remove("has-unread");
-    // Re-render if modal is still open
-    if (!document.getElementById("modal-notif").classList.contains("hidden")) {
-        renderNotifList();
-    }
+    if (!document.getElementById("modal-notif").classList.contains("hidden")) renderNotifList();
 }
 
 async function clearAllNotifs() {
@@ -1567,16 +2148,184 @@ async function clearAllNotifs() {
     renderNotifList();
 }
 
+// ── DM SYSTEM ─────────────────────────────────────────
+function openDMModal(username, displayName) {
+    dmTargetUsername = username;
+    closeModal("modal-user");
+    document.getElementById("dm-target-display").innerHTML = `Sending to <strong>@${esc(username)}</strong> (${esc(displayName)})`;
+    document.getElementById("dm-modal-text").value = "";
+    document.getElementById("modal-dm").classList.remove("hidden");
+    setTimeout(() => document.getElementById("dm-modal-text").focus(), 50);
+}
+
+async function sendDMFromModal() {
+    const text = document.getElementById("dm-modal-text").value.trim();
+    if (!text || !dmTargetUsername) return;
+    const res = await api("/api/dm", { method: "POST", body: { targetUsername: dmTargetUsername, message: text } });
+    if (res.ok) {
+        sfx("post"); toast("Message sent!", "ok");
+        closeModal("modal-dm");
+    } else {
+        sfx("error"); toast(await res.text() || "Couldn't send.", "err");
+    }
+}
+
+// ── ADMIN PANEL ─────────────────────────────────────────
+async function openAdminPanel() {
+    if (!isAdmin()) return;
+    document.getElementById("modal-admin").classList.remove("hidden");
+    await loadAdminUsers();
+    // Pre-fill pin input with current channel's pin
+    const res = await api(`/api/announcement?community=${community}`);
+    if (res.ok) {
+        const ann = await res.json();
+        document.getElementById("admin-pin-input").value = ann?.text || "";
+    }
+}
+
+async function loadAdminUsers() {
+    const el = document.getElementById("admin-user-list");
+    el.innerHTML = `<span class="text-muted">Loading…</span>`;
+    const res = await api("/api/admin/users").catch(() => null);
+    if (!res?.ok) {
+        el.innerHTML = `<span class="text-muted">Couldn't load users (add /api/admin/users to Worker).</span>`;
+        return;
+    }
+    allUsers = await res.json();
+    renderAdminUsers(allUsers);
+}
+
+function renderAdminUsers(users) {
+    const el = document.getElementById("admin-user-list");
+    if (!users.length) { el.innerHTML = `<span class="text-muted">No users found.</span>`; return; }
+    el.innerHTML = users.map(u => `
+        <div class="user-row ${u.banned ? "banned" : ""}">
+            <div class="user-row-ava">${u.avatarUrl ? `<img src="${esc(u.avatarUrl)}" onerror="this.parentElement.textContent='${esc(initials(u.displayName))}'">` : esc(initials(u.displayName))}</div>
+            <div class="user-row-info">
+                <div class="user-row-name">${esc(u.displayName||u.username)} ${u.banned ? '<span class="banned-chip">Banned</span>' : ""}</div>
+                <div class="user-row-handle">@${esc(u.username)} · Joined ${u.joinedAt ? new Date(u.joinedAt).toLocaleDateString() : "?"}</div>
+            </div>
+            <div class="user-row-actions">
+                <button class="btn btn-ghost btn-xs" onclick="inspectUser('${esc(u.username)}'); closeModal('modal-admin')" title="View profile">👁</button>
+                ${u.username !== "codymkw" ? `
+                    <button class="btn btn-xs ${u.banned ? "" : "btn-danger-ghost"}" onclick="adminToggleBan('${esc(u.username)}', ${!u.banned})" title="${u.banned ? "Unban" : "Ban"}">${u.banned ? "Unban" : "Ban"}</button>
+                ` : '<span style="font-size:0.65rem; color:var(--text-3);">Owner</span>'}
+            </div>
+        </div>
+    `).join("");
+}
+
+function filterAdminUsers() {
+    const q = document.getElementById("admin-search-user").value.toLowerCase();
+    if (!q) { renderAdminUsers(allUsers); return; }
+    renderAdminUsers(allUsers.filter(u => u.username.includes(q) || (u.displayName||"").toLowerCase().includes(q)));
+}
+
+async function adminToggleBan(username, ban) {
+    const action = ban ? "ban" : "unban";
+    if (!confirm(`${action.charAt(0).toUpperCase()+action.slice(1)} @${username}?`)) return;
+    const res = await api("/api/admin/ban", { method: "POST", body: { username, ban } });
+    if (res.ok) {
+        toast(`@${username} ${ban ? "banned" : "unbanned"}.`, ban ? "err" : "ok");
+        await loadAdminUsers();
+    } else {
+        toast(await res.text() || "Action failed.", "err");
+    }
+}
+
+async function sendBroadcast() {
+    const text = document.getElementById("broadcast-text").value.trim();
+    if (!text) return;
+    const res = await api("/api/admin/broadcast", { method: "POST", body: { message: text } });
+    if (res.ok) {
+        sfx("post"); toast("Broadcast sent!", "ok");
+        document.getElementById("broadcast-text").value = "";
+    } else {
+        toast(await res.text() || "Failed.", "err");
+    }
+}
+
+async function sendAdminDM() {
+    const username = document.getElementById("dm-username-input").value.trim();
+    const message = document.getElementById("dm-message-input").value.trim();
+    if (!username || !message) { toast("Fill in both fields.", "err"); return; }
+    const res = await api("/api/dm", { method: "POST", body: { targetUsername: username, message } });
+    if (res.ok) {
+        sfx("post"); toast(`DM sent to @${username}!`, "ok");
+        document.getElementById("dm-username-input").value = "";
+        document.getElementById("dm-message-input").value = "";
+    } else {
+        toast(await res.text() || "Couldn't send.", "err");
+    }
+}
+
+async function adminNukePosts() {
+    const channelId = document.getElementById("admin-channel-select").value;
+    if (!confirm(`Wipe ALL posts in #${channelId}? This cannot be undone.`)) return;
+    const res = await api("/api/admin/wipe-channel", { method: "POST", body: { channelId } });
+    if (res.ok) {
+        sfx("post"); toast(`#${channelId} posts wiped.`, "info");
+        if (channelId === community) loadFeed();
+    } else {
+        toast(await res.text() || "Failed.", "err");
+    }
+}
+
+async function adminSetPin() {
+    const text = document.getElementById("admin-pin-input").value.trim();
+    const res = await api("/api/announcement", { method: "POST", body: { community, text } });
+    if (res.ok) { toast(text ? "Pin set!" : "Pin cleared.", "ok"); loadAnnouncement(); }
+}
+
+async function adminClearPin() {
+    document.getElementById("admin-pin-input").value = "";
+    const res = await api("/api/announcement", { method: "POST", body: { community, text: "" } });
+    if (res.ok) { toast("Pin cleared.", "info"); loadAnnouncement(); }
+}
+
+function openAdminPollCreator() {
+    closeModal("modal-admin");
+    document.getElementById("poll-creator").classList.remove("hidden");
+    document.getElementById("poll-q").focus();
+}
+
+async function adminForceLogoutAll() {
+    if (!confirm("Force logout ALL users? They must sign in again.")) return;
+    const res = await api("/api/admin/force-logout", { method: "POST" });
+    if (res.ok) {
+        toast("All sessions invalidated.", "ok");
+    } else {
+        toast("Failed.", "err");
+    }
+}
+
+async function adminExportKV() {
+    const data = {
+        exportedAt: new Date().toISOString(),
+        telemetry: {
+            channels: document.getElementById("tel-channels").textContent,
+            posts: document.getElementById("tel-posts").textContent,
+            online: document.getElementById("tel-online").textContent,
+        },
+        currentChannel: community,
+        postCount: postsCache.length,
+        userCount: allUsers.length
+    };
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = `codyverse-telemetry-${Date.now()}.json`; a.click();
+    URL.revokeObjectURL(url);
+    toast("Exported!", "ok");
+}
+
 // ── MODAL ───────────────────────────────────────────────
 function closeModal(id) { document.getElementById(id).classList.add("hidden"); }
-document.addEventListener("keydown", e => { if (e.key === "Escape") document.querySelectorAll(".overlay:not(.hidden)").forEach(m => m.classList.add("hidden")); });
 
 // ── BOOT ─────────────────────────────────────────────────
 boot().then(() => {
-    // Restore draft
     const draft = localStorage.getItem(`draft:${community}`);
     if (draft) { document.getElementById("post-input").value = draft; updateCharCount(); }
-    // Load online even for guests
     if (!me) loadOnline();
 });
 </script>
