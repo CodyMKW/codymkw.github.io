@@ -164,32 +164,35 @@
 
         /* Quirk Details Component */
         .quirk-list {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            display: flex;
+            flex-direction: column;
             gap: 0.5rem;
         }
 
         .quirk-node {
-            background: rgba(255, 255, 255, 0.01);
+            background: rgba(255, 255, 255, 0.02);
             border: 1px solid var(--border-line);
-            padding: 0.5rem;
+            padding: 0.6rem 1rem;
             border-radius: 6px;
-            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
         }
 
         .quirk-type {
-            font-size: 0.7rem;
-            font-weight: 600;
-            color: var(--text-muted);
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--accent-cyan);
+            text-transform: uppercase;
+            min-width: 50px;
         }
 
         .quirk-name {
-            font-size: 0.8rem;
-            color: var(--text-primary);
-            margin-top: 0.25rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            font-size: 0.85rem;
+           color: var(--text-primary);
+           text-align: right;
+           white-space: normal;
         }
 
         .error-message {
