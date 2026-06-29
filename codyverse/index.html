@@ -974,21 +974,24 @@
             </div>
         </div>
 
-        <!-- CHANNEL TOOLS -->
+        <!-- CHANNEL MANAGEMENT -->
         <div class="admin-section">
-            <div class="admin-section-title">📋 Channel Tools</div>
-            <div style="display:flex; gap:8px; align-items:flex-end; flex-wrap:wrap;">
+            <div class="admin-section-title">📋 Channel Management</div>
+            <div id="admin-comm-list" style="display:flex; flex-direction:column; gap:6px; margin-bottom:12px;">
+                <span class="text-muted" style="font-size:0.8rem;">Loading channels…</span>
+            </div>
+            <div style="display:flex; gap:8px; align-items:flex-end; flex-wrap:wrap; padding-top:10px; border-top:1px solid var(--border);">
                 <div style="flex:1;">
-                    <div class="field-label">Channel ID</div>
+                    <div class="field-label">Wipe Posts In Channel</div>
                     <select class="field" id="admin-channel-select" style="margin-bottom:0;">
                         <option value="general">general</option>
                         <option value="splatoon">splatoon</option>
                         <option value="animal-crossing">animal-crossing</option>
                     </select>
                 </div>
-                <button class="btn btn-danger-ghost btn-sm" onclick="adminNukePosts()">🗑 Wipe All Posts</button>
+                <button class="btn btn-danger-ghost btn-sm" onclick="adminNukePosts()">🗑 Wipe Posts</button>
             </div>
-            <p class="admin-note mt-10">Wiping posts removes all posts in the selected channel permanently.</p>
+            <p class="admin-note mt-10">System channels (General, Splatoon, Animal Crossing) cannot be deleted.</p>
         </div>
 
         <!-- PIN MANAGEMENT -->
@@ -2174,12 +2177,62 @@ async function sendDMFromModal() {
 async function openAdminPanel() {
     if (!isAdmin()) return;
     document.getElementById("modal-admin").classList.remove("hidden");
-    await loadAdminUsers();
+    await Promise.all([loadAdminUsers(), loadAdminComms()]);
     // Pre-fill pin input with current channel's pin
     const res = await api(`/api/announcement?community=${community}`);
     if (res.ok) {
         const ann = await res.json();
         document.getElementById("admin-pin-input").value = ann?.text || "";
+    }
+}
+
+async function loadAdminComms() {
+    const el = document.getElementById("admin-comm-list");
+    const sel = document.getElementById("admin-channel-select");
+    const res = await api("/api/admin/communities").catch(() => null);
+    if (!res?.ok) {
+        el.innerHTML = `<span class="text-muted" style="font-size:0.8rem;">No custom channels yet.</span>`;
+        return;
+    }
+    const comms = await res.json();
+
+    // Update the wipe dropdown with all channels
+    const defaults = [
+        { id: "general", name: "General", system: true },
+        { id: "splatoon", name: "Splatoon", system: true },
+        { id: "animal-crossing", name: "Animal Crossing", system: true }
+    ];
+    sel.innerHTML = [...defaults, ...comms].map(c => `<option value="${esc(c.id)}">${esc(c.name)}</option>`).join("");
+
+    if (!comms.length) {
+        el.innerHTML = `<span class="text-muted" style="font-size:0.8rem;">No custom channels to manage.</span>`;
+        return;
+    }
+    el.innerHTML = comms.map(c => `
+        <div class="user-row">
+            <div style="font-size:1.1rem; width:32px; text-align:center; flex-shrink:0;">#</div>
+            <div class="user-row-info">
+                <div class="user-row-name">${esc(c.name)}</div>
+                <div class="user-row-handle">ID: ${esc(c.id)} · Created by @${esc(c.createdBy||"?")} · ${c.createdAt ? new Date(c.createdAt).toLocaleDateString() : "?"}</div>
+            </div>
+            <div class="user-row-actions">
+                <button class="btn btn-xs btn-danger-ghost" onclick="adminDeleteComm('${esc(c.id)}', '${esc(c.name)}')">Delete</button>
+            </div>
+        </div>
+    `).join("");
+}
+
+async function adminDeleteComm(id, name) {
+    if (!confirm(`Delete channel "${name}"? Posts will remain in KV but the channel won't be visible.`)) return;
+    const res = await api("/api/admin/communities/delete", { method: "POST", body: { id } });
+    if (res.ok) {
+        sfx("click");
+        toast(`#${name} deleted.`, "info");
+        if (community === id) switchChannel("general");
+        else loadChannels();
+        await loadAdminComms();
+    } else {
+        toast(await res.text() || "Couldn't delete.", "err");
     }
 }
 
