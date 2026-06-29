@@ -1,0 +1,22 @@
+{
+  "name": "Momo Yaoyorozu",
+  "title": "The Holy Goddess",
+  "role": "Support",
+  "characterImage": "https://ultrarumble.com/assets/Character/Ch010/GUI/FaceIcon/T_ui_Ch010_CharaImage.png",
+  "specialTuningSlots": [
+    {
+      "slotName": "Revenge Support",
+      "configuration": "Restores the HP of allies in a certain area around you for a set amount of time if your Guard breaks."
+    },
+    {
+      "slotName": "Hyper Regeneration",
+      "configuration": "Break an opponent's Guard to gradually recover GP and HP for a limited time."
+    }
+  ],
+  "quirkSkills": {
+    "alpha": "Create: Strike and Stop",
+    "beta": "Create: Unfalling Castle Wall",
+    "gamma": "Create: Bullet Rain"
+  },
+  "specialAction": "Yaoyorozu's Lucky Bag"
+}
