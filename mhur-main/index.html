@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Ultra Rumble // Character Profile</title>
+    <style>
+        :root {
+            --bg-main: #060913;
+            --bg-card: rgba(10, 15, 30, 0.75);
+            --bg-card-hover: rgba(16, 24, 48, 0.85);
+            --border-line: rgba(255, 255, 255, 0.05);
+            --text-primary: #f0f4f8;
+            --text-muted: #7e8c9a;
+            --accent-green: #00ff87;
+            --accent-cyan: #60efff;
+            --font-stack: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            font-family: var(--font-stack);
+            min-height: 100vh;
+            padding: 2rem 1rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .profile-container {
+            width: 100%;
+            max-width: 760px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-line);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+
+        .profile-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+        }
+
+        @media (min-width: 640px) {
+            .profile-grid {
+                grid-template-columns: 280px 1fr;
+            }
+        }
+
+        /* Character Art Column */
+        .art-column {
+            background: #02050b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            border-bottom: 1px solid var(--border-line);
+            min-height: 320px;
+        }
+
+        @media (min-width: 640px) {
+            .art-column {
+                border-bottom: none;
+                border-right: 1px solid var(--border-line);
+            }
+        }
+
+        .char-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        /* Profile Details Column */
+        .details-column {
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .header-block {
+            border-bottom: 1px solid var(--border-line);
+            padding-bottom: 1rem;
+        }
+
+        .char-name {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .char-title {
+            font-size: 0.95rem;
+            color: var(--accent-cyan);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: 0.25rem;
+        }
+
+        .meta-badges {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+        }
+
+        .badge {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-line);
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .badge.role-support { color: var(--accent-green); border-color: rgba(0, 255, 135, 0.2); }
+        .badge.role-assault { color: #f59e0b; border-color: rgba(245, 158, 11, 0.2); }
+        .badge.role-strike { color: #ef4444; border-color: rgba(239, 68, 68, 0.2); }
+        .badge.role-technical { color: #a855f7; border-color: rgba(168, 85, 247, 0.2); }
+        .badge.role-rapid { color: #3b82f6; border-color: rgba(59, 130, 246, 0.2); }
+
+        /* Tuning Slots Section */
+        .section-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+
+        .tuning-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .tuning-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-line);
+            border-left: 3px solid var(--accent-cyan);
+            padding: 0.75rem 1rem;
+            border-radius: 0 6px 6px 0;
+        }
+
+        .tuning-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .tuning-value {
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            margin-top: 0.15rem;
+        }
+
+        /* Quirk Details Component */
+        .quirk-list {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+        }
+
+        .quirk-node {
+            background: rgba(255, 255, 255, 0.01);
+            border: 1px solid var(--border-line);
+            padding: 0.5rem;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .quirk-type {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .quirk-name {
+            font-size: 0.8rem;
+            color: var(--text-primary);
+            margin-top: 0.25rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .error-message {
+            padding: 2rem;
+            text-align: center;
+            color: #ef4444;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="profile-container" id="profile-container">
+        <div class="profile-grid">
+            
+            <div class="art-column">
+                <img src="" alt="" id="char-image" class="char-img" style="display: none;">
+            </div>
+
+            <div class="details-column">
+                <div class="header-block">
+                    <div class="char-name" id="char-name">Loading Profile...</div>
+                    <div class="char-title" id="char-title">Scanning Metadata...</div>
+                    <div class="meta-badges">
+                        <span class="badge" id="char-role">Archetype</span>
+                        <span class="badge" id="char-action">Special Action</span>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="section-title">Special Tuning Parameters</div>
+                    <div class="tuning-container" id="tuning-slots-box"></div>
+                </div>
+
+                <div>
+                    <div class="section-title">Kit Configuration</div>
+                    <div class="quirk-list">
+                        <div class="quirk-node">
+                            <div class="quirk-type">Alpha</div>
+                            <div class="quirk-name" id="quirk-alpha">-</div>
+                        </div>
+                        <div class="quirk-node">
+                            <div class="quirk-type">Beta</div>
+                            <div class="quirk-name" id="quirk-beta">-</div>
+                        </div>
+                        <div class="quirk-node">
+                            <div class="quirk-type">Gamma</div>
+                            <div class="quirk-name" id="quirk-gamma">-</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Fetch data right out of the local JSON matrix file
+        fetch('character-data.json')
+            .then(response => {
+                if (!response.ok) throw new Error("JSON profile file missing.");
+                return response.json();
+            })
+            .then(data => {
+                // Populate Core Text Elements
+                document.getElementById('char-name').innerText = data.name;
+                document.getElementById('char-title').innerText = data.title;
+                
+                // Assign and style role badge
+                const roleBadge = document.getElementById('char-role');
+                roleBadge.innerText = data.role;
+                roleBadge.className = `badge role-${data.role.toLowerCase()}`;
+                
+                // Assign Special Action
+                document.getElementById('char-action').innerText = `SA: ${data.specialAction}`;
+
+                // Set Character Graphic Render
+                const imgNode = document.getElementById('char-image');
+                if (data.characterImage) {
+                    imgNode.src = data.characterImage;
+                    imgNode.alt = data.name;
+                    imgNode.style.display = 'block';
+                }
+
+                // Render Dynamic Tuning Slots
+                const tuningBox = document.getElementById('tuning-slots-box');
+                tuningBox.innerHTML = ''; // Wipe loader formatting
+                
+                if (data.specialTuningSlots && data.specialTuningSlots.length > 0) {
+                    data.specialTuningSlots.forEach(slot => {
+                        const card = document.createElement('div');
+                        card.className = 'tuning-card';
+                        card.innerHTML = `
+                            <div class="tuning-label">${slot.slotName}</div>
+                            <div class="tuning-value">${slot.configuration}</div>
+                        `;
+                        tuningBox.appendChild(card);
+                    });
+                } else {
+                    tuningBox.innerHTML = '<div class="tuning-value" style="color: var(--text-muted)">No configuration slots mapped.</div>';
+                }
+
+                // Map Quirk Skills
+                if (data.quirkSkills) {
+                    document.getElementById('quirk-alpha').innerText = data.quirkSkills.alpha || '-';
+                    document.getElementById('quirk-beta').innerText = data.quirkSkills.beta || '-';
+                    document.getElementById('quirk-gamma').innerText = data.quirkSkills.gamma || '-';
+                }
+            })
+            .catch(error => {
+                console.error(error);
+                document.getElementById('profile-container').innerHTML = `
+                    <div class="error-message">
+                        <h3>Failed to load configuration array</h3>
+                        <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.5rem;"> Ensure character-data.json exists and is formatted accurately. </p>
+                    </div>
+                `;
+            });
+    </script>
+</body>
+</html>
