@@ -130,27 +130,46 @@
         .stat-label { font-size: 0.65rem; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.06em; }
 
         /* ── CHANNELS ── */
-        .comm-grid { display: flex; flex-direction: column; gap: 4px; }
+        .comm-scroll {
+            max-height: 260px;
+            overflow-y: auto;
+            margin: 0 -4px;
+            padding: 0 4px;
+        }
+        .comm-scroll::-webkit-scrollbar { width: 3px; }
+        .comm-scroll::-webkit-scrollbar-track { background: transparent; }
+        .comm-scroll::-webkit-scrollbar-thumb { background: var(--border-bright); border-radius: 2px; }
+
+        .comm-section-label {
+            font-size: 0.62rem; font-weight: 800; text-transform: uppercase;
+            letter-spacing: 0.1em; color: var(--text-3);
+            padding: 8px 4px 4px; display: flex; align-items: center; gap: 6px;
+        }
+        .comm-section-label:first-child { padding-top: 0; }
+        .comm-section-label::after { content:''; flex:1; height:1px; background: var(--border); }
+
+        .comm-grid { display: flex; flex-direction: column; gap: 2px; }
         .comm-btn {
-            display: flex; align-items: center; gap: 8px;
-            padding: 9px 12px; border-radius: var(--radius-sm);
+            display: flex; align-items: center; gap: 7px;
+            padding: 7px 10px; border-radius: var(--radius-sm);
             border: 1px solid transparent;
             background: transparent; color: var(--text-2);
-            font-size: 0.85rem; font-weight: 600; cursor: pointer;
-            transition: all 0.15s; text-align: left; width: 100%;
+            font-size: 0.82rem; font-weight: 600; cursor: pointer;
+            transition: all 0.12s; text-align: left; width: 100%;
         }
         .comm-btn:hover { background: var(--surface2); color: var(--text); border-color: var(--border); }
         .comm-btn.active { background: var(--green-glow); color: var(--green); border-color: var(--green); }
-        .comm-btn .comm-name { flex: 1; }
+        .comm-btn .comm-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .comm-hash { font-size: 0.75rem; color: var(--text-3); flex-shrink: 0; font-weight: 900; }
+        .comm-btn.active .comm-hash { color: var(--green-dim); }
         .comm-del {
             display: inline-flex; align-items: center; justify-content: center;
-            width: 20px; height: 20px;
+            width: 18px; height: 18px;
             color: var(--text-3); opacity: 0;
-            font-size: 0.75rem; font-weight: 900;
+            font-size: 0.7rem; font-weight: 900;
             background: var(--surface2); border: 1px solid var(--border);
-            border-radius: 5px; cursor: pointer;
-            transition: all 0.15s; flex-shrink: 0;
-            line-height: 1;
+            border-radius: 4px; cursor: pointer;
+            transition: all 0.12s; flex-shrink: 0; line-height: 1;
         }
         .comm-btn:hover .comm-del { opacity: 1; }
         .comm-del:hover { background: rgba(239,68,68,0.15); border-color: rgba(239,68,68,0.5); color: var(--danger); }
@@ -648,15 +667,19 @@
             </div>
 
             <!-- CHANNELS -->
-            <div class="card">
-                <div class="card-title">Channels</div>
-                <div class="comm-grid" id="comm-list"></div>
-                <div class="hidden mt-10" id="new-comm-form">
-                    <hr class="sep">
-                    <input type="text" class="field" id="new-comm-input" placeholder="New channel name…" maxlength="40">
+            <div class="card" style="padding-bottom:12px;">
+                <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;">
+                    <div class="card-title" style="margin-bottom:0;">Channels</div>
+                    <span id="channel-count" style="font-size:0.68rem; color:var(--text-3); font-weight:700;"></span>
+                </div>
+                <div class="comm-scroll">
+                    <div id="comm-list"></div>
+                </div>
+                <div class="hidden" id="new-comm-form" style="margin-top:10px;">
+                    <input type="text" class="field" id="new-comm-input" placeholder="New channel name..." maxlength="40">
                     <button class="btn" style="width:100%;" onclick="createComm()">Launch Channel</button>
                 </div>
-                <button class="btn btn-ghost btn-sm hidden mt-10" id="btn-new-comm" style="width:100%;" onclick="document.getElementById('new-comm-form').classList.toggle('hidden'); document.getElementById('new-comm-input').focus()">+ New Channel</button>
+                <button class="btn btn-ghost btn-sm hidden" id="btn-new-comm" style="width:100%; margin-top:8px;" onclick="document.getElementById('new-comm-form').classList.toggle('hidden'); document.getElementById('new-comm-input').focus()">+ New Channel</button>
             </div>
 
             <!-- TELEMETRY -->
@@ -1406,10 +1429,14 @@ async function loadChannels() {
     const res = await api("/api/communities");
     if (!res.ok) return;
     const list = await res.json();
+    const defaults = list.filter(c => c.system);
+    const custom = list.filter(c => !c.system);
+
     document.getElementById("tel-channels").textContent = list.length;
     document.getElementById("stat-channels").textContent = list.length;
+    const countEl = document.getElementById("channel-count");
+    if (countEl) countEl.textContent = list.length + " channel" + (list.length !== 1 ? "s" : "");
 
-    // Populate admin channel select
     const adminSel = document.getElementById("admin-channel-select");
     if (adminSel) {
         const currentVal = adminSel.value;
@@ -1417,18 +1444,29 @@ async function loadChannels() {
         if (currentVal) adminSel.value = currentVal;
     }
 
-    const box = document.getElementById("comm-list");
-    box.innerHTML = list.map(c => `
-        <button class="comm-btn ${c.id === community ? "active" : ""}" onclick="switchChannel('${esc(c.id)}')">
+    function commBtn(c) {
+        return `<button class="comm-btn ${c.id === community ? "active" : ""}" onclick="switchChannel('${esc(c.id)}')">
+            <span class="comm-hash">#</span>
             <span class="comm-name">${esc(c.name)}</span>
-            ${(!c.system && isAdmin()) ? `<button class="comm-del" onclick="event.stopPropagation();delComm('${esc(c.id)}')" title="Delete channel">✕</button>` : ""}
-        </button>
-    `).join("");
+            ${(!c.system && isAdmin()) ? `<button class="comm-del" onclick="event.stopPropagation();delComm('${esc(c.id)}')" title="Delete channel">\u2715</button>` : ""}
+        </button>`;
+    }
+
+    const box = document.getElementById("comm-list");
+    let html = "";
+    if (defaults.length) {
+        html += `<div class="comm-section-label">Default</div>`;
+        html += `<div class="comm-grid">${defaults.map(commBtn).join("")}</div>`;
+    }
+    if (custom.length) {
+        html += `<div class="comm-section-label">Community</div>`;
+        html += `<div class="comm-grid">${custom.map(commBtn).join("")}</div>`;
+    }
+    box.innerHTML = html;
 
     const current = list.find(c => c.id === community);
-    document.getElementById("composer-comm-label").textContent = `#${current?.name || community}`;
+    document.getElementById("composer-comm-label").textContent = "#" + (current ? current.name : community);
 }
-
 function switchChannel(id) {
     sfx("click");
     community = id;
