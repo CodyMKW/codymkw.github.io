@@ -1501,6 +1501,8 @@ function jumpToPost(postId) {
         el.style.transition = "box-shadow 0.3s";
         el.style.boxShadow = "0 0 0 2px var(--warn)";
         setTimeout(() => el.style.boxShadow = "", 2000);
+    } else {
+        toast("Couldn't find that post — it may have been deleted.", "info");
     }
 }
 
@@ -1532,6 +1534,15 @@ document.addEventListener("keydown", e => {
 });
 
 // ── AUTH ───────────────────────────────────────────────
+// ── DEEP LINK HANDLING (#channel/postId) ────────────────────
+function parseHashLink() {
+    const hash = location.hash.replace(/^#/, "");
+    if (!hash) return null;
+    const [channelId, postId] = hash.split("/");
+    if (!channelId) return null;
+    return { channelId: decodeURIComponent(channelId), postId: postId ? decodeURIComponent(postId) : null };
+}
+
 async function boot() {
     if (getToken()) {
         const res = await api("/api/me").catch(()=>null);
@@ -1544,12 +1555,22 @@ async function boot() {
         }
     }
     renderAuthUI();
+
+    // If the URL has a #channel/postId link, start in that channel
+    const link = parseHashLink();
+    if (link?.channelId) community = link.channelId;
+
     updateComposerModeForChannel();
     await loadChannels();
     await loadFeed();
     await loadAnnouncement();
     await loadPoll();
     if (me) startHeartbeat();
+
+    // Jump to and highlight the linked post once everything has rendered
+    if (link?.postId) {
+        setTimeout(() => jumpToPost(link.postId), 300);
+    }
 }
 
 function renderAuthUI() {
@@ -3123,6 +3144,17 @@ boot().then(() => {
     const draft = localStorage.getItem(`draft:${community}`);
     if (draft) { document.getElementById("post-input").value = draft; updateCharCount(); }
     if (!me) loadOnline();
+});
+
+// Handle clicking a copied post link while the app is already open (no full reload)
+window.addEventListener("hashchange", async () => {
+    const link = parseHashLink();
+    if (!link?.channelId) return;
+    if (link.channelId !== community) {
+        await switchChannel(link.channelId);
+        await new Promise(r => setTimeout(r, 350));
+    }
+    if (link.postId) jumpToPost(link.postId);
 });
 </script>
 </body>
