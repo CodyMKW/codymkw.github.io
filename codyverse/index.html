@@ -614,6 +614,82 @@
         /* keyboard hint */
         .kbd { display: inline-block; background: var(--surface2); border: 1px solid var(--border-bright); border-radius: 4px; padding: 1px 5px; font-size: 0.68rem; font-family: monospace; color: var(--text-3); }
 
+        /* ── COMPACT DENSITY MODE ── */
+        body.compact-mode .post { padding: 10px 14px; gap: 10px; }
+        body.compact-mode .post-avatar { width: 32px; height: 32px; border-radius: 8px; font-size: 0.85rem; }
+        body.compact-mode .post-meta { margin-bottom: 4px; padding-right: 50px; }
+        body.compact-mode .post-content { font-size: 0.83rem; line-height: 1.45; }
+        body.compact-mode .post-content .post-img { max-height: 180px; margin-top: 8px; }
+        body.compact-mode .post-reactions,
+        body.compact-mode .post-body > div[style*="margin-top:10px"] { margin-top: 6px !important; }
+        body.compact-mode .react-btn { padding: 3px 8px; font-size: 0.72rem; }
+        body.compact-mode .reply-thread { margin-top: 8px; padding-top: 8px; }
+        .filter-btn.active#btn-density { background: var(--green-glow); border-color: var(--green); color: var(--green); }
+
+        /* ── EDITED TAG ── */
+        .edited-tag { font-size: 0.66rem; color: var(--text-3); font-style: italic; margin-left: 4px; cursor: default; }
+
+        /* ── QUOTE BLOCK (inside composer when quoting) ── */
+        .quote-preview {
+            background: var(--surface2); border-left: 3px solid var(--fresh);
+            border-radius: 6px; padding: 8px 12px; margin-bottom: 8px;
+            font-size: 0.78rem; color: var(--text-2); position: relative;
+        }
+        .quote-preview strong { color: var(--text); }
+        .quote-preview-clear { position: absolute; top: 6px; right: 8px; background: none; border: none; color: var(--text-3); cursor: pointer; font-size: 0.85rem; }
+
+        /* ── LEVEL BADGE ── */
+        .level-badge {
+            display: inline-flex; align-items: center; gap: 3px;
+            background: var(--surface2); border: 1px solid var(--border-bright);
+            border-radius: var(--radius-pill); padding: 2px 8px;
+            font-size: 0.66rem; font-weight: 800; color: var(--text-2);
+        }
+        .level-badge.lv-high { border-color: var(--yeah); color: var(--yeah); background: rgba(255,127,0,0.08); }
+        .level-badge.lv-mid { border-color: var(--fresh); color: var(--fresh); background: rgba(0,212,240,0.08); }
+        .level-badge.lv-low { border-color: var(--green); color: var(--green); background: var(--green-glow); }
+        .xp-bar-track { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-pill); height: 8px; overflow: hidden; margin: 6px 0; }
+        .xp-bar-fill { height: 100%; background: linear-gradient(90deg, var(--green-dim), var(--green)); transition: width 0.4s ease; }
+        .xp-label { font-size: 0.68rem; color: var(--text-3); display: flex; justify-content: space-between; }
+
+        /* ── CONFETTI ── */
+        .confetti-piece {
+            position: fixed; top: -10px; width: 8px; height: 8px;
+            border-radius: 2px; pointer-events: none; z-index: 600;
+            animation: confetti-fall linear forwards;
+        }
+        @keyframes confetti-fall {
+            to { transform: translateY(110vh) rotate(540deg); opacity: 0.3; }
+        }
+
+        /* ── EMOJI QUICK PICKER ── */
+        .emoji-quick-bar { display: flex; gap: 4px; flex-wrap: wrap; }
+        .emoji-quick-btn {
+            background: var(--surface2); border: 1px solid var(--border);
+            border-radius: 6px; padding: 4px 7px; font-size: 0.95rem; cursor: pointer;
+            transition: all 0.12s; line-height: 1;
+        }
+        .emoji-quick-btn:hover { background: var(--border); transform: scale(1.1); }
+
+        /* ── CHANNEL ICON ── */
+        .channel-icon-picker { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+        .channel-icon-opt {
+            width: 34px; height: 34px; border-radius: 8px; display: flex; align-items: center; justify-content: center;
+            background: var(--surface2); border: 1px solid var(--border); cursor: pointer;
+            font-size: 1.1rem; transition: all 0.12s;
+        }
+        .channel-icon-opt:hover { border-color: var(--border-bright); }
+        .channel-icon-opt.selected { border-color: var(--green); background: var(--green-glow); }
+        .comm-icon { font-size: 0.85rem; flex-shrink: 0; }
+
+        /* ── FAVORITE STAR ── */
+        .comm-fav-btn {
+            background: none; border: none; cursor: pointer; font-size: 0.78rem;
+            color: var(--text-3); padding: 2px 4px; flex-shrink: 0; opacity: 0; transition: all 0.12s;
+        }
+        .comm-row:hover .comm-fav-btn, .comm-fav-btn.faved { opacity: 1; }
+        .comm-fav-btn.faved { color: var(--warn); }
+
         /* ── MISC ── */
         .sep { border: none; border-top: 1px solid var(--border); margin: 14px 0; }
         .hidden { display: none !important; }
@@ -640,6 +716,7 @@
         <div class="topbar-right">
             <span class="clock" id="clock">--:--:-- UTC</span>
             <button class="btn btn-ghost btn-sm" onclick="toggleTheme()" title="Toggle theme">🌓</button>
+            <button class="btn btn-ghost btn-sm" id="btn-mute" onclick="toggleMute()" title="Toggle sound effects">🔊</button>
             <button class="btn btn-ghost btn-sm" onclick="openBookmarksModal()" title="Bookmarks">🔖</button>
             <div id="notif-bell" class="hidden">
                 <button class="notif-bell-btn" onclick="openNotifModal()" id="notif-bell-btn" title="Notifications">
@@ -671,6 +748,7 @@
                     <div class="stat-item"><div class="stat-num" id="stat-channels">0</div><div class="stat-label">Channels</div></div>
                     <div class="stat-item"><div class="stat-num" id="stat-bookmarks">0</div><div class="stat-label">Saved</div></div>
                 </div>
+                <div id="streak-display" style="font-size:0.74rem; color:var(--yeah); font-weight:700; margin-bottom:10px;"></div>
                 <button class="btn btn-ghost" style="width:100%; font-size:0.8rem;" id="btn-profile-action" onclick="openAuthModal()">Sign In</button>
             </div>
 
@@ -686,9 +764,10 @@
                 </div>
                 <div class="hidden" id="new-comm-form" style="margin-top:10px;">
                     <input type="text" class="field" id="new-comm-input" placeholder="New channel name..." maxlength="40">
+                    <div class="channel-icon-picker" id="new-comm-icon-picker"></div>
                     <button class="btn" style="width:100%;" onclick="createComm()">Launch Channel</button>
                 </div>
-                <button class="btn btn-ghost btn-sm hidden" id="btn-new-comm" style="width:100%; margin-top:8px;" onclick="document.getElementById('new-comm-form').classList.toggle('hidden'); document.getElementById('new-comm-input').focus()">+ New Channel</button>
+                <button class="btn btn-ghost btn-sm hidden" id="btn-new-comm" style="width:100%; margin-top:8px;" onclick="document.getElementById('new-comm-form').classList.toggle('hidden'); document.getElementById('new-comm-input').focus(); initChannelIconPicker();">+ New Channel</button>
             </div>
 
             <!-- TELEMETRY -->
@@ -730,6 +809,8 @@
                     <button class="filter-btn" id="filter-media" onclick="setFilter('media', this)">📷 Media</button>
                     <button class="filter-btn" id="filter-bookmarks" onclick="setFilter('bookmarks', this)">🔖 Saved</button>
                     <button class="filter-btn" id="filter-mine" onclick="setFilter('mine', this)">👤 Mine</button>
+                    <button class="filter-btn" id="btn-shuffle" onclick="shuffleToRandomPost()" title="Jump to a random post">🎲</button>
+                    <button class="filter-btn" id="btn-density" onclick="toggleDensity()" title="Toggle compact view">↕️</button>
                     <div style="margin-left:auto;">
                         <select class="field" id="sort-select" style="margin-bottom:0; padding:4px 8px; font-size:0.75rem; width:auto;" onchange="filterFeed()">
                             <option value="new">Newest</option>
@@ -740,6 +821,7 @@
             </div>
 
             <!-- ANNOUNCEMENT -->
+
             <div class="announcement hidden" id="ann-banner">
                 <div class="announcement-label">📌 Board Pin</div>
                 <div class="announcement-text" id="ann-text"></div>
@@ -756,8 +838,10 @@
                     <button class="fmt-btn" onclick="fmt('[i]','[/i]')"><em>I</em></button>
                     <button class="fmt-btn" onclick="fmt('[spoiler]','[/spoiler]')">👁 Spoiler</button>
                     <button class="img-toggle-btn" id="img-toggle-btn" onclick="toggleImgField()">🖼 Image</button>
+                    <button class="img-toggle-btn" id="emoji-toggle-btn" onclick="toggleEmojiBar()">😀 Emoji</button>
                     <button class="btn btn-ghost btn-xs hidden" id="btn-pin" onclick="promptPin()">📌 Set Pin</button>
                 </div>
+                <div class="emoji-quick-bar hidden mt-10" id="emoji-quick-bar"></div>
                 <div style="position:relative;">
                     <textarea class="composer-textarea mt-10" id="post-input" maxlength="280" placeholder="What's happening in the plaza… (@ to mention)" oninput="onType()" onkeydown="handleComposerKey(event)"></textarea>
                     <div class="mention-dropdown hidden" id="mention-dropdown" style="position:absolute; bottom:0; left:0; min-width:180px;"></div>
@@ -933,6 +1017,7 @@
         <div style="font-size:1.1rem; font-weight:900; margin-bottom:2px;" id="inspect-name">-</div>
         <div style="color:var(--text-3); font-size:0.82rem; margin-bottom:10px;" id="inspect-handle">@-</div>
         <div class="profile-chips" id="inspect-chips"></div>
+        <div id="inspect-level-wrap"></div>
         <div style="background:var(--surface2); border:1px solid var(--border); border-radius:var(--radius-sm); padding:14px; font-size:0.85rem; line-height:1.6; text-align:left; margin-bottom:10px; min-height:40px;" id="inspect-bio">-</div>
         <div id="inspect-extra"></div>
         <div style="font-size:0.72rem; color:var(--text-3); margin-bottom:16px;" id="inspect-joined"></div>
@@ -992,6 +1077,14 @@
             <input type="text" class="field" id="dm-username-input" placeholder="Username to DM…" style="margin-bottom:6px;">
             <textarea class="field" id="dm-message-input" style="height:60px; resize:none; margin-bottom:8px;" maxlength="500" placeholder="Message…"></textarea>
             <button class="btn btn-ghost btn-sm" onclick="sendAdminDM()">Send DM</button>
+        </div>
+
+        <!-- REPORTED POSTS -->
+        <div class="admin-section">
+            <div class="admin-section-title">🚩 Reported Posts</div>
+            <div id="admin-reports-list" style="display:flex; flex-direction:column; gap:8px; max-height:260px; overflow-y:auto;">
+                <span class="text-muted">Loading…</span>
+            </div>
         </div>
 
         <!-- USER MANAGEMENT -->
@@ -1085,7 +1178,7 @@
 
 <script>
 const API = "https://codyverse.codymkw.workers.dev";
-let me = null, myProfile = null, community = "general", postsCache = [], authMode = "login";
+let me = null, myProfile = null, community = "general", postsCache = [], authMode = "login", myPostCount = 0;
 let activeFilter = "all", allUsers = [];
 let dmTargetUsername = null;
 let mentionUsers = [], mentionIndex = 0, mentionQuery = "";
@@ -1109,6 +1202,7 @@ async function api(path, opts = {}) {
 // ── AUDIO ─────────────────────────────────────────────
 const ctx = new (window.AudioContext || window.webkitAudioContext)();
 function sfx(type) {
+    if (typeof isMuted === "function" && isMuted()) return;
     try {
         const o = ctx.createOscillator(), g = ctx.createGain();
         o.connect(g); g.connect(ctx.destination);
@@ -1137,6 +1231,7 @@ function fmt_content(s) {
     r = r.replace(/\[i\](.*?)\[\/i\]/gis, "<em>$1</em>");
     r = r.replace(/\[spoiler\](.*?)\[\/spoiler\]/gis, '<span class="spoiler" onclick="this.classList.toggle(\'open\')">$1</span>');
     r = r.replace(/@([a-zA-Z0-9_]{2,24})/g, '<span class="mention" onclick="inspectUser(\'$1\')">@$1</span>');
+    r = r.replace(/\n/g, "<br>");
     return r;
 }
 function ago(ts) {
@@ -1172,6 +1267,7 @@ function toggleTheme() {
     localStorage.setItem("plaza_theme", t);
 }
 (function(){ const t = localStorage.getItem("plaza_theme"); if(t) document.documentElement.setAttribute("data-theme", t); })();
+(function(){ const m = localStorage.getItem("plaza_muted") === "1"; const btn = document.getElementById("btn-mute"); if (btn) btn.textContent = m ? "🔇" : "🔊"; })();
 
 // ── BOOKMARKS ─────────────────────────────────────────
 function getBookmarks() { return JSON.parse(localStorage.getItem("plaza_bookmarks") || "[]"); }
@@ -1276,7 +1372,7 @@ async function boot() {
         const res = await api("/api/me").catch(()=>null);
         if (res?.ok) {
             const d = await res.json();
-            if (d.username) { me = d.username; myProfile = d.profile; }
+            if (d.username) { me = d.username; myProfile = d.profile; myPostCount = d.postCount || 0; }
             else saveToken(null);
         } else {
             saveToken(null);
@@ -1321,6 +1417,19 @@ function renderAuthUI() {
             document.getElementById("profile-bio").after(chipsEl);
         }
         chipsEl.innerHTML = chipsHtml;
+
+        // Level badge
+        const lvl = computeLevel(myPostCount);
+        const tier = levelTier(lvl.level);
+        let levelEl = document.getElementById("profile-level-sidebar");
+        if (!levelEl) {
+            levelEl = document.createElement("div");
+            levelEl.id = "profile-level-sidebar";
+            levelEl.style.marginBottom = "10px";
+            chipsEl.after(levelEl);
+        }
+        levelEl.innerHTML = `<span class="level-badge ${tier}">⭐ Lv.${lvl.level}</span>`;
+
         document.getElementById("btn-profile-action").textContent = "Edit Profile";
         document.getElementById("btn-profile-action").onclick = openProfileEdit;
 
@@ -1438,39 +1547,44 @@ async function loadChannels() {
     const res = await api("/api/communities");
     if (!res.ok) return;
     const list = await res.json();
-    const defaults = list.filter(c => c.system);
-    const custom = list.filter(c => !c.system);
+    const favIds = getFavChannels();
+    const favorites = list.filter(c => favIds.includes(c.id));
+    const defaults = list.filter(c => c.system && !favIds.includes(c.id));
+    const custom = list.filter(c => !c.system && !favIds.includes(c.id));
 
     document.getElementById("tel-channels").textContent = list.length;
     document.getElementById("stat-channels").textContent = list.length;
     const countEl = document.getElementById("channel-count");
     if (countEl) countEl.textContent = list.length + " channel" + (list.length !== 1 ? "s" : "");
 
-    // Only show the filter box once there are enough channels to need it
     const searchBox = document.getElementById("comm-search");
-    if (searchBox) {
-        searchBox.classList.toggle("hidden", list.length <= 6);
-    }
+    if (searchBox) searchBox.classList.toggle("hidden", list.length <= 6);
 
     const adminSel = document.getElementById("admin-channel-select");
     if (adminSel) {
         const currentVal = adminSel.value;
-        adminSel.innerHTML = list.map(c => `<option value="${esc(c.id)}">${esc(c.name)}</option>`).join("");
+        adminSel.innerHTML = list.map(c => `<option value="${esc(c.id)}">${esc(c.icon||"#")} ${esc(c.name)}</option>`).join("");
         if (currentVal) adminSel.value = currentVal;
     }
 
     function commBtn(c) {
+        const isFav = favIds.includes(c.id);
         return `<div class="comm-row ${c.id === community ? "active" : ""}" data-comm-name="${esc((c.name||"").toLowerCase())}" data-comm-id="${esc(c.id)}">
             <button class="comm-btn" onclick="switchChannel('${esc(c.id)}')">
-                <span class="comm-hash">#</span>
+                <span class="comm-icon">${esc(c.icon || "#")}</span>
                 <span class="comm-name">${esc(c.name)}</span>
             </button>
+            <button class="comm-fav-btn ${isFav ? "faved" : ""}" onclick="toggleFavChannel('${esc(c.id)}', event)" title="${isFav ? "Unpin" : "Pin to top"}">${isFav ? "★" : "☆"}</button>
             ${(!c.system && isAdmin()) ? `<button class="comm-del" onclick="delComm('${esc(c.id)}')" title="Delete channel">\u2715</button>` : ""}
         </div>`;
     }
 
     const box = document.getElementById("comm-list");
     let html = "";
+    if (favorites.length) {
+        html += `<div class="comm-section-label">★ Pinned</div>`;
+        html += `<div class="comm-grid">${favorites.map(commBtn).join("")}</div>`;
+    }
     if (defaults.length) {
         html += `<div class="comm-section-label">Default</div>`;
         html += `<div class="comm-grid">${defaults.map(commBtn).join("")}</div>`;
@@ -1478,13 +1592,13 @@ async function loadChannels() {
     html += `<div class="comm-section-label">Community</div>`;
     if (custom.length) {
         html += `<div class="comm-grid">${custom.map(commBtn).join("")}</div>`;
-    } else {
+    } else if (!favorites.some(c => !c.system) && !custom.length) {
         html += `<div class="comm-empty-hint">No community channels yet — be the first to launch one!</div>`;
     }
     box.innerHTML = html;
 
     const current = list.find(c => c.id === community);
-    document.getElementById("composer-comm-label").textContent = "#" + (current ? current.name : community);
+    document.getElementById("composer-comm-label").textContent = (current?.icon || "#") + " " + (current ? current.name : community);
 }
 
 function filterChannelList() {
@@ -1494,13 +1608,10 @@ function filterChannelList() {
         const id = row.dataset.commId || "";
         row.style.display = (!q || name.includes(q) || id.includes(q)) ? "" : "none";
     });
-    // Hide section labels that have no visible rows left
     document.querySelectorAll("#comm-list .comm-grid").forEach(grid => {
         const anyVisible = [...grid.children].some(row => row.style.display !== "none");
         const label = grid.previousElementSibling;
-        if (label && label.classList.contains("comm-section-label")) {
-            label.style.display = anyVisible ? "" : "none";
-        }
+        if (label && label.classList.contains("comm-section-label")) label.style.display = anyVisible ? "" : "none";
         grid.style.display = anyVisible ? "" : "none";
     });
 }
@@ -1515,14 +1626,31 @@ function switchChannel(id) {
     loadPoll();
 }
 
+const CHANNEL_ICONS = ["💬","🎮","🍃","🌟","🔥","🎨","🎵","🏆","🛹","🍄","⚔️","🌊"];
+let selectedChannelIcon = "💬";
+
+function initChannelIconPicker() {
+    const el = document.getElementById("new-comm-icon-picker");
+    if (!el || el.dataset.ready) return;
+    el.dataset.ready = "1";
+    el.innerHTML = CHANNEL_ICONS.map((ic, i) => `<button type="button" class="channel-icon-opt ${i===0?"selected":""}" data-icon="${ic}" onclick="pickChannelIcon('${ic}', this)">${ic}</button>`).join("");
+}
+function pickChannelIcon(icon, btn) {
+    selectedChannelIcon = icon;
+    document.querySelectorAll(".channel-icon-opt").forEach(b => b.classList.remove("selected"));
+    btn.classList.add("selected");
+}
+
 async function createComm() {
     const name = document.getElementById("new-comm-input").value.trim();
     if (!name) return;
-    const res = await api("/api/communities", { method: "POST", body: { name } });
+    const res = await api("/api/communities", { method: "POST", body: { name, icon: selectedChannelIcon } });
     if (res.ok) {
         sfx("post"); toast("Channel launched!", "ok");
         document.getElementById("new-comm-input").value = "";
         document.getElementById("new-comm-form").classList.add("hidden");
+        selectedChannelIcon = "💬";
+        document.querySelectorAll(".channel-icon-opt").forEach((b,i) => b.classList.toggle("selected", i===0));
         loadChannels();
     } else { sfx("error"); toast(await res.text(), "err"); }
 }
@@ -1531,6 +1659,18 @@ async function delComm(id) {
     if (!confirm(`Delete channel "${id}"?`)) return;
     const res = await api("/api/communities/delete", { method: "POST", body: { id } });
     if (res.ok) { if (community === id) switchChannel("general"); else loadChannels(); }
+}
+
+// ── CHANNEL FAVORITES (local) ──────────────────────────
+function getFavChannels() { return JSON.parse(localStorage.getItem("plaza_fav_channels") || "[]"); }
+function toggleFavChannel(id, ev) {
+    if (ev) ev.stopPropagation();
+    let favs = getFavChannels();
+    if (favs.includes(id)) favs = favs.filter(x => x !== id);
+    else favs.push(id);
+    localStorage.setItem("plaza_fav_channels", JSON.stringify(favs));
+    sfx("click");
+    loadChannels();
 }
 
 // ── FEED ────────────────────────────────────────────────
@@ -1616,6 +1756,7 @@ function renderFeed(posts) {
     el.innerHTML = posts.map(p => {
         const myR = me && p.reactedUsers?.[me];
         const canDel = me && (me === p.username || isAdmin());
+        const canEdit = me && me === p.username;
         const replyCount = p.replyCount || 0;
         const bookmarked = bookmarks.includes(p.id);
         const totalReactions = (p.reactions?.yeah||0)+(p.reactions?.fresh||0)+(p.reactions?.cozy||0);
@@ -1628,8 +1769,9 @@ function renderFeed(posts) {
                     ${p.username==="codymkw" ? `<span class="post-admin-badge">Admin</span>` : ""}
                     ${totalReactions > 5 ? `<span style="font-size:0.68rem; color:var(--yeah);">🔥 Hot</span>` : ""}
                     <span class="post-time" title="${esc(fullDate(p.timestamp))}">${ago(p.timestamp)}</span>
+                    ${p.editedAt ? `<span class="edited-tag" title="${esc(fullDate(p.editedAt))}">(edited)</span>` : ""}
                 </div>
-                <div class="post-content">${fmt_content(p.content)}${p.imageUrl ? `<img src="${esc(p.imageUrl)}" class="post-img" onclick="openLightbox('${esc(p.imageUrl)}')" onerror="this.style.display='none'">` : ""}</div>
+                <div class="post-content" id="content-${esc(p.id)}">${fmt_content(p.content)}${p.imageUrl ? `<img src="${esc(p.imageUrl)}" class="post-img" onclick="openLightbox('${esc(p.imageUrl)}')" onerror="this.style.display='none'">` : ""}</div>
                 <div style="display:flex; align-items:center; gap:6px; margin-top:10px; flex-wrap:wrap;">
                     ${me ? `
                     <button class="react-btn ${myR==="yeah"?"active-yeah":""}" onclick="react('${esc(p.id)}','yeah')">🔥 Yeah <span>${p.reactions?.yeah||0}</span></button>
@@ -1639,6 +1781,9 @@ function renderFeed(posts) {
                     <button class="reply-btn" onclick="toggleReplies('${esc(p.id)}')">
                         💬 ${replyCount > 0 ? replyCount + " repl" + (replyCount===1?"y":"ies") : "Reply"}
                     </button>
+                    <button class="reply-btn" onclick="quotePost('${esc(p.id)}')" title="Quote this post">↪ Quote</button>
+                    <button class="reply-btn" onclick="copyPostLink('${esc(p.id)}')" title="Copy link to post">🔗</button>
+                    ${canEdit ? `<button class="reply-btn" onclick="startEditPost('${esc(p.id)}')" title="Edit post">✏️</button>` : ""}
                 </div>
                 <div class="reply-thread hidden" id="replies-${esc(p.id)}">
                     <div id="reply-list-${esc(p.id)}"></div>
@@ -1657,6 +1802,7 @@ function renderFeed(posts) {
             </div>
             <div class="post-actions">
                 <button class="post-action-btn bookmark-btn ${bookmarked ? "bookmarked" : ""}" onclick="toggleBookmark('${esc(p.id)}')" title="${bookmarked ? "Remove bookmark" : "Bookmark"}">${bookmarked ? "🔖" : "🏷"}</button>
+                ${(me && me !== p.username && !canDel) ? `<button class="post-action-btn" onclick="reportPost('${esc(p.id)}','${esc(p.username)}')" title="Report post">🚩</button>` : ""}
                 ${canDel ? `<button class="post-action-btn del-btn" onclick="delPost('${esc(p.id)}')" title="Delete post">✕</button>` : ""}
             </div>
         </div>`;
@@ -1667,6 +1813,138 @@ function renderFeed(posts) {
             el.innerHTML = `<img src="${esc(myProfile.avatarUrl)}" onerror="this.parentElement.textContent='${esc(initials(myProfile?.displayName||me))}'">`;
         });
     }
+}
+
+// ── EDIT POST ────────────────────────────────────────────
+function startEditPost(postId) {
+    const post = postsCache.find(p => p.id === postId);
+    if (!post) return;
+    const contentEl = document.getElementById(`content-${postId}`);
+    if (!contentEl) return;
+    const original = post.content;
+    contentEl.innerHTML = `
+        <textarea class="composer-textarea" id="edit-area-${postId}" maxlength="280" style="min-height:60px;">${esc(original)}</textarea>
+        <div style="display:flex; justify-content:flex-end; gap:6px; margin-top:6px;">
+            <button class="btn btn-ghost btn-xs" onclick="cancelEditPost('${postId}')">Cancel</button>
+            <button class="btn btn-xs" onclick="saveEditPost('${postId}')">Save</button>
+        </div>`;
+    document.getElementById(`edit-area-${postId}`)?.focus();
+}
+function cancelEditPost(postId) {
+    renderFeed(postsCache); // simplest reliable revert
+}
+async function saveEditPost(postId) {
+    const ta = document.getElementById(`edit-area-${postId}`);
+    const content = ta?.value.trim();
+    if (!content) return;
+    const res = await api("/api/posts/edit", { method: "POST", body: { community, postId, content } });
+    if (res.ok) {
+        const d = await res.json();
+        const post = postsCache.find(p => p.id === postId);
+        if (post) { post.content = d.content; post.editedAt = d.editedAt; }
+        sfx("click"); toast("Post updated.", "ok");
+        filterFeed();
+    } else {
+        sfx("error"); toast(await res.text() || "Couldn't edit.", "err");
+    }
+}
+
+// ── QUOTE / SHARE ──────────────────────────────────────────
+let quotedPost = null;
+function quotePost(postId) {
+    const post = postsCache.find(p => p.id === postId);
+    if (!post) return;
+    if (!me) { toast("Sign in to quote a post.", "info"); return; }
+    quotedPost = post;
+    renderQuotePreview();
+    document.getElementById("post-input").focus();
+    window.scrollTo({ top: document.getElementById("composer").offsetTop - 80, behavior: "smooth" });
+}
+function renderQuotePreview() {
+    let wrap = document.getElementById("quote-preview-wrap");
+    if (!wrap) {
+        wrap = document.createElement("div");
+        wrap.id = "quote-preview-wrap";
+        document.getElementById("post-input").parentElement.before(wrap);
+    }
+    if (!quotedPost) { wrap.innerHTML = ""; return; }
+    wrap.innerHTML = `<div class="quote-preview">
+        <button class="quote-preview-clear" onclick="clearQuote()">✕</button>
+        Quoting <strong>${esc(quotedPost.displayName||quotedPost.username)}</strong>: "${esc(quotedPost.content.slice(0,100))}${quotedPost.content.length>100?"…":""}"
+    </div>`;
+}
+function clearQuote() { quotedPost = null; renderQuotePreview(); }
+
+function copyPostLink(postId) {
+    const url = `${location.origin}${location.pathname}#${community}/${postId}`;
+    navigator.clipboard.writeText(url).then(() => toast("Link copied!", "ok")).catch(() => toast("Couldn't copy.", "err"));
+}
+
+// ── RANDOM POST SHUFFLE ────────────────────────────────────
+function shuffleToRandomPost() {
+    if (!postsCache.length) { toast("No posts to shuffle to.", "info"); return; }
+    const pick = postsCache[Math.floor(Math.random() * postsCache.length)];
+    sfx("click");
+    jumpToPost(pick.id);
+}
+
+// ── COMPACT DENSITY ────────────────────────────────────────
+function toggleDensity() {
+    const compact = document.body.classList.toggle("compact-mode");
+    localStorage.setItem("plaza_compact", compact ? "1" : "0");
+    document.getElementById("btn-density")?.classList.toggle("active", compact);
+    sfx("switch");
+}
+(function() { if (localStorage.getItem("plaza_compact") === "1") document.body.classList.add("compact-mode"); })();
+
+// ── CONFETTI ────────────────────────────────────────────────
+function fireConfetti() {
+    const colors = ["#92e600", "#ff7f00", "#00d4f0", "#e040a0", "#ffffff"];
+    for (let i = 0; i < 36; i++) {
+        const el = document.createElement("div");
+        el.className = "confetti-piece";
+        el.style.left = Math.random() * 100 + "vw";
+        el.style.background = colors[Math.floor(Math.random()*colors.length)];
+        el.style.animationDuration = (2 + Math.random()*1.5) + "s";
+        el.style.opacity = String(0.7 + Math.random()*0.3);
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), 3600);
+    }
+}
+function maybeFireDailyConfetti() {
+    const today = new Date().toDateString();
+    const lastPostDay = localStorage.getItem("plaza_last_post_day");
+    if (lastPostDay !== today) {
+        localStorage.setItem("plaza_last_post_day", today);
+        fireConfetti();
+    }
+}
+
+// ── LEVEL / XP SYSTEM (client-computed from post count) ────
+function computeLevel(postCount) {
+    // Simple curve: level = floor(sqrt(posts)) + 1, capped display-wise
+    const level = Math.floor(Math.sqrt(postCount || 0)) + 1;
+    const xpIntoLevel = (postCount || 0) - Math.pow(level - 1, 2);
+    const xpForNext = Math.pow(level, 2) - Math.pow(level - 1, 2);
+    return { level, xpIntoLevel, xpForNext, pct: Math.min(100, Math.round((xpIntoLevel / xpForNext) * 100)) };
+}
+function levelTier(level) {
+    if (level >= 8) return "lv-high";
+    if (level >= 4) return "lv-mid";
+    return "lv-low";
+}
+
+// ── LOGIN STREAK ─────────────────────────────────────────
+function updateLoginStreak() {
+    const today = new Date().toDateString();
+    const lastLogin = localStorage.getItem("plaza_last_login_day");
+    let streak = parseInt(localStorage.getItem("plaza_login_streak") || "0", 10);
+    if (lastLogin === today) return streak; // already counted today
+    const yesterday = new Date(Date.now() - 86400000).toDateString();
+    streak = (lastLogin === yesterday) ? streak + 1 : 1;
+    localStorage.setItem("plaza_login_streak", String(streak));
+    localStorage.setItem("plaza_last_login_day", today);
+    return streak;
 }
 
 // ── LIGHTBOX ───────────────────────────────────────────
@@ -1687,6 +1965,28 @@ function fmt(open, close) {
     ta.value = ta.value.slice(0,s) + open + ta.value.slice(s,e) + close + ta.value.slice(e);
     ta.focus(); updateCharCount();
 }
+
+// ── EMOJI QUICK BAR ─────────────────────────────────────
+const QUICK_EMOJIS = ["😀","😂","😎","🥳","😢","🔥","💯","🎮","🍃","⭐","❤️","👍","👎","🤔","😴","🎉","🦑","🍄","⚡","🌊"];
+function toggleEmojiBar() {
+    const bar = document.getElementById("emoji-quick-bar");
+    const willShow = bar.classList.contains("hidden");
+    bar.classList.toggle("hidden");
+    if (willShow && !bar.dataset.ready) {
+        bar.dataset.ready = "1";
+        bar.innerHTML = QUICK_EMOJIS.map(e => `<button type="button" class="emoji-quick-btn" onclick="insertEmoji('${e}')">${e}</button>`).join("");
+    }
+}
+function insertEmoji(emoji) {
+    const ta = document.getElementById("post-input");
+    const s = ta.selectionStart, e = ta.selectionEnd;
+    ta.value = ta.value.slice(0,s) + emoji + ta.value.slice(e);
+    ta.focus();
+    ta.selectionStart = ta.selectionEnd = s + emoji.length;
+    updateCharCount();
+    onType();
+}
+
 function onType() { updateCharCount(); localStorage.setItem(`draft:${community}`, document.getElementById("post-input").value); handleMentionDetect(); }
 function updateCharCount() {
     const len = document.getElementById("post-input").value.length;
@@ -1809,9 +2109,12 @@ function updateMentionSelection() {
 }
 
 async function submitPost() {
-    const content = document.getElementById("post-input").value.trim();
+    let content = document.getElementById("post-input").value.trim();
     const imageUrl = document.getElementById("img-url").value.trim();
     if (!content) return;
+    if (quotedPost) {
+        content = `[i]Re: @${quotedPost.username}: "${quotedPost.content.slice(0,60)}${quotedPost.content.length>60?"…":""}"[/i]\n${content}`;
+    }
     const btn = document.querySelector(".composer-footer .btn:last-child");
     btn.disabled = true;
     const res = await api("/api/posts", { method: "POST", body: { content, community, imageUrl } });
@@ -1819,6 +2122,10 @@ async function submitPost() {
     if (res.ok) {
         sfx("post");
         clearDraft();
+        clearQuote();
+        maybeFireDailyConfetti();
+        myPostCount++;
+        renderAuthUI();
         loadFeed();
     } else {
         sfx("error"); toast(await res.text() || "Couldn't post.", "err");
@@ -1830,6 +2137,17 @@ async function delPost(id) {
     const res = await api("/api/posts/delete", { method: "POST", body: { community, postId: id } });
     if (res.ok) { sfx("click"); loadFeed(); }
     else { sfx("error"); toast("Couldn't delete.", "err"); }
+}
+
+async function reportPost(postId, authorUsername) {
+    const reason = prompt(`Report this post by @${authorUsername}? Add an optional reason:`);
+    if (reason === null) return; // cancelled
+    const res = await api("/api/posts/report", { method: "POST", body: { community, postId, reason: reason || "" } });
+    if (res.ok) {
+        sfx("click"); toast("Report sent to admins.", "ok");
+    } else {
+        sfx("error"); toast(await res.text() || "Couldn't report.", "err");
+    }
 }
 
 // ── REPLIES ─────────────────────────────────────────────
@@ -1953,6 +2271,16 @@ async function inspectUser(username) {
     document.getElementById("inspect-chips").innerHTML = chips.map(c =>
         `<span class="${chipMap[c]||"chip"}">${chipIcon[c]||""} ${esc(c)}</span>`
     ).join("");
+
+    // Level / XP display
+    const lvl = computeLevel(p.postCount || 0);
+    const tier = levelTier(lvl.level);
+    document.getElementById("inspect-level-wrap").innerHTML = `
+        <div style="margin-bottom:12px;">
+            <span class="level-badge ${tier}">⭐ Level ${lvl.level}</span>
+            <div class="xp-bar-track"><div class="xp-bar-fill" style="width:${lvl.pct}%"></div></div>
+            <div class="xp-label"><span>${p.postCount || 0} posts</span><span>${lvl.xpIntoLevel}/${lvl.xpForNext} to Lv.${lvl.level+1}</span></div>
+        </div>`;
 
     let extra = "";
     if (p.friendCode) extra += `
@@ -2108,6 +2436,28 @@ function startHeartbeat() {
     loadOnline();
     loadNotifications(true);
     setInterval(() => loadNotifications(false), 30000);
+
+    const streak = updateLoginStreak();
+    const streakEl = document.getElementById("streak-display");
+    if (streakEl) streakEl.textContent = streak > 1 ? `🔥 ${streak} day streak` : "";
+    if (streak > 1 && [3,7,14,30,60,100].includes(streak)) {
+        toast(`🔥 ${streak}-day streak! Keep it up.`, "ok");
+    }
+
+    if (isAdmin()) {
+        const checkReports = () => api("/api/admin/reports").then(r => r.ok ? r.json() : []).then(reports => updateAdminBadge(reports.length)).catch(()=>{});
+        checkReports();
+        setInterval(checkReports, 45000);
+    }
+}
+
+// ── MUTE TOGGLE ──────────────────────────────────────────
+function isMuted() { return localStorage.getItem("plaza_muted") === "1"; }
+function toggleMute() {
+    const muted = !isMuted();
+    localStorage.setItem("plaza_muted", muted ? "1" : "0");
+    document.getElementById("btn-mute").textContent = muted ? "🔇" : "🔊";
+    toast(muted ? "Sound effects muted." : "Sound effects on.", "info");
 }
 
 // ── SEGMENTED CONTROLS ──────────────────────────────────
@@ -2252,13 +2602,76 @@ async function sendDMFromModal() {
 async function openAdminPanel() {
     if (!isAdmin()) return;
     document.getElementById("modal-admin").classList.remove("hidden");
-    await Promise.all([loadAdminUsers(), loadAdminComms()]);
+    await Promise.all([loadAdminUsers(), loadAdminComms(), loadAdminReports()]);
     // Pre-fill pin input with current channel's pin
     const res = await api(`/api/announcement?community=${community}`);
     if (res.ok) {
         const ann = await res.json();
         document.getElementById("admin-pin-input").value = ann?.text || "";
     }
+}
+
+async function loadAdminReports() {
+    const el = document.getElementById("admin-reports-list");
+    el.innerHTML = `<span class="text-muted">Loading…</span>`;
+    const res = await api("/api/admin/reports").catch(() => null);
+    if (!res?.ok) {
+        el.innerHTML = `<span class="text-muted">Couldn't load reports.</span>`;
+        return;
+    }
+    const reports = await res.json();
+    updateAdminBadge(reports.length);
+    if (!reports.length) {
+        el.innerHTML = `<div class="text-muted" style="text-align:center; padding:16px 0;">🎉 No open reports.</div>`;
+        return;
+    }
+    el.innerHTML = reports.map(r => `
+        <div style="background:var(--surface2); border:1px solid rgba(239,68,68,0.3); border-radius:var(--radius-sm); padding:10px 12px;">
+            <div style="font-size:0.78rem; color:var(--text-2); margin-bottom:4px;">
+                <strong style="color:var(--text);">@${esc(r.postAuthor)}</strong> in #${esc(r.community)} · reported by @${esc(r.reportedBy)} · ${ago(r.timestamp)}
+            </div>
+            <div style="font-size:0.82rem; color:var(--text); background:var(--surface); border-radius:6px; padding:8px; margin-bottom:6px;">${esc(r.postPreview)}${r.postPreview.length>=150?"…":""}</div>
+            ${r.reason ? `<div style="font-size:0.76rem; color:var(--text-3); font-style:italic; margin-bottom:6px;">Reason: ${esc(r.reason)}</div>` : ""}
+            <div style="display:flex; gap:6px;">
+                <button class="btn btn-ghost btn-xs" onclick="resolveReport('${esc(r.id)}')">Dismiss</button>
+                <button class="btn btn-danger-ghost btn-xs" onclick="deleteReportedPost('${esc(r.id)}')">Delete Post</button>
+            </div>
+        </div>
+    `).join("");
+}
+
+function updateAdminBadge(count) {
+    const wrap = document.getElementById("admin-btn-wrap");
+    if (!wrap) return;
+    let badge = document.getElementById("admin-report-badge");
+    if (count > 0) {
+        if (!badge) {
+            const btn = wrap.querySelector("button");
+            badge = document.createElement("span");
+            badge.id = "admin-report-badge";
+            badge.style.cssText = "background:#fff; color:var(--danger); font-size:0.62rem; font-weight:900; border-radius:9999px; padding:1px 6px; margin-left:4px;";
+            btn?.appendChild(badge);
+        }
+        badge.textContent = count;
+    } else if (badge) {
+        badge.remove();
+    }
+}
+
+async function resolveReport(reportId) {
+    const res = await api("/api/admin/reports/resolve", { method: "POST", body: { reportId } });
+    if (res.ok) { sfx("click"); toast("Report dismissed.", "info"); loadAdminReports(); }
+    else toast("Failed.", "err");
+}
+
+async function deleteReportedPost(reportId) {
+    if (!confirm("Delete this post permanently?")) return;
+    const res = await api("/api/admin/reports/delete-post", { method: "POST", body: { reportId } });
+    if (res.ok) {
+        sfx("post"); toast("Post deleted.", "info");
+        loadAdminReports();
+        loadFeed();
+    } else toast("Failed.", "err");
 }
 
 async function loadAdminComms() {
