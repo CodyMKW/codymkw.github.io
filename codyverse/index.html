@@ -728,6 +728,46 @@
         .comm-row:hover .comm-fav-btn, .comm-fav-btn.faved { opacity: 1; }
         .comm-fav-btn.faved { color: var(--warn); }
 
+        /* ── SITE MODE OVERLAYS ── */
+        #site-mode-screen {
+            position: fixed; inset: 0; z-index: 9999;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 40px 24px; text-align: center;
+        }
+        #site-mode-screen.mode-maintenance {
+            background: var(--bg);
+        }
+        #site-mode-screen.mode-shutdown {
+            background: #0a0008;
+        }
+        .sms-icon { font-size: 4rem; margin-bottom: 20px; animation: sms-bob 3s ease-in-out infinite; }
+        @keyframes sms-bob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+        .sms-title { font-size: 1.8rem; font-weight: 900; margin-bottom: 12px; letter-spacing: -0.5px; }
+        .mode-maintenance .sms-title { color: var(--warn); }
+        .mode-shutdown .sms-title { color: #ff3b5c; }
+        .sms-subtitle { font-size: 1rem; color: var(--text-2); max-width: 460px; line-height: 1.7; margin-bottom: 28px; }
+        .mode-shutdown .sms-subtitle { color: #9090a0; }
+        .sms-meta { font-size: 0.76rem; color: var(--text-3); margin-bottom: 24px; }
+        .mode-shutdown .sms-meta { color: #555566; }
+        .sms-ticker {
+            font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em;
+            border: 1px solid; border-radius: var(--radius-pill); padding: 4px 14px;
+            animation: sms-pulse 2s ease-in-out infinite;
+        }
+        .mode-maintenance .sms-ticker { border-color: var(--warn); color: var(--warn); }
+        .mode-shutdown .sms-ticker { border-color: #ff3b5c44; color: #ff3b5c; }
+        @keyframes sms-pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+        .sms-admin-bypass { margin-top: 32px; font-size: 0.72rem; color: var(--text-3); }
+        .sms-admin-bypass a { color: var(--green); cursor: pointer; text-decoration: underline; }
+
+        /* Shutdown scanlines effect */
+        .mode-shutdown::after {
+            content: ''; position: fixed; inset: 0; pointer-events: none;
+            background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.08) 3px, rgba(0,0,0,0.08) 4px);
+            z-index: 1;
+        }
+        .mode-shutdown > * { position: relative; z-index: 2; }
+
         /* ── MISC ── */
         .sep { border: none; border-top: 1px solid var(--border); margin: 14px 0; }
         .hidden { display: none !important; }
@@ -741,6 +781,9 @@
     </style>
 </head>
 <body>
+
+<!-- SITE MODE FULLSCREEN OVERLAY (hidden by default, shown by JS) -->
+<div id="site-mode-screen" class="hidden"></div>
 
 <div class="shell">
 
@@ -1199,6 +1242,45 @@
             </div>
         </div>
 
+        <!-- SITE MODE -->
+        <div class="admin-section">
+            <div class="admin-section-title">🚦 Site Mode</div>
+            <div id="admin-current-mode" style="margin-bottom:12px; font-size:0.82rem; color:var(--text-2);">Checking…</div>
+
+            <div style="display:flex; flex-direction:column; gap:10px;">
+                <!-- Normal -->
+                <div style="background:var(--surface2); border:1px solid var(--border); border-radius:var(--radius-sm); padding:12px;">
+                    <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;">
+                        <div>
+                            <div style="font-weight:800; font-size:0.85rem; color:var(--green);">✅ Normal</div>
+                            <div style="font-size:0.74rem; color:var(--text-3); margin-top:2px;">Everything running normally.</div>
+                        </div>
+                        <button class="btn btn-sm" style="flex-shrink:0;" onclick="setSiteMode('normal')">Set Normal</button>
+                    </div>
+                </div>
+
+                <!-- Maintenance -->
+                <div style="background:rgba(245,158,11,0.06); border:1px solid rgba(245,158,11,0.3); border-radius:var(--radius-sm); padding:12px;">
+                    <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:10px; flex-wrap:wrap;">
+                        <div style="flex:1;">
+                            <div style="font-weight:800; font-size:0.85rem; color:var(--warn);">🔧 Maintenance Mode</div>
+                            <div style="font-size:0.74rem; color:var(--text-3); margin-top:2px; margin-bottom:8px;">Blocks all users. You can still access the API to make changes.</div>
+                            <input type="text" class="field" id="maintenance-msg" placeholder="Optional message — e.g. Back in 30 minutes!" maxlength="300" style="margin-bottom:0;">
+                        </div>
+                        <button class="btn btn-warn-ghost btn-sm" style="flex-shrink:0; margin-top:22px;" onclick="setSiteMode('maintenance')">Activate</button>
+                    </div>
+                </div>
+
+                <!-- Shutdown -->
+                <div class="danger-zone">
+                    <div class="danger-zone-title">☠️ Shutdown Mode</div>
+                    <div style="font-size:0.78rem; color:var(--text-2); margin-bottom:10px; line-height:1.5;">Displays a permanent closure notice. Use only if Codyverse Plaza is shutting down for good. All API calls from non-admins are rejected.</div>
+                    <input type="text" class="field" id="shutdown-msg" placeholder="Optional message — e.g. Thank you for being part of the Plaza." maxlength="500" style="margin-bottom:10px;">
+                    <button class="btn btn-danger btn-sm" onclick="setSiteMode('shutdown')">⚠️ Activate Shutdown</button>
+                </div>
+            </div>
+        </div>
+
         <!-- DANGER ZONE -->
         <div class="danger-zone">
             <div class="danger-zone-title">⚠️ Danger Zone</div>
@@ -1544,6 +1626,9 @@ function parseHashLink() {
 }
 
 async function boot() {
+    // Check site mode first — this must run before auth so non-admins get blocked immediately
+    await checkSiteMode();
+
     if (getToken()) {
         const res = await api("/api/me").catch(()=>null);
         if (res?.ok) {
@@ -1554,6 +1639,15 @@ async function boot() {
             saveToken(null);
         }
     }
+
+    // If the site is blocked AND the current user isn't admin, stop loading the app entirely
+    if (currentSiteMode !== "normal" && !isAdmin()) return;
+
+    // If admin is in maintenance/shutdown mode, show their bypass notice then continue
+    if (currentSiteMode !== "normal" && isAdmin()) {
+        bypassSiteModeAsAdmin();
+    }
+
     renderAuthUI();
 
     // If the URL has a #channel/postId link, start in that channel
@@ -2726,6 +2820,99 @@ function startHeartbeat() {
     }
 }
 
+// ── SITE MODE ─────────────────────────────────────────────
+let currentSiteMode = "normal";
+
+async function checkSiteMode() {
+    const res = await fetch(`${API}/api/site-mode`).catch(() => null);
+    if (!res?.ok) return;
+    const data = await res.json();
+    currentSiteMode = data.mode || "normal";
+    if (currentSiteMode !== "normal") {
+        showSiteModeScreen(data);
+    } else {
+        hideSiteModeScreen();
+    }
+    // Update admin panel current mode display
+    const el = document.getElementById("admin-current-mode");
+    if (el) renderAdminModeStatus(data, el);
+}
+
+function showSiteModeScreen(data) {
+    const screen = document.getElementById("site-mode-screen");
+    if (!screen) return;
+    screen.className = `mode-${data.mode}`;
+
+    const isShutdown = data.mode === "shutdown";
+    const setAtStr = data.setAt ? `Since ${new Date(data.setAt).toLocaleString()}` : "";
+    const defaultMsg = isShutdown
+        ? "Codyverse Plaza has permanently closed. Thank you for being part of the community."
+        : "We're doing some work behind the scenes. The Plaza will be back shortly.";
+    const message = data.message || defaultMsg;
+
+    screen.innerHTML = `
+        <div class="sms-icon">${isShutdown ? "🏚️" : "🔧"}</div>
+        <div class="sms-title">${isShutdown ? "Codyverse Plaza is Closed" : "Under Maintenance"}</div>
+        <div class="sms-subtitle">${esc(message)}</div>
+        ${setAtStr ? `<div class="sms-meta">${esc(setAtStr)}</div>` : ""}
+        <div class="sms-ticker">${isShutdown ? "Permanently Closed" : "🔧 Back Soon"}</div>
+        ${isAdmin() ? `<div class="sms-admin-bypass">You're seeing this as admin. <a onclick="bypassSiteModeAsAdmin()">Bypass and enter →</a></div>` : ""}
+    `;
+    screen.classList.remove("hidden");
+    document.getElementById("shell") && document.querySelector(".shell").style.setProperty("display", "none");
+    // Hide the main shell visually
+    document.querySelector(".shell").style.visibility = "hidden";
+    document.querySelector(".shell").style.pointerEvents = "none";
+}
+
+function hideSiteModeScreen() {
+    const screen = document.getElementById("site-mode-screen");
+    if (screen) screen.classList.add("hidden");
+    const shell = document.querySelector(".shell");
+    if (shell) { shell.style.visibility = ""; shell.style.pointerEvents = ""; }
+}
+
+function bypassSiteModeAsAdmin() {
+    // Admin can dismiss the overlay and use the site normally even while mode is active
+    hideSiteModeScreen();
+    toast(`Site is in ${currentSiteMode} mode — only you can see the app.`, "info");
+}
+
+function renderAdminModeStatus(data, el) {
+    const mode = data.mode || "normal";
+    const colors = { normal: "var(--green)", maintenance: "var(--warn)", shutdown: "var(--danger)" };
+    const icons = { normal: "✅", maintenance: "🔧", shutdown: "☠️" };
+    const labels = { normal: "Normal — site is live", maintenance: "Maintenance Mode — site is blocked", shutdown: "SHUTDOWN — site is closed" };
+    el.innerHTML = `<span style="color:${colors[mode]}; font-weight:800;">${icons[mode]} ${labels[mode]}</span>`;
+    if (data.message) el.innerHTML += `<div style="font-size:0.72rem; color:var(--text-3); margin-top:3px; font-style:italic;">"${esc(data.message)}"</div>`;
+    if (data.setAt) el.innerHTML += `<div style="font-size:0.68rem; color:var(--text-3); margin-top:1px;">Active since ${new Date(data.setAt).toLocaleString()}</div>`;
+}
+
+async function setSiteMode(mode) {
+    let message = "";
+    if (mode === "maintenance") message = document.getElementById("maintenance-msg")?.value.trim() || "";
+    if (mode === "shutdown") {
+        message = document.getElementById("shutdown-msg")?.value.trim() || "";
+        if (mode === "shutdown" && !confirm("⚠️ Activate SHUTDOWN mode? This shows a permanent closure notice to all users. Only you can bypass it.")) return;
+    }
+    const res = await api("/api/admin/site-mode", { method: "POST", body: { mode, message } });
+    if (res.ok) {
+        sfx(mode === "normal" ? "post" : "error");
+        const labels = { normal: "Site is back to normal.", maintenance: "Maintenance mode activated.", shutdown: "Shutdown mode activated." };
+        toast(labels[mode], mode === "normal" ? "ok" : "info");
+        // Refresh the status display in admin panel
+        const statusEl = document.getElementById("admin-current-mode");
+        if (statusEl) renderAdminModeStatus({ mode, message, setAt: Date.now() }, statusEl);
+        if (mode !== "normal") {
+            showSiteModeScreen({ mode, message, setAt: Date.now() });
+        } else {
+            hideSiteModeScreen();
+        }
+    } else {
+        toast(await res.text() || "Failed.", "err");
+    }
+}
+
 // ── MUTE TOGGLE ──────────────────────────────────────────
 function isMuted() { return localStorage.getItem("plaza_muted") === "1"; }
 function toggleMute() {
@@ -2877,13 +3064,22 @@ async function sendDMFromModal() {
 async function openAdminPanel() {
     if (!isAdmin()) return;
     document.getElementById("modal-admin").classList.remove("hidden");
-    await Promise.all([loadAdminUsers(), loadAdminComms(), loadAdminReports()]);
+    await Promise.all([loadAdminUsers(), loadAdminComms(), loadAdminReports(), loadAdminModeStatus()]);
     // Pre-fill pin input with current channel's pin
     const res = await api(`/api/announcement?community=${community}`);
     if (res.ok) {
         const ann = await res.json();
         document.getElementById("admin-pin-input").value = ann?.text || "";
     }
+}
+
+async function loadAdminModeStatus() {
+    const statusEl = document.getElementById("admin-current-mode");
+    if (!statusEl) return;
+    const res = await fetch(`${API}/api/site-mode`).catch(() => null);
+    if (!res?.ok) { statusEl.textContent = "Couldn't load."; return; }
+    const data = await res.json();
+    renderAdminModeStatus(data, statusEl);
 }
 
 async function loadAdminReports() {
@@ -3144,6 +3340,8 @@ boot().then(() => {
     const draft = localStorage.getItem(`draft:${community}`);
     if (draft) { document.getElementById("post-input").value = draft; updateCharCount(); }
     if (!me) loadOnline();
+    // Poll site mode every 60s so open sessions get blocked if admin activates maintenance/shutdown
+    if (!isAdmin()) setInterval(checkSiteMode, 60000);
 });
 
 // Handle clicking a copied post link while the app is already open (no full reload)
