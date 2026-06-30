@@ -147,31 +147,39 @@
         }
         .comm-section-label:first-child { padding-top: 0; }
         .comm-section-label::after { content:''; flex:1; height:1px; background: var(--border); }
+        .comm-empty-hint { font-size: 0.74rem; color: var(--text-3); padding: 4px 4px 8px; font-style: italic; }
 
         .comm-grid { display: flex; flex-direction: column; gap: 2px; }
+        .comm-row {
+            display: flex; align-items: center; gap: 4px;
+            border-radius: var(--radius-sm);
+            border: 1px solid transparent;
+            transition: all 0.12s;
+        }
+        .comm-row:hover { background: var(--surface2); border-color: var(--border); }
+        .comm-row.active { background: var(--green-glow); border-color: var(--green); }
         .comm-btn {
             display: flex; align-items: center; gap: 7px;
-            padding: 7px 10px; border-radius: var(--radius-sm);
-            border: 1px solid transparent;
-            background: transparent; color: var(--text-2);
+            padding: 7px 6px 7px 10px;
+            background: transparent; border: none; color: var(--text-2);
             font-size: 0.82rem; font-weight: 600; cursor: pointer;
-            transition: all 0.12s; text-align: left; width: 100%;
+            transition: color 0.12s; text-align: left; flex: 1; min-width: 0;
         }
-        .comm-btn:hover { background: var(--surface2); color: var(--text); border-color: var(--border); }
-        .comm-btn.active { background: var(--green-glow); color: var(--green); border-color: var(--green); }
+        .comm-row:hover .comm-btn { color: var(--text); }
+        .comm-row.active .comm-btn { color: var(--green); }
         .comm-btn .comm-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .comm-hash { font-size: 0.75rem; color: var(--text-3); flex-shrink: 0; font-weight: 900; }
-        .comm-btn.active .comm-hash { color: var(--green-dim); }
+        .comm-row.active .comm-hash { color: var(--green-dim); }
         .comm-del {
             display: inline-flex; align-items: center; justify-content: center;
-            width: 18px; height: 18px;
+            width: 18px; height: 18px; margin-right: 8px;
             color: var(--text-3); opacity: 0;
             font-size: 0.7rem; font-weight: 900;
             background: var(--surface2); border: 1px solid var(--border);
             border-radius: 4px; cursor: pointer;
             transition: all 0.12s; flex-shrink: 0; line-height: 1;
         }
-        .comm-btn:hover .comm-del { opacity: 1; }
+        .comm-row:hover .comm-del { opacity: 1; }
         .comm-del:hover { background: rgba(239,68,68,0.15); border-color: rgba(239,68,68,0.5); color: var(--danger); }
 
         /* ── FEED ── */
@@ -672,6 +680,7 @@
                     <div class="card-title" style="margin-bottom:0;">Channels</div>
                     <span id="channel-count" style="font-size:0.68rem; color:var(--text-3); font-weight:700;"></span>
                 </div>
+                <input type="text" class="field hidden" id="comm-search" placeholder="Filter channels..." style="margin-bottom:8px; padding:6px 10px; font-size:0.78rem;" oninput="filterChannelList()">
                 <div class="comm-scroll">
                     <div id="comm-list"></div>
                 </div>
@@ -1437,6 +1446,12 @@ async function loadChannels() {
     const countEl = document.getElementById("channel-count");
     if (countEl) countEl.textContent = list.length + " channel" + (list.length !== 1 ? "s" : "");
 
+    // Only show the filter box once there are enough channels to need it
+    const searchBox = document.getElementById("comm-search");
+    if (searchBox) {
+        searchBox.classList.toggle("hidden", list.length <= 6);
+    }
+
     const adminSel = document.getElementById("admin-channel-select");
     if (adminSel) {
         const currentVal = adminSel.value;
@@ -1445,11 +1460,13 @@ async function loadChannels() {
     }
 
     function commBtn(c) {
-        return `<button class="comm-btn ${c.id === community ? "active" : ""}" onclick="switchChannel('${esc(c.id)}')">
-            <span class="comm-hash">#</span>
-            <span class="comm-name">${esc(c.name)}</span>
-            ${(!c.system && isAdmin()) ? `<button class="comm-del" onclick="event.stopPropagation();delComm('${esc(c.id)}')" title="Delete channel">\u2715</button>` : ""}
-        </button>`;
+        return `<div class="comm-row ${c.id === community ? "active" : ""}" data-comm-name="${esc((c.name||"").toLowerCase())}" data-comm-id="${esc(c.id)}">
+            <button class="comm-btn" onclick="switchChannel('${esc(c.id)}')">
+                <span class="comm-hash">#</span>
+                <span class="comm-name">${esc(c.name)}</span>
+            </button>
+            ${(!c.system && isAdmin()) ? `<button class="comm-del" onclick="delComm('${esc(c.id)}')" title="Delete channel">\u2715</button>` : ""}
+        </div>`;
     }
 
     const box = document.getElementById("comm-list");
@@ -1458,14 +1475,34 @@ async function loadChannels() {
         html += `<div class="comm-section-label">Default</div>`;
         html += `<div class="comm-grid">${defaults.map(commBtn).join("")}</div>`;
     }
+    html += `<div class="comm-section-label">Community</div>`;
     if (custom.length) {
-        html += `<div class="comm-section-label">Community</div>`;
         html += `<div class="comm-grid">${custom.map(commBtn).join("")}</div>`;
+    } else {
+        html += `<div class="comm-empty-hint">No community channels yet — be the first to launch one!</div>`;
     }
     box.innerHTML = html;
 
     const current = list.find(c => c.id === community);
     document.getElementById("composer-comm-label").textContent = "#" + (current ? current.name : community);
+}
+
+function filterChannelList() {
+    const q = document.getElementById("comm-search").value.trim().toLowerCase();
+    document.querySelectorAll("#comm-list .comm-row").forEach(row => {
+        const name = row.dataset.commName || "";
+        const id = row.dataset.commId || "";
+        row.style.display = (!q || name.includes(q) || id.includes(q)) ? "" : "none";
+    });
+    // Hide section labels that have no visible rows left
+    document.querySelectorAll("#comm-list .comm-grid").forEach(grid => {
+        const anyVisible = [...grid.children].some(row => row.style.display !== "none");
+        const label = grid.previousElementSibling;
+        if (label && label.classList.contains("comm-section-label")) {
+            label.style.display = anyVisible ? "" : "none";
+        }
+        grid.style.display = anyVisible ? "" : "none";
+    });
 }
 function switchChannel(id) {
     sfx("click");
