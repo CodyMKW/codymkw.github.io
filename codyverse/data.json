@@ -1,0 +1,472 @@
+{
+  "exportedAt": "2026-07-02T01:18:45.291Z",
+  "exportedBy": "codymkw",
+  "version": "1.0",
+  "users": [
+    {
+      "username": "codymkw",
+      "displayName": "Cody",
+      "avatarUrl": "https://www.gravatar.com/avatar/5127de8a3a295a02ff3fc55bb6b2fabe?s=2048",
+      "bio": "I'm Cody and I own this dumpster fire  :)",
+      "friendCode": "SW-2549-4631-6600",
+      "favGame": "Animal Crossing: New Leaf",
+      "experience": "Expert",
+      "playStyle": "Casual",
+      "timezone": "UTC-5",
+      "joinedAt": null,
+      "postCount": 14,
+      "banned": false
+    },
+    {
+      "username": "xjoseph48",
+      "displayName": "Joseph",
+      "avatarUrl": "",
+      "bio": "67",
+      "friendCode": "SW-7884-4868-5862",
+      "favGame": "Splatoon 3",
+      "experience": "Expert",
+      "playStyle": "Casual",
+      "timezone": "UTC-5",
+      "joinedAt": 1782344471022,
+      "postCount": 4,
+      "banned": false
+    },
+    {
+      "username": "peely",
+      "displayName": "Peely",
+      "avatarUrl": "https://raregallery.art/thumbs/343799-Fortnite-Fortnite-Battle-Royale-Chapter-2-Season-4-Video-Game-Peely-Banana-Claw.jpg",
+      "bio": "I love Jonesy",
+      "friendCode": "",
+      "favGame": "Fortnite",
+      "experience": "Intermediate",
+      "playStyle": "Competitive",
+      "timezone": "UTC+2",
+      "joinedAt": 1782752118175,
+      "postCount": 1,
+      "banned": false
+    }
+  ],
+  "channels": [
+    {
+      "id": "announcements",
+      "name": "Announcements",
+      "icon": "📢",
+      "system": true
+    },
+    {
+      "id": "general",
+      "name": "General",
+      "icon": "💬",
+      "system": true
+    },
+    {
+      "id": "splatoon",
+      "name": "Splatoon",
+      "icon": "🦑",
+      "system": true
+    },
+    {
+      "id": "animal-crossing",
+      "name": "Animal Crossing",
+      "icon": "🍃",
+      "system": true
+    },
+    {
+      "id": "fortnite",
+      "name": "Fortnite",
+      "icon": "🎮",
+      "createdBy": "codymkw",
+      "createdAt": 1782750675515
+    },
+    {
+      "id": "anime",
+      "name": "Anime",
+      "icon": "🌟",
+      "createdBy": "codymkw",
+      "createdAt": 1782750848780
+    },
+    {
+      "id": "ace-attorney",
+      "name": "Ace Attorney",
+      "icon": "🎮",
+      "createdBy": "codymkw",
+      "createdAt": 1782788011520
+    },
+    {
+      "id": "rocket-league",
+      "name": "Rocket League",
+      "icon": "🎮",
+      "createdBy": "codymkw",
+      "createdAt": 1782788103617
+    },
+    {
+      "id": "fall-guys",
+      "name": "Fall Guys",
+      "icon": "🎮",
+      "createdBy": "codymkw",
+      "createdAt": 1782788130132
+    }
+  ],
+  "channels_data": {
+    "announcements": {
+      "id": "announcements",
+      "name": "Announcements",
+      "icon": "📢",
+      "posts": [
+        {
+          "id": "post_1782843697806_qlfc",
+          "username": "codymkw",
+          "displayName": "Cody",
+          "avatarUrl": "https://www.gravatar.com/avatar/5127de8a3a295a02ff3fc55bb6b2fabe?s=2048",
+          "content": "## 🛠️ Codyverse Plaza — Patch Notes (June 30, 2026)\n\n### Channels\n- Added channel icons — pick from 12 emoji when creating a new channel\n- Added channel favorites — star a channel to pin it to its own \"Pinned\" section at the top of the sidebar\n- Fixed the delete (✕) button rendering outside/below the channel row instead of beside it (was invalid nested `<button>` markup)\n- Channel list is now scrollable with a max height instead of pushing the page down as more get added\n- Added a filter/search box for channels (auto-appears once you have 6+)\n- Channels are now grouped into **Default** and **Community** sections, each with empty-state messaging\n\n### Posts\n- **Edit posts** — edit your own posts in place, shows an `(edited)` tag with hover timestamp\n- **Quote posts** — pulls a snippet into the composer as a styled quote block\n- **Copy link to post**\n- **Report posts** — flag another user's post with an optional reason, goes straight to the admin queue\n- Random post shuffle button (🎲)\n- Compact/comfortable feed density toggle (persists across sessions)\n\n### Profile & Progression\n- Level/XP system computed from lifetime post count — shown as a badge + progress bar on your own card and anyone's profile\n- Daily login streak tracker with milestone toasts (3/7/14/30/60/100 days)\n- Confetti burst on your first post of the day\n\n### Composer\n- Emoji quick-bar — 20 common emoji, one click to insert\n- Mention autocomplete (`@username`)\n\n### Quality of Life\n- Global mute toggle for sound effects\n- Back-to-top button\n- Image lightbox (click any post image to view full-size)\n- Bookmarks system with a dedicated modal\n- Trending posts sidebar\n- Keyboard shortcuts: `N` new post, `/` search, `B` bookmarks, `Esc` close modal\n\n### Admin Panel\n- **Reported Posts** section — view open reports with preview, reporter, reason, and one-click Dismiss or Delete Post\n- Live unread-report badge on the Admin button (polls every 45s)\n- User management now scans KV directly instead of relying on the registry, so all existing users show up\n- Channel management — delete custom channels (system channels protected)\n- Global broadcast notifications, direct messages to users, ban/unban, force logout all, wipe channel posts, telemetry export\n\n### Backend\n- New endpoints: `/api/posts/edit`, `/api/posts/report`, `/api/admin/reports`, `/api/admin/reports/resolve`, `/api/admin/reports/delete-post`, `/api/admin/communities`, `/api/admin/communities/delete`\n- Lifetime `postCount` now tracked per-user and returned from `/api/me` and `/api/user/lookup`\n- Channel objects now carry an `icon` field end-to-end",
+          "imageUrl": null,
+          "timestamp": 1782843697806,
+          "reactions": {
+            "yeah": 0,
+            "fresh": 0,
+            "cozy": 0
+          },
+          "reactedUsers": {},
+          "replyCount": 0,
+          "isAnnouncement": true,
+          "replies": []
+        },
+        {
+          "id": "post_1782861163408_9axi",
+          "username": "codymkw",
+          "displayName": "Cody",
+          "avatarUrl": "https://www.gravatar.com/avatar/5127de8a3a295a02ff3fc55bb6b2fabe?s=2048",
+          "content": "## 🛠️ Codyverse Plaza — Patch Notes v2 (June 30, 2026)\n\n### 📢 Announcements Channel\n- New dedicated **#announcements** channel pinned to the top of the channel list\n- Admin-only posting — everyone else sees a lock notice in place of the composer\n- **6,000 character limit** instead of 280 — patch notes and long-form updates fit comfortably\n- Full **Markdown rendering**: `##` headers, **bold**, *italic*, ~~strikethrough~~, `inline code`, fenced ` ``` ` code blocks, `- ` bullet lists, `1.` ordered lists, `> ` blockquotes, `---` dividers, and `[text](url)` links\n- Markdown toolbar appears automatically when posting in #announcements — H2, H3, bold, italic, list, code, code block, quote buttons, plus a **live preview toggle** so you can see it rendered before posting\n- Regular users can still react, reply, and bookmark announcement posts\n- Posts in the channel get a teal highlight and a **📢 Announcement** badge\n\n### 🔗 Post Link Deep Linking (fixed)\n- Copying a post link now actually works end-to-end\n- On page load, the app reads the `#channel/postId` hash from the URL, switches to the correct channel, and scrolls to + highlights the linked post\n- Works for direct links shared externally and for in-app navigation (no full reload needed)\n- If the post no longer exists, a toast explains it instead of failing silently\n\n### 🚦 Site Mode (Admin)\n- New **Site Mode** section in the Admin Panel with three states:\n\n  | Mode | Who sees it | What it shows |\n  |---|---|---|\n  | ✅ Normal | Everyone | Site runs normally |\n  | 🔧 Maintenance | All non-admins | Amber fullscreen overlay, optional message, pulsing \"Back Soon\" ticker |\n  | ☠️ Shutdown | All non-admins | Dark permanent closure screen, scanline texture, \"Permanently Closed\" ticker |\n\n- Optional custom message field for both maintenance and shutdown modes\n- Shutdown mode requires a confirmation dialog before activating\n- **Admin always bypasses** — you can still access and fix everything while the site is locked\n- Worker enforces the block at the API level — all non-admin requests return `503` when a mode is active\n- Open sessions are re-checked every **60 seconds** — users already on the site get the overlay pushed to them automatically without refreshing\n- One-click **Set Normal** to lift any active mode instantly\n\n### Backend\n- New endpoints: `/api/site-mode` (GET, public), `/api/admin/site-mode` (POST, admin only)\n- Post creation now respects per-channel character limits (`6000` for announcements, `280` everywhere else)\n- Post edit endpoint also respects the channel-aware limit\n- Announcements channel is protected from deletion alongside the other system channels",
+          "imageUrl": null,
+          "timestamp": 1782861163408,
+          "reactions": {
+            "yeah": 0,
+            "fresh": 0,
+            "cozy": 0
+          },
+          "reactedUsers": {},
+          "replyCount": 0,
+          "isAnnouncement": true,
+          "replies": []
+        },
+        {
+          "id": "post_1782955116718_c8xm",
+          "username": "codymkw",
+          "displayName": "Cody",
+          "avatarUrl": "https://www.gravatar.com/avatar/5127de8a3a295a02ff3fc55bb6b2fabe?s=2048",
+          "content": "## 📦 Codyverse Plaza is Closing\n\nAfter some time running this community, I've made the decision to shut down Codyverse Plaza.\n\nThe main reason is practical — the KV database has been filling up faster than expected, and keeping it running long-term isn't something I want to maintain right now.\n\n---\n\n### What happens next\n\n- The site will remain up for a short period so you can save anything you want to keep\n- A full archive of all posts, channels, and members will be preserved locally\n- Rather than activating shutdown mode, the entire site will be **replaced with a permanent read-only archive** — all posts, channels, replies, and members stay intact exactly as they are\n\n---\n\n### Thank you\n\nThis was a fun little project and I appreciate everyone who signed up and posted. Whether you dropped in once or stuck around — it meant something.\n\n**— Cody (@codymkw)**",
+          "imageUrl": null,
+          "timestamp": 1782955116718,
+          "reactions": {
+            "yeah": 0,
+            "fresh": 0,
+            "cozy": 0
+          },
+          "reactedUsers": {},
+          "replyCount": 0,
+          "isAnnouncement": true,
+          "replies": []
+        }
+      ]
+    },
+    "general": {
+      "id": "general",
+      "name": "General",
+      "icon": "💬",
+      "posts": [
+        {
+          "id": "post_1782340318791",
+          "username": "codymkw",
+          "displayName": "Cody",
+          "avatarUrl": "https://www.gravatar.com/avatar/5127de8a3a295a02ff3fc55bb6b2fabe?s=2048",
+          "content": "lol hi there",
+          "imageUrl": null,
+          "timestamp": 1782340318791,
+          "reactions": {
+            "yeah": 0,
+            "fresh": 0,
+            "cozy": 1
+          },
+          "reactedUsers": {
+            "xjoseph48": "cozy"
+          },
+          "replyCount": 0,
+          "editedAt": 1782844653927,
+          "replies": []
+        }
+      ]
+    },
+    "splatoon": {
+      "id": "splatoon",
+      "name": "Splatoon",
+      "icon": "🦑",
+      "posts": [
+        {
+          "id": "post_1782340173989",
+          "username": "codymkw",
+          "displayName": "Cody",
+          "avatarUrl": "https://www.gravatar.com/avatar/5127de8a3a295a02ff3fc55bb6b2fabe?s=2048",
+          "content": "I wish squids were real :(",
+          "imageUrl": null,
+          "timestamp": 1782340173989,
+          "reactions": {
+            "yeah": 0,
+            "fresh": 1,
+            "cozy": 1
+          },
+          "reactedUsers": {
+            "codymkw": "fresh",
+            "xjoseph48": "cozy"
+          },
+          "replyCount": 0,
+          "replies": []
+        },
+        {
+          "id": "post_1782357479620_x1pr",
+          "username": "xjoseph48",
+          "displayName": "Joseph",
+          "avatarUrl": "",
+          "content": "Hyped for Star Fox and Splatoon Raiders",
+          "imageUrl": null,
+          "timestamp": 1782357479620,
+          "reactions": {
+            "yeah": 1,
+            "fresh": 0,
+            "cozy": 0
+          },
+          "reactedUsers": {
+            "codymkw": "yeah"
+          },
+          "replyCount": 1,
+          "replies": [
+            {
+              "id": "reply_1782429664885_wacw",
+              "postId": "post_1782357479620_x1pr",
+              "username": "codymkw",
+              "displayName": "Cody",
+              "avatarUrl": "https://www.gravatar.com/avatar/5127de8a3a295a02ff3fc55bb6b2fabe?s=2048",
+              "content": "Star Fox Guard is better",
+              "timestamp": 1782429664885
+            }
+          ]
+        }
+      ],
+      "poll": {
+        "id": "poll_1782344127176",
+        "question": "What's Your Fighting Style?",
+        "creator": "codymkw",
+        "createdAt": 1782344127176,
+        "options": [
+          "Speed",
+          "Power",
+          "Tactics"
+        ],
+        "votes": {
+          "0": 0,
+          "1": 2,
+          "2": 0
+        },
+        "voters": {
+          "xjoseph48": 1,
+          "codymkw": 1
+        }
+      }
+    },
+    "animal-crossing": {
+      "id": "animal-crossing",
+      "name": "Animal Crossing",
+      "icon": "🍃",
+      "posts": [
+        {
+          "id": "post_1782343964927_668t",
+          "username": "codymkw",
+          "displayName": "Cody",
+          "avatarUrl": "https://www.gravatar.com/avatar/5127de8a3a295a02ff3fc55bb6b2fabe?s=2048",
+          "content": "yes yes",
+          "imageUrl": "https://images.nintendolife.com/506d865e94650/large.jpg",
+          "timestamp": 1782343964927,
+          "reactions": {
+            "yeah": 0,
+            "fresh": 1,
+            "cozy": 1
+          },
+          "reactedUsers": {
+            "codymkw": "cozy",
+            "xjoseph48": "fresh"
+          },
+          "replyCount": 0,
+          "replies": []
+        },
+        {
+          "id": "post_1782445415550_8rbv",
+          "username": "xjoseph48",
+          "displayName": "Joseph",
+          "avatarUrl": "",
+          "content": "Just paid off my mortgage now I can finally afford those damn RAM prices!!!!",
+          "imageUrl": "https://i.redd.it/5rb5lk5wgeu81.jpg",
+          "timestamp": 1782445415550,
+          "reactions": {
+            "yeah": 0,
+            "fresh": 0,
+            "cozy": 1
+          },
+          "reactedUsers": {
+            "codymkw": "cozy"
+          },
+          "replyCount": 0,
+          "replies": []
+        },
+        {
+          "id": "post_1782866847936_3ro6",
+          "username": "codymkw",
+          "displayName": "Cody",
+          "avatarUrl": "https://www.gravatar.com/avatar/5127de8a3a295a02ff3fc55bb6b2fabe?s=2048",
+          "content": "[i]Re: @xjoseph48: \"Just paid off my mortgage now I can finally afford those dam…\"[/i]\nYou're not done with your loan you now owe one million to True",
+          "imageUrl": null,
+          "timestamp": 1782866847936,
+          "reactions": {
+            "yeah": 0,
+            "fresh": 0,
+            "cozy": 0
+          },
+          "reactedUsers": {},
+          "replyCount": 0,
+          "isAnnouncement": false,
+          "replies": []
+        }
+      ],
+      "poll": {
+        "id": "poll_1782344024210",
+        "question": "Who would win in a fist fight?",
+        "creator": "codymkw",
+        "createdAt": 1782344024210,
+        "options": [
+          "Tom Nook",
+          "Crazy Redd"
+        ],
+        "votes": {
+          "0": 1,
+          "1": 0
+        },
+        "voters": {
+          "codymkw": 0
+        }
+      },
+      "announcement": {
+        "text": "Tom Nook demands that everybody must pay him 67,000 Bells per post made in this community",
+        "setBy": "codymkw",
+        "setAt": 1782341398695
+      }
+    },
+    "fortnite": {
+      "id": "fortnite",
+      "name": "Fortnite",
+      "icon": "🎮",
+      "posts": [
+        {
+          "id": "post_1782750762064_bjye",
+          "username": "codymkw",
+          "displayName": "Cody",
+          "avatarUrl": "https://www.gravatar.com/avatar/5127de8a3a295a02ff3fc55bb6b2fabe?s=2048",
+          "content": "@xjoseph48 you agree that sprites are trash right?",
+          "imageUrl": null,
+          "timestamp": 1782750762064,
+          "reactions": {
+            "yeah": 2,
+            "fresh": 0,
+            "cozy": 0
+          },
+          "reactedUsers": {
+            "peely": "yeah",
+            "xjoseph48": "yeah"
+          },
+          "replyCount": 0,
+          "replies": []
+        },
+        {
+          "id": "post_1782752200335_10nv",
+          "username": "peely",
+          "displayName": "Peely",
+          "avatarUrl": "https://raregallery.art/thumbs/343799-Fortnite-Fortnite-Battle-Royale-Chapter-2-Season-4-Video-Game-Peely-Banana-Claw.jpg",
+          "content": "I really hope my boyfriend Jonesy is gonna be ok :(",
+          "imageUrl": null,
+          "timestamp": 1782752200335,
+          "reactions": {
+            "yeah": 0,
+            "fresh": 0,
+            "cozy": 0
+          },
+          "reactedUsers": {},
+          "replyCount": 2,
+          "replies": [
+            {
+              "id": "reply_1782754189299_xa1q",
+              "postId": "post_1782752200335_10nv",
+              "username": "codymkw",
+              "displayName": "Cody",
+              "avatarUrl": "https://www.gravatar.com/avatar/5127de8a3a295a02ff3fc55bb6b2fabe?s=2048",
+              "content": "Peely wtf you doing here bro",
+              "timestamp": 1782754189299
+            },
+            {
+              "id": "reply_1782777075186_r9ug",
+              "postId": "post_1782752200335_10nv",
+              "username": "peely",
+              "displayName": "Peely",
+              "avatarUrl": "https://raregallery.art/thumbs/343799-Fortnite-Fortnite-Battle-Royale-Chapter-2-Season-4-Video-Game-Peely-Banana-Claw.jpg",
+              "content": "I can be wherever I want to be because I am a banana",
+              "timestamp": 1782777075186
+            }
+          ]
+        }
+      ]
+    },
+    "anime": {
+      "id": "anime",
+      "name": "Anime",
+      "icon": "🌟",
+      "posts": [
+        {
+          "id": "post_1782867619733_3s5k",
+          "username": "xjoseph48",
+          "displayName": "Joseph",
+          "avatarUrl": "",
+          "content": "Thought Japan was going to beat Brazil smh",
+          "imageUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZo7XNHVLZ0O1YNkA2_6PlgM-aXkTJo7kuTQ&s",
+          "timestamp": 1782867619733,
+          "reactions": {
+            "yeah": 0,
+            "fresh": 0,
+            "cozy": 0
+          },
+          "reactedUsers": {},
+          "replyCount": 0,
+          "isAnnouncement": false,
+          "replies": []
+        }
+      ]
+    },
+    "ace-attorney": {
+      "id": "ace-attorney",
+      "name": "Ace Attorney",
+      "icon": "🎮",
+      "posts": []
+    },
+    "rocket-league": {
+      "id": "rocket-league",
+      "name": "Rocket League",
+      "icon": "🎮",
+      "posts": []
+    },
+    "fall-guys": {
+      "id": "fall-guys",
+      "name": "Fall Guys",
+      "icon": "🎮",
+      "posts": []
+    }
+  },
+  "reports": [],
+  "site_mode": {
+    "mode": "normal"
+  }
+}
