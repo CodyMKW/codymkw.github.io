@@ -1375,12 +1375,27 @@
             </div>
         </div>
 
+        <!-- ARCHIVE EXPORT -->
+        <div class="admin-section">
+            <div class="admin-section-title">📦 Export Archive</div>
+            <div style="background:var(--surface-2); border:1px solid var(--border); border-radius:var(--radius-sm); padding:14px; margin-bottom:10px;">
+                <div style="font-size:0.82rem; color:var(--text); font-weight:600; margin-bottom:6px;">Create Full Archive</div>
+                <div style="font-size:0.76rem; color:var(--text-2); line-height:1.55; margin-bottom:12px;">Downloads a <strong>self-contained archive.zip</strong> with everything — all posts, replies, users, channels, polls, and board pins — rendered into a standalone HTML file you can open in any browser. Also includes a raw <code style="font-family:monospace;font-size:0.85em;background:var(--surface-3);padding:1px 4px;border-radius:3px;">data.json</code> and a README. No internet connection required to view it.</div>
+                <button class="btn btn-sm" id="btn-create-archive" onclick="adminCreateArchive()" style="gap:8px;">
+                    📦 Create Archive
+                </button>
+                <p class="admin-note mt-10">This may take 15–30 seconds depending on how much data is in KV. The Worker will scan every key.</p>
+            </div>
+            <div style="display:flex; gap:8px;">
+                <button class="btn btn-ghost btn-sm" onclick="adminExportKV()">📤 Quick Telemetry JSON</button>
+            </div>
+        </div>
+
         <!-- DANGER ZONE -->
         <div class="danger-zone">
             <div class="danger-zone-title">⚠️ Danger Zone</div>
             <div style="display:flex; gap:8px; flex-wrap:wrap;">
                 <button class="btn btn-danger btn-sm" onclick="adminForceLogoutAll()">Force Logout All</button>
-                <button class="btn btn-danger-ghost btn-sm" onclick="adminExportKV()">📤 Export Telemetry</button>
             </div>
             <p class="admin-note mt-10">Force logout invalidates all active sessions. Users must sign in again.</p>
         </div>
