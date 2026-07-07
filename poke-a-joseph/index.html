@@ -16,6 +16,7 @@
   --sky-orange:#ff8a5c;
   --sky-pink:#ff5f96;
   --sky-gold:#ffc857;
+  --crit-red:#ff4d4d;
   --violet:#8b6cf2;
   --violet-deep:#5c3fb0;
   --ink:#f5eefe;
@@ -68,7 +69,7 @@ button:focus-visible, [tabindex]:focus-visible{
   width:100%;
   max-width:1100px;
   text-align:center;
-  margin-bottom:18px;
+  margin-bottom:14px;
 }
 .eyebrow{
   font-size:11px;
@@ -96,6 +97,37 @@ button:focus-visible, [tabindex]:focus-visible{
   text-transform:uppercase;
   letter-spacing:0.08em;
 }
+
+/* ============================================================
+   ROSTER BAR
+   ============================================================ */
+.roster-bar{
+  width:100%;max-width:1100px;
+  display:flex;gap:10px;justify-content:center;
+  margin-bottom:14px;
+}
+.roster-avatar{
+  display:flex;align-items:center;gap:8px;
+  background:var(--panel);border:1px solid var(--line);
+  border-radius:999px;padding:6px 16px 6px 6px;
+  transition:.15s ease;color:var(--ink-dim);
+}
+.roster-avatar .thumb{
+  width:32px;height:32px;border-radius:50%;overflow:hidden;flex-shrink:0;
+  border:2px solid var(--line);background:var(--panel-2);
+  display:flex;align-items:center;justify-content:center;
+}
+.roster-avatar .thumb img{width:100%;height:100%;object-fit:cover;}
+.roster-avatar .name{font-size:11px;font-weight:800;}
+.roster-avatar:not(.locked):hover{border-color:var(--violet);transform:translateY(-1px);}
+.roster-avatar.active{
+  background:linear-gradient(120deg, var(--violet-deep), var(--violet));
+  border-color:var(--violet);color:#fff;
+  box-shadow:0 6px 16px rgba(139,108,242,0.35);
+}
+.roster-avatar.active .thumb{border-color:rgba(255,255,255,0.6);}
+.roster-avatar.locked{opacity:0.5;cursor:not-allowed;}
+.roster-avatar.locked .thumb{display:flex;align-items:center;justify-content:center;color:var(--ink-faint);font-size:12px;}
 
 /* ============================================================
    LAYOUT
@@ -184,18 +216,18 @@ button:focus-visible, [tabindex]:focus-visible{
 .combo-track{width:80px;height:7px;border-radius:6px;background:rgba(255,255,255,0.1);overflow:hidden;}
 .combo-fill{height:100%;width:0%;background:linear-gradient(90deg, var(--sky-pink), var(--sky-gold));transition:width .1s linear;}
 
-.pps-pill{
+.crit-pill{
   pointer-events:auto;
   background:rgba(10,7,20,0.7);
   backdrop-filter:blur(10px);
-  border:1px solid var(--line);
+  border:1px solid rgba(255,77,77,0.35);
   border-radius:14px;
   padding:6px 12px;
-  font-size:11px;font-weight:700;color:var(--violet);letter-spacing:0.05em;
+  font-size:11px;font-weight:700;color:var(--crit-red);letter-spacing:0.05em;
 }
-.pps-pill .val{font-family:var(--font-display);color:var(--ink);}
+.crit-pill .val{font-family:var(--font-display);color:var(--ink);}
 
-/* Joseph */
+/* character sprite */
 .joseph-zone{
   position:absolute;bottom:10px;left:50%;transform:translateX(-50%);
   width:27%;min-width:150px;
@@ -335,7 +367,7 @@ button:focus-visible, [tabindex]:focus-visible{
   background:rgba(139,108,242,0.16);color:var(--violet);padding:3px 9px;border-radius:8px;
 }
 
-.shop-scroll{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:9px;max-height:320px;padding-right:2px;}
+.shop-scroll{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:9px;max-height:420px;padding-right:2px;}
 
 .shop-item{
   display:flex;align-items:center;justify-content:space-between;gap:10px;
@@ -343,6 +375,8 @@ button:focus-visible, [tabindex]:focus-visible{
   border-radius:16px;padding:11px;transition:.15s ease;
 }
 .shop-item:hover{border-color:var(--violet);transform:translateY(-1px);}
+.shop-item.gated{opacity:0.5;}
+.shop-item.gated:hover{transform:none;border-color:var(--line);}
 .shop-item-left{display:flex;align-items:center;gap:11px;min-width:0;}
 .shop-icon{
   width:38px;height:38px;border-radius:12px;flex-shrink:0;
@@ -351,6 +385,7 @@ button:focus-visible, [tabindex]:focus-visible{
 .shop-icon.violet{background:rgba(139,108,242,0.18);color:var(--violet);}
 .shop-icon.gold{background:rgba(255,200,87,0.18);color:var(--sky-gold);}
 .shop-icon.pink{background:rgba(255,95,150,0.18);color:var(--sky-pink);}
+.shop-icon.red{background:rgba(255,77,77,0.18);color:var(--crit-red);}
 .shop-name{font-size:12px;font-weight:800;color:var(--ink);}
 .shop-desc{font-size:10px;color:var(--ink-faint);margin-top:1px;}
 .shop-owned{font-size:10px;font-weight:700;margin-top:2px;color:var(--ink-dim);}
@@ -363,6 +398,7 @@ button:focus-visible, [tabindex]:focus-visible{
 }
 .buy-btn.gold-scheme{background:linear-gradient(135deg,#ffd57a,#e0982f);}
 .buy-btn.pink-scheme{background:linear-gradient(135deg,#ff8fb3,#e04b7f);}
+.buy-btn.red-scheme{background:linear-gradient(135deg,#ff8080,#c73a3a);}
 .buy-btn small{font-size:8px;letter-spacing:0.08em;text-transform:uppercase;opacity:0.85;}
 .buy-btn .cost{font-family:var(--font-display);font-size:12px;color:var(--sky-gold);display:flex;align-items:center;gap:3px;}
 .buy-btn:disabled{opacity:0.4;cursor:not-allowed;filter:grayscale(0.4);}
@@ -378,6 +414,7 @@ button:focus-visible, [tabindex]:focus-visible{
 .stat-row .v{font-family:var(--font-display);font-size:14px;}
 .v.pink{color:var(--sky-pink);}
 .v.gold{color:var(--sky-gold);}
+.v.red{color:var(--crit-red);}
 
 .flavor-box{
   margin-top:4px;padding:12px;border-radius:16px;
@@ -391,7 +428,7 @@ button:focus-visible, [tabindex]:focus-visible{
   background:var(--panel-2);border:1px solid var(--line);opacity:0.55;transition:.2s ease;
 }
 .trophy-row.unlocked{opacity:1;background:rgba(139,108,242,0.12);border-color:rgba(139,108,242,0.4);}
-.trophy-icon{font-size:20px;color:var(--ink-faint);width:26px;text-align:center;}
+.trophy-icon{font-size:20px;color:var(--ink-faint);width:26px;text-align:center;flex-shrink:0;}
 .trophy-row.unlocked .trophy-icon{color:var(--sky-gold);}
 .trophy-title{font-size:11px;font-weight:800;color:var(--ink);}
 .trophy-desc{font-size:10px;color:var(--ink-faint);margin-top:1px;}
@@ -439,6 +476,7 @@ button:focus-visible, [tabindex]:focus-visible{
   transform:translateY(14px);opacity:0;transition:all .3s ease;
 }
 .toast.show{transform:translateY(0);opacity:1;}
+.toast.crit-toast{border-color:var(--crit-red);}
 .toast i{font-size:17px;}
 .toast .t-title{font-size:12px;font-weight:800;}
 .toast .t-msg{font-size:10px;color:var(--ink-faint);margin-top:2px;}
@@ -451,6 +489,21 @@ button:focus-visible, [tabindex]:focus-visible{
   <h1 class="title">Poke-A-Joseph</h1>
   <p class="subtitle">Can you handle his dizzy limits? Poke away!</p>
 </header>
+
+<div class="roster-bar" id="roster-bar">
+  <button class="roster-avatar active" id="roster-joseph" data-char="joseph">
+    <span class="thumb"><img src="Joseph_Default.png" alt="Joseph" onerror="this.onerror=null; this.src='https://placehold.co/80x80/8b6cf2/ffffff?text=J';"></span>
+    <span class="name">Joseph</span>
+  </button>
+  <button class="roster-avatar locked" id="roster-cody" data-char="cody" disabled>
+    <span class="thumb"><i class="fa-solid fa-lock"></i></span>
+    <span class="name">Cody</span>
+  </button>
+  <button class="roster-avatar locked" id="roster-falcon" data-char="falcon" disabled>
+    <span class="thumb"><i class="fa-solid fa-lock"></i></span>
+    <span class="name">Falcon</span>
+  </button>
+</div>
 
 <main class="game-layout">
 
@@ -484,7 +537,7 @@ button:focus-visible, [tabindex]:focus-visible{
           <span id="combo-multiplier" class="combo-value">1.0x</span>
           <div class="combo-track"><div id="combo-progress" class="combo-fill"></div></div>
         </div>
-        <div class="pps-pill">Auto: <span id="pps-val" class="val">0</span>/s</div>
+        <div class="crit-pill">Crits: <span id="crit-val" class="val">0</span></div>
       </div>
 
       <div class="particle-layer" id="particle-container"></div>
@@ -493,15 +546,15 @@ button:focus-visible, [tabindex]:focus-visible{
 
       <button id="joseph-group" class="joseph-zone" aria-label="Poke Joseph">
         <div id="joseph-sprite-container" class="joseph-sprite">
-          <img id="joseph-default-img" src="Joseph_Default.png" alt="Joseph"
+          <img id="char-default-img" src="Joseph_Default.png" alt="Joseph"
                onerror="this.onerror=null; this.src='https://placehold.co/400x400/8b6cf2/ffffff?text=Joseph';">
-          <img id="joseph-poked-img" class="hidden" src="Joseph_Poked.png" alt="Joseph, poked and surprised"
+          <img id="char-poked-img" class="hidden" src="Joseph_Poked.png" alt="Joseph, poked and surprised"
                onerror="this.onerror=null; this.src='https://placehold.co/400x400/ff5f96/ffffff?text=Poked!';">
         </div>
         <div class="joseph-shadow"></div>
       </button>
 
-      <div id="poke-tip" class="poke-tip">👉 Click Joseph to poke!</div>
+      <div id="poke-tip" class="poke-tip">👉 Click to poke!</div>
     </div>
 
     <div class="controls-row">
@@ -545,36 +598,6 @@ button:focus-visible, [tabindex]:focus-visible{
 
         <div class="shop-item">
           <div class="shop-item-left">
-            <div class="shop-icon violet"><i class="fa-solid fa-wind"></i></div>
-            <div>
-              <div class="shop-name">Tickly Feather</div>
-              <div class="shop-desc">Automatically pokes once per sec</div>
-              <div class="shop-owned">Owned: <span id="owned-auto1">0</span></div>
-            </div>
-          </div>
-          <button id="buy-auto1" class="buy-btn">
-            <small>Buy</small>
-            <span class="cost"><i class="fa-solid fa-coins" style="font-size:8px;"></i><span id="cost-auto1">50</span></span>
-          </button>
-        </div>
-
-        <div class="shop-item">
-          <div class="shop-item-left">
-            <div class="shop-icon pink"><i class="fa-solid fa-hammer"></i></div>
-            <div>
-              <div class="shop-name">Spring Poke Bot</div>
-              <div class="shop-desc">A high-tech robot poking rapidly (+5/sec)</div>
-              <div class="shop-owned">Owned: <span id="owned-auto2">0</span></div>
-            </div>
-          </div>
-          <button id="buy-auto2" class="buy-btn pink-scheme">
-            <small>Buy</small>
-            <span class="cost"><i class="fa-solid fa-coins" style="font-size:8px;"></i><span id="cost-auto2">250</span></span>
-          </button>
-        </div>
-
-        <div class="shop-item">
-          <div class="shop-item-left">
             <div class="shop-icon gold"><i class="fa-solid fa-mug-hot"></i></div>
             <div>
               <div class="shop-name">Rooftop Espresso</div>
@@ -588,6 +611,96 @@ button:focus-visible, [tabindex]:focus-visible{
           </button>
         </div>
 
+        <div class="shop-item">
+          <div class="shop-item-left">
+            <div class="shop-icon violet"><i class="fa-solid fa-hand-sparkles"></i></div>
+            <div>
+              <div class="shop-name">Quick Wrists</div>
+              <div class="shop-desc">Gain more combo per poke, ramp up faster</div>
+              <div class="shop-owned">Owned: <span id="owned-quickwrists">0</span>/5</div>
+            </div>
+          </div>
+          <button id="buy-quickwrists" class="buy-btn">
+            <small>Buy</small>
+            <span class="cost"><i class="fa-solid fa-coins" style="font-size:8px;"></i><span id="cost-quickwrists">80</span></span>
+          </button>
+        </div>
+
+        <div class="shop-item">
+          <div class="shop-item-left">
+            <div class="shop-icon red"><i class="fa-solid fa-bolt"></i></div>
+            <div>
+              <div class="shop-name">Lucky Poke</div>
+              <div class="shop-desc">Chance for a 5x critical poke</div>
+              <div class="shop-owned">Owned: <span id="owned-luckypoke">0</span>/6</div>
+            </div>
+          </div>
+          <button id="buy-luckypoke" class="buy-btn red-scheme">
+            <small>Buy</small>
+            <span class="cost"><i class="fa-solid fa-coins" style="font-size:8px;"></i><span id="cost-luckypoke">200</span></span>
+          </button>
+        </div>
+
+        <div class="shop-item">
+          <div class="shop-item-left">
+            <div class="shop-icon gold"><i class="fa-solid fa-sun"></i></div>
+            <div>
+              <div class="shop-name">Golden Hour Bonus</div>
+              <div class="shop-desc">+8% points earned from every poke</div>
+              <div class="shop-owned">Owned: <span id="owned-goldenhour">0</span>/5</div>
+            </div>
+          </div>
+          <button id="buy-goldenhour" class="buy-btn gold-scheme">
+            <small>Buy</small>
+            <span class="cost"><i class="fa-solid fa-coins" style="font-size:8px;"></i><span id="cost-goldenhour">300</span></span>
+          </button>
+        </div>
+
+        <div class="shop-item">
+          <div class="shop-item-left">
+            <div class="shop-icon pink"><i class="fa-solid fa-wind"></i></div>
+            <div>
+              <div class="shop-name">Second Wind</div>
+              <div class="shop-desc">Unlocks a 4.0x combo tier at max meter</div>
+              <div class="shop-owned">One-time upgrade</div>
+            </div>
+          </div>
+          <button id="buy-secondwind" class="buy-btn pink-scheme">
+            <small>Buy</small>
+            <span class="cost"><i class="fa-solid fa-coins" style="font-size:8px;"></i><span id="cost-secondwind">2,500</span></span>
+          </button>
+        </div>
+
+        <div class="shop-item" id="shop-item-cody">
+          <div class="shop-item-left">
+            <div class="shop-icon violet"><i class="fa-solid fa-user-plus"></i></div>
+            <div>
+              <div class="shop-name">Invite Cody</div>
+              <div class="shop-desc">Unlocks Cody as a pokeable friend</div>
+              <div class="shop-owned">One-time upgrade</div>
+            </div>
+          </div>
+          <button id="buy-cody" class="buy-btn">
+            <small>Buy</small>
+            <span class="cost"><i class="fa-solid fa-coins" style="font-size:8px;"></i><span id="cost-cody">500</span></span>
+          </button>
+        </div>
+
+        <div class="shop-item gated" id="shop-item-falcon">
+          <div class="shop-item-left">
+            <div class="shop-icon violet"><i class="fa-solid fa-user-plus"></i></div>
+            <div>
+              <div class="shop-name">Invite Falcon</div>
+              <div class="shop-desc">Unlocks Falcon &mdash; requires Cody first</div>
+              <div class="shop-owned">One-time upgrade</div>
+            </div>
+          </div>
+          <button id="buy-falcon" class="buy-btn" disabled>
+            <small>Buy</small>
+            <span class="cost"><i class="fa-solid fa-coins" style="font-size:8px;"></i><span id="cost-falcon">1,200</span></span>
+          </button>
+        </div>
+
       </div>
     </div>
 
@@ -596,35 +709,86 @@ button:focus-visible, [tabindex]:focus-visible{
       <div class="panel-heading"><h3>Poke Statistics</h3></div>
       <div style="display:flex;flex-direction:column;gap:9px;flex:1;justify-content:center;">
         <div class="stat-row"><span class="k">Manual Pokes</span><span id="stat-manual" class="v">0</span></div>
-        <div class="stat-row"><span class="k">Autopilot Pokes</span><span id="stat-auto" class="v">0</span></div>
         <div class="stat-row"><span class="k">Peak Combo</span><span id="stat-max-combo" class="v pink">1.0x</span></div>
+        <div class="stat-row"><span class="k">Critical Pokes Landed</span><span id="stat-crits" class="v red">0</span></div>
+        <div class="stat-row"><span class="k">Friends Unlocked</span><span id="stat-friends" class="v">1/3</span></div>
         <div class="stat-row"><span class="k">Coins Gained Overall</span><span id="stat-total-coins" class="v gold">0</span></div>
-        <div class="flavor-box"><i class="fa-solid fa-circle-info"></i>&nbsp; Joseph enjoys calm sunsets on the CGFreeK rooftop. Frequent poking may cause dizziness and spontaneous point inflation!</div>
+        <div class="flavor-box"><i class="fa-solid fa-circle-info"></i>&nbsp; The crew loves calm sunsets on the CGFreeK rooftop. Frequent poking may cause dizziness, spontaneous point inflation, and the occasional critical wince!</div>
       </div>
     </div>
 
     <!-- ACHIEVEMENTS -->
     <div id="content-achievements" class="panel-card hidden">
-      <div class="panel-heading"><h3>Trophies &amp; Milestones</h3><span id="achievements-unlocked" class="panel-tag" style="background:rgba(74,222,128,0.15);color:var(--success);">0/4 Unlocked</span></div>
+      <div class="panel-heading"><h3>Trophies &amp; Milestones</h3><span id="achievements-unlocked" class="panel-tag" style="background:rgba(74,222,128,0.15);color:var(--success);">0/14 Unlocked</span></div>
       <div class="shop-scroll">
-        <div id="trophy-1" class="trophy-row">
+        <div id="trophy-firstContact" class="trophy-row">
           <div class="trophy-icon"><i class="fa-solid fa-baby"></i></div>
-          <div style="flex:1;"><div class="trophy-title">First Contact</div><div class="trophy-desc">Poke Joseph manually at least 1 time</div></div>
+          <div style="flex:1;"><div class="trophy-title">First Contact</div><div class="trophy-desc">Poke someone at least 1 time</div></div>
           <span class="trophy-status">Locked</span>
         </div>
-        <div id="trophy-2" class="trophy-row">
+        <div id="trophy-fastFingers" class="trophy-row">
           <div class="trophy-icon"><i class="fa-solid fa-fire"></i></div>
           <div style="flex:1;"><div class="trophy-title">Fast Fingers</div><div class="trophy-desc">Reach a combo multiplier of 2.0x</div></div>
           <span class="trophy-status">Locked</span>
         </div>
-        <div id="trophy-3" class="trophy-row">
-          <div class="trophy-icon"><i class="fa-solid fa-award"></i></div>
-          <div style="flex:1;"><div class="trophy-title">100 Pokes Club</div><div class="trophy-desc">Reach 100 total pokes on Joseph</div></div>
+        <div id="trophy-comboMaster" class="trophy-row">
+          <div class="trophy-icon"><i class="fa-solid fa-fire-flame-curved"></i></div>
+          <div style="flex:1;"><div class="trophy-title">Combo Master</div><div class="trophy-desc">Reach a combo multiplier of 3.0x</div></div>
           <span class="trophy-status">Locked</span>
         </div>
-        <div id="trophy-4" class="trophy-row">
-          <div class="trophy-icon"><i class="fa-solid fa-rocket"></i></div>
-          <div style="flex:1;"><div class="trophy-title">Automation Tycoon</div><div class="trophy-desc">Own at least 5 auto-poke helpers</div></div>
+        <div id="trophy-overdrive" class="trophy-row">
+          <div class="trophy-icon"><i class="fa-solid fa-gauge-high"></i></div>
+          <div style="flex:1;"><div class="trophy-title">Overdrive</div><div class="trophy-desc">Reach the 4.0x combo tier (needs Second Wind)</div></div>
+          <span class="trophy-status">Locked</span>
+        </div>
+        <div id="trophy-centuryClub" class="trophy-row">
+          <div class="trophy-icon"><i class="fa-solid fa-award"></i></div>
+          <div style="flex:1;"><div class="trophy-title">100 Pokes Club</div><div class="trophy-desc">Reach 100 total pokes</div></div>
+          <span class="trophy-status">Locked</span>
+        </div>
+        <div id="trophy-pokeVeteran" class="trophy-row">
+          <div class="trophy-icon"><i class="fa-solid fa-medal"></i></div>
+          <div style="flex:1;"><div class="trophy-title">Poke Veteran</div><div class="trophy-desc">Reach 500 total pokes</div></div>
+          <span class="trophy-status">Locked</span>
+        </div>
+        <div id="trophy-pokeLegend" class="trophy-row">
+          <div class="trophy-icon"><i class="fa-solid fa-crown"></i></div>
+          <div style="flex:1;"><div class="trophy-title">Poke Legend</div><div class="trophy-desc">Reach 1,000 total pokes</div></div>
+          <span class="trophy-status">Locked</span>
+        </div>
+        <div id="trophy-pointHoarder" class="trophy-row">
+          <div class="trophy-icon"><i class="fa-solid fa-piggy-bank"></i></div>
+          <div style="flex:1;"><div class="trophy-title">Point Hoarder</div><div class="trophy-desc">Earn 1,000 total coins</div></div>
+          <span class="trophy-status">Locked</span>
+        </div>
+        <div id="trophy-highRoller" class="trophy-row">
+          <div class="trophy-icon"><i class="fa-solid fa-sack-dollar"></i></div>
+          <div style="flex:1;"><div class="trophy-title">High Roller</div><div class="trophy-desc">Earn 10,000 total coins</div></div>
+          <span class="trophy-status">Locked</span>
+        </div>
+        <div id="trophy-criticalHit" class="trophy-row">
+          <div class="trophy-icon"><i class="fa-solid fa-bolt"></i></div>
+          <div style="flex:1;"><div class="trophy-title">Critical Hit</div><div class="trophy-desc">Land your first critical poke</div></div>
+          <span class="trophy-status">Locked</span>
+        </div>
+        <div id="trophy-critMachine" class="trophy-row">
+          <div class="trophy-icon"><i class="fa-solid fa-explosion"></i></div>
+          <div style="flex:1;"><div class="trophy-title">Crit Machine</div><div class="trophy-desc">Land 50 critical pokes</div></div>
+          <span class="trophy-status">Locked</span>
+        </div>
+        <div id="trophy-squadComplete" class="trophy-row">
+          <div class="trophy-icon"><i class="fa-solid fa-people-group"></i></div>
+          <div style="flex:1;"><div class="trophy-title">Squad Complete</div><div class="trophy-desc">Invite both Cody and Falcon</div></div>
+          <span class="trophy-status">Locked</span>
+        </div>
+        <div id="trophy-friendHopper" class="trophy-row">
+          <div class="trophy-icon"><i class="fa-solid fa-shuffle"></i></div>
+          <div style="flex:1;"><div class="trophy-title">Friend Hopper</div><div class="trophy-desc">Poke Joseph, Cody, and Falcon at least once each</div></div>
+          <span class="trophy-status">Locked</span>
+        </div>
+        <div id="trophy-caffeineAddict" class="trophy-row">
+          <div class="trophy-icon"><i class="fa-solid fa-mug-hot"></i></div>
+          <div style="flex:1;"><div class="trophy-title">Caffeine Addict</div><div class="trophy-desc">Max out Rooftop Espresso</div></div>
           <span class="trophy-status">Locked</span>
         </div>
       </div>
@@ -638,7 +802,7 @@ button:focus-visible, [tabindex]:focus-visible{
   <div class="modal-box" id="confirm-modal-box">
     <div class="modal-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
     <h3>Reset All Progress?</h3>
-    <p>This will permanently delete your poking history, shop upgrades, and accumulated points. This cannot be undone!</p>
+    <p>This will permanently delete your poking history, shop upgrades, unlocked friends, and accumulated points. This cannot be undone!</p>
     <div class="modal-actions">
       <button id="modal-cancel" class="modal-btn keep">Keep Progress</button>
       <button id="modal-confirm" class="modal-btn confirm">Yes, Reset It</button>
@@ -657,19 +821,84 @@ const safeStorage = {
     removeItem(key){ try{ localStorage.removeItem(key); } catch(e){ delete this._mockCache[key]; } }
 };
 
+// --- CHARACTER ROSTER ---
+const characters = {
+    joseph: {
+        name: 'Joseph',
+        defaultImg: 'Joseph_Default.png',
+        pokedImg: 'Joseph_Poked.png',
+        placeholderColor: '8b6cf2',
+        quotes: [
+            "Hey! Stop tickling me!",
+            "Whoa! Dizzy dizzy!",
+            "Ouch! Did you just poke my glasses?",
+            "Hehehe! That tickles!",
+            "Stop, I am looking at the sunset!",
+            "Please be gentle!",
+            "I'm getting dizzy here!",
+            "My specs! Watch the lenses!",
+            "Is that all you've got?!",
+            "Aha! Pokelicious!"
+        ]
+    },
+    cody: {
+        name: 'Cody',
+        defaultImg: 'Cody_Default.png',
+        pokedImg: 'Cody_Poked.png',
+        placeholderColor: 'ff8a5c',
+        quotes: [
+            "Hey, I was mid-debug!",
+            "Careful, I just shipped that build!",
+            "Ack! Save my progress first!",
+            "Poking me won't fix the merge conflict!",
+            "Okay okay, that one actually got me!",
+            "Rude! I was enjoying the sunset.",
+            "Is this a new game mechanic?",
+            "You'll pay for that in the changelog!",
+            "Alright, alright, I'm dizzy now!",
+            "That's it, I'm patching this out!"
+        ]
+    },
+    falcon: {
+        name: 'Falcon',
+        defaultImg: 'Falcon_Default.png',
+        pokedImg: 'Falcon_Poked.png',
+        placeholderColor: 'ff5f96',
+        quotes: [
+            "Whoa there, easy!",
+            "Hey! Watch the poke game, champ.",
+            "Okay that actually tickled.",
+            "You're relentless today, huh?",
+            "Careful, I might poke back!",
+            "Sunset's getting ruined over here!",
+            "Alright, you win this round.",
+            "That one caught me off guard!",
+            "Dizzy... so dizzy...",
+            "Poke champion right here, apparently."
+        ]
+    }
+};
+
 // --- GAME STATE ---
 const state = {
     totalPokes: 0,
     pokePoints: 0,
     manualPokes: 0,
-    autoPokes: 0,
     maxCombo: 1.0,
     statTotalCoins: 0,
+    critCount: 0,
 
     clickMultiplier: 1,
-    auto1Count: 0,
-    auto2Count: 0,
     caffeineLevel: 0,
+    quickWristsLevel: 0,
+    luckyPokeLevel: 0,
+    goldenHourLevel: 0,
+    secondWindUnlocked: false,
+
+    charactersUnlocked: { joseph: true, cody: false, falcon: false },
+    charactersPoked: { joseph: false, cody: false, falcon: false },
+    activeCharacter: 'joseph',
+    lastPokedCharacter: null,
 
     currentCombo: 1.0,
     comboProgress: 0,
@@ -681,32 +910,46 @@ const state = {
     unlockedAchievements: {
         firstContact: false,
         fastFingers: false,
-        hundredClub: false,
-        automationTycoon: false
+        comboMaster: false,
+        overdrive: false,
+        centuryClub: false,
+        pokeVeteran: false,
+        pokeLegend: false,
+        pointHoarder: false,
+        highRoller: false,
+        criticalHit: false,
+        critMachine: false,
+        squadComplete: false,
+        friendHopper: false,
+        caffeineAddict: false
     }
 };
+
+const TOTAL_ACHIEVEMENTS = Object.keys(state.unlockedAchievements).length;
 
 const elements = {
     pokeCounter: document.getElementById('poke-counter'),
     pokePoints: document.getElementById('poke-points'),
     comboMultiplier: document.getElementById('combo-multiplier'),
     comboProgress: document.getElementById('combo-progress'),
-    ppsVal: document.getElementById('pps-val'),
+    critVal: document.getElementById('crit-val'),
 
     josephGroup: document.getElementById('joseph-group'),
     josephSpriteContainer: document.getElementById('joseph-sprite-container'),
-    josephDefaultImg: document.getElementById('joseph-default-img'),
-    josephPokedImg: document.getElementById('joseph-poked-img'),
+    charDefaultImg: document.getElementById('char-default-img'),
+    charPokedImg: document.getElementById('char-poked-img'),
     gameViewportCard: document.getElementById('game-viewport-card'),
     particleContainer: document.getElementById('particle-container'),
     speechBubble: document.getElementById('speech-bubble'),
     speechText: document.getElementById('speech-text'),
     pokeTip: document.getElementById('poke-tip'),
 
+    rosterJoseph: document.getElementById('roster-joseph'),
+    rosterCody: document.getElementById('roster-cody'),
+    rosterFalcon: document.getElementById('roster-falcon'),
+
     toggleSfx: document.getElementById('toggle-sfx'),
-    sfxIcon: document.getElementById('sfx-icon'),
     toggleShake: document.getElementById('toggle-shake'),
-    shakeIcon: document.getElementById('shake-icon'),
     resetGame: document.getElementById('reset-game'),
 
     tabShop: document.getElementById('tab-shop'),
@@ -721,28 +964,39 @@ const elements = {
     ownedMultiplier: document.getElementById('owned-multiplier'),
     costMultiplier: document.getElementById('cost-multiplier'),
 
-    buyAuto1: document.getElementById('buy-auto1'),
-    ownedAuto1: document.getElementById('owned-auto1'),
-    costAuto1: document.getElementById('cost-auto1'),
-
-    buyAuto2: document.getElementById('buy-auto2'),
-    ownedAuto2: document.getElementById('owned-auto2'),
-    costAuto2: document.getElementById('cost-auto2'),
-
     buyCaffeine: document.getElementById('buy-caffeine'),
     ownedCaffeine: document.getElementById('owned-caffeine'),
     costCaffeine: document.getElementById('cost-caffeine'),
 
+    buyQuickWrists: document.getElementById('buy-quickwrists'),
+    ownedQuickWrists: document.getElementById('owned-quickwrists'),
+    costQuickWrists: document.getElementById('cost-quickwrists'),
+
+    buyLuckyPoke: document.getElementById('buy-luckypoke'),
+    ownedLuckyPoke: document.getElementById('owned-luckypoke'),
+    costLuckyPoke: document.getElementById('cost-luckypoke'),
+
+    buyGoldenHour: document.getElementById('buy-goldenhour'),
+    ownedGoldenHour: document.getElementById('owned-goldenhour'),
+    costGoldenHour: document.getElementById('cost-goldenhour'),
+
+    buySecondWind: document.getElementById('buy-secondwind'),
+    costSecondWind: document.getElementById('cost-secondwind'),
+
+    buyCody: document.getElementById('buy-cody'),
+    costCody: document.getElementById('cost-cody'),
+    shopItemCody: document.getElementById('shop-item-cody'),
+
+    buyFalcon: document.getElementById('buy-falcon'),
+    costFalcon: document.getElementById('cost-falcon'),
+    shopItemFalcon: document.getElementById('shop-item-falcon'),
+
     statManual: document.getElementById('stat-manual'),
-    statAuto: document.getElementById('stat-auto'),
     statMaxCombo: document.getElementById('stat-max-combo'),
+    statCrits: document.getElementById('stat-crits'),
+    statFriends: document.getElementById('stat-friends'),
     statTotalCoins: document.getElementById('stat-total-coins'),
     achievementsUnlocked: document.getElementById('achievements-unlocked'),
-
-    trophy1: document.getElementById('trophy-1'),
-    trophy2: document.getElementById('trophy-2'),
-    trophy3: document.getElementById('trophy-3'),
-    trophy4: document.getElementById('trophy-4'),
 
     confirmModal: document.getElementById('confirm-modal'),
     confirmModalBox: document.getElementById('confirm-modal-box'),
@@ -751,19 +1005,6 @@ const elements = {
 
     notificationContainer: document.getElementById('notification-container')
 };
-
-const JosephQuotes = [
-    "Hey! Stop tickling me!",
-    "Whoa! Dizzy dizzy!",
-    "Ouch! Did you just poke my glasses?",
-    "Hehehe! That tickles!",
-    "Stop, I am looking at the sunset!",
-    "Please be gentle!",
-    "I'm getting dizzy here!",
-    "My specs! Watch the lenses!",
-    "Is that all you've got?!",
-    "Aha! Pokelicious!"
-];
 
 // --- Lazy audio synth ---
 let audioCtx = null;
@@ -810,6 +1051,14 @@ function playPokeSound(soundType = 'squeak'){
             gainNode.gain.setValueAtTime(0.12, audioCtx.currentTime);
             gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
             osc.start(); osc.stop(audioCtx.currentTime + 0.6);
+        } else if (soundType === 'crit') {
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(660, audioCtx.currentTime);
+            osc.frequency.setValueAtTime(990, audioCtx.currentTime + 0.06);
+            osc.frequency.setValueAtTime(1320, audioCtx.currentTime + 0.12);
+            gainNode.gain.setValueAtTime(0.18, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.22);
+            osc.start(); osc.stop(audioCtx.currentTime + 0.22);
         }
     } catch(err) {
         console.warn("Audio context unavailable:", err);
@@ -817,13 +1066,14 @@ function playPokeSound(soundType = 'squeak'){
 }
 
 // --- Particles ---
-function createPokeParticle(x, y, textVal = null){
+function createPokeParticle(x, y, textVal = null, isCrit = false){
     const particle = document.createElement('div');
     if (textVal) {
         particle.className = 'float-particle';
-        particle.style.cssText = `left:${x}px;top:${y}px;font-family:var(--font-display);font-size:16px;font-weight:800;z-index:7;filter:drop-shadow(0 2px 4px rgba(0,0,0,.8));animation:floatText 1.2s cubic-bezier(.25,1,.5,1) forwards;`;
+        const fontSize = isCrit ? 20 : 16;
+        particle.style.cssText = `left:${x}px;top:${y}px;font-family:var(--font-display);font-size:${fontSize}px;font-weight:800;z-index:7;filter:drop-shadow(0 2px 4px rgba(0,0,0,.8));animation:floatText 1.2s cubic-bezier(.25,1,.5,1) forwards;`;
         particle.innerText = textVal;
-        particle.style.color = state.currentCombo >= 3 ? '#ff5f96' : (state.currentCombo >= 2 ? '#ff8fb3' : '#c9bdfa');
+        particle.style.color = isCrit ? '#ff4d4d' : (state.currentCombo >= 3 ? '#ff5f96' : (state.currentCombo >= 2 ? '#ff8fb3' : '#c9bdfa'));
     } else {
         const isHeart = Math.random() > 0.6;
         const size = Math.floor(Math.random() * 15) + 12;
@@ -839,26 +1089,79 @@ function createPokeParticle(x, y, textVal = null){
     setTimeout(() => particle.remove(), 1200);
 }
 
+// --- Character switching ---
+function switchCharacter(key){
+    if (!state.charactersUnlocked[key]) return;
+    state.activeCharacter = key;
+
+    const char = characters[key];
+    elements.charDefaultImg.src = char.defaultImg;
+    elements.charDefaultImg.alt = char.name;
+    elements.charDefaultImg.onerror = function(){ this.onerror=null; this.src = `https://placehold.co/400x400/${char.placeholderColor}/ffffff?text=${char.name}`; };
+    elements.charDefaultImg.classList.remove('hidden');
+
+    elements.charPokedImg.src = char.pokedImg;
+    elements.charPokedImg.alt = `${char.name}, poked and surprised`;
+    elements.charPokedImg.onerror = function(){ this.onerror=null; this.src = `https://placehold.co/400x400/ff5f96/ffffff?text=Poked!`; };
+    elements.charPokedImg.classList.add('hidden');
+
+    state.isPoked = false;
+    if (state.pokedResetTimer) clearTimeout(state.pokedResetTimer);
+
+    elements.josephGroup.setAttribute('aria-label', `Poke ${char.name}`);
+
+    [elements.rosterJoseph, elements.rosterCody, elements.rosterFalcon].forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.char === key);
+    });
+
+    saveProgress();
+}
+
+function refreshRosterUI(){
+    // Cody
+    if (state.charactersUnlocked.cody) {
+        elements.rosterCody.classList.remove('locked');
+        elements.rosterCody.disabled = false;
+        elements.rosterCody.querySelector('.thumb').innerHTML = `<img src="${characters.cody.defaultImg}" alt="Cody" onerror="this.onerror=null; this.src='https://placehold.co/80x80/${characters.cody.placeholderColor}/ffffff?text=C';">`;
+    }
+    // Falcon
+    if (state.charactersUnlocked.falcon) {
+        elements.rosterFalcon.classList.remove('locked');
+        elements.rosterFalcon.disabled = false;
+        elements.rosterFalcon.querySelector('.thumb').innerHTML = `<img src="${characters.falcon.defaultImg}" alt="Falcon" onerror="this.onerror=null; this.src='https://placehold.co/80x80/${characters.falcon.placeholderColor}/ffffff?text=F';">`;
+    }
+}
+
 // --- Main poke trigger ---
-function triggerPoke(isManual = true, event = null){
+function triggerPoke(event = null){
     elements.pokeTip.style.opacity = '0';
     elements.pokeTip.style.pointerEvents = 'none';
 
-    const earnedPoints = isManual
-        ? Math.round(state.clickMultiplier * state.currentCombo)
-        : Math.round(1 * state.currentCombo);
+    const activeKey = state.activeCharacter;
+    const char = characters[activeKey];
+
+    // Critical roll
+    const critChance = state.luckyPokeLevel * 0.05;
+    const isCrit = Math.random() < critChance;
+
+    const pointMultiplier = 1 + (state.goldenHourLevel * 0.08);
+    let earnedPoints = Math.round(state.clickMultiplier * state.currentCombo * pointMultiplier);
+    if (isCrit) {
+        earnedPoints *= 5;
+        state.critCount++;
+    }
 
     state.totalPokes += 1;
     state.pokePoints += earnedPoints;
     state.statTotalCoins += earnedPoints;
+    state.manualPokes++;
+    state.charactersPoked[activeKey] = true;
 
-    if (isManual) state.manualPokes++; else state.autoPokes++;
-
-    playPokeSound('squeak');
+    playPokeSound(isCrit ? 'crit' : 'squeak');
 
     state.isPoked = true;
-    elements.josephDefaultImg.classList.add('hidden');
-    elements.josephPokedImg.classList.remove('hidden');
+    elements.charDefaultImg.classList.add('hidden');
+    elements.charPokedImg.classList.remove('hidden');
 
     elements.josephSpriteContainer.classList.add('poke-active');
     setTimeout(() => {
@@ -868,21 +1171,22 @@ function triggerPoke(isManual = true, event = null){
     if (state.pokedResetTimer) clearTimeout(state.pokedResetTimer);
     state.pokedResetTimer = setTimeout(() => {
         state.isPoked = false;
-        elements.josephPokedImg.classList.add('hidden');
-        elements.josephDefaultImg.classList.remove('hidden');
+        elements.charPokedImg.classList.add('hidden');
+        elements.charDefaultImg.classList.remove('hidden');
     }, 2000);
 
-    if (isManual) {
-        state.comboProgress = Math.min(100, state.comboProgress + 12);
-        if (state.comboProgress > 80) state.currentCombo = 3.0;
-        else if (state.comboProgress > 50) state.currentCombo = 2.0;
-        else if (state.comboProgress > 20) state.currentCombo = 1.5;
-        else state.currentCombo = 1.0;
-
-        if (state.currentCombo > state.maxCombo) state.maxCombo = state.currentCombo;
+    // Combo gain (bonus for switching characters between pokes)
+    let comboGain = 12 + (state.quickWristsLevel * 3);
+    if (state.lastPokedCharacter && state.lastPokedCharacter !== activeKey) {
+        comboGain += 5;
     }
+    state.lastPokedCharacter = activeKey;
 
-    if (state.shakeEnabled && isManual) {
+    state.comboProgress = Math.min(100, state.comboProgress + comboGain);
+    state.currentCombo = getComboTier(state.comboProgress);
+    if (state.currentCombo > state.maxCombo) state.maxCombo = state.currentCombo;
+
+    if (state.shakeEnabled) {
         elements.gameViewportCard.classList.add('shake');
         setTimeout(() => elements.gameViewportCard.classList.remove('shake'), 200);
     }
@@ -906,20 +1210,29 @@ function triggerPoke(isManual = true, event = null){
         clickY = (jRect.top - rect.top) + (jRect.height / 3) + (Math.random() * 40 - 20);
     }
 
-    createPokeParticle(clickX, clickY, `+${earnedPoints}`);
+    createPokeParticle(clickX, clickY, `+${earnedPoints}`, isCrit);
+    if (isCrit) createPokeParticle(clickX, clickY - 22, `CRITICAL!`, true);
     for (let i = 0; i < 3; i++) createPokeParticle(clickX, clickY);
 
-    if (Math.random() < 0.15 || state.currentCombo === 3.0) triggerSpeechBubble();
+    if (Math.random() < 0.15 || state.currentCombo >= 3.0) triggerSpeechBubble(char);
 
     saveProgress();
     updateUI();
     checkAchievements();
 }
 
+function getComboTier(progress){
+    if (state.secondWindUnlocked && progress > 90) return 4.0;
+    if (progress > 80) return 3.0;
+    if (progress > 50) return 2.0;
+    if (progress > 20) return 1.5;
+    return 1.0;
+}
+
 let speechTimer = null;
-function triggerSpeechBubble(){
+function triggerSpeechBubble(char){
     if (speechTimer) clearTimeout(speechTimer);
-    elements.speechText.innerText = JosephQuotes[Math.floor(Math.random() * JosephQuotes.length)];
+    elements.speechText.innerText = char.quotes[Math.floor(Math.random() * char.quotes.length)];
     elements.speechBubble.style.transform = "translate(-50%, -100%) scale(1)";
     speechTimer = setTimeout(() => {
         elements.speechBubble.style.transform = "translate(-50%, -100%) scale(0)";
@@ -927,33 +1240,59 @@ function triggerSpeechBubble(){
 }
 
 // --- Shop ---
-const upgradeCosts = { multiplier: 10, auto1: 50, auto2: 250, caffeine: 150 };
+const upgradeCosts = { multiplier: 10, caffeine: 150, quickWrists: 80, luckyPoke: 200, goldenHour: 300 };
+const FIXED_COSTS = { secondWind: 2500, cody: 500, falcon: 1200 };
 function getUpgradeCost(base, level){ return Math.round(base * Math.pow(1.35, level)); }
 
 function buyUpgrade(type){
     let cost = 0;
     if (type === 'multiplier') cost = getUpgradeCost(upgradeCosts.multiplier, state.clickMultiplier - 1);
-    if (type === 'auto1') cost = getUpgradeCost(upgradeCosts.auto1, state.auto1Count);
-    if (type === 'auto2') cost = getUpgradeCost(upgradeCosts.auto2, state.auto2Count);
     if (type === 'caffeine') cost = getUpgradeCost(upgradeCosts.caffeine, state.caffeineLevel);
+    if (type === 'quickWrists') cost = getUpgradeCost(upgradeCosts.quickWrists, state.quickWristsLevel);
+    if (type === 'luckyPoke') cost = getUpgradeCost(upgradeCosts.luckyPoke, state.luckyPokeLevel);
+    if (type === 'goldenHour') cost = getUpgradeCost(upgradeCosts.goldenHour, state.goldenHourLevel);
+    if (type === 'secondWind') cost = FIXED_COSTS.secondWind;
+    if (type === 'cody') cost = FIXED_COSTS.cody;
+    if (type === 'falcon') cost = FIXED_COSTS.falcon;
 
-    if (state.pokePoints >= cost) {
-        state.pokePoints -= cost;
-        if (type === 'multiplier') state.clickMultiplier++;
-        if (type === 'auto1') state.auto1Count++;
-        if (type === 'auto2') state.auto2Count++;
-        if (type === 'caffeine' && state.caffeineLevel < 5) state.caffeineLevel++;
+    if (state.pokePoints < cost) return;
+    if (type === 'quickWrists' && state.quickWristsLevel >= 5) return;
+    if (type === 'luckyPoke' && state.luckyPokeLevel >= 6) return;
+    if (type === 'goldenHour' && state.goldenHourLevel >= 5) return;
+    if (type === 'caffeine' && state.caffeineLevel >= 5) return;
+    if (type === 'secondWind' && state.secondWindUnlocked) return;
+    if (type === 'cody' && state.charactersUnlocked.cody) return;
+    if (type === 'falcon' && (!state.charactersUnlocked.cody || state.charactersUnlocked.falcon)) return;
 
-        playPokeSound('upgrade');
-        showNotification("🎉 Upgrade Purchased!", "Your poking stats have been elevated.", "info");
-
-        saveProgress();
-        updateUI();
-        checkAchievements();
+    state.pokePoints -= cost;
+    if (type === 'multiplier') state.clickMultiplier++;
+    if (type === 'caffeine') state.caffeineLevel++;
+    if (type === 'quickWrists') state.quickWristsLevel++;
+    if (type === 'luckyPoke') state.luckyPokeLevel++;
+    if (type === 'goldenHour') state.goldenHourLevel++;
+    if (type === 'secondWind') state.secondWindUnlocked = true;
+    if (type === 'cody') {
+        state.charactersUnlocked.cody = true;
+        refreshRosterUI();
+        showNotification("👋 Cody Joined!", "Cody is now pokeable — switch to him up top.", "success");
     }
+    if (type === 'falcon') {
+        state.charactersUnlocked.falcon = true;
+        refreshRosterUI();
+        showNotification("👋 Falcon Joined!", "Falcon is now pokeable — switch to him up top.", "success");
+    }
+
+    playPokeSound('upgrade');
+    if (type !== 'cody' && type !== 'falcon') {
+        showNotification("🎉 Upgrade Purchased!", "Your poking stats have been elevated.", "info");
+    }
+
+    saveProgress();
+    updateUI();
+    checkAchievements();
 }
 
-// --- Game ticker ---
+// --- Game ticker (combo decay only — no automation) ---
 let lastTick = Date.now();
 setInterval(() => {
     const now = Date.now();
@@ -964,18 +1303,9 @@ setInterval(() => {
         const decayModifier = 1 - (state.caffeineLevel * 0.16);
         const decayAmount = 14 * decayModifier * delta;
         state.comboProgress = Math.max(0, state.comboProgress - decayAmount);
-        if (state.comboProgress > 80) state.currentCombo = 3.0;
-        else if (state.comboProgress > 50) state.currentCombo = 2.0;
-        else if (state.comboProgress > 20) state.currentCombo = 1.5;
-        else state.currentCombo = 1.0;
+        state.currentCombo = getComboTier(state.comboProgress);
     } else {
         state.currentCombo = 1.0;
-    }
-
-    const totalAutoPPS = (state.auto1Count * 1) + (state.auto2Count * 5);
-    if (totalAutoPPS > 0) {
-        const probability = totalAutoPPS * delta;
-        if (Math.random() < probability) triggerPoke(false);
     }
 
     updateUIProgressOnly();
@@ -985,39 +1315,77 @@ setInterval(() => {
 function updateUI(){
     elements.pokeCounter.innerText = state.totalPokes.toLocaleString();
     elements.pokePoints.innerText = state.pokePoints.toLocaleString();
+    elements.critVal.innerText = state.critCount.toLocaleString();
 
     const costMult = getUpgradeCost(upgradeCosts.multiplier, state.clickMultiplier - 1);
-    const costA1 = getUpgradeCost(upgradeCosts.auto1, state.auto1Count);
-    const costA2 = getUpgradeCost(upgradeCosts.auto2, state.auto2Count);
     const costCaff = getUpgradeCost(upgradeCosts.caffeine, state.caffeineLevel);
+    const costQW = getUpgradeCost(upgradeCosts.quickWrists, state.quickWristsLevel);
+    const costLP = getUpgradeCost(upgradeCosts.luckyPoke, state.luckyPokeLevel);
+    const costGH = getUpgradeCost(upgradeCosts.goldenHour, state.goldenHourLevel);
 
     elements.costMultiplier.innerText = costMult.toLocaleString();
-    elements.costAuto1.innerText = costA1.toLocaleString();
-    elements.costAuto2.innerText = costA2.toLocaleString();
     elements.costCaffeine.innerText = costCaff.toLocaleString();
+    elements.costQuickWrists.innerText = costQW.toLocaleString();
+    elements.costLuckyPoke.innerText = costLP.toLocaleString();
+    elements.costGoldenHour.innerText = costGH.toLocaleString();
+    elements.costSecondWind.innerText = FIXED_COSTS.secondWind.toLocaleString();
+    elements.costCody.innerText = FIXED_COSTS.cody.toLocaleString();
+    elements.costFalcon.innerText = FIXED_COSTS.falcon.toLocaleString();
 
     elements.ownedMultiplier.innerText = state.clickMultiplier;
-    elements.ownedAuto1.innerText = state.auto1Count;
-    elements.ownedAuto2.innerText = state.auto2Count;
     elements.ownedCaffeine.innerText = state.caffeineLevel;
+    elements.ownedQuickWrists.innerText = state.quickWristsLevel;
+    elements.ownedLuckyPoke.innerText = state.luckyPokeLevel;
+    elements.ownedGoldenHour.innerText = state.goldenHourLevel;
 
     elements.buyMultiplier.disabled = state.pokePoints < costMult;
-    elements.buyAuto1.disabled = state.pokePoints < costA1;
-    elements.buyAuto2.disabled = state.pokePoints < costA2;
     elements.buyCaffeine.disabled = (state.pokePoints < costCaff) || (state.caffeineLevel >= 5);
+    elements.buyQuickWrists.disabled = (state.pokePoints < costQW) || (state.quickWristsLevel >= 5);
+    elements.buyLuckyPoke.disabled = (state.pokePoints < costLP) || (state.luckyPokeLevel >= 6);
+    elements.buyGoldenHour.disabled = (state.pokePoints < costGH) || (state.goldenHourLevel >= 5);
 
-    if (state.caffeineLevel >= 5) {
-        elements.buyCaffeine.classList.add('maxed');
-        elements.buyCaffeine.innerHTML = `<span style="color:var(--success);font-weight:800;text-transform:uppercase;font-size:11px;">Max</span>`;
+    setMaxState(elements.buyCaffeine, state.caffeineLevel >= 5);
+    setMaxState(elements.buyQuickWrists, state.quickWristsLevel >= 5);
+    setMaxState(elements.buyLuckyPoke, state.luckyPokeLevel >= 6);
+    setMaxState(elements.buyGoldenHour, state.goldenHourLevel >= 5);
+
+    if (state.secondWindUnlocked) {
+        elements.buySecondWind.disabled = true;
+        elements.buySecondWind.classList.add('maxed');
+        elements.buySecondWind.innerHTML = `<span style="color:var(--success);font-weight:800;text-transform:uppercase;font-size:11px;">Owned</span>`;
+    } else {
+        elements.buySecondWind.disabled = state.pokePoints < FIXED_COSTS.secondWind;
+    }
+
+    if (state.charactersUnlocked.cody) {
+        elements.buyCody.disabled = true;
+        elements.buyCody.classList.add('maxed');
+        elements.buyCody.innerHTML = `<span style="color:var(--success);font-weight:800;text-transform:uppercase;font-size:11px;">Owned</span>`;
+        elements.shopItemFalcon.classList.remove('gated');
+    } else {
+        elements.buyCody.disabled = state.pokePoints < FIXED_COSTS.cody;
+    }
+
+    if (state.charactersUnlocked.falcon) {
+        elements.buyFalcon.disabled = true;
+        elements.buyFalcon.classList.add('maxed');
+        elements.buyFalcon.innerHTML = `<span style="color:var(--success);font-weight:800;text-transform:uppercase;font-size:11px;">Owned</span>`;
+    } else if (state.charactersUnlocked.cody) {
+        elements.buyFalcon.disabled = state.pokePoints < FIXED_COSTS.falcon;
+    } else {
+        elements.buyFalcon.disabled = true;
     }
 
     elements.statManual.innerText = state.manualPokes.toLocaleString();
-    elements.statAuto.innerText = state.autoPokes.toLocaleString();
     elements.statMaxCombo.innerText = `${state.maxCombo.toFixed(1)}x`;
+    elements.statCrits.innerText = state.critCount.toLocaleString();
+    const friendsCount = Object.values(state.charactersUnlocked).filter(Boolean).length;
+    elements.statFriends.innerText = `${friendsCount}/3`;
     elements.statTotalCoins.innerText = state.statTotalCoins.toLocaleString();
+}
 
-    const totalAutoPPS = (state.auto1Count * 1) + (state.auto2Count * 5);
-    elements.ppsVal.innerText = totalAutoPPS;
+function setMaxState(btn, isMax){
+    if (isMax) btn.classList.add('maxed'); else btn.classList.remove('maxed');
 }
 
 function updateUIProgressOnly(){
@@ -1033,14 +1401,19 @@ function updateUIProgressOnly(){
     }
 
     const costMult = getUpgradeCost(upgradeCosts.multiplier, state.clickMultiplier - 1);
-    const costA1 = getUpgradeCost(upgradeCosts.auto1, state.auto1Count);
-    const costA2 = getUpgradeCost(upgradeCosts.auto2, state.auto2Count);
     const costCaff = getUpgradeCost(upgradeCosts.caffeine, state.caffeineLevel);
+    const costQW = getUpgradeCost(upgradeCosts.quickWrists, state.quickWristsLevel);
+    const costLP = getUpgradeCost(upgradeCosts.luckyPoke, state.luckyPokeLevel);
+    const costGH = getUpgradeCost(upgradeCosts.goldenHour, state.goldenHourLevel);
 
     elements.buyMultiplier.disabled = state.pokePoints < costMult;
-    elements.buyAuto1.disabled = state.pokePoints < costA1;
-    elements.buyAuto2.disabled = state.pokePoints < costA2;
     if (state.caffeineLevel < 5) elements.buyCaffeine.disabled = state.pokePoints < costCaff;
+    if (state.quickWristsLevel < 5) elements.buyQuickWrists.disabled = state.pokePoints < costQW;
+    if (state.luckyPokeLevel < 6) elements.buyLuckyPoke.disabled = state.pokePoints < costLP;
+    if (state.goldenHourLevel < 5) elements.buyGoldenHour.disabled = state.pokePoints < costGH;
+    if (!state.secondWindUnlocked) elements.buySecondWind.disabled = state.pokePoints < FIXED_COSTS.secondWind;
+    if (!state.charactersUnlocked.cody) elements.buyCody.disabled = state.pokePoints < FIXED_COSTS.cody;
+    if (state.charactersUnlocked.cody && !state.charactersUnlocked.falcon) elements.buyFalcon.disabled = state.pokePoints < FIXED_COSTS.falcon;
 }
 
 // --- Achievements ---
@@ -1048,25 +1421,33 @@ function checkAchievements(){
     let newlyUnlocked = false;
     let totalUnlocked = 0;
 
-    if (!state.unlockedAchievements.firstContact && state.manualPokes >= 1) {
-        state.unlockedAchievements.firstContact = true; newlyUnlocked = true;
-    }
-    if (state.unlockedAchievements.firstContact) { unlockTrophyCard(elements.trophy1); totalUnlocked++; }
+    const rules = {
+        firstContact: () => state.manualPokes >= 1,
+        fastFingers: () => state.maxCombo >= 2.0,
+        comboMaster: () => state.maxCombo >= 3.0,
+        overdrive: () => state.maxCombo >= 4.0,
+        centuryClub: () => state.totalPokes >= 100,
+        pokeVeteran: () => state.totalPokes >= 500,
+        pokeLegend: () => state.totalPokes >= 1000,
+        pointHoarder: () => state.statTotalCoins >= 1000,
+        highRoller: () => state.statTotalCoins >= 10000,
+        criticalHit: () => state.critCount >= 1,
+        critMachine: () => state.critCount >= 50,
+        squadComplete: () => state.charactersUnlocked.cody && state.charactersUnlocked.falcon,
+        friendHopper: () => state.charactersPoked.joseph && state.charactersPoked.cody && state.charactersPoked.falcon,
+        caffeineAddict: () => state.caffeineLevel >= 5
+    };
 
-    if (!state.unlockedAchievements.fastFingers && state.maxCombo >= 2.0) {
-        state.unlockedAchievements.fastFingers = true; newlyUnlocked = true;
-    }
-    if (state.unlockedAchievements.fastFingers) { unlockTrophyCard(elements.trophy2); totalUnlocked++; }
-
-    if (!state.unlockedAchievements.hundredClub && state.totalPokes >= 100) {
-        state.unlockedAchievements.hundredClub = true; newlyUnlocked = true;
-    }
-    if (state.unlockedAchievements.hundredClub) { unlockTrophyCard(elements.trophy3); totalUnlocked++; }
-
-    if (!state.unlockedAchievements.automationTycoon && (state.auto1Count + state.auto2Count) >= 5) {
-        state.unlockedAchievements.automationTycoon = true; newlyUnlocked = true;
-    }
-    if (state.unlockedAchievements.automationTycoon) { unlockTrophyCard(elements.trophy4); totalUnlocked++; }
+    Object.keys(rules).forEach(key => {
+        if (!state.unlockedAchievements[key] && rules[key]()) {
+            state.unlockedAchievements[key] = true;
+            newlyUnlocked = true;
+        }
+        if (state.unlockedAchievements[key]) {
+            unlockTrophyCard(document.getElementById(`trophy-${key}`));
+            totalUnlocked++;
+        }
+    });
 
     if (newlyUnlocked) {
         playPokeSound('trophy');
@@ -1074,10 +1455,11 @@ function checkAchievements(){
         showNotification("🏆 Milestone Unlocked!", "Check your Trophy list to review progress.", "success");
     }
 
-    elements.achievementsUnlocked.innerText = `${totalUnlocked}/4 Unlocked`;
+    elements.achievementsUnlocked.innerText = `${totalUnlocked}/${TOTAL_ACHIEVEMENTS} Unlocked`;
 }
 
 function unlockTrophyCard(cardElement){
+    if (!cardElement) return;
     cardElement.classList.add('unlocked');
     const status = cardElement.querySelector('.trophy-status');
     status.innerText = "Unlocked";
@@ -1113,28 +1495,39 @@ elements.tabShop.addEventListener('click', () => selectTab('tab-shop', 'content-
 elements.tabStats.addEventListener('click', () => selectTab('tab-stats', 'content-stats'));
 elements.tabAchievements.addEventListener('click', () => selectTab('tab-achievements', 'content-achievements'));
 
+// --- Roster switching ---
+[elements.rosterJoseph, elements.rosterCody, elements.rosterFalcon].forEach(btn => {
+    btn.addEventListener('click', () => switchCharacter(btn.dataset.char));
+});
+
 // --- Persistence ---
 function saveProgress(){
-    safeStorage.setItem('poke_joseph_save_v1', JSON.stringify(state));
+    safeStorage.setItem('poke_joseph_save_v2', JSON.stringify(state));
 }
 
 function loadProgress(){
-    const rawSave = safeStorage.getItem('poke_joseph_save_v1');
+    const rawSave = safeStorage.getItem('poke_joseph_save_v2');
     if (rawSave) {
         try {
             const parsed = JSON.parse(rawSave);
-            const numericFields = ['totalPokes','pokePoints','manualPokes','autoPokes','maxCombo','statTotalCoins',
-                                    'clickMultiplier','auto1Count','auto2Count','caffeineLevel'];
+            const numericFields = ['totalPokes','pokePoints','manualPokes','maxCombo','statTotalCoins','critCount',
+                                    'clickMultiplier','caffeineLevel','quickWristsLevel','luckyPokeLevel','goldenHourLevel'];
             numericFields.forEach(f => { if (parsed[f] !== undefined) state[f] = parsed[f]; });
 
+            if (parsed.secondWindUnlocked !== undefined) state.secondWindUnlocked = parsed.secondWindUnlocked;
+            if (parsed.charactersUnlocked !== undefined) state.charactersUnlocked = { ...state.charactersUnlocked, ...parsed.charactersUnlocked };
+            if (parsed.charactersPoked !== undefined) state.charactersPoked = { ...state.charactersPoked, ...parsed.charactersPoked };
+            if (parsed.activeCharacter !== undefined && state.charactersUnlocked[parsed.activeCharacter]) state.activeCharacter = parsed.activeCharacter;
             if (parsed.sfxEnabled !== undefined) state.sfxEnabled = parsed.sfxEnabled;
             if (parsed.shakeEnabled !== undefined) state.shakeEnabled = parsed.shakeEnabled;
-            if (parsed.unlockedAchievements !== undefined) state.unlockedAchievements = parsed.unlockedAchievements;
+            if (parsed.unlockedAchievements !== undefined) state.unlockedAchievements = { ...state.unlockedAchievements, ...parsed.unlockedAchievements };
         } catch(e) {
             console.error("Save file corrupted, loading defaults.", e);
         }
     }
 
+    refreshRosterUI();
+    switchCharacter(state.activeCharacter);
     updateSettingsToggles();
     updateUI();
     checkAchievements();
@@ -1160,7 +1553,7 @@ function hideResetModal(){ elements.confirmModal.classList.remove('show'); }
 elements.resetGame.addEventListener('click', showResetModal);
 elements.modalCancel.addEventListener('click', hideResetModal);
 elements.modalConfirm.addEventListener('click', () => {
-    safeStorage.removeItem('poke_joseph_save_v1');
+    safeStorage.removeItem('poke_joseph_save_v2');
     location.reload();
 });
 elements.confirmModal.addEventListener('click', (e) => {
@@ -1181,20 +1574,24 @@ elements.toggleShake.addEventListener('click', () => {
 
 // --- Shop buttons ---
 elements.buyMultiplier.addEventListener('click', () => buyUpgrade('multiplier'));
-elements.buyAuto1.addEventListener('click', () => buyUpgrade('auto1'));
-elements.buyAuto2.addEventListener('click', () => buyUpgrade('auto2'));
 elements.buyCaffeine.addEventListener('click', () => buyUpgrade('caffeine'));
+elements.buyQuickWrists.addEventListener('click', () => buyUpgrade('quickWrists'));
+elements.buyLuckyPoke.addEventListener('click', () => buyUpgrade('luckyPoke'));
+elements.buyGoldenHour.addEventListener('click', () => buyUpgrade('goldenHour'));
+elements.buySecondWind.addEventListener('click', () => buyUpgrade('secondWind'));
+elements.buyCody.addEventListener('click', () => buyUpgrade('cody'));
+elements.buyFalcon.addEventListener('click', () => buyUpgrade('falcon'));
 
 // --- Poke input (click, touch, keyboard) ---
-elements.josephGroup.addEventListener('click', (e) => triggerPoke(true, e));
+elements.josephGroup.addEventListener('click', (e) => triggerPoke(e));
 elements.josephGroup.addEventListener('touchstart', (e) => {
     e.preventDefault();
-    triggerPoke(true, e.touches[0]);
+    triggerPoke(e.touches[0]);
 }, { passive: false });
 elements.josephGroup.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
-        triggerPoke(true, null);
+        triggerPoke(null);
     }
 });
 
