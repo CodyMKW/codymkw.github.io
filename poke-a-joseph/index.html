@@ -1,0 +1,1204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Poke-A-Joseph</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+/* ============================================================
+   TOKENS — golden-hour rooftop palette
+   ============================================================ */
+:root{
+  --dusk-1:#1b1030;
+  --dusk-2:#0a0714;
+  --sky-orange:#ff8a5c;
+  --sky-pink:#ff5f96;
+  --sky-gold:#ffc857;
+  --violet:#8b6cf2;
+  --violet-deep:#5c3fb0;
+  --ink:#f5eefe;
+  --ink-dim:#b9adcf;
+  --ink-faint:#77698f;
+  --panel:#160f28;
+  --panel-2:#1d1536;
+  --line:rgba(139,108,242,0.18);
+  --success:#4ade80;
+  --radius-lg:22px;
+  --radius-md:16px;
+  --radius-sm:10px;
+  --font-display:'Fredoka One', cursive;
+  --font-body:'Nunito', sans-serif;
+  --shadow-deep:0 20px 45px -15px rgba(0,0,0,0.55);
+}
+
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  font-family:var(--font-body);
+  color:var(--ink);
+  min-height:100vh;
+  background:
+    radial-gradient(circle at 50% -10%, var(--sky-orange) 0%, transparent 38%),
+    radial-gradient(circle at 85% 10%, var(--sky-pink) 0%, transparent 30%),
+    linear-gradient(180deg, var(--dusk-1) 0%, var(--dusk-2) 65%);
+  background-blend-mode: screen, screen, normal;
+  padding:20px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+
+::-webkit-scrollbar{width:7px;}
+::-webkit-scrollbar-track{background:rgba(139,108,242,0.08);border-radius:8px;}
+::-webkit-scrollbar-thumb{background:var(--violet-deep);border-radius:8px;}
+::-webkit-scrollbar-thumb:hover{background:var(--violet);}
+
+button{font-family:inherit;cursor:pointer;}
+button:focus-visible, [tabindex]:focus-visible{
+  outline:3px solid var(--sky-gold);
+  outline-offset:2px;
+}
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+.page-header{
+  width:100%;
+  max-width:1100px;
+  text-align:center;
+  margin-bottom:18px;
+}
+.eyebrow{
+  font-size:11px;
+  letter-spacing:0.22em;
+  text-transform:uppercase;
+  font-weight:800;
+  color:var(--sky-gold);
+  opacity:0.85;
+}
+.title{
+  font-family:var(--font-display);
+  font-size:clamp(2rem, 5vw, 3.1rem);
+  letter-spacing:0.02em;
+  margin:4px 0 2px;
+  background:linear-gradient(95deg, var(--sky-gold) 0%, var(--sky-pink) 55%, var(--violet) 100%);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+  text-shadow:0 8px 30px rgba(255,95,150,0.25);
+}
+.subtitle{
+  font-size:13px;
+  color:var(--ink-dim);
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:0.08em;
+}
+
+/* ============================================================
+   LAYOUT
+   ============================================================ */
+.game-layout{
+  width:100%;
+  max-width:1100px;
+  display:grid;
+  grid-template-columns:2fr 1fr;
+  gap:22px;
+  align-items:start;
+}
+@media (max-width:860px){
+  .game-layout{grid-template-columns:1fr;}
+}
+
+/* ============================================================
+   VIEWPORT / STAGE
+   ============================================================ */
+.stage-wrap{display:flex;flex-direction:column;}
+
+.stage{
+  position:relative;
+  width:100%;
+  aspect-ratio:16/9;
+  border-radius:26px;
+  overflow:hidden;
+  border:1px solid var(--line);
+  box-shadow:var(--shadow-deep), inset 0 0 80px rgba(0,0,0,0.25);
+  background:linear-gradient(180deg, #3a2158 0%, #1a1030 55%, #0c0716 100%);
+  user-select:none;
+  transition:transform .12s ease;
+}
+.stage img.bg-img{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none;z-index:0;
+  opacity:0.9;
+}
+.stage-vignette{
+  position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:linear-gradient(180deg, rgba(10,7,20,0.15) 0%, transparent 35%, rgba(10,7,20,0.55) 100%);
+}
+
+/* top / bottom HUD */
+.hud-top, .hud-bottom{
+  position:absolute;left:14px;right:14px;z-index:5;
+  display:flex;justify-content:space-between;align-items:flex-start;
+  pointer-events:none;
+}
+.hud-top{top:14px;}
+.hud-bottom{bottom:14px;align-items:center;}
+
+.stat-pill{
+  pointer-events:auto;
+  display:flex;align-items:center;gap:10px;
+  background:rgba(10,7,20,0.65);
+  backdrop-filter:blur(10px);
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:8px 14px;
+  box-shadow:0 6px 20px rgba(0,0,0,0.3);
+  transition:transform .15s ease;
+}
+.stat-pill:hover{transform:translateY(-2px);}
+.stat-pill .icon-box{
+  width:32px;height:32px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;
+}
+.icon-box.gold{background:rgba(255,200,87,0.18);color:var(--sky-gold);}
+.icon-box.pink{background:rgba(255,95,150,0.18);color:var(--sky-pink);}
+.stat-label{font-size:9px;letter-spacing:0.14em;text-transform:uppercase;font-weight:800;opacity:0.75;}
+.stat-value{font-family:var(--font-display);font-size:19px;line-height:1.1;}
+.stat-value.gold{color:var(--sky-gold);}
+
+.combo-pill{
+  pointer-events:auto;
+  display:flex;align-items:center;gap:8px;
+  background:rgba(10,7,20,0.7);
+  backdrop-filter:blur(10px);
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:6px 12px;
+}
+.combo-label{font-size:10px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:var(--sky-pink);}
+.combo-value{font-family:var(--font-display);font-size:13px;color:var(--sky-pink);min-width:32px;}
+.combo-track{width:80px;height:7px;border-radius:6px;background:rgba(255,255,255,0.1);overflow:hidden;}
+.combo-fill{height:100%;width:0%;background:linear-gradient(90deg, var(--sky-pink), var(--sky-gold));transition:width .1s linear;}
+
+.pps-pill{
+  pointer-events:auto;
+  background:rgba(10,7,20,0.7);
+  backdrop-filter:blur(10px);
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:6px 12px;
+  font-size:11px;font-weight:700;color:var(--violet);letter-spacing:0.05em;
+}
+.pps-pill .val{font-family:var(--font-display);color:var(--ink);}
+
+/* Joseph */
+.joseph-zone{
+  position:absolute;bottom:10px;left:50%;transform:translateX(-50%);
+  width:27%;min-width:150px;
+  display:flex;flex-direction:column;align-items:center;
+  z-index:4;cursor:pointer;
+  background:none;border:none;padding:0;
+}
+.joseph-sprite{position:relative;width:100%;animation:idleFloat 3s ease-in-out infinite;}
+.joseph-sprite img{
+  width:100%;height:auto;display:block;pointer-events:none;
+  filter:drop-shadow(0 14px 18px rgba(0,0,0,0.5));
+}
+.joseph-sprite img.hidden{display:none;}
+.joseph-shadow{
+  width:70%;height:12px;margin-top:-6px;border-radius:50%;
+  background:rgba(0,0,0,0.55);filter:blur(3px);
+  animation:shadowShrink 3s ease-in-out infinite;
+}
+@keyframes idleFloat{0%,100%{transform:translateY(0) scale(1);}50%{transform:translateY(-8px) scale(1.02);}}
+@keyframes shadowShrink{0%,100%{transform:scaleX(1);opacity:.45;}50%{transform:scaleX(.82);opacity:.25;}}
+@keyframes squishPoke{
+  0%{transform:scale(1);}
+  15%{transform:scale(.85,1.2) translateY(-10px);}
+  30%{transform:scale(1.2,.8) translateY(5px);}
+  50%{transform:scale(.95,1.05);}
+  70%{transform:scale(1.02,.98);}
+  100%{transform:scale(1);}
+}
+.joseph-sprite.poke-active{animation:squishPoke .45s cubic-bezier(.25,1,.5,1);}
+@media (prefers-reduced-motion:reduce){
+  .joseph-sprite, .joseph-shadow{animation:none !important;}
+}
+
+.stage.shake{animation:intenseShake .2s ease-in-out;}
+@keyframes intenseShake{
+  0%,100%{transform:translate(0,0);}
+  10%{transform:translate(-4px,-2px);}
+  30%{transform:translate(3px,4px);}
+  50%{transform:translate(-5px,1px);}
+  70%{transform:translate(4px,-3px);}
+  90%{transform:translate(-1px,2px);}
+}
+
+.particle-layer{position:absolute;inset:0;z-index:3;overflow:hidden;pointer-events:none;}
+.float-particle{position:absolute;pointer-events:none;}
+@keyframes floatText{
+  0%{transform:translateY(0) scale(.6);opacity:0;}
+  20%{opacity:1;}
+  100%{transform:translateY(-120px) scale(1.1);opacity:0;}
+}
+@keyframes scatterSparkle{
+  0%{transform:translate(0,0) scale(.6);opacity:0;}
+  15%{opacity:1;}
+  100%{transform:translate(var(--tx),var(--ty)) scale(1.1);opacity:0;}
+}
+
+.speech-bubble{
+  position:absolute;z-index:6;bottom:50%;left:50%;
+  transform:translate(-50%,-100%) scale(0);
+  transform-origin:bottom center;
+  background:#fff;color:#241a38;
+  border-radius:16px;padding:9px 14px;
+  font-weight:700;font-size:12px;max-width:210px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.35);
+  transition:transform .3s cubic-bezier(.34,1.56,.64,1);
+  pointer-events:none;
+}
+.speech-bubble::after{
+  content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);
+  border:8px solid transparent;border-top-color:#fff;
+}
+
+.poke-tip{
+  position:absolute;bottom:64px;left:50%;transform:translateX(-50%);
+  z-index:4;font-size:10px;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;
+  color:rgba(255,255,255,0.75);background:rgba(0,0,0,0.4);
+  padding:6px 14px;border-radius:999px;
+  animation:pulseTip 2s ease-in-out infinite;
+  transition:opacity .3s ease;
+  pointer-events:none;
+}
+@keyframes pulseTip{0%,100%{opacity:.65;}50%{opacity:1;}}
+
+/* controls under stage */
+.controls-row{
+  margin-top:14px;display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;align-items:center;
+}
+.controls-left{display:flex;gap:8px;}
+.chip-btn{
+  background:var(--panel-2);border:1px solid var(--line);color:var(--ink-dim);
+  font-size:11px;font-weight:700;border-radius:12px;padding:8px 12px;
+  display:flex;align-items:center;gap:7px;transition:.15s ease;
+}
+.chip-btn:hover{background:var(--panel);color:var(--ink);border-color:var(--violet);}
+.chip-btn i{color:var(--violet);}
+.chip-btn.danger{background:rgba(255,95,150,0.08);border-color:rgba(255,95,150,0.3);color:var(--sky-pink);}
+.chip-btn.danger:hover{background:rgba(255,95,150,0.16);}
+
+/* ============================================================
+   RIGHT PANEL
+   ============================================================ */
+.panel-col{display:flex;flex-direction:column;gap:14px;}
+
+.tab-bar{
+  display:flex;gap:5px;background:var(--panel);border:1px solid var(--line);
+  border-radius:18px;padding:6px;
+}
+.tab-btn{
+  flex:1;background:none;border:none;border-radius:13px;padding:10px 6px;
+  font-size:11px;font-weight:800;letter-spacing:0.02em;color:var(--ink-faint);
+  display:flex;align-items:center;justify-content:center;gap:6px;position:relative;
+  transition:.15s ease;
+}
+.tab-btn i{font-size:12px;}
+.tab-btn.active{
+  background:linear-gradient(120deg, var(--violet-deep), var(--violet));
+  color:#fff;box-shadow:0 6px 16px rgba(139,108,242,0.35);
+}
+.tab-btn:not(.active):hover{background:var(--panel-2);color:var(--ink);}
+.badge-dot{
+  position:absolute;top:5px;right:10px;width:8px;height:8px;border-radius:50%;
+  background:var(--sky-pink);animation:pingDot 1.4s cubic-bezier(0,0,.2,1) infinite;
+}
+@keyframes pingDot{75%,100%{transform:scale(2);opacity:0;}}
+
+.panel-card{
+  background:var(--panel);border:1px solid var(--line);
+  border-radius:var(--radius-lg);padding:16px;min-height:360px;
+  box-shadow:var(--shadow-deep);
+  display:flex;flex-direction:column;gap:12px;
+}
+.panel-card.hidden{display:none;}
+.panel-heading{display:flex;align-items:center;justify-content:space-between;}
+.panel-heading h3{font-family:var(--font-display);font-size:15px;color:var(--sky-gold);margin:0;font-weight:400;}
+.panel-tag{
+  font-size:9px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;
+  background:rgba(139,108,242,0.16);color:var(--violet);padding:3px 9px;border-radius:8px;
+}
+
+.shop-scroll{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:9px;max-height:320px;padding-right:2px;}
+
+.shop-item{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  background:var(--panel-2);border:1px solid var(--line);
+  border-radius:16px;padding:11px;transition:.15s ease;
+}
+.shop-item:hover{border-color:var(--violet);transform:translateY(-1px);}
+.shop-item-left{display:flex;align-items:center;gap:11px;min-width:0;}
+.shop-icon{
+  width:38px;height:38px;border-radius:12px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:16px;
+}
+.shop-icon.violet{background:rgba(139,108,242,0.18);color:var(--violet);}
+.shop-icon.gold{background:rgba(255,200,87,0.18);color:var(--sky-gold);}
+.shop-icon.pink{background:rgba(255,95,150,0.18);color:var(--sky-pink);}
+.shop-name{font-size:12px;font-weight:800;color:var(--ink);}
+.shop-desc{font-size:10px;color:var(--ink-faint);margin-top:1px;}
+.shop-owned{font-size:10px;font-weight:700;margin-top:2px;color:var(--ink-dim);}
+
+.buy-btn{
+  border:none;border-radius:13px;padding:7px 11px;min-width:68px;
+  display:flex;flex-direction:column;align-items:center;gap:1px;
+  font-weight:800;color:#fff;flex-shrink:0;transition:.15s ease;
+  background:linear-gradient(135deg, var(--violet), var(--violet-deep));
+}
+.buy-btn.gold-scheme{background:linear-gradient(135deg,#ffd57a,#e0982f);}
+.buy-btn.pink-scheme{background:linear-gradient(135deg,#ff8fb3,#e04b7f);}
+.buy-btn small{font-size:8px;letter-spacing:0.08em;text-transform:uppercase;opacity:0.85;}
+.buy-btn .cost{font-family:var(--font-display);font-size:12px;color:var(--sky-gold);display:flex;align-items:center;gap:3px;}
+.buy-btn:disabled{opacity:0.4;cursor:not-allowed;filter:grayscale(0.4);}
+.buy-btn:not(:disabled):hover{transform:translateY(-1px);filter:brightness(1.08);}
+.buy-btn.maxed .cost{color:var(--success);}
+
+/* stats tab */
+.stat-row{
+  display:flex;justify-content:space-between;align-items:center;
+  background:var(--panel-2);padding:10px 13px;border-radius:13px;
+}
+.stat-row .k{font-size:11px;color:var(--ink-faint);font-weight:700;}
+.stat-row .v{font-family:var(--font-display);font-size:14px;}
+.v.pink{color:var(--sky-pink);}
+.v.gold{color:var(--sky-gold);}
+
+.flavor-box{
+  margin-top:4px;padding:12px;border-radius:16px;
+  background:rgba(139,108,242,0.09);border:1px solid rgba(139,108,242,0.22);
+  font-size:11px;color:var(--ink-dim);line-height:1.55;
+}
+
+/* achievements */
+.trophy-row{
+  display:flex;align-items:center;gap:11px;padding:10px;border-radius:16px;
+  background:var(--panel-2);border:1px solid var(--line);opacity:0.55;transition:.2s ease;
+}
+.trophy-row.unlocked{opacity:1;background:rgba(139,108,242,0.12);border-color:rgba(139,108,242,0.4);}
+.trophy-icon{font-size:20px;color:var(--ink-faint);width:26px;text-align:center;}
+.trophy-row.unlocked .trophy-icon{color:var(--sky-gold);}
+.trophy-title{font-size:11px;font-weight:800;color:var(--ink);}
+.trophy-desc{font-size:10px;color:var(--ink-faint);margin-top:1px;}
+.trophy-status{
+  font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:0.06em;
+  padding:3px 9px;border-radius:8px;background:var(--panel);color:var(--ink-faint);flex-shrink:0;
+}
+.trophy-row.unlocked .trophy-status{background:var(--success);color:#08210f;}
+
+/* ============================================================
+   MODAL
+   ============================================================ */
+.modal-overlay{
+  position:fixed;inset:0;z-index:50;background:rgba(6,4,12,0.82);backdrop-filter:blur(5px);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity .2s ease;
+}
+.modal-overlay.show{opacity:1;pointer-events:auto;}
+.modal-box{
+  background:var(--panel);border:2px solid var(--violet-deep);border-radius:24px;
+  max-width:380px;width:90%;padding:26px;text-align:center;
+  box-shadow:var(--shadow-deep);transform:scale(0.95);transition:transform .2s ease;
+}
+.modal-overlay.show .modal-box{transform:scale(1);}
+.modal-icon{font-size:34px;color:var(--sky-pink);margin-bottom:8px;}
+.modal-box h3{font-family:var(--font-display);font-size:17px;color:var(--sky-gold);margin:0 0 8px;font-weight:400;}
+.modal-box p{font-size:12px;color:var(--ink-dim);line-height:1.6;margin:0 0 20px;}
+.modal-actions{display:flex;gap:10px;justify-content:center;}
+.modal-btn{
+  border:none;border-radius:13px;padding:10px 16px;font-size:11px;font-weight:800;
+}
+.modal-btn.keep{background:var(--panel-2);color:var(--ink-dim);border:1px solid var(--line);}
+.modal-btn.keep:hover{color:var(--ink);}
+.modal-btn.confirm{background:linear-gradient(135deg,#ff8fb3,#e04b7f);color:#fff;}
+.modal-btn.confirm:hover{filter:brightness(1.08);}
+
+/* ============================================================
+   TOASTS
+   ============================================================ */
+.toast-stack{position:fixed;bottom:22px;right:22px;z-index:60;display:flex;flex-direction:column;gap:8px;max-width:300px;}
+.toast{
+  background:var(--panel);border:2px solid var(--violet);color:var(--ink);
+  padding:12px 15px;border-radius:16px;box-shadow:var(--shadow-deep);
+  display:flex;align-items:center;gap:11px;
+  transform:translateY(14px);opacity:0;transition:all .3s ease;
+}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast i{font-size:17px;}
+.toast .t-title{font-size:12px;font-weight:800;}
+.toast .t-msg{font-size:10px;color:var(--ink-faint);margin-top:2px;}
+</style>
+</head>
+<body>
+
+<header class="page-header">
+  <div class="eyebrow">CGFreeK Rooftop &middot; Golden Hour</div>
+  <h1 class="title">Poke-A-Joseph</h1>
+  <p class="subtitle">Can you handle his dizzy limits? Poke away!</p>
+</header>
+
+<main class="game-layout">
+
+  <!-- STAGE -->
+  <div class="stage-wrap">
+    <div class="stage" id="game-viewport-card">
+      <img id="bg-image" class="bg-img" src="background.jpg" alt="Sunset rooftop background"
+           onerror="this.onerror=null; this.src='https://placehold.co/800x450/2a1a44/ff8a5c?text=Rooftop+Sunset';">
+      <div class="stage-vignette"></div>
+
+      <div class="hud-top">
+        <div class="stat-pill">
+          <div class="icon-box pink"><i class="fa-solid fa-hand-point-up"></i></div>
+          <div>
+            <div class="stat-label">Total Pokes</div>
+            <div id="poke-counter" class="stat-value">0</div>
+          </div>
+        </div>
+        <div class="stat-pill">
+          <div class="icon-box gold"><i class="fa-solid fa-coins"></i></div>
+          <div>
+            <div class="stat-label">Poke Points</div>
+            <div id="poke-points" class="stat-value gold">0</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hud-bottom">
+        <div class="combo-pill">
+          <span class="combo-label">Combo</span>
+          <span id="combo-multiplier" class="combo-value">1.0x</span>
+          <div class="combo-track"><div id="combo-progress" class="combo-fill"></div></div>
+        </div>
+        <div class="pps-pill">Auto: <span id="pps-val" class="val">0</span>/s</div>
+      </div>
+
+      <div class="particle-layer" id="particle-container"></div>
+
+      <div id="speech-bubble" class="speech-bubble"><span id="speech-text">Hehehe! That tickles!</span></div>
+
+      <button id="joseph-group" class="joseph-zone" aria-label="Poke Joseph">
+        <div id="joseph-sprite-container" class="joseph-sprite">
+          <img id="joseph-default-img" src="Joseph_Default.png" alt="Joseph"
+               onerror="this.onerror=null; this.src='https://placehold.co/400x400/8b6cf2/ffffff?text=Joseph';">
+          <img id="joseph-poked-img" class="hidden" src="Joseph_Poked.png" alt="Joseph, poked and surprised"
+               onerror="this.onerror=null; this.src='https://placehold.co/400x400/ff5f96/ffffff?text=Poked!';">
+        </div>
+        <div class="joseph-shadow"></div>
+      </button>
+
+      <div id="poke-tip" class="poke-tip">👉 Click Joseph to poke!</div>
+    </div>
+
+    <div class="controls-row">
+      <div class="controls-left">
+        <button id="toggle-sfx" class="chip-btn"><i id="sfx-icon" class="fa-solid fa-volume-high"></i> SFX On</button>
+        <button id="toggle-shake" class="chip-btn"><i id="shake-icon" class="fa-solid fa-mobile-retro"></i> Shake On</button>
+      </div>
+      <button id="reset-game" class="chip-btn danger"><i class="fa-solid fa-rotate-left"></i> Reset Progress</button>
+    </div>
+  </div>
+
+  <!-- PANEL -->
+  <div class="panel-col">
+    <div class="tab-bar">
+      <button id="tab-shop" class="tab-btn active"><i class="fa-solid fa-basket-shopping"></i>Shop</button>
+      <button id="tab-stats" class="tab-btn"><i class="fa-solid fa-chart-bar"></i>Stats</button>
+      <button id="tab-achievements" class="tab-btn"><i class="fa-solid fa-award"></i>Trophies
+        <span id="badge-alert" class="badge-dot" style="display:none;"></span>
+      </button>
+    </div>
+
+    <!-- SHOP -->
+    <div id="content-shop" class="panel-card">
+      <div class="panel-heading"><h3>Upgrade Shop</h3><span class="panel-tag">Boost Power</span></div>
+      <div class="shop-scroll">
+
+        <div class="shop-item">
+          <div class="shop-item-left">
+            <div class="shop-icon violet"><i class="fa-solid fa-hand-pointer"></i></div>
+            <div>
+              <div class="shop-name">Gold Finger</div>
+              <div class="shop-desc">Increase poke power (+1 pt/poke)</div>
+              <div class="shop-owned">Owned: <span id="owned-multiplier">1</span></div>
+            </div>
+          </div>
+          <button id="buy-multiplier" class="buy-btn">
+            <small>Buy</small>
+            <span class="cost"><i class="fa-solid fa-coins" style="font-size:8px;"></i><span id="cost-multiplier">10</span></span>
+          </button>
+        </div>
+
+        <div class="shop-item">
+          <div class="shop-item-left">
+            <div class="shop-icon violet"><i class="fa-solid fa-wind"></i></div>
+            <div>
+              <div class="shop-name">Tickly Feather</div>
+              <div class="shop-desc">Automatically pokes once per sec</div>
+              <div class="shop-owned">Owned: <span id="owned-auto1">0</span></div>
+            </div>
+          </div>
+          <button id="buy-auto1" class="buy-btn">
+            <small>Buy</small>
+            <span class="cost"><i class="fa-solid fa-coins" style="font-size:8px;"></i><span id="cost-auto1">50</span></span>
+          </button>
+        </div>
+
+        <div class="shop-item">
+          <div class="shop-item-left">
+            <div class="shop-icon pink"><i class="fa-solid fa-hammer"></i></div>
+            <div>
+              <div class="shop-name">Spring Poke Bot</div>
+              <div class="shop-desc">A high-tech robot poking rapidly (+5/sec)</div>
+              <div class="shop-owned">Owned: <span id="owned-auto2">0</span></div>
+            </div>
+          </div>
+          <button id="buy-auto2" class="buy-btn pink-scheme">
+            <small>Buy</small>
+            <span class="cost"><i class="fa-solid fa-coins" style="font-size:8px;"></i><span id="cost-auto2">250</span></span>
+          </button>
+        </div>
+
+        <div class="shop-item">
+          <div class="shop-item-left">
+            <div class="shop-icon gold"><i class="fa-solid fa-mug-hot"></i></div>
+            <div>
+              <div class="shop-name">Rooftop Espresso</div>
+              <div class="shop-desc">Halves speed of combo decay</div>
+              <div class="shop-owned">Owned: <span id="owned-caffeine">0</span>/5</div>
+            </div>
+          </div>
+          <button id="buy-caffeine" class="buy-btn gold-scheme">
+            <small>Buy</small>
+            <span class="cost"><i class="fa-solid fa-coins" style="font-size:8px;"></i><span id="cost-caffeine">150</span></span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- STATS -->
+    <div id="content-stats" class="panel-card hidden">
+      <div class="panel-heading"><h3>Poke Statistics</h3></div>
+      <div style="display:flex;flex-direction:column;gap:9px;flex:1;justify-content:center;">
+        <div class="stat-row"><span class="k">Manual Pokes</span><span id="stat-manual" class="v">0</span></div>
+        <div class="stat-row"><span class="k">Autopilot Pokes</span><span id="stat-auto" class="v">0</span></div>
+        <div class="stat-row"><span class="k">Peak Combo</span><span id="stat-max-combo" class="v pink">1.0x</span></div>
+        <div class="stat-row"><span class="k">Coins Gained Overall</span><span id="stat-total-coins" class="v gold">0</span></div>
+        <div class="flavor-box"><i class="fa-solid fa-circle-info"></i>&nbsp; Joseph enjoys calm sunsets on the CGFreeK rooftop. Frequent poking may cause dizziness and spontaneous point inflation!</div>
+      </div>
+    </div>
+
+    <!-- ACHIEVEMENTS -->
+    <div id="content-achievements" class="panel-card hidden">
+      <div class="panel-heading"><h3>Trophies &amp; Milestones</h3><span id="achievements-unlocked" class="panel-tag" style="background:rgba(74,222,128,0.15);color:var(--success);">0/4 Unlocked</span></div>
+      <div class="shop-scroll">
+        <div id="trophy-1" class="trophy-row">
+          <div class="trophy-icon"><i class="fa-solid fa-baby"></i></div>
+          <div style="flex:1;"><div class="trophy-title">First Contact</div><div class="trophy-desc">Poke Joseph manually at least 1 time</div></div>
+          <span class="trophy-status">Locked</span>
+        </div>
+        <div id="trophy-2" class="trophy-row">
+          <div class="trophy-icon"><i class="fa-solid fa-fire"></i></div>
+          <div style="flex:1;"><div class="trophy-title">Fast Fingers</div><div class="trophy-desc">Reach a combo multiplier of 2.0x</div></div>
+          <span class="trophy-status">Locked</span>
+        </div>
+        <div id="trophy-3" class="trophy-row">
+          <div class="trophy-icon"><i class="fa-solid fa-award"></i></div>
+          <div style="flex:1;"><div class="trophy-title">100 Pokes Club</div><div class="trophy-desc">Reach 100 total pokes on Joseph</div></div>
+          <span class="trophy-status">Locked</span>
+        </div>
+        <div id="trophy-4" class="trophy-row">
+          <div class="trophy-icon"><i class="fa-solid fa-rocket"></i></div>
+          <div style="flex:1;"><div class="trophy-title">Automation Tycoon</div><div class="trophy-desc">Own at least 5 auto-poke helpers</div></div>
+          <span class="trophy-status">Locked</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- RESET MODAL -->
+<div id="confirm-modal" class="modal-overlay">
+  <div class="modal-box" id="confirm-modal-box">
+    <div class="modal-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+    <h3>Reset All Progress?</h3>
+    <p>This will permanently delete your poking history, shop upgrades, and accumulated points. This cannot be undone!</p>
+    <div class="modal-actions">
+      <button id="modal-cancel" class="modal-btn keep">Keep Progress</button>
+      <button id="modal-confirm" class="modal-btn confirm">Yes, Reset It</button>
+    </div>
+  </div>
+</div>
+
+<div id="notification-container" class="toast-stack"></div>
+
+<script>
+// --- Safe localStorage wrapper ---
+const safeStorage = {
+    _mockCache: {},
+    getItem(key){ try{ return localStorage.getItem(key); } catch(e){ return this._mockCache[key] || null; } },
+    setItem(key, value){ try{ localStorage.setItem(key, value); } catch(e){ this._mockCache[key] = String(value); } },
+    removeItem(key){ try{ localStorage.removeItem(key); } catch(e){ delete this._mockCache[key]; } }
+};
+
+// --- GAME STATE ---
+const state = {
+    totalPokes: 0,
+    pokePoints: 0,
+    manualPokes: 0,
+    autoPokes: 0,
+    maxCombo: 1.0,
+    statTotalCoins: 0,
+
+    clickMultiplier: 1,
+    auto1Count: 0,
+    auto2Count: 0,
+    caffeineLevel: 0,
+
+    currentCombo: 1.0,
+    comboProgress: 0,
+    sfxEnabled: true,
+    shakeEnabled: true,
+    isPoked: false,
+    pokedResetTimer: null,
+
+    unlockedAchievements: {
+        firstContact: false,
+        fastFingers: false,
+        hundredClub: false,
+        automationTycoon: false
+    }
+};
+
+const elements = {
+    pokeCounter: document.getElementById('poke-counter'),
+    pokePoints: document.getElementById('poke-points'),
+    comboMultiplier: document.getElementById('combo-multiplier'),
+    comboProgress: document.getElementById('combo-progress'),
+    ppsVal: document.getElementById('pps-val'),
+
+    josephGroup: document.getElementById('joseph-group'),
+    josephSpriteContainer: document.getElementById('joseph-sprite-container'),
+    josephDefaultImg: document.getElementById('joseph-default-img'),
+    josephPokedImg: document.getElementById('joseph-poked-img'),
+    gameViewportCard: document.getElementById('game-viewport-card'),
+    particleContainer: document.getElementById('particle-container'),
+    speechBubble: document.getElementById('speech-bubble'),
+    speechText: document.getElementById('speech-text'),
+    pokeTip: document.getElementById('poke-tip'),
+
+    toggleSfx: document.getElementById('toggle-sfx'),
+    sfxIcon: document.getElementById('sfx-icon'),
+    toggleShake: document.getElementById('toggle-shake'),
+    shakeIcon: document.getElementById('shake-icon'),
+    resetGame: document.getElementById('reset-game'),
+
+    tabShop: document.getElementById('tab-shop'),
+    tabStats: document.getElementById('tab-stats'),
+    tabAchievements: document.getElementById('tab-achievements'),
+    contentShop: document.getElementById('content-shop'),
+    contentStats: document.getElementById('content-stats'),
+    contentAchievements: document.getElementById('content-achievements'),
+    badgeAlert: document.getElementById('badge-alert'),
+
+    buyMultiplier: document.getElementById('buy-multiplier'),
+    ownedMultiplier: document.getElementById('owned-multiplier'),
+    costMultiplier: document.getElementById('cost-multiplier'),
+
+    buyAuto1: document.getElementById('buy-auto1'),
+    ownedAuto1: document.getElementById('owned-auto1'),
+    costAuto1: document.getElementById('cost-auto1'),
+
+    buyAuto2: document.getElementById('buy-auto2'),
+    ownedAuto2: document.getElementById('owned-auto2'),
+    costAuto2: document.getElementById('cost-auto2'),
+
+    buyCaffeine: document.getElementById('buy-caffeine'),
+    ownedCaffeine: document.getElementById('owned-caffeine'),
+    costCaffeine: document.getElementById('cost-caffeine'),
+
+    statManual: document.getElementById('stat-manual'),
+    statAuto: document.getElementById('stat-auto'),
+    statMaxCombo: document.getElementById('stat-max-combo'),
+    statTotalCoins: document.getElementById('stat-total-coins'),
+    achievementsUnlocked: document.getElementById('achievements-unlocked'),
+
+    trophy1: document.getElementById('trophy-1'),
+    trophy2: document.getElementById('trophy-2'),
+    trophy3: document.getElementById('trophy-3'),
+    trophy4: document.getElementById('trophy-4'),
+
+    confirmModal: document.getElementById('confirm-modal'),
+    confirmModalBox: document.getElementById('confirm-modal-box'),
+    modalCancel: document.getElementById('modal-cancel'),
+    modalConfirm: document.getElementById('modal-confirm'),
+
+    notificationContainer: document.getElementById('notification-container')
+};
+
+const JosephQuotes = [
+    "Hey! Stop tickling me!",
+    "Whoa! Dizzy dizzy!",
+    "Ouch! Did you just poke my glasses?",
+    "Hehehe! That tickles!",
+    "Stop, I am looking at the sunset!",
+    "Please be gentle!",
+    "I'm getting dizzy here!",
+    "My specs! Watch the lenses!",
+    "Is that all you've got?!",
+    "Aha! Pokelicious!"
+];
+
+// --- Lazy audio synth ---
+let audioCtx = null;
+function playPokeSound(soundType = 'squeak'){
+    if (!state.sfxEnabled) return;
+    try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+
+        const osc = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        osc.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+
+        if (soundType === 'squeak') {
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(320, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.12);
+            gainNode.gain.setValueAtTime(0.25, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
+            osc.start(); osc.stop(audioCtx.currentTime + 0.15);
+        } else if (soundType === 'upgrade') {
+            const osc2 = audioCtx.createOscillator();
+            const gain2 = audioCtx.createGain();
+            osc2.connect(gain2); gain2.connect(audioCtx.destination);
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(440, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.3);
+            osc2.type = 'sine';
+            osc2.frequency.setValueAtTime(554.37, audioCtx.currentTime);
+            osc2.frequency.exponentialRampToValueAtTime(1108.73, audioCtx.currentTime + 0.3);
+            gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.35);
+            gain2.gain.setValueAtTime(0.15, audioCtx.currentTime);
+            gain2.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.35);
+            osc.start(); osc2.start();
+            osc.stop(audioCtx.currentTime + 0.4); osc2.stop(audioCtx.currentTime + 0.4);
+        } else if (soundType === 'trophy') {
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(523.25, audioCtx.currentTime);
+            osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1);
+            osc.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.2);
+            osc.frequency.exponentialRampToValueAtTime(1046.50, audioCtx.currentTime + 0.4);
+            gainNode.gain.setValueAtTime(0.12, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+            osc.start(); osc.stop(audioCtx.currentTime + 0.6);
+        }
+    } catch(err) {
+        console.warn("Audio context unavailable:", err);
+    }
+}
+
+// --- Particles ---
+function createPokeParticle(x, y, textVal = null){
+    const particle = document.createElement('div');
+    if (textVal) {
+        particle.className = 'float-particle';
+        particle.style.cssText = `left:${x}px;top:${y}px;font-family:var(--font-display);font-size:16px;font-weight:800;z-index:7;filter:drop-shadow(0 2px 4px rgba(0,0,0,.8));animation:floatText 1.2s cubic-bezier(.25,1,.5,1) forwards;`;
+        particle.innerText = textVal;
+        particle.style.color = state.currentCombo >= 3 ? '#ff5f96' : (state.currentCombo >= 2 ? '#ff8fb3' : '#c9bdfa');
+    } else {
+        const isHeart = Math.random() > 0.6;
+        const size = Math.floor(Math.random() * 15) + 12;
+        const angle = Math.random() * 360;
+        const distance = Math.random() * 50 + 20;
+        particle.className = 'float-particle';
+        particle.style.cssText = `left:${x}px;top:${y}px;width:${size}px;height:${size}px;z-index:7;--tx:${Math.cos(angle)*distance}px;--ty:${-Math.sin(angle)*distance - 40}px;animation:scatterSparkle .8s cubic-bezier(.1,.8,.3,1) forwards;`;
+        particle.innerHTML = isHeart
+            ? `<span style="font-size:${size}px;opacity:.9;">❤️</span>`
+            : `<span style="font-size:${size}px;opacity:.9;">⭐</span>`;
+    }
+    elements.particleContainer.appendChild(particle);
+    setTimeout(() => particle.remove(), 1200);
+}
+
+// --- Main poke trigger ---
+function triggerPoke(isManual = true, event = null){
+    elements.pokeTip.style.opacity = '0';
+    elements.pokeTip.style.pointerEvents = 'none';
+
+    const earnedPoints = isManual
+        ? Math.round(state.clickMultiplier * state.currentCombo)
+        : Math.round(1 * state.currentCombo);
+
+    state.totalPokes += 1;
+    state.pokePoints += earnedPoints;
+    state.statTotalCoins += earnedPoints;
+
+    if (isManual) state.manualPokes++; else state.autoPokes++;
+
+    playPokeSound('squeak');
+
+    state.isPoked = true;
+    elements.josephDefaultImg.classList.add('hidden');
+    elements.josephPokedImg.classList.remove('hidden');
+
+    elements.josephSpriteContainer.classList.add('poke-active');
+    setTimeout(() => {
+        elements.josephSpriteContainer.classList.remove('poke-active');
+    }, 450);
+
+    if (state.pokedResetTimer) clearTimeout(state.pokedResetTimer);
+    state.pokedResetTimer = setTimeout(() => {
+        state.isPoked = false;
+        elements.josephPokedImg.classList.add('hidden');
+        elements.josephDefaultImg.classList.remove('hidden');
+    }, 2000);
+
+    if (isManual) {
+        state.comboProgress = Math.min(100, state.comboProgress + 12);
+        if (state.comboProgress > 80) state.currentCombo = 3.0;
+        else if (state.comboProgress > 50) state.currentCombo = 2.0;
+        else if (state.comboProgress > 20) state.currentCombo = 1.5;
+        else state.currentCombo = 1.0;
+
+        if (state.currentCombo > state.maxCombo) state.maxCombo = state.currentCombo;
+    }
+
+    if (state.shakeEnabled && isManual) {
+        elements.gameViewportCard.classList.add('shake');
+        setTimeout(() => elements.gameViewportCard.classList.remove('shake'), 200);
+    }
+
+    let clickX, clickY;
+    const rect = elements.gameViewportCard.getBoundingClientRect();
+    if (event) {
+        const clientX = event.clientX ?? (event.touches && event.touches[0] ? event.touches[0].clientX : null);
+        const clientY = event.clientY ?? (event.touches && event.touches[0] ? event.touches[0].clientY : null);
+        if (clientX !== null && clientY !== null) {
+            clickX = clientX - rect.left;
+            clickY = clientY - rect.top;
+        } else {
+            const jRect = elements.josephGroup.getBoundingClientRect();
+            clickX = (jRect.left - rect.left) + (jRect.width / 2) + (Math.random() * 40 - 20);
+            clickY = (jRect.top - rect.top) + (jRect.height / 3) + (Math.random() * 40 - 20);
+        }
+    } else {
+        const jRect = elements.josephGroup.getBoundingClientRect();
+        clickX = (jRect.left - rect.left) + (jRect.width / 2) + (Math.random() * 40 - 20);
+        clickY = (jRect.top - rect.top) + (jRect.height / 3) + (Math.random() * 40 - 20);
+    }
+
+    createPokeParticle(clickX, clickY, `+${earnedPoints}`);
+    for (let i = 0; i < 3; i++) createPokeParticle(clickX, clickY);
+
+    if (Math.random() < 0.15 || state.currentCombo === 3.0) triggerSpeechBubble();
+
+    saveProgress();
+    updateUI();
+    checkAchievements();
+}
+
+let speechTimer = null;
+function triggerSpeechBubble(){
+    if (speechTimer) clearTimeout(speechTimer);
+    elements.speechText.innerText = JosephQuotes[Math.floor(Math.random() * JosephQuotes.length)];
+    elements.speechBubble.style.transform = "translate(-50%, -100%) scale(1)";
+    speechTimer = setTimeout(() => {
+        elements.speechBubble.style.transform = "translate(-50%, -100%) scale(0)";
+    }, 2500);
+}
+
+// --- Shop ---
+const upgradeCosts = { multiplier: 10, auto1: 50, auto2: 250, caffeine: 150 };
+function getUpgradeCost(base, level){ return Math.round(base * Math.pow(1.35, level)); }
+
+function buyUpgrade(type){
+    let cost = 0;
+    if (type === 'multiplier') cost = getUpgradeCost(upgradeCosts.multiplier, state.clickMultiplier - 1);
+    if (type === 'auto1') cost = getUpgradeCost(upgradeCosts.auto1, state.auto1Count);
+    if (type === 'auto2') cost = getUpgradeCost(upgradeCosts.auto2, state.auto2Count);
+    if (type === 'caffeine') cost = getUpgradeCost(upgradeCosts.caffeine, state.caffeineLevel);
+
+    if (state.pokePoints >= cost) {
+        state.pokePoints -= cost;
+        if (type === 'multiplier') state.clickMultiplier++;
+        if (type === 'auto1') state.auto1Count++;
+        if (type === 'auto2') state.auto2Count++;
+        if (type === 'caffeine' && state.caffeineLevel < 5) state.caffeineLevel++;
+
+        playPokeSound('upgrade');
+        showNotification("🎉 Upgrade Purchased!", "Your poking stats have been elevated.", "info");
+
+        saveProgress();
+        updateUI();
+        checkAchievements();
+    }
+}
+
+// --- Game ticker ---
+let lastTick = Date.now();
+setInterval(() => {
+    const now = Date.now();
+    const delta = (now - lastTick) / 1000;
+    lastTick = now;
+
+    if (state.comboProgress > 0) {
+        const decayModifier = 1 - (state.caffeineLevel * 0.16);
+        const decayAmount = 14 * decayModifier * delta;
+        state.comboProgress = Math.max(0, state.comboProgress - decayAmount);
+        if (state.comboProgress > 80) state.currentCombo = 3.0;
+        else if (state.comboProgress > 50) state.currentCombo = 2.0;
+        else if (state.comboProgress > 20) state.currentCombo = 1.5;
+        else state.currentCombo = 1.0;
+    } else {
+        state.currentCombo = 1.0;
+    }
+
+    const totalAutoPPS = (state.auto1Count * 1) + (state.auto2Count * 5);
+    if (totalAutoPPS > 0) {
+        const probability = totalAutoPPS * delta;
+        if (Math.random() < probability) triggerPoke(false);
+    }
+
+    updateUIProgressOnly();
+}, 150);
+
+// --- Render ---
+function updateUI(){
+    elements.pokeCounter.innerText = state.totalPokes.toLocaleString();
+    elements.pokePoints.innerText = state.pokePoints.toLocaleString();
+
+    const costMult = getUpgradeCost(upgradeCosts.multiplier, state.clickMultiplier - 1);
+    const costA1 = getUpgradeCost(upgradeCosts.auto1, state.auto1Count);
+    const costA2 = getUpgradeCost(upgradeCosts.auto2, state.auto2Count);
+    const costCaff = getUpgradeCost(upgradeCosts.caffeine, state.caffeineLevel);
+
+    elements.costMultiplier.innerText = costMult.toLocaleString();
+    elements.costAuto1.innerText = costA1.toLocaleString();
+    elements.costAuto2.innerText = costA2.toLocaleString();
+    elements.costCaffeine.innerText = costCaff.toLocaleString();
+
+    elements.ownedMultiplier.innerText = state.clickMultiplier;
+    elements.ownedAuto1.innerText = state.auto1Count;
+    elements.ownedAuto2.innerText = state.auto2Count;
+    elements.ownedCaffeine.innerText = state.caffeineLevel;
+
+    elements.buyMultiplier.disabled = state.pokePoints < costMult;
+    elements.buyAuto1.disabled = state.pokePoints < costA1;
+    elements.buyAuto2.disabled = state.pokePoints < costA2;
+    elements.buyCaffeine.disabled = (state.pokePoints < costCaff) || (state.caffeineLevel >= 5);
+
+    if (state.caffeineLevel >= 5) {
+        elements.buyCaffeine.classList.add('maxed');
+        elements.buyCaffeine.innerHTML = `<span style="color:var(--success);font-weight:800;text-transform:uppercase;font-size:11px;">Max</span>`;
+    }
+
+    elements.statManual.innerText = state.manualPokes.toLocaleString();
+    elements.statAuto.innerText = state.autoPokes.toLocaleString();
+    elements.statMaxCombo.innerText = `${state.maxCombo.toFixed(1)}x`;
+    elements.statTotalCoins.innerText = state.statTotalCoins.toLocaleString();
+
+    const totalAutoPPS = (state.auto1Count * 1) + (state.auto2Count * 5);
+    elements.ppsVal.innerText = totalAutoPPS;
+}
+
+function updateUIProgressOnly(){
+    elements.comboProgress.style.width = `${state.comboProgress}%`;
+    elements.comboMultiplier.innerText = `${state.currentCombo.toFixed(1)}x`;
+
+    if (state.comboProgress > 80) {
+        elements.comboMultiplier.style.color = '#ff5f96';
+    } else if (state.comboProgress > 50) {
+        elements.comboMultiplier.style.color = '#ff8fb3';
+    } else {
+        elements.comboMultiplier.style.color = '#c9bdfa';
+    }
+
+    const costMult = getUpgradeCost(upgradeCosts.multiplier, state.clickMultiplier - 1);
+    const costA1 = getUpgradeCost(upgradeCosts.auto1, state.auto1Count);
+    const costA2 = getUpgradeCost(upgradeCosts.auto2, state.auto2Count);
+    const costCaff = getUpgradeCost(upgradeCosts.caffeine, state.caffeineLevel);
+
+    elements.buyMultiplier.disabled = state.pokePoints < costMult;
+    elements.buyAuto1.disabled = state.pokePoints < costA1;
+    elements.buyAuto2.disabled = state.pokePoints < costA2;
+    if (state.caffeineLevel < 5) elements.buyCaffeine.disabled = state.pokePoints < costCaff;
+}
+
+// --- Achievements ---
+function checkAchievements(){
+    let newlyUnlocked = false;
+    let totalUnlocked = 0;
+
+    if (!state.unlockedAchievements.firstContact && state.manualPokes >= 1) {
+        state.unlockedAchievements.firstContact = true; newlyUnlocked = true;
+    }
+    if (state.unlockedAchievements.firstContact) { unlockTrophyCard(elements.trophy1); totalUnlocked++; }
+
+    if (!state.unlockedAchievements.fastFingers && state.maxCombo >= 2.0) {
+        state.unlockedAchievements.fastFingers = true; newlyUnlocked = true;
+    }
+    if (state.unlockedAchievements.fastFingers) { unlockTrophyCard(elements.trophy2); totalUnlocked++; }
+
+    if (!state.unlockedAchievements.hundredClub && state.totalPokes >= 100) {
+        state.unlockedAchievements.hundredClub = true; newlyUnlocked = true;
+    }
+    if (state.unlockedAchievements.hundredClub) { unlockTrophyCard(elements.trophy3); totalUnlocked++; }
+
+    if (!state.unlockedAchievements.automationTycoon && (state.auto1Count + state.auto2Count) >= 5) {
+        state.unlockedAchievements.automationTycoon = true; newlyUnlocked = true;
+    }
+    if (state.unlockedAchievements.automationTycoon) { unlockTrophyCard(elements.trophy4); totalUnlocked++; }
+
+    if (newlyUnlocked) {
+        playPokeSound('trophy');
+        elements.badgeAlert.style.display = 'block';
+        showNotification("🏆 Milestone Unlocked!", "Check your Trophy list to review progress.", "success");
+    }
+
+    elements.achievementsUnlocked.innerText = `${totalUnlocked}/4 Unlocked`;
+}
+
+function unlockTrophyCard(cardElement){
+    cardElement.classList.add('unlocked');
+    const status = cardElement.querySelector('.trophy-status');
+    status.innerText = "Unlocked";
+}
+
+function showNotification(title, msg, type = "info"){
+    const toast = document.createElement('div');
+    toast.className = "toast";
+    const icon = type === 'success'
+        ? '<i class="fa-solid fa-circle-check" style="color:var(--success);"></i>'
+        : '<i class="fa-solid fa-circle-info" style="color:var(--violet);"></i>';
+    toast.innerHTML = `${icon}<div><div class="t-title">${title}</div><div class="t-msg">${msg}</div></div>`;
+    elements.notificationContainer.appendChild(toast);
+    requestAnimationFrame(() => toast.classList.add('show'));
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+
+// --- Tabs ---
+function selectTab(activeTabId, activeContentId){
+    const tabs = [elements.tabShop, elements.tabStats, elements.tabAchievements];
+    const contents = [elements.contentShop, elements.contentStats, elements.contentAchievements];
+
+    tabs.forEach(tab => tab.classList.toggle('active', tab.id === activeTabId));
+    contents.forEach(content => content.classList.toggle('hidden', content.id !== activeContentId));
+
+    if (activeTabId === 'tab-achievements') elements.badgeAlert.style.display = 'none';
+}
+
+elements.tabShop.addEventListener('click', () => selectTab('tab-shop', 'content-shop'));
+elements.tabStats.addEventListener('click', () => selectTab('tab-stats', 'content-stats'));
+elements.tabAchievements.addEventListener('click', () => selectTab('tab-achievements', 'content-achievements'));
+
+// --- Persistence ---
+function saveProgress(){
+    safeStorage.setItem('poke_joseph_save_v1', JSON.stringify(state));
+}
+
+function loadProgress(){
+    const rawSave = safeStorage.getItem('poke_joseph_save_v1');
+    if (rawSave) {
+        try {
+            const parsed = JSON.parse(rawSave);
+            const numericFields = ['totalPokes','pokePoints','manualPokes','autoPokes','maxCombo','statTotalCoins',
+                                    'clickMultiplier','auto1Count','auto2Count','caffeineLevel'];
+            numericFields.forEach(f => { if (parsed[f] !== undefined) state[f] = parsed[f]; });
+
+            if (parsed.sfxEnabled !== undefined) state.sfxEnabled = parsed.sfxEnabled;
+            if (parsed.shakeEnabled !== undefined) state.shakeEnabled = parsed.shakeEnabled;
+            if (parsed.unlockedAchievements !== undefined) state.unlockedAchievements = parsed.unlockedAchievements;
+        } catch(e) {
+            console.error("Save file corrupted, loading defaults.", e);
+        }
+    }
+
+    updateSettingsToggles();
+    updateUI();
+    checkAchievements();
+}
+
+function updateSettingsToggles(){
+    if (state.sfxEnabled) {
+        elements.toggleSfx.innerHTML = `<i class="fa-solid fa-volume-high"></i> SFX On`;
+    } else {
+        elements.toggleSfx.innerHTML = `<i class="fa-solid fa-volume-xmark"></i> SFX Off`;
+    }
+    if (state.shakeEnabled) {
+        elements.toggleShake.innerHTML = `<i class="fa-solid fa-mobile-retro"></i> Shake On`;
+    } else {
+        elements.toggleShake.innerHTML = `<i class="fa-solid fa-mobile-retro"></i> Shake Off`;
+    }
+}
+
+// --- Reset modal ---
+function showResetModal(){ elements.confirmModal.classList.add('show'); }
+function hideResetModal(){ elements.confirmModal.classList.remove('show'); }
+
+elements.resetGame.addEventListener('click', showResetModal);
+elements.modalCancel.addEventListener('click', hideResetModal);
+elements.modalConfirm.addEventListener('click', () => {
+    safeStorage.removeItem('poke_joseph_save_v1');
+    location.reload();
+});
+elements.confirmModal.addEventListener('click', (e) => {
+    if (e.target === elements.confirmModal) hideResetModal();
+});
+
+// --- Settings ---
+elements.toggleSfx.addEventListener('click', () => {
+    state.sfxEnabled = !state.sfxEnabled;
+    updateSettingsToggles();
+    saveProgress();
+});
+elements.toggleShake.addEventListener('click', () => {
+    state.shakeEnabled = !state.shakeEnabled;
+    updateSettingsToggles();
+    saveProgress();
+});
+
+// --- Shop buttons ---
+elements.buyMultiplier.addEventListener('click', () => buyUpgrade('multiplier'));
+elements.buyAuto1.addEventListener('click', () => buyUpgrade('auto1'));
+elements.buyAuto2.addEventListener('click', () => buyUpgrade('auto2'));
+elements.buyCaffeine.addEventListener('click', () => buyUpgrade('caffeine'));
+
+// --- Poke input (click, touch, keyboard) ---
+elements.josephGroup.addEventListener('click', (e) => triggerPoke(true, e));
+elements.josephGroup.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    triggerPoke(true, e.touches[0]);
+}, { passive: false });
+elements.josephGroup.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        triggerPoke(true, null);
+    }
+});
+
+window.onload = function(){ loadProgress(); };
+</script>
+</body>
+</html>
