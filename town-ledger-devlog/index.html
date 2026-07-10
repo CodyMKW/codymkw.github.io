@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Town Ledger — devlog</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --forest:#1b3a2b;
+    --forest-deep:#122a1f;
+    --cork:#c69a5f;
+    --cork-deep:#a9803f;
+    --parchment:#fbf1dc;
+    --parchment-dim:#f2e6c9;
+    --bark:#5c3b22;
+    --bark-soft:#8a6236;
+    --gold:#efb13b;
+    --gold-deep:#d99420;
+    --leaf:#4f8f5b;
+    --leaf-deep:#3a6d44;
+    --danger:#c0503c;
+    --ink:#2c2115;
+    --pin-red:#c0392b;
+    --pin-blue:#2f6690;
+    --pin-yellow:#e0a52c;
+    --pin-green:#4f8f5b;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:
+      repeating-linear-gradient(90deg, rgba(0,0,0,0.05) 0px, rgba(0,0,0,0.05) 1px, transparent 1px, transparent 90px),
+      repeating-linear-gradient(0deg, rgba(0,0,0,0.05) 0px, rgba(0,0,0,0.05) 1px, transparent 1px, transparent 90px),
+      radial-gradient(circle at 20% 0%, #d4ab72 0%, transparent 45%),
+      radial-gradient(circle at 85% 90%, #b98a4d 0%, transparent 50%),
+      var(--cork);
+    color:var(--ink);
+    font-family:'Nunito', sans-serif;
+    min-height:100vh;
+  }
+
+  .wrap{max-width:900px;margin:0 auto;padding:40px 18px 100px;}
+
+  /* ---- Header / masthead ---- */
+  .masthead{
+    position:relative;
+    text-align:center;
+    padding:30px 20px 26px;
+    margin-bottom:34px;
+  }
+  .pin{
+    position:absolute;
+    width:20px;height:20px;
+    border-radius:50%;
+    top:6px;
+    box-shadow:0 3px 5px rgba(0,0,0,0.4), inset 0 -3px 4px rgba(0,0,0,0.25), inset 0 2px 2px rgba(255,255,255,0.4);
+  }
+  .masthead .pin{left:50%;transform:translateX(-50%);background:var(--pin-red);}
+  .eyebrow-tag{
+    display:inline-block;
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    color:var(--parchment);
+    background:var(--forest-deep);
+    padding:5px 14px;
+    border-radius:999px;
+    margin-bottom:14px;
+    border:1px solid rgba(255,255,255,0.15);
+  }
+  .masthead h1{
+    font-family:'Fredoka', sans-serif;
+    font-size:52px;
+    margin:0 0 8px;
+    color:var(--forest-deep);
+    text-shadow:0 2px 0 rgba(255,255,255,0.25);
+    line-height:1;
+  }
+  .masthead .tagline{
+    font-family:'Caveat', cursive;
+    font-size:26px;
+    font-weight:700;
+    color:var(--bark);
+    margin:0;
+  }
+  .masthead .byline{
+    margin:14px 0 0;
+    font-size:13.5px;
+    font-weight:700;
+    color:var(--bark-soft);
+    font-family:'JetBrains Mono', monospace;
+  }
+
+  /* ---- Note cards (the corkboard signature) ---- */
+  .note{
+    position:relative;
+    background:var(--parchment);
+    border-radius:4px;
+    padding:26px 28px;
+    margin:0 auto 46px;
+    box-shadow:0 10px 24px rgba(0,0,0,0.28), 0 2px 0 rgba(255,255,255,0.15) inset;
+    max-width:820px;
+  }
+  .note::before{ /* torn-tape corner accents, subtle */
+    content:"";
+  }
+  .note .pin{top:-14px;}
+  .note.rot-l{transform:rotate(-0.6deg);}
+  .note.rot-r{transform:rotate(0.6deg);}
+  .note.rot-l2{transform:rotate(-1.1deg);}
+  .note.rot-r2{transform:rotate(0.9deg);}
+
+  .note h2{
+    font-family:'Fredoka', sans-serif;
+    font-size:26px;
+    color:var(--bark);
+    margin:6px 0 4px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .note .sub{
+    font-family:'Caveat', cursive;
+    font-size:19px;
+    font-weight:700;
+    color:var(--leaf-deep);
+    margin:0 0 16px;
+  }
+  .note p{
+    line-height:1.65;
+    font-size:15.5px;
+    margin:0 0 14px;
+  }
+  .note p:last-child{margin-bottom:0;}
+  .note strong{color:var(--bark);}
+  .note code{
+    font-family:'JetBrains Mono',monospace;
+    background:var(--parchment-dim);
+    padding:1px 6px;
+    border-radius:5px;
+    font-size:.92em;
+    color:var(--leaf-deep);
+    font-weight:600;
+  }
+  .note a{color:var(--leaf-deep);font-weight:700;text-decoration-thickness:2px;}
+  .note ul{margin:0 0 14px;padding-left:22px;line-height:1.65;font-size:15.5px;}
+  .note li{margin-bottom:6px;}
+  .note li:last-child{margin-bottom:0;}
+
+  /* small polaroid-style tab chip used in the "tabs at a glance" note */
+  .tab-chip{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    background:var(--parchment-dim);
+    border:2px solid var(--bark-soft);
+    border-radius:10px;
+    padding:6px 12px;
+    font-family:'Fredoka',sans-serif;
+    font-weight:600;
+    font-size:14px;
+    color:var(--bark);
+    margin:4px 6px 4px 0;
+  }
+
+  .callout{
+    background:#fff8e6;
+    border-left:4px solid var(--gold-deep);
+    border-radius:6px;
+    padding:12px 16px;
+    font-size:14.5px;
+    line-height:1.6;
+    margin:14px 0;
+  }
+  .callout.warn{
+    background:#fdecea;
+    border-left-color:var(--danger);
+  }
+  .callout.fun{
+    background:#eef7ee;
+    border-left-color:var(--leaf);
+  }
+  .callout b{display:block;font-family:'Fredoka',sans-serif;font-size:14px;margin-bottom:4px;}
+  .callout.warn b{color:var(--danger);}
+  .callout.fun b{color:var(--leaf-deep);}
+  .callout:not(.warn):not(.fun) b{color:var(--gold-deep);}
+
+  /* fact strip / stat cards */
+  .facts{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(130px,1fr));
+    gap:12px;
+    margin:16px 0 6px;
+  }
+  .fact{
+    background:var(--parchment-dim);
+    border-radius:10px;
+    padding:12px 14px;
+    text-align:center;
+  }
+  .fact .num{
+    font-family:'Fredoka',sans-serif;
+    font-size:24px;
+    color:var(--leaf-deep);
+    font-weight:700;
+    line-height:1;
+  }
+  .fact .label{
+    font-size:11px;
+    font-weight:800;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+    color:var(--bark-soft);
+    margin-top:4px;
+  }
+
+  /* timeline / patch log */
+  .log{list-style:none;margin:0;padding:0;}
+  .log li{
+    position:relative;
+    padding:4px 0 18px 26px;
+    border-left:2px solid var(--parchment-dim);
+    margin-left:6px;
+  }
+  .log li:last-child{border-left-color:transparent;padding-bottom:0;}
+  .log li::before{
+    content:"";
+    position:absolute;
+    left:-7px;top:6px;
+    width:12px;height:12px;
+    border-radius:50%;
+    background:var(--gold-deep);
+    border:2px solid var(--parchment);
+  }
+  .log .tag{
+    display:inline-block;
+    font-family:'JetBrains Mono',monospace;
+    font-size:10.5px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    padding:2px 8px;
+    border-radius:5px;
+    margin-right:8px;
+    vertical-align:middle;
+  }
+  .tag.new{background:#e4f3e4;color:var(--leaf-deep);}
+  .tag.fix{background:#fdecea;color:#a13c2b;}
+  .tag.tweak{background:#fff3d9;color:var(--gold-deep);}
+  .log .entry-title{font-family:'Fredoka',sans-serif;font-weight:600;font-size:15.5px;color:var(--bark);}
+  .log p{margin:6px 0 0;font-size:14.5px;}
+
+  /* faq accordion, lightweight */
+  details.faq{
+    background:var(--parchment-dim);
+    border-radius:10px;
+    padding:12px 16px;
+    margin-bottom:10px;
+  }
+  details.faq summary{
+    cursor:pointer;
+    font-family:'Fredoka',sans-serif;
+    font-weight:600;
+    font-size:15px;
+    color:var(--bark);
+    list-style:none;
+  }
+  details.faq summary::-webkit-details-marker{display:none;}
+  details.faq summary::before{content:"▸ ";color:var(--leaf-deep);}
+  details.faq[open] summary::before{content:"▾ ";}
+  details.faq p{margin:8px 0 0;font-size:14.5px;line-height:1.6;}
+
+  /* signature: a little washi-tape footer strip */
+  footer{
+    text-align:center;
+    padding:30px 20px 10px;
+  }
+  footer .tape{
+    display:inline-block;
+    background:var(--gold);
+    color:#3a2503;
+    font-family:'Fredoka',sans-serif;
+    font-weight:600;
+    font-size:14px;
+    padding:8px 22px;
+    border-radius:3px;
+    transform:rotate(-1.2deg);
+    box-shadow:0 4px 10px rgba(0,0,0,0.25);
+    margin-bottom:10px;
+  }
+  footer p{
+    color:#3a2a16;
+    font-size:13px;
+    font-weight:700;
+    margin:6px 0;
+  }
+  footer a{color:var(--forest-deep);}
+
+  .btn-link{
+    display:inline-block;
+    font-family:'Fredoka',sans-serif;
+    font-weight:600;
+    font-size:14.5px;
+    background:linear-gradient(180deg, var(--gold) 0%, var(--gold-deep) 100%);
+    color:#3a2503;
+    padding:9px 18px;
+    border-radius:9px;
+    text-decoration:none;
+    border:2px solid #a86a12;
+    box-shadow:0 3px 0 #a86a12;
+    margin-top:6px;
+  }
+
+  @media (max-width:600px){
+    .masthead h1{font-size:36px;}
+    .note{padding:20px 18px;}
+    .wrap{padding:24px 12px 80px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="masthead">
+    <div class="pin"></div>
+    <span class="eyebrow-tag">🗞 Devlog · not an official Nintendo thing lol</span>
+    <h1>Town Ledger</h1>
+    <p class="tagline">so I built a save editor for a 20+ year old GameCube game, here's the whole saga</p>
+    <p class="byline">by CodyMKW · pinned to the community board</p>
+  </div>
+
+  <!-- INTRO -->
+  <div class="note rot-l">
+    <div class="pin" style="background:var(--pin-blue);"></div>
+    <h2>🌳 okay so what even is this</h2>
+    <p class="sub">the elevator pitch, minus the elevator</p>
+    <p>
+      <strong>Town Ledger</strong> is a browser-based save editor for <strong>Animal Crossing</strong> on the GameCube —
+      specifically built to also play nice with the <strong>Deluxe mod</strong> by Cuyler36. You drag your
+      <code>.gci</code> save file in, it reads out your player, your town, your villagers, all of it, you tweak
+      whatever you want, and it spits back a save file you can drop right back onto your memory card or Dolphin.
+    </p>
+    <p>
+      No installs, no plugins, nothing gets uploaded anywhere — it's a single HTML file that runs entirely in your
+      browser. Open it, drop a save in, and go.
+    </p>
+    <div class="facts">
+      <div class="fact"><div class="num">3</div><div class="label">Tabs</div></div>
+      <div class="fact"><div class="num">1,976</div><div class="label">Known items</div></div>
+      <div class="fact"><div class="num">~237</div><div class="label">Villager species</div></div>
+      <div class="fact"><div class="num">0</div><div class="label">Uploads to a server</div></div>
+    </div>
+  </div>
+
+  <!-- WHY -->
+  <div class="note rot-r">
+    <div class="pin" style="background:var(--pin-yellow);"></div>
+    <h2>🤔 why does this exist</h2>
+    <p>
+      Honestly? I already had a whole pile of GameCube-era save editors going (Breath of the Wild, Splatoon,
+      Tomodachi Life, Mario Kart Arcade GP...) and Animal Crossing was the obvious next one to tackle. But the
+      twist here is I don't just play the base game — I run the <strong>Deluxe</strong> mod, so I wanted something
+      that wouldn't choke on a modded save, and that I could keep expanding as I figured more stuff out.
+    </p>
+    <p>
+      Every single offset in here — where your bells live, where your name is stored, how the checksum gets
+      calculated, all of it — got pulled from actually cracking open a real save file byte by byte and cross-checking
+      it against <strong>ACSE</strong> (Cuyler36's own editor, built off the game's decompilation). Nothing in the
+      "safe" parts of this tool is a guess. If I couldn't verify something, I said so instead of pretending.
+    </p>
+  </div>
+
+  <!-- HOW TO USE -->
+  <div class="note rot-l2">
+    <div class="pin" style="background:var(--pin-green);"></div>
+    <h2>🧭 how to actually use it</h2>
+    <p class="sub">three steps, zero technical knowledge required</p>
+    <ul>
+      <li><strong>Get your save file off your memory card.</strong> If you're on real hardware, you'll need a way
+      to pull the <code>.gci</code> off (GCMM, a homebrew save manager, etc). If you're on Dolphin, it's sitting
+      in your GCI folder already.</li>
+      <li><strong>Drop it into the editor.</strong> Drag-and-drop onto the page, or click to browse. It'll tell you
+      immediately if the file isn't a real GAFE/GAFP/GAFU save — no silent failures.</li>
+      <li><strong>Edit stuff, then hit download.</strong> The checksum gets recalculated automatically and both
+      save copies inside the file get kept in sync, exactly like the game does on its own. Just drop the new file
+      back where the old one was.</li>
+    </ul>
+    <div class="callout warn">
+      <b>seriously though, back up your original save first</b>
+      This should go without saying but I'm saying it: keep a copy of your save before you start messing with it.
+      I've tested this thing pretty hard against my own real save data, but "pretty hard tested" and "bulletproof"
+      aren't the same thing, and it's your town.
+    </div>
+  </div>
+
+  <!-- TABS AT A GLANCE -->
+  <div class="note rot-r2">
+    <div class="pin" style="background:var(--pin-red);"></div>
+    <h2>📑 what's on each tab</h2>
+    <p class="sub">the guided tour</p>
+
+    <p><span class="tab-chip">🙂 Player</span> one of these per resident found in your save.</p>
+    <ul>
+      <li><strong>Profile</strong> — name, gender, face, birthday. Names use the actual in-game AC character set
+      (matched against a 256-entry table), so accented characters and symbols the game supports will render right.</li>
+      <li><strong>Mr. Resetti</strong> — your reset counter. Zero it out if he's been giving you an earful.</li>
+      <li><strong>Wallet</strong> — bells on hand, your loan to Tom Nook, and your post office savings (these are
+      three separate values, learned that one the hard way after a real in-game test).</li>
+      <li><strong>Equipped &amp; wallpaper</strong> — held item, shirt, and your Pockets menu's background design.</li>
+      <li><strong>Pockets</strong> — all 15 inventory slots, searchable by item name instead of raw hex.</li>
+    </ul>
+
+    <p><span class="tab-chip">🏘 Town</span> the town-level stuff.</p>
+    <ul>
+      <li>Town name (syncs across every player and villager record automatically on download)</li>
+      <li>Weather — heads up, this doesn't force what you visually see when you load in, but setting it to Rain
+      does mark your flowers as watered/sparkling, so it doubles as an accidental "water all flowers" button lol</li>
+      <li>Train station design — 15 looks, Wooden/Metal/Brick in five variants each</li>
+      <li>🌿 <strong>Remove all weeds</strong> — scans all 30 acres and clears them out in one click</li>
+      <li>🧽 <strong>Clean up stale name copies</strong> — fixes a weird undocumented leftover field that can hang
+      onto an old, mistyped version of your name even after you've fixed it properly elsewhere</li>
+    </ul>
+
+    <p><span class="tab-chip">🐾 Villagers</span> your 15 resident lots.</p>
+    <ul>
+      <li>Swap species (searchable, ~237 base-game villagers), personality, catchphrase, and shirt</li>
+      <li>Empty lots show as empty — moving someone <em>in</em> isn't supported, that needs real house placement
+      this tool doesn't set up</li>
+    </ul>
+  </div>
+
+  <!-- ITEM DATABASE -->
+  <div class="note rot-l">
+    <div class="pin" style="background:var(--pin-blue);"></div>
+    <h2>🔍 the item search thing</h2>
+    <p>
+      Every item field — held item, shirt, wallpaper, all 15 pockets, villager shirts — is a live searchable box
+      instead of a raw hex field. Type a name, or the hex ID itself, and pick from the dropdown.
+    </p>
+    <p>
+      The database started at about 2,300 items from one community list, then got swapped for a bigger ~3,000-entry
+      one, then had roughly 1,100 unsafe entries (terrain objects, buildings, corrupt/warp-zone stuff — things that
+      have no business sitting in a pocket) manually stripped back out. What's left is <strong>1,976</strong> items
+      that are actually safe to carry around.
+    </p>
+    <div class="callout">
+      <b>found a wrong ID?</b>
+      The list isn't 100% perfect — if the editor shows the wrong item name for something in your save, message me
+      on <a href="https://bsky.app/profile/codymkw.nekoweb.org" target="_blank" rel="noopener">Bluesky</a> and tell
+      me what it actually is in-game. I'll fix the entry.
+    </div>
+  </div>
+
+  <!-- WHAT'S NOT IN HERE / DELUXE -->
+  <div class="note rot-r">
+    <div class="pin" style="background:var(--pin-yellow);"></div>
+    <h2>🚫 what's deliberately left out</h2>
+    <p class="sub">not laziness, just not willing to guess with your save file</p>
+    <p>
+      Deluxe adds real features on top of the base game — town ordinances, extra villagers, probably more I don't
+      even know about — but Deluxe isn't open source, so there's no reference material to check any of that
+      against. Everything else in this editor got cross-verified against the game's actual decompilation before it
+      shipped; Deluxe's additions can't be, so most of it stays out entirely rather than me inventing an offset and
+      hoping.
+    </p>
+    <p>Also skipped, for similar reasons:</p>
+    <ul>
+      <li><strong>Watering flowers directly</strong> — even the reference tooling this whole editor is built on
+      top of doesn't implement this for the GameCube version, only later games. The Rain-weather trick above gets
+      you most of the way there anyway.</li>
+      <li><strong>Native fruit</strong> — the byte where this should live doesn't match the documented format at
+      all in Deluxe saves, which suggests something got shifted around. Not touching it blind.</li>
+      <li><strong>Moving villagers in/out of lots</strong> — needs real house coordinate setup, out of scope.</li>
+    </ul>
+    <div class="callout warn">
+      <b>known quirk: villager species swaps</b>
+      Swapping who lives in a lot works great outdoors — they'll walk around town totally normally — but there are
+      reports of the new resident getting stuck at their own front door and not actually going inside. House
+      interior data for villagers isn't documented anywhere I could find, so I genuinely don't know what's causing
+      it yet. Treat species swaps as an outdoor-appearance thing for now.
+    </div>
+  </div>
+
+  <!-- HOW STUFF GOT VERIFIED / TRUST -->
+  <div class="note rot-l2">
+    <div class="pin" style="background:var(--pin-green);"></div>
+    <h2>🔬 the "how do I know this actually works" section</h2>
+    <p>
+      A few of the trickier fields in this editor didn't come from a reference doc at all — they came from actual
+      before/after testing against a real save. A couple of favorites:
+    </p>
+    <ul>
+      <li>The <strong>post office savings</strong> field was originally at the wrong offset entirely. Found the real
+      one by depositing exactly 50,000 bells in-game, re-exporting the save, and searching the whole file for that
+      exact number. Found it 12 bytes later than the earlier guess.</li>
+      <li>The <strong>stale name field</strong> got found the same way — noticed a leftover space-prefixed copy of
+      a name floating around in an undocumented spot inside villager records, confirmed it existed in both occupied
+      <em>and</em> completely empty lots (a sign it's leftover junk, not something the game actively reads), and
+      built a cleanup tool that only touches it when it's a confident match.</li>
+    </ul>
+    <p>Basically: wherever a public reference existed, it got checked against that. Wherever it didn't, it got
+    checked against reality instead of guessed at.</p>
+  </div>
+
+  <!-- PATCH LOG -->
+  <div class="note rot-r2">
+    <div class="pin" style="background:var(--pin-red);"></div>
+    <h2>🗒 patch log</h2>
+    <p class="sub">roughly the order this all happened in</p>
+    <ul class="log">
+      <li>
+        <span class="tag new">new</span><span class="entry-title">Core editor launches</span>
+        <p>Player profile, wallet, equipped items, pockets, town name — built and checksum-verified against a real save from day one.</p>
+      </li>
+      <li>
+        <span class="tag new">new</span><span class="entry-title">Item name search</span>
+        <p>Replaced raw hex fields with a searchable name picker once a community item ID list came in — later upgraded to a bigger list, then cleaned up.</p>
+      </li>
+      <li>
+        <span class="tag fix">fix</span><span class="entry-title">Item picker on mobile</span>
+        <p>The native dropdown wasn't showing up on iOS Safari — rebuilt as a custom suggestion list that works everywhere.</p>
+      </li>
+      <li>
+        <span class="tag new">new</span><span class="entry-title">Town utilities</span>
+        <p>Weather, remove-all-weeds, and (later) train station design added to the Town tab.</p>
+      </li>
+      <li>
+        <span class="tag tweak">tweak</span><span class="entry-title">Experimental tab, added then removed</span>
+        <p>Briefly had a raw hex explorer for poking at undocumented Deluxe data. Decided it wasn't worth the risk and pulled it.</p>
+      </li>
+      <li>
+        <span class="tag fix">fix</span><span class="entry-title">Post office savings offset corrected</span>
+        <p>Was pointed at the wrong bytes entirely — fixed after a real in-game deposit test pinpointed the actual field.</p>
+      </li>
+      <li>
+        <span class="tag new">new</span><span class="entry-title">Villager manager</span>
+        <p>Species, personality, catchphrase, and shirt for all 15 lots — with Deluxe's added villagers left alone and clearly marked "Unknown."</p>
+      </li>
+      <li>
+        <span class="tag fix">fix</span><span class="entry-title">Stale name field cleanup</span>
+        <p>Found and fixed a leftover, undocumented copy of a player's name hiding in villager records.</p>
+      </li>
+      <li>
+        <span class="tag tweak">tweak</span><span class="entry-title">Item list trimmed</span>
+        <p>~1,100 unsafe entries (terrain, buildings, corrupted stuff) manually removed from the item picker.</p>
+      </li>
+    </ul>
+  </div>
+
+  <!-- FAQ -->
+  <div class="note rot-l">
+    <div class="pin" style="background:var(--pin-blue);"></div>
+    <h2>❓ quick questions</h2>
+    <details class="faq">
+      <summary>Does this work with an unmodded save?</summary>
+      <p>Yep — Deluxe support was the whole reason it got built, but a totally vanilla AC:GCN save works exactly the same way.</p>
+    </details>
+    <details class="faq">
+      <summary>Is my save file uploaded anywhere?</summary>
+      <p>No. Everything happens locally in your browser. Nothing gets sent to a server.</p>
+    </details>
+    <details class="faq">
+      <summary>Will this work on real GameCube hardware, or just Dolphin?</summary>
+      <p>Both — it's just editing the standard <code>.gci</code> save format, so as long as you can get the file on and off your memory card, it doesn't matter how you're playing.</p>
+    </details>
+    <details class="faq">
+      <summary>An item shows the wrong name, what do I do?</summary>
+      <p>Message me on <a href="https://bsky.app/profile/codymkw.nekoweb.org" target="_blank" rel="noopener">Bluesky</a> with the ID and what it actually is, and I'll get it corrected.</p>
+    </details>
+    <details class="faq">
+      <summary>Will Deluxe-specific features ever get added?</summary>
+      <p>Maybe, if I can find a reliable way to verify offsets for them — most likely through careful before/after save comparisons, the same way a couple of the trickier base-game fields got nailed down.</p>
+    </details>
+  </div>
+
+  <footer>
+    <div class="tape">that's the whole story, thanks for reading 🍃</div>
+    <p>built by CodyMKW · say hi on <a href="https://bsky.app/profile/codymkw.nekoweb.org" target="_blank" rel="noopener">Bluesky</a></p>
+  </footer>
+
+</div>
+</body>
+</html>
