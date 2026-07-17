@@ -1,0 +1,1273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Town Ledger — Animal Crossing (GCN) Save Editor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --forest:#1b3a2b;
+    --forest-deep:#122a1f;
+    --parchment:#fbf1dc;
+    --parchment-dim:#f2e6c9;
+    --bark:#5c3b22;
+    --bark-soft:#8a6236;
+    --gold:#efb13b;
+    --gold-deep:#d99420;
+    --sky:#6fb8d2;
+    --leaf:#4f8f5b;
+    --leaf-deep:#3a6d44;
+    --danger:#c0503c;
+    --ink:#2c2115;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(circle at 15% 10%, rgba(255,255,255,0.05), transparent 40%),
+      linear-gradient(180deg, var(--forest) 0%, var(--forest-deep) 100%);
+    color:var(--ink);
+    font-family:'Nunito', sans-serif;
+    min-height:100vh;
+    padding:32px 16px 80px;
+  }
+  .wrap{max-width:940px;margin:0 auto;}
+
+  /* ---- Sign header ---- */
+  .sign{
+    position:relative;
+    background:
+      linear-gradient(180deg, var(--parchment) 0%, var(--parchment-dim) 100%);
+    border:3px solid var(--bark);
+    border-radius:18px;
+    padding:26px 30px 22px;
+    box-shadow: 0 14px 0 -6px rgba(0,0,0,0.25), 0 18px 30px rgba(0,0,0,0.35);
+    margin-bottom:26px;
+  }
+  .sign::before, .sign::after{
+    content:"";
+    position:absolute;
+    top:-22px;
+    width:14px;height:28px;
+    background:var(--bark-soft);
+    border:2px solid var(--bark);
+    border-radius:3px;
+  }
+  .sign::before{left:60px;transform:rotate(-8deg);}
+  .sign::after{right:60px;transform:rotate(8deg);}
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--leaf-deep);
+    font-weight:600;
+    margin:0 0 6px;
+  }
+  h1{
+    font-family:'Fredoka', sans-serif;
+    font-size:34px;
+    margin:0 0 4px;
+    color:var(--bark);
+    line-height:1.1;
+  }
+  .sign p.sub{
+    margin:0;
+    color:#6b5a3e;
+    font-size:15px;
+    font-weight:600;
+  }
+  .sign p.sub b{color:var(--leaf-deep);}
+
+  /* ---- Drop zone ---- */
+  .dropzone{
+    background:var(--parchment);
+    border:3px dashed var(--bark-soft);
+    border-radius:16px;
+    padding:48px 20px;
+    text-align:center;
+    cursor:pointer;
+    transition:.15s ease;
+  }
+  .dropzone:hover, .dropzone.drag{
+    border-color:var(--gold-deep);
+    background:#fff8e6;
+    transform:translateY(-2px);
+  }
+  .dropzone .icon{font-size:42px;display:block;margin-bottom:10px;}
+  .dropzone h3{font-family:'Fredoka',sans-serif;margin:0 0 6px;color:var(--bark);font-size:20px;}
+  .dropzone p{margin:0;color:#7a6a4d;font-size:14px;font-weight:600;}
+  .dropzone input{display:none;}
+
+  .error-box{
+    background:#fdecea;
+    border:2px solid var(--danger);
+    color:#7a2d1f;
+    border-radius:12px;
+    padding:14px 18px;
+    font-weight:700;
+    margin-top:16px;
+    display:none;
+  }
+
+  /* ---- Tabs ---- */
+  #editor{display:none;}
+  .tabbar{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+    margin-bottom:-3px;
+    position:relative;
+    z-index:1;
+  }
+  .tab-btn{
+    font-family:'Fredoka',sans-serif;
+    font-size:15px;
+    padding:10px 18px;
+    border-radius:12px 12px 0 0;
+    border:3px solid var(--bark);
+    border-bottom:none;
+    background:var(--parchment-dim);
+    color:var(--bark);
+    cursor:pointer;
+    font-weight:600;
+    opacity:.7;
+    transform:translateY(4px);
+    transition:.12s ease;
+  }
+  .tab-btn.active{
+    background:var(--parchment);
+    opacity:1;
+    transform:translateY(0);
+    box-shadow:0 -2px 10px rgba(0,0,0,.08);
+  }
+  .tab-btn:hover{opacity:1;}
+
+  .warn-banner{
+    background:#3a2210;
+    color:#ffe3bd;
+    border:2px solid #c9701f;
+    border-radius:12px;
+    padding:14px 18px;
+    font-size:13.5px;
+    font-weight:600;
+    line-height:1.55;
+    margin-bottom:18px;
+  }
+  .warn-banner b{color:#ffb85c;}
+
+  .panel{
+    display:none;
+    background:var(--parchment);
+    border:3px solid var(--bark);
+    border-radius:0 14px 14px 14px;
+    padding:26px;
+  }
+  .panel.active{display:block;}
+
+  .card{
+    background:#fffdf6;
+    border:2px solid var(--parchment-dim);
+    border-radius:12px;
+    padding:18px 20px;
+    margin-bottom:18px;
+  }
+  .card h4{
+    font-family:'Fredoka',sans-serif;
+    margin:0 0 14px;
+    font-size:16px;
+    color:var(--leaf-deep);
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+    gap:14px;
+  }
+  label{
+    display:block;
+    font-size:12px;
+    font-weight:800;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    color:var(--bark-soft);
+    margin-bottom:5px;
+  }
+  input[type=text], input[type=number], select{
+    width:100%;
+    padding:9px 10px;
+    border-radius:8px;
+    border:2px solid #e2d5b3;
+    background:#fff;
+    font-family:'Nunito',sans-serif;
+    font-size:14px;
+    font-weight:700;
+    color:var(--ink);
+  }
+  input.mono, .mono{font-family:'JetBrains Mono',monospace;}
+  input:focus, select:focus{outline:none;border-color:var(--gold-deep);}
+  .hint{font-size:11.5px;color:#8a7a5c;font-weight:600;margin-top:4px;}
+  .warn-text{color:var(--danger);}
+
+  .pockets-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(120px,1fr));
+    gap:10px;
+  }
+  .pocket-slot label{margin-bottom:3px;}
+
+  .item-picker{position:relative;}
+  .item-suggest{
+    display:none;
+    position:absolute;
+    top:100%;left:0;right:0;
+    margin-top:2px;
+    background:#fffdf6;
+    border:2px solid var(--gold-deep);
+    border-radius:10px;
+    max-height:230px;
+    overflow-y:auto;
+    z-index:30;
+    box-shadow:0 10px 22px rgba(0,0,0,.22);
+  }
+  .item-suggest.show{display:block;}
+  .item-suggest .row{
+    padding:9px 12px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:12.5px;
+    font-weight:700;
+    color:var(--ink);
+    cursor:pointer;
+    border-bottom:1px solid #eee0bd;
+  }
+  .item-suggest .row:last-child{border-bottom:none;}
+  .item-suggest .row:hover{background:var(--gold);color:#3a2503;}
+  .item-suggest .empty{
+    padding:10px 12px;
+    font-size:12px;
+    font-weight:600;
+    font-style:italic;
+    color:#8a7a5c;
+  }
+
+  /* ---- footer action bar ---- */
+  .actionbar{
+    position:sticky;
+    bottom:14px;
+    margin-top:22px;
+    background:var(--bark);
+    border-radius:14px;
+    padding:14px 18px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:14px;
+    flex-wrap:wrap;
+    box-shadow:0 10px 26px rgba(0,0,0,0.4);
+  }
+  .status{
+    color:#f1e6cc;
+    font-size:13px;
+    font-weight:700;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .dot{width:9px;height:9px;border-radius:50%;background:var(--leaf);display:inline-block;}
+  .dot.bad{background:var(--danger);}
+  button.primary{
+    font-family:'Fredoka',sans-serif;
+    background:linear-gradient(180deg, var(--gold) 0%, var(--gold-deep) 100%);
+    border:2px solid #a86a12;
+    color:#3a2503;
+    font-size:16px;
+    font-weight:600;
+    padding:12px 26px;
+    border-radius:10px;
+    cursor:pointer;
+    box-shadow:0 3px 0 #a86a12;
+  }
+  button.primary:active{transform:translateY(2px);box-shadow:0 1px 0 #a86a12;}
+  button.ghost{
+    background:transparent;
+    border:2px solid #8a7a5c;
+    color:#f1e6cc;
+    font-family:'Nunito',sans-serif;
+    font-weight:700;
+    padding:10px 16px;
+    border-radius:10px;
+    cursor:pointer;
+    font-size:13px;
+  }
+
+  details.notes{
+    margin-top:16px;
+    background:rgba(255,255,255,0.06);
+    border-radius:10px;
+    padding:10px 14px;
+    color:#e7dcc0;
+    font-size:13px;
+  }
+  details.notes summary{cursor:pointer;font-weight:700;color:var(--gold);}
+  details.notes p{line-height:1.5;}
+
+  .toast{
+    position:fixed;
+    top:20px;left:50%;
+    transform:translateX(-50%) translateY(-20px);
+    background:var(--leaf-deep);
+    color:#fff;
+    padding:12px 22px;
+    border-radius:10px;
+    font-weight:700;
+    box-shadow:0 8px 20px rgba(0,0,0,.3);
+    opacity:0;
+    transition:.25s ease;
+    pointer-events:none;
+    z-index:50;
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+  @media (max-width:600px){
+    h1{font-size:26px;}
+    .panel{padding:18px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="sign">
+    <p class="eyebrow">GameCube · GAFE01 · Deluxe-compatible</p>
+    <h1>Town Ledger</h1>
+    <p class="sub" id="signSub">A save editor for <b>Animal Crossing (GameCube)</b>, including saves patched with the <b>Deluxe</b> mod.</p>
+  </div>
+
+  <div id="loadStage">
+    <div class="dropzone" id="dropzone">
+      <span class="icon">🌳</span>
+      <h3>Drop your .gci save file here</h3>
+      <p>or click to browse — nothing leaves your browser</p>
+      <input type="file" id="fileInput" accept=".gci,.raw,.bin">
+    </div>
+    <div class="error-box" id="errorBox"></div>
+  </div>
+
+  <div id="editor">
+    <div class="tabbar" id="tabbar"></div>
+    <div id="panels"></div>
+
+    <div class="actionbar">
+      <div class="status" id="statusLine"><span class="dot" id="statusDot"></span><span id="statusText">Loaded</span></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="ghost" id="reloadBtn">Load a different file</button>
+        <button class="primary" id="downloadBtn">⬇ Download edited save</button>
+      </div>
+    </div>
+
+    <details class="notes">
+      <summary>What this editor covers</summary>
+      <p>
+        This edits the core Animal Crossing (GCN) save structure that Deluxe is built on top of: player names, wallet
+        (bells, Nook's loan, post office savings), town name, birthday, gender/face, held item, shirt, inventory
+        background, and your 15 pocket slots. Item fields are searchable by name against a community item list of
+        ~2,367 entries — type to search, or type a hex ID directly. Anything shown as "Unknown Item" just isn't in
+        that list; it's still safe to leave alone or set by hex. Deluxe-exclusive systems (town ordinances, e+
+        villagers, custom PWPs, skin tone) live in save regions that aren't publicly documented, so this editor
+        leaves those bytes untouched — your Deluxe features will carry over safely, just not editable here yet. The
+        checksum is recalculated automatically whenever you download, and both save copies in the file are kept in
+        sync, exactly like the game does on its own.
+      </p>
+    </details>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* =========================================================
+   Animal Crossing (GCN / GAFE01) character table
+   Byte value -> displayed character. Verified against ACSE
+   (Cuyler36's Animal Crossing Save Editor).
+   ========================================================= */
+const AC_CHARMAP = ["¡", "¿", "Ä", "À", "Á", "Â", "Ã", "Å", "Ç", "È", "É", "Ê", "Ë", "Ì", "Í", "Î", "Ï", "Ð", "Ñ", "Ò", "Ó", "Ô", "Õ", "Ö", "Ø", "Ù", "Ú", "Û", "Ü", "ß", "Þ", "à", " ", "!", "\\\"", "á", "â", "%", "&", "'", "(", ")", "~", "♥", ",", "-", ".", "♪", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ":", "🌢", "<", "=", ">", "?", "@", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "ã", "💢", "ä", "å", "_", "ç", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "è", "é", "ê", "ë", "□", "�", "ì", "í", "î", "ï", "•", "ð", "ñ", "ò", "ó", "ô", "õ", "ö", "⁰", "ù", "ú", "–", "û", "ü", "ý", "ÿ", "þ", "Ý", "¦", "§", "a̱", "o̱", "‖", "µ", "³", "²", "¹", "¯", "¬", "Æ", "æ", "„", "»", "«", "☀", "☁", "☂", "🌬", "☃", "∋", "∈", "/", "∞", "○", "🗙", "□", "△", "+", "⚡", "♂", "♀", "🍀", "★", "💀", "😮", "😄", "😣", "😠", "😃", "×", "÷", "🔨", "🎀", "✉", "💰", "🐾", "🐶", "🐱", "🐰", "🐦", "🐮", "🐷", "\\n", "🐟", "🐞", ";", "#", "", "", "⚷", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""];
+
+const CHAR_TO_BYTE = new Map();
+AC_CHARMAP.forEach((ch, i) => { if (!CHAR_TO_BYTE.has(ch)) CHAR_TO_BYTE.set(ch, i); });
+
+/* =========================================================
+   Item ID -> name lookup, sourced from a community DnM item
+   list. Not guaranteed exhaustive — unmatched IDs just show
+   as "Unknown Item".
+   ========================================================= */
+const ITEM_NAMES = {"0":"Empty","200":"White Pansies (No Hitbox)","201":"Purple Pansies (No Hitbox)","202":"Yellow Pansies (No Hitbox)","203":"Yellow Cosmos (No Hitbox)","204":"Purple Cosmos (No Hitbox)","205":"Blue Cosmos (No Hitbox)","206":"Red Tulips (No Hitbox)","207":"White Tulips (No Hitbox)","208":"Yellow Tulips (No Hitbox)","2117":"White Pansies","2118":"Purple Pansies","2119":"Yellow Pansies","2120":"Yellow Cosmos","2121":"Purple Cosmos","2122":"Blue Cosmos","2123":"Red Tulips","2124":"White Tulips","2125":"Yellow Tulips","4096":"Spooky Wardrobe","4100":"Classic Wardrobe","4104":"Blue Wardrobe","4108":"Office Locker","4112":"Jingle Wardrobe","4116":"Regal Armoire","4120":"Cabana Wardrobe","4124":"Cabin Wardrobe","4128":"Lovely Armoire","4132":"Green Wardrobe","4136":"Pear Wardrobe","4140":"Ranch Wardrobe","4144":"Blue Cabinet","4148":"Modern Wardrobe","4152":"Exotic Wardrobe","4156":"Jingle Dresser","4160":"Regal Dresser","4164":"Cabana Dresser","4168":"Cabin Dresser","4172":"Lovely Dresser","4176":"Spooky Dresser","4180":"Green Dresser","4184":"Pear Dresser","4188":"Ranch Dresser","4192":"Classic Vanity","4196":"Blue Bureau","4200":"Modern Dresser","4204":"Exotic Bureau","4208":"Kiddie Dresser","4212":"Kiddie Bureau","4216":"Kiddie Wardrobe","4220":"Dresser","4224":"Tansu","4228":"Sewing Box","4232":"Fan","4236":"Paper Lantern","4240":"Tea Table","4244":"Shogi Board","4248":"Screen","4252":"Zabuton","4256":"Bus Stop","4260":"Froggy Chair","4264":"Lilly-pad Table","4268":"Refridgerator","4272":"Chest","4276":"Rack","4280":"Red Sofa","4284":"Red Armchair","4288":"Hibachi","4292":"Stove","4296":"Cream Sofa","4300":"Tea Tansu","4304":"Pink Kotatsu","4308":"Blue Kotatsu","4312":"Folk Guitar","4316":"Country Guitar","4320":"Rock Guitar","4324":"Hinaningyo","4328":"Papa Bear","4332":"Mama Bear","4336":"Baby Bear","4340":"Classic Hutch","4344":"Classic Chair","4348":"Classic Desk","4352":"Classic Table","4356":"Classic Cabinet","4360":"Rocking Chair","4364":"Regal Cupboard","4368":"Writing Desk","4372":"Keiko Figurine","4376":"Yuki Figurine","4380":"Yoko Figurine","4384":"Emi Figurine","4388":"Maki Figurine","4392":"Naomi Figurine","4396":"Globe","4400":"Regal Chair","4404":"Regal Table","4408":"Retro TV","4412":"Eagle Pole","4416":"Raven Pole","4420":"Bear Pole","4424":"Frog Woman Pole","4428":"Taiko Drum","4432":"Space Heater","4436":"Retro Stereo","4440":"Cabana Armchair","4444":"Classic Sofa","4448":"Lovely End Table","4452":"Lovely Armchair","4456":"Ivory Piano","4460":"Lovely Lamp","4464":"Lovely Kitchen","4468":"Lovely Chair","4472":"Lovely Bed","4476":"Classic Clock","4480":"Cabana Bed","4484":"Green Golf Bag","4488":"White Golf Bag","4492":"Blue Golf Bag","4496":"Regal Bookcase","4500":"Writing Chair","4504":"Ranch Couch","4508":"Ranch Armchair","4512":"Ranch Tea Table","4516":"Ranch Hutch","4520":"Ranch Bookcase","4524":"Ranch Chair","4528":"Ranch Bed","4532":"Ranch Table","4536":"Computer","4540":"Office Desk","4544":"Master Sword","4548":"N Logo","4552":"Vibraphone","4556":"Biwa Lute","4560":"Conga Drum","4564":"Extinguisher","4568":"Ruby Econo-chair","4572":"Gold Econo-chair","4576":"Jade Econo-chair","4580":"Gold Stereo","4584":"Folding Chair","4588":"Lovely Vanity","4592":"Birdcage","4596":"Timpano Drum","4600":"Nice Speaker","4604":"Birthday Cake","4608":"School Desk","4612":"Graffiti Desk","4616":"Towel Desk","4620":"Tall Cactus","4624":"Round Cactus","4628":"Classic Bed","4632":"Wide-screen TV","4636":"Lovely Table","4640":"Kadomatsu","4644":"Kagamimochi","4648":"Low Lantern","4652":"Tall Lantern","4656":"Pond Lantern","4660":"Office Chair","4664":"Cubby Hole","4668":"Letter Cubby","4672":"Heavy Chair","4676":"School Chair","4680":"Towel Chair","4684":"Science Table","4688":"Stepstool","4692":"Shrine Lantern","4696":"Barrel","4700":"Keg","4704":"Vaulting Horse","4708":"Glass-top Table","4712":"Alarm Clock","4716":"Tulip Table","4720":"Daffodil Table","4724":"Iris Table","4728":"Blue Vase","4732":"Tulip Chair","4736":"Daffodil Chair","4740":"Iris Chair","4744":"Elephant Slide","4748":"Toilet","4752":"Super Toilet","4756":"Pine Table","4760":"Pine Chair","4764":"Tea Vase","4768":"Red Vase","4772":"Sewing Machine","4776":"Billiard Table","4780":"Famous Painting","4784":"Basic Painting","4788":"Scarying Painting","4792":"Moving Painting","4796":"Flowery Painting","4800":"Common Painting","4804":"Quaint Painting","4808":"Dainty Painting","4812":"Amazing Painting","4816":"Strange Painting","4820":"Rare Painting","4824":"Classic Painting","4828":"Perfect Painting","4832":"Fine Painting","4836":"Worthy Painting","4840":"Pineapple Bed","4844":"Orange Chair","4848":"Unused Dresser","4852":"Lemon Table","4856":"Apple TV","4860":"Table Tennis","4864":"Harp","4868":"Cabin Clock","4872":"Train Set","4876":"Water Bird","4880":"Wobbelina","4884":"Unused Monkey","4888":"Slot Machine","4892":"Exotic Bench","4896":"Exotic Chair","4900":"Exotic Chest","4904":"Exotic Lamp","4908":"Caladium","4912":"Lady Palm","4916":"Exotic Screen","4920":"Exotic Table","4924":"Djimbe Drum","4928":"Modern Bed","4932":"Modern Den Chair","4936":"Modern Cabinet","4940":"Modern Desk","4944":"Modern Sofa","4948":"Modern Table","4952":"Blue Bed","4956":"Blue Bench","4960":"Blue Chair","4964":"Blue Dresser","4968":"Blue Bookcase","4972":"Blue Table","4976":"Green Bed","4980":"Green Bench","4984":"Green Chair","4988":"Green Pantry","4992":"Green Counter","4996":"Green Lamp","5000":"Green Table","5004":"Cabin Bed","5008":"Cabin Couch","5012":"Cabin Armchair","5016":"Cabin Bookcase","5020":"Cabin Low Table","5024":"Aloe","5028":"Bromeliaceae","5032":"Coconut Palm","5036":"Snake Plant","5040":"Dracaena","5044":"Rubber Tree","5048":"Pothos","5052":"Fan Palm","5056":"Grapefruit Table","5060":"Lime Chair","5064":"Weeping Fig","5068":"Corn Plant","5072":"Croton","5076":"Pachira","5080":"Cactus","5084":"Metronome","5088":"Deer Scare","5092":"Pine Bonsai","5096":"Mugho Bonsai","5100":"Barber's Pole","5104":"Ponderosa Bonsai","5108":"Plum Bonsai","5112":"Giant Dharma","5116":"Dharma","5120":"Mini-Dharma","5124":"Quince Bonsai","5128":"Azalea Bonsai","5132":"Jasmine Bonsai","5136":"Executive Toy","5140":"Traffic Cone","5144":"Striped Cone","5148":"Orange Cone","5152":"Cola Machine","5156":"Maple Bonsai","5160":"Hawthorne Bonsai","5164":"Holly Bonsai","5168":"Barricade","5172":"Fence","5176":"Plastic Fence","5180":"Fence and Sign","5184":"Soda Machine","5188":"Manhole Cover","5192":"Pop Machine","5196":"Brown Drum","5200":"Green Drum","5204":"Red Drum","5208":"Juice Machine","5212":"Iron Frame","5216":"Trash Can","5220":"Grabage Pail","5224":"Watermelon Chair","5228":"Melon Chair","5232":"Watermelon Table","5236":"Robotic Flagman","5240":"Garbage Can","5244":"Trash Bin","5248":"Violin","5252":"Bass","5256":"Cello","5260":"Ebony Piano","5264":"Zen Basin","5268":"Handcart","5272":"Wash Basin","5276":"Jack-o'-Lantern","5280":"Warning Sign","5284":"Detour Arrow","5288":"Garden Stone","5292":"Standing Stone","5296":"Route Sign","5300":"Men Working Sign","5304":"Caution Sign","5308":"Temple Basin","5312":"Spooky Bed","5316":"Jack-in-the-Box","5320":"Spooky Chair","5324":"Unused Chair","5328":"Spooky Bookcase","5332":"Spooky Sofa","5336":"Spooky Table","5340":"Lunar Lander","5344":"Satellite","5348":"Mossy Stone","5352":"Leaning Stone","5356":"Dark Stone","5360":"Flying Saucer","5364":"Stone Couple","5368":"Garden Pond","5372":"Rocket","5376":"Spaceman Sam","5380":"Spooky Clock","5384":"Spooky Lamp","5388":"Exotic Bed","5392":"Exotic End Table","5396":"Asteroid","5400":"Cabana Lamp","5404":"Cabana Table","5408":"Bucket","5412":"Scale","5416":"Faucet","5420":"Spa Chair","5424":"Cabana Screen","5428":"Cabana Vanity","5432":"Cabana Chair","5436":"Cabana Bookcase","5440":"Arwing","5444":"Lunar Rover","5448":"Massage Chair","5452":"Bath Mat","5456":"Spa Tub","5460":"Blue Clock","5464":"Mochi Pestle","5468":"Spooky Vanity","5472":"Green Desk","5476":"Clerk's Booth","5480":"Modern Chair","5484":"Modern End Table","5488":"Space Station","5492":"Spa Screen","5496":"Cabin Chair","5500":"Regal Bed","5504":"Space Shuttle","5508":"Regal Vanity","5512":"Regal Sofa","5516":"Regal Lamp","5520":"Cabin Table","5524":"Bath Locker","5528":"Milk Fridge","5532":"Tea Set","5536":"Nook's Portrait","5540":"Gerbera","5544":"Sunflower","5548":"Daffodil","5552":"Tall Gongoid","5556":"Mega Gongoid","5560":"Mini Gongoid","5564":"Gongoid","5568":"Mini Oombloid","5572":"Oombloid","5576":"Mega Oombloid","5580":"Tall Oombloid","5584":"Mega Echoid","5588":"Mini Echoid","5592":"Tall Echoid","5596":"Mini Sputnoid","5600":"Sputnoid","5604":"Mega Sputnoid","5608":"Tall Sputnoid","5612":"Mini Dinkoid","5616":"Mini Fizzoid","5620":"Mega Fizzoid","5624":"Mega Dinkoid","5628":"Mini Gargloid","5632":"Gargloid","5636":"Tall Gargloid","5640":"Mega Buzzoid","5644":"Tall Buzzoid","5648":"Buzzoid","5652":"Mini Buzzoid","5656":"Sproid","5660":"Mini Sproid","5664":"Mega Sproid","5668":"Tall Sproid","5672":"Tootoid","5676":"Mini Tootoid","5680":"Mega Tootoid","5684":"Tall Droploid","5688":"Mega Bovoid","5692":"Tall Bovoid","5696":"Mini Metatoid","5700":"Metatoid","5704":"Mini Bowtoid","5708":"Bowtoid","5712":"Mega Bowtoid","5716":"Tall Bowtoid","5720":"Mega Lamentoid","5724":"Tall Lamentoid","5728":"Lamentoid","5732":"Mini Lamentoid","5736":"Mini Timpanoid","5740":"Timpanoid","5744":"Mega Timpanoid","5748":"Quazoid","5752":"Mega Quazoid","5756":"Mega Dekkoid","5760":"Dekkoid","5764":"Mini Dekkoid","5768":"Mega Alloid","5772":"Tall Alloid","5776":"Mini Alloid","5780":"Mini Freakoid","5784":"Mega Feakoid","5788":"Tall Quazoid","5792":"Mini Quazoid","5796":"Squat Dingloid","5800":"Mega Dingloid","5804":"Tall Dingloid","5808":"Dingloid","5812":"Mini Dingloid","5816":"Wee Dingloid","5820":"Mega Clankoid","5824":"Clankoid","5828":"Tall Clankoid","5832":"Mini Clankoid","5836":"Croakoid","5840":"Mega Croakoid","5844":"Tall Croakoid","5848":"Mini Croakoid","5852":"Mega Poltergoid","5856":"Tall Poltergoid","5860":"Poltergoid","5864":"Mini Poltergoid","5868":"Tall Warbloid","5872":"Warbloid","5876":"Mini Warbloid","5880":"Mega Rustoid","5884":"Rustoid","5888":"Mini Rustoid","5892":"Mega Percoloid","5896":"Tall Percoloid","5900":"Mega Puffoid","5904":"Mini Puffoid","5908":"Tall Puffoid","5912":"Rhythmoid","5916":"Mini Rythmoid","5920":"Slim Quazoid","5924":"Mega Oboid","5928":"Oboid","5932":"Tall Oboid","5936":"Tall Timpanoid","5940":"Mini Howloid","5944":"Howloid","5948":"Mega Howloid","5952":"Mega Harmonoid","5956":"Harmonoid","5960":"Tall Harmonoid","5964":"Mini Harmonoid","5968":"Tall Strumboid","5972":"Mega Strumboid","5976":"Strumboid","5980":"Mini Strumboid","5984":"Mega Lullaboid","5988":"Tall Lullaboid","5992":"Lullaboid","5996":"Mini Lullaboid","6000":"Mega Drilloid","6004":"Drilloid","6008":"Mini Drilloid","6012":"Mega Nebuloid","6016":"Nebuloid","6020":"Squat Nebuloid","6024":"Tall Nebuloid","6028":"Mini Nebuloid","6032":"Slim Nebuloid","6036":"Mega Plinkoid","6040":"Plinkoid","6044":"Mini Plinkoid","6048":"Squelchoid","6052":"Mega Squelchoid","6056":"Mini Squelchoid","7592":"Clu Clu Land","7596":"Balloon Fight","7600":"Donkey Kong","7604":"DK Jr MATH","7608":"Pinball","7612":"Tennis","7616":"Golf","7620":"Punchout","7624":"Baseball","7628":"Clu Clu Land D","7632":"Donkey Kong 3","7636":"Donky Kong Jr","7640":"Soccer","7644":"Excitebike","7648":"Wario's Woods","7652":"Ice Climbers","7656":"Mario Bros","7660":"Super Mario Bros","7664":"Legend of Zelda","7668":"NES","7672":"Phonograph","7676":"Turntable","7680":"Jukebox","7684":"Red Boom Box","7688":"White Boom Box","7692":"High-end Stereo","7696":"Hi-fi Stereo","7700":"Lovely Stereo","7704":"Jingle Lamp","7708":"Jingle Chair","7712":"Jingle Shelves","7716":"Jingle Sofa","7720":"Jingle Bed","7724":"Jingle Clock","7728":"Jingle Table","7732":"Jingle Piano","7736":"Aiko Figurine","7740":"Robo-Stereo","7744":"Dice Stereo","7748":"Apple Clock","7752":"Robo-clock","7756":"Kitschy Clock","7760":"Antique Clock","7764":"Reel-to-reel","7768":"Tape Deck","7772":"CD Player","7776":"Glow Clock","7780":"Odd Clock","7784":"Red Clock","7788":"Cube Clock","7792":"Owl Clock","7796":"Lucky Cat","7800":"Lucky Black Cat","7804":"Samurai Suit","7808":"Racoon Obje","7812":"Lucky Frog","7816":"Big Festive Tree","7820":"White Rook","7824":"Black Rook","7828":"White Queen","7832":"Black Queen","7836":"White Bishop","7840":"Black Bishop","7844":"White King","7848":"Black King","7852":"White Knight","7856":"Black Knight","7860":"White Pawn","7864":"Black Pawn","7868":"Festive Tree","7872":"Kiddie Clock","7876":"Kiddie Bed","7880":"Kiddie Table","7884":"Kiddie Couch","7888":"Kiddie Stereo","7892":"Kiddie Chair","7896":"Kiddie Bookcase","7900":"Alcove","7904":"Hearth","7908":"Chalk Board","7912":"Mop","7916":"Tricera Skull","7920":"Tricera Tail","7924":"Tricera Torso","7928":"T-rex Skull","7932":"T-rex Tail","7936":"T-rex Torso","7940":"Apato Skull","7944":"Apato Tail","7948":"Apato Torso","7952":"Stego Skull","7956":"Stego Tail","7960":"Stego Torso","7964":"Ptera Skull","7968":"Ptera Right Wing","7972":"Ptera Left Wing","7976":"Plesio Skull","7980":"Plesio Neck","7984":"Plesio Torso","7988":"Mammoth Skull","7992":"Mammoth Torso","7996":"Amber","8000":"Dinosaur Track","8004":"Ammonite","8008":"Dinosaur Egg","8012":"Trilobite","8016":"Modern Lamp","8020":"Snowman Fridge","8024":"Snowman Table","8028":"Snowman Bed","8032":"Snowman Chair","8036":"Snowman Lamp","8040":"Snowman Sofa","8044":"Snowman TV","8048":"Snowman Dresser","8052":"Snowman Wardrobe","8056":"Snowman Clock","8060":"Tricera D","8064":"T-rex D","8068":"Bronto D","8072":"Ptera D","8076":"HUTABAD","8080":"Mammoth D","8084":"Stego D","8088":"Stego D2","8092":"Fossil (Furniture)","8096":"Shogi Piece","8100":"Chocolates","8104":"Post Box","8108":"Piggy Bank","8112":"Tissue","8116":"Tribal Mask","8120":"Matryoshka","8124":"Legend of Zelda","8128":"Bottled Shop","8132":"Tiger Bobblehead","8136":"Moai Statue","8140":"Aerobics Radio","8144":"Pagoda","8148":"Fishing Bear","8152":"Mouth of Truth","8156":"Chinese Lioness","8160":"Tower of Pisa","8164":"Merlion","8168":"Manekin Pis","8172":"Tokyo Tower","8176":"Red Balloon","8180":"Yellow Balloon","8184":"Blue Balloon","8188":"Green Balloon","8192":"Airmail Paper (1)","8193":"Sparkly Paper (1)","8194":"Bamboo Paper (1)","8195":"Orange Paper (1)","8196":"Essay Paper (1)","8197":"Panda Paper (1)","8198":"Ranch Paper (1)","8199":"Steel Paper (1)","8200":"Blossom Paper (1)","8201":"Vine Paper (1)","8202":"Cloudy Paper (1)","8203":"Petal Paper (1)","8204":"Snowy Paper (1)","8205":"Rainy Day Paper (1)","8206":"Watermelon Paper (1)","8207":"Deep Sea Paper (1)","8208":"Starry Sky Paper (1)","8209":"Daisy Paper (1)","8210":"Bluebell Paper (1)","8211":"Maple Leaf Paper (1)","8212":"Woodcut Paper (1)","8213":"Octopus Paper (1)","8214":"Festive Paper (1)","8215":"Skyline Paper (1)","8216":"Museum Paper (1)","8217":"Fortune Paper (1)","8218":"Stageshow Paper (1)","8219":"Thick Paper (1)","8220":"Spooky Paper (1)","8221":"Noodle Paper (1)","8222":"Neat Paper (1)","8223":"Horsetail Paper (1)","8224":"Felt Paper (1)","8225":"Parchment (1)","8226":"Cool Paper (1)","8227":"Elegant Paper (1)","8228":"Lacy Paper (1)","8229":"Polka-Dot Paper (1)","8230":"Dizzy Paper (1)","8231":"Rainbow Paper (1)","8232":"Hot Neon Paper (1)","8233":"Cool Neon Paper (1)","8234":"Aloha Paper (1)","8235":"Ribbon Paper (1)","8236":"Fantasy Paper (1)","8237":"Woodland Paper (1)","8238":"Gingko Paper (1)","8239":"Fireworks Paper (1)","8240":"Winter Paper (1)","8241":"Gyroid Paper (1)","8242":"Ivy Paper (1)","8243":"Wing Paper (1)","8244":"Dragon Paper (1)","8245":"Tile Paper (1)","8246":"Misty Paper (1)","8247":"Simple Paper (1)","8248":"Honeybee Paper (1)","8249":"Mystic Paper (1)","8250":"Sunset Paper (1)","8251":"Lattice Paper (1)","8252":"Dainty Paper (1)","8253":"Butterfly Paper (1)","8254":"New Year's Card (1)","8255":"Inky Paper (1)","8256":"Airmail Paper (2)","8257":"Sparkly Paper (2)","8258":"Bamboo Paper (2)","8259":"Orange Paper (2)","8260":"Essay Paper (2)","8261":"Panda Paper (2)","8262":"Ranch Paper (2)","8263":"Steel Paper (2)","8264":"Blossom Paper (2)","8265":"Vine Paper (2)","8266":"Cloudy Paper (2)","8267":"Petal Paper (2)","8268":"Snowy Paper (2)","8269":"Rainy Day Paper (2)","8270":"Watermelon Paper (2)","8271":"Deep Sea Paper (2)","8272":"Starry Sky Paper (2)","8273":"Daisy Paper (2)","8274":"Bluebell Paper (2)","8275":"Maple Leaf Paper (2)","8276":"Woodcut Paper (2)","8277":"Octopus Paper (2)","8278":"Festive Paper (2)","8279":"Skyline Paper (2)","8280":"Museum Paper (2)","8281":"Fortune Paper (2)","8282":"Stageshow Paper (2)","8283":"Thick Paper (2)","8284":"Spooky Paper (2)","8285":"Noodle Paper (2)","8286":"Neat Paper (2)","8287":"Horsetail Paper (2)","8288":"Felt Paper (2)","8289":"Parchment (2)","8290":"Cool Paper (2)","8291":"Elegant Paper (2)","8292":"Lacy Paper (2)","8293":"Polka-Dot Paper (2)","8294":"Dizzy Paper (2)","8295":"Rainbow Paper (2)","8296":"Hot Neon Paper (2)","8297":"Cool Neon Paper (2)","8298":"Aloha Paper (2)","8299":"Ribbon Paper (2)","8300":"Fantasy Paper (2)","8301":"Woodland Paper (2)","8302":"Gingko Paper (2)","8303":"Fireworks Paper (2)","8304":"Winter Paper (2)","8305":"Gyroid Paper (2)","8306":"Ivy Paper (2)","8307":"Wing Paper (2)","8308":"Dragon Paper (2)","8309":"Tile Paper (2)","8310":"Misty Paper (2)","8311":"Simple Paper (2)","8312":"Honeybee Paper (2)","8313":"Mystic Paper (2)","8314":"Sunset Paper (2)","8315":"Lattice Paper (2)","8316":"Dainty Paper (2)","8317":"Butterfly Paper (2)","8318":"New Year's Card (2)","8319":"Inky Paper (2)","8320":"Airmail Paper (3)","8321":"Sparkly Paper (3)","8322":"Bamboo Paper (3)","8323":"Orange Paper (3)","8324":"Essay Paper (3)","8325":"Panda Paper (3)","8326":"Ranch Paper (3)","8327":"Steel Paper (3)","8328":"Blossom Paper (3)","8329":"Vine Paper (3)","8330":"Cloudy Paper (3)","8331":"Petal Paper (3)","8332":"Snowy Paper (3)","8333":"Rainy Day Paper (3)","8334":"Watermelon Paper (3)","8335":"Deep Sea Paper (3)","8336":"Starry Sky Paper (3)","8337":"Daisy Paper (3)","8338":"Bluebell Paper (3)","8339":"Maple Leaf Paper (3)","8340":"Woodcut Paper (3)","8341":"Octopus Paper (3)","8342":"Festive Paper (3)","8343":"Skyline Paper (3)","8344":"Museum Paper (3)","8345":"Fortune Paper (3)","8346":"Stageshow Paper (3)","8347":"Thick Paper (3)","8348":"Spooky Paper (3)","8349":"Noodle Paper (3)","8350":"Neat Paper (3)","8351":"Horsetail Paper (3)","8352":"Felt Paper (3)","8353":"Parchment (3)","8354":"Cool Paper (3)","8355":"Elegant Paper (3)","8356":"Lacy Paper (3)","8357":"Polka-Dot Paper (3)","8358":"Dizzy Paper (3)","8359":"Rainbow Paper (3)","8360":"Hot Neon Paper (3)","8361":"Cool Neon Paper (3)","8362":"Aloha Paper (3)","8363":"Ribbon Paper (3)","8364":"Fantasy Paper (3)","8365":"Woodland Paper (3)","8366":"Gingko Paper (3)","8367":"Fireworks Paper (3)","8368":"Winter Paper (3)","8369":"Gyroid Paper (3)","8370":"Ivy Paper (3)","8371":"Wing Paper (3)","8372":"Dragon Paper (3)","8373":"Tile Paper (3)","8374":"Misty Paper (3)","8375":"Simple Paper (3)","8376":"Honeybee Paper (3)","8377":"Mystic Paper (3)","8378":"Sunset Paper (3)","8379":"Lattice Paper (3)","8380":"Dainty Paper (3)","8381":"Butterfly Paper (3)","8382":"New Year's Card (3)","8383":"Inky Paper (3)","8384":"Airmail Paper (4)","8385":"Sparkly Paper (4)","8386":"Bamboo Paper (4)","8387":"Orange Paper (4)","8388":"Essay Paper (4)","8389":"Panda Paper (4)","8390":"Ranch Paper (4)","8391":"Steel Paper (4)","8392":"Blossom Paper (4)","8393":"Vine Paper (4)","8394":"Cloudy Paper (4)","8395":"Petal Paper (4)","8396":"Snowy Paper (4)","8397":"Rainy Day Paper (4)","8398":"Watermelon Paper (4)","8399":"Deep Sea Paper (4)","8400":"Starry Sky Paper (4)","8401":"Daisy Paper (4)","8402":"Bluebell Paper (4)","8403":"Maple Leaf Paper (4)","8404":"Woodcut Paper (4)","8405":"Octopus Paper (4)","8406":"Festive Paper (4)","8407":"Skyline Paper (4)","8408":"Museum Paper (4)","8409":"Fortune Paper (4)","8410":"Stageshow Paper (4)","8411":"Thick Paper (4)","8412":"Spooky Paper (4)","8413":"Noodle Paper (4)","8414":"Neat Paper (4)","8415":"Horsetail Paper (4)","8416":"Felt Paper (4)","8417":"Parchment (4)","8418":"Cool Paper (4)","8419":"Elegant Paper (4)","8420":"Lacy Paper (4)","8421":"Polka-Dot Paper (4)","8422":"Dizzy Paper (4)","8423":"Rainbow Paper (4)","8424":"Hot Neon Paper (4)","8425":"Cool Neon Paper (4)","8426":"Aloha Paper (4)","8427":"Ribbon Paper (4)","8428":"Fantasy Paper (4)","8429":"Woodland Paper (4)","8430":"Gingko Paper (4)","8431":"Fireworks Paper (4)","8432":"Winter Paper (4)","8433":"Gyroid Paper (4)","8434":"Ivy Paper (4)","8435":"Wing Paper (4)","8436":"Dragon Paper (4)","8437":"Tile Paper (4)","8438":"Misty Paper (4)","8439":"Simple Paper (4)","8440":"Honeybee Paper (4)","8441":"Mystic Paper (4)","8442":"Sunset Paper (4)","8443":"Lattice Paper (4)","8444":"Dainty Paper (4)","8445":"Butterfly Paper (4)","8446":"New Year's Card (4)","8447":"Inky Paper (4)","8448":"1000 Bells","8449":"10000 Bells","8450":"30000 Bells","8451":"100 Bells","8704":"Net","8705":"Axe","8706":"Shovel","8707":"Fishing Rod","8708":"Gelato Umbrella","8709":"Daffodil Parasol","8710":"Berry Umbrella","8711":"Orange Umbrella","8712":"Mod Umbrella","8713":"Petal Parasol","8714":"Ribbon Parasol","8715":"Gingham Parasol","8716":"Plaid Parasol","8717":"Lacy Parasol","8718":"Elegant Umbrella","8719":"Dainty Parasol","8720":"Classic Umbrella","8721":"Nintendo Parasol","8722":"Bumbershoot","8723":"Sunny Parasol","8724":"Batbrella","8725":"Checked Umbrella","8726":"Yellow Umbrella","8727":"Leaf Umbrella","8728":"Lotus Parasol","8729":"Paper Parasol","8730":"Polka Parasol","8731":"Sharp Umbrella","8732":"Twig Parasol","8733":"Noodle Parasol","8734":"Hypno Parasol","8735":"Pastel Parasol","8736":"Retro Umbrella","8737":"Icy Umbrella","8738":"Blue Umbrella","8739":"Flame Umbrella","8740":"Pattern #1 (Umbrella)","8741":"Pattern #2 (Umbrella)","8742":"Pattern #3 (Umbrella)","8743":"Pattern #4 (Umbrella)","8744":"Pattern #5 (Umbrella)","8745":"Pattern #6 (Umbrella)","8746":"Pattern #7 (Umbrella)","8747":"Pattern #8 (Umbrella)","8748":"Sickle","8749":"Red Paint","8750":"Orange Paint","8751":"Yellow Paint","8752":"Pale Green Paint","8753":"Green Paint","8754":"Sky Blue Paint","8755":"Blue Paint","8756":"Purple Paint","8757":"Pink Paint","8758":"Black Paint","8759":"White Paint","8760":"Brown Paint","8761":"Golden Net","8762":"Golden Axe","8763":"Golden Shovel","8764":"Golden Rod","8765":"Axe (Use #1)","8766":"Axe (Use #2)","8767":"Axe (Use #3)","8768":"Axe (Use #4)","8769":"Axe (Use #5)","8770":"Axe (Use #6)","8771":"Axe (Use #7)","8772":"Red Balloon","8773":"Yellow Balloon","8774":"Blue Balloon","8775":"Green Balloon","8776":"Purple Balloon","8777":"Bunny P. Balloon","8778":"Bunny B. Balloon","8779":"Bunny O. Balloon","8780":"Yellow Pinwheel","8781":"Red Pinwheel","8782":"Tiger Pinwheel","8783":"Green Pinwheel","8784":"Pink Pinwheel","8785":"Striped Pinwheel","8786":"Flower Pinwheel","8787":"Fancy Pinwheel","8788":"Bluebell Fan","8789":"Plum Fan","8790":"Bamboo Fan","8791":"Cloud Fan","8792":"Maple Fan","8793":"Fan Fan","8794":"Flower Fan","8795":"Leaf Fan","8960":"Crucian Carp","8961":"Brook Trout","8962":"Carp","8963":"Koi","8964":"Catfish","8965":"Small Bass","8966":"Bass","8967":"Large Bass","8968":"Bluegill","8969":"Giant Catfish","8970":"Giant Snakehead","8971":"Barbel Steed","8972":"Dace","8973":"Pale Chub","8974":"Bitterling","8975":"Loach","8976":"Pond Smelt","8977":"Sweetfish","8978":"Cherry Salmon","8979":"Large Char","8980":"Rainbow Trout","8981":"Stringfish","8982":"Salmon","8983":"Goldfish","8984":"Piranha","8985":"Arowana","8986":"Eel","8987":"Freshwater Goby","8988":"Angelfish","8989":"Guppy","8990":"Popeyed Goldfish","8991":"Coelacanth","8992":"Crawfish","8993":"Frog","8994":"Killifish","8995":"Jellyfish","8996":"Sea Bass","8997":"Red Snapper","8998":"Barred Knifejaw","8999":"Arapaima","9216":"Flame Shirt","9217":"Paw Shirt","9218":"Wavy Pink Shirt","9219":"Furture Shirt","9220":"Bold Check Shirt","9221":"Mint Gingham","9222":"Bad Plaid Shirt","9223":"Speedway Shirt","9224":"Folk Shirt","9225":"Daisy Shirt","9226":"Wavy Tan Shirt","9227":"Optical Shirt","9228":"Rugby Shirt","9229":"Sherbet Gingham","9230":"Yellow Tartan","9231":"Gelato Shirt","9232":"Work Uniform","9233":"Patched Shirt","9234":"Plum Kimono","9235":"Somber Robe","9236":"Red Sweatsuit","9237":"Blue Sweatsuit","9238":"Red Puffy Vest","9239":"Blue Puffy Vest","9240":"Summer Robe","9241":"Bamboo Robe","9242":"Red Aloha Shirt","9243":"Blue Aloha Shirt","9244":"Dark Polka Shirt","9245":"Lite Polka Shirt","9246":"Lovely Shirt","9247":"Citrus Shirt","9248":"Kiwi Shirt","9249":"Watermelon Shirt","9250":"Strawberry Shirt","9251":"Grape Shirt","9252":"Melon Shirt","9253":"Jingle Shirt","9254":"Blossom Shirt","9255":"Icy Shirt","9256":"Crewel Shirt","9257":"Tropical Shirt","9258":"Ribbon Shirt","9259":"Fall Plaid Shirt","9260":"Fiendish Shirt","9261":"Chevron Shirt","9262":"Ladybug Shirt","9263":"Botanical Shirt","9264":"Anju's Shirt","9265":"Kaffe's Shirt","9266":"Lavender Robe","9267":"Blue Grid Shirt","9268":"Butterfly Shirt","9269":"Blue Tartan","9270":"Gracie's Top","9271":"Orange Tie-Die","9272":"Purple Tie-Die","9273":"Green Tie-Die","9274":"Blue Tie-Die","9275":"Red Tie-Die","9276":"One-Ball Shirt","9277":"Two-Ball Shirt","9278":"Three-Ball Shirt","9279":"Four-Ball Shirt","9280":"Five-Ball Shirt","9281":"Six-Ball Shirt","9282":"Seven-Ball Shirt","9283":"Eight-Ball Shirt","9284":"Nine-Ball Shirt","9285":"Arctic Camo","9286":"Jungle Camo","9287":"Desert Camo","9288":"Rally Shirt","9289":"Racer Shirt","9290":"Racer 6 Shirt","9291":"Fish Bone Shirt","9292":"Spiderweb Shirt","9293":"Zipper Shirt","9294":"Bubble Shirt","9295":"Yellow Bolero","9296":"Nebula Shirt","9297":"Neo-Classic Knit","9298":"Noble Shirt","9299":"Turnip Top","9300":"Oft-Seen Print","9301":"Ski Sweater","9302":"Circus Shirt","9303":"Patchwork Top","9304":"Mod Top","9305":"Hippie Shirt","9306":"Rickrack Shirt","9307":"Diner Uniform","9308":"Shirt Circuit","9309":"U R Here Shirt","9310":"Yodel Shirt","9311":"Pulse Shirt","9312":"Prism Shirt","9313":"Star Shirt","9314":"Straw Shirt","9315":"Noodle Shirt","9316":"Dice Shirt","9317":"Kiddie Shirt","9318":"Frog Shirt","9319":"Moody Blue Shirt","9320":"Cloudy Shirt","9321":"Fortune Shirt","9322":"Skull Shirt","9323":"Desert Shirt","9324":"Aurora Knit","9325":"Winter Sweater","9326":"Go-Go Shirt","9327":"Jade Check Print","9328":"Blue Check Print","9329":"Red Grid Shirt","9330":"Flicker Shirt","9331":"Floral Knit","9332":"Rose Shirt","9333":"Sunset Top","9334":"Chain-Gang Shirt","9335":"Spring Shirt","9336":"Bear Shirt","9337":"MVP Shirt","9338":"Silk Bloom Shirt","9339":"Pop Bloom Shirt","9340":"Loud Bloom Shirt","9341":"Hot Spring Shirt","9342":"New Spring Shirt","9343":"Deep Blue Tee","9344":"Snowcone Shirt","9345":"Ugly Shirt","9346":"Sharp Outfit","9347":"Painter's Smock","9348":"Spade Shirt","9349":"Blossoming Shirt","9350":"Peachy Shirt","9351":"Static Shirt","9352":"Rainbow Shirt","9353":"Groovy Shirt","9354":"Loud Line Shirt","9355":"Dazed Shirt","9356":"Red Bar Shirt","9357":"Blue Stripe Knit","9358":"Earthy Knit","9359":"Spunky Knit","9360":"Deer Shirt","9361":"Blue Check Shirt","9362":"Light Line Shirt","9363":"Blue Pinestripe","9364":"Diamond Shirt","9365":"Lime Line Shirt","9366":"Big Bro's Shirt","9367":"Green Bar Shirt","9368":"Yellow Bar Shirt","9369":"Monkey Shirt","9370":"Polar Fleece","9371":"Ancient Knit","9372":"Fish Knit","9373":"Vertigo Shirt","9374":"Misty Shirt","9375":"Stormy Shirt","9376":"Red Scale Shirt","9377":"Blue Scale Shirt","9378":"Heart Shirt","9379":"Yellow Pinstripe","9380":"Club Shirt","9381":"Li'l Bro's Shirt","9382":"Argyle Knit","9383":"Caveman Tunic","9384":"Café Shirt","9385":"Tiki Shirt","9386":"A Shirt","9387":"Checkered Shirt","9388":"No. 1 Shirt","9389":"No. 2 Shirt","9390":"No. 3 Shirt","9391":"No. 4 Shirt","9392":"No. 5 Shirt","9393":"No. 23 Shirt","9394":"No. 67 Shirt","9395":"BB Shirt","9396":"Beatnik Shirt","9397":"Moldy Shirt","9398":"Houndstooth Tee","9399":"Big Star Shirt","9400":"Orange Pinstripe","9401":"Twinkle Shirt","9402":"Funky Dot Shirt","9403":"Crossing Shirt","9404":"Splendid Shirt","9405":"Jagged Shirt","9406":"Denim Shirt","9407":"Cherry Shirt","9408":"Gumdrop Shirt","9409":"Barber Shirt","9410":"Concierge Shirt","9411":"Fresh Shirt","9412":"Far-Out Shirt","9413":"Dawn Shirt","9414":"Striking Outfit","9415":"Red Check Shirt","9416":"Berry Gingham","9417":"Lemon Gingham","9418":"Dragon Suit","9419":"G Logo Shirt","9420":"Tin Shirt","9421":"Jester Shirt","9422":"Pink Tartan","9423":"Waffle Shirt","9424":"Gray Tartan","9425":"Windsock Shirt","9426":"Trendy Top","9427":"Green Ring Shirt","9428":"White Ring Shirt","9429":"Snappy Print","9430":"Chichi Print","9431":"Wave Print","9432":"Checkerboard Tee","9433":"Subdued Print","9434":"Airy Shirt","9435":"Coral Shirt","9436":"Leather Jerkin","9437":"Zebra Print","9438":"Tiger Print","9439":"Cow Print","9440":"Leopard Print","9441":"Danger Shirt","9442":"Big Dot Shirt","9443":"Puzzling Shirt","9444":"Exotic Shirt","9445":"Houndstooth Knit","9446":"Uncommon Shirt","9447":"Dapper Shirt","9448":"Gaudy Sweater","9449":"Cozy Sweater","9450":"Comfy Sweater","9451":"Classic Top","9452":"Vogue Top","9453":"Laced Shirt","9454":"Natty Shirt","9455":"Citrus Gingham","9456":"Cool Shirt","9457":"Dreamy Shirt","9458":"Flowery Shirt","9459":"Caterpillar Tee","9460":"Shortcake Shirt","9461":"Whirly Shirt","9462":"Thunder Shirt","9463":"Giraffe Print","9464":"Swell Shirt","9465":"Toad Print","9466":"Grass Shirt","9467":"Mosaic Shirt","9468":"Fetching Outfit","9469":"Snow Shirt","9470":"Melon Gingham","9471":"Mannequin Wood Shirt","9475":"Videotape","9476":"Organizer","9477":"Pokémon Pikachu","9478":"Comic Book","9479":"Picture Book","9480":"Game Boy","9481":"Camera","9482":"Watch","9483":"Handkerchief","9484":"Glasses Case","9485":"Money1000Bell","9486":"Empty Can","9487":"Boot","9488":"Old Tire","9489":"Fossil","9490":"Pitfall","9491":"Fortune Slip","9492":"Lion's Paw","9493":"Wentletrap","9494":"Venus Comb","9495":"Porceletta","9496":"Sand Dollar","9497":"White Scallop","9498":"Conch","9499":"Coral","9500":"Present (Random Item)","9501":"Map Sprite","9502":"Signboard","9503":"Present (Golden Net)","9504":"Present (Golden Axe)","9505":"Present (Golden Shovel)","9506":"Present(Golden Rod)","9507":"Exercise Card","9508":"Exercise Card","9509":"Exercise Card","9510":"Exercise Card","9511":"Exercise Card","9512":"Exercise Card","9513":"Exercise Card","9514":"Exercise Card","9515":"Exercise Card","9516":"Exercise Card","9517":"Exercise Card","9518":"Exercise Card","9519":"Exercise Card","9520":"Knife and Fork","9728":"Plush Carpet","9729":"Classic Carpet","9730":"Checkered Tile","9731":"Old Flooring","9732":"Red Tile","9733":"Birch Flooring","9734":"Classroom Floor","9735":"Lovely Carpet","9736":"Exotic Rug","9737":"Mossy Carpet","9738":"18 Mat Tatami","9739":"8 Mat Tatami","9740":"Citrus Carpet","9741":"Cabin Rug","9742":"Closed Road","9743":"Lunar Surface","9744":"Sand Garden","9745":"Spooky Carpet","9746":"Western Desert","9747":"Green Rug","9748":"Blue Flooring","9749":"Regal Carpet","9750":"Ranch Flooring","9751":"Modern Tile","9752":"Cabana Flooring","9753":"Snowman Carpet","9754":"Backyard Lawn","9755":"Music Room Floor","9756":"Plaza Tile","9757":"Kitchen Tile","9758":"Ornate Rug","9759":"Tatami Floor","9760":"Bamboo Flooring","9761":"Kitchen Flooring","9762":"Charcoal Tile","9763":"Stone Tile","9764":"Imperial Tile","9765":"Opulent Rug","9766":"Slate Flooring","9767":"Ceramic Tile","9768":"Fancy Carpet","9769":"Cowhide Rug","9770":"Steel Flooring","9771":"Office Flooring","9772":"Ancient Tile","9773":"Exquisite Rug","9774":"Sandlot","9775":"Jingle Carpet","9776":"Daisy Meadow","9777":"Sidewalk","9778":"Mosaic Tile","9779":"Parquet Floor","9780":"Basement Floor","9781":"Chessboard Rug","9782":"Kiddie Carpet","9783":"Shanty Mat","9784":"Concrete Floor","9785":"Saharah's Desert","9786":"Tartan Rug","9787":"Palace Tile","9788":"Tropical Floor","9789":"Playroom Rug","9790":"Kitschy Tile","9791":"Diner Tile","9792":"Block Flooring","9793":"Boxing Ring Mat","9794":"Harvest Rug","9795":"Nook's Cranny Floor","9796":"Nook 'n' Go Floor","9797":"Nookway Floor","9798":"Nookington's Floor","9984":"Chic Wall","9985":"Classic Wall","9986":"Parlor Wall","9987":"Stone Wall","9988":"Blue-Trim Wall","9989":"Plaster Wall","9990":"Classroom Wall","9991":"Lovely Wall","9992":"Exotic Wall","9993":"Mortar Wall","9994":"Gold Screen Wall","9995":"Tea Room Wall","9996":"Citrus Wall","9997":"Cabin Wall","9998":"Blue Tarp","9999":"Lunar Horizon","10000":"Garden Wall","10001":"Spooky Wall","10002":"Western Vista","10003":"Green Wall","10004":"Blue Wall","10005":"Regal Wall","10006":"Ranch Wall","10007":"Modern Wall","10008":"Cabana Wall","10009":"Snowman Wall","10010":"Backyard Fence","10011":"Music Room Wall","10012":"Plaza Wall","10013":"Lattice Wall","10014":"Ornate Wall","10015":"Modern Screen","10016":"Bamboo Wall","10017":"Kitchen Wall","10018":"Old Brick Wall","10019":"Stately Wall","10020":"Imperial Wall","10021":"Manor Wall","10022":"Ivy Wall","10023":"Mod Wall","10024":"Rose Wall","10025":"Wood Paneling","10026":"Concrete Wall","10027":"Office Wall","10028":"Ancient Wall","10029":"Exquisite Wall","10030":"Sandlot Wall","10031":"Jingle Wall","10032":"Meadow Vista","10033":"Tree-Lined Wall","10034":"Mosaic Wall","10035":"Arched Window","10036":"Basement Wall","10037":"Backgammon Wall","10038":"Kiddie Wall","10039":"Shanty Wall","10040":"Industrial Wall","10041":"Desert Vista","10042":"Library Wall","10043":"Floral Wall","10044":"Tropical Vista","10045":"Playroom Wall","10046":"Kitschy Wall","10047":"Groovy Wall","10048":"Mushroom Mural","10049":"Ringside Seating","10050":"Harvest Wall","10051":"Nook's Cranny Wall","10052":"Nook 'n' Go Wall","10053":"Nookway Wall","10054":"Nookington's Wall","10240":"Apple","10241":"Cherry","10242":"Pear","10243":"Peach","10244":"Orange","10245":"Mushroom","10246":"Candy","10247":"Coconut","10496":"Potted Sapling","10497":"Potted Cedar Sapling","10498":"White Pansy Bag","10499":"Purple Pansy Bag","10500":"Yellow Pansy Bag","10501":"White Cosmos Bag","10502":"Pink Cosmos Bag","10503":"Blue Cosmos Bag","10504":"Red Tulip Bag","10505":"White Tulip Bag","10506":"Yellow Tulip Bag","10752":"K.K. Chorale","10753":"K.K. March","10754":"K.K. Waltz","10755":"K.K. Swing","10756":"K.K. Jazz","10757":"K.K. Fusion","10758":"K.K. Etude","10759":"K.K. Lullaby","10760":"K.K. Aria","10761":"K.K. Samba","10762":"K.K. Bossa","10763":"K.K. Calypso","10764":"K.K. Salsa","10765":"K.K. Mambo","10766":"K.K. Reggae","10767":"K.K. Ska","10768":"K.K. Tango","10769":"K.K. Faire","10770":"Aloha K.K.","10771":"Lucky K.K.","10772":"K.K. Condor","10773":"K.K. Steppe","10774":"Imperial K.K.","10775":"K.K. Casbah","10776":"K.K. Safari","10777":"K.K. Folk","10778":"K.K. Rock","10779":"Rockin' K.K.","10780":"K.K. Ragtime","10781":"K.K. Gumbo","10782":"The K. Funk","10783":"K.K. Blues","10784":"Soulful K.K.","10785":"K.K. Soul","10786":"K.K. Cruisin'","10787":"K.K. Love Song","10788":"K.K. D & B","10789":"K.K. Technopop","10790":"DJ K.K.","10791":"Only Me","10792":"K.K. Country","10793":"Surfin' K.K.","10794":"K.K. Ballad","10795":"Comrade K.K.","10796":"K.K. Lament","10797":"Go K.K. Rider!","10798":"K.K. Dirge","10799":"K.K. Western","10800":"Mr. K.K.","10801":"Café K.K.","10802":"K.K. Parade","10803":"Señor K.K.","10804":"K.K. Song","10805":"I Love You","10806":"Two Days Ago","11008":"College Rule","11009":"School Pad","11010":"Organizer","11011":"Diary","11012":"Journal","11013":"Pink Diary","11014":"Captain's Log","11015":"Blue Diary","11016":"French Notebook","11017":"Scroll","11018":"Pink Plaid Pad","11019":"Blue Polka Pad","11020":"Green Plaid Pad","11021":"Red Polka Pad","11022":"Yellow Plaid Pad","11023":"Calligraphy Pad","11264":"January Ticket (1)","11265":"January Ticket (2)","11266":"January Ticket (3)","11267":"January Ticket (4)","11268":"January Ticket (5)","11269":"January Ticket (1) (2)","11270":"January Ticket (1) (3)","11271":"January Ticket (1) (4)","11272":"February Ticket (1)","11273":"February Ticket (2)","11274":"February Ticket (3)","11275":"February Ticket (4)","11276":"February Ticket (5)","11277":"February Ticket (1) (2)","11278":"February Ticket (1) (3)","11279":"February Ticket (1) (4)","11280":"March Ticket (1)","11281":"March Ticket (2)","11282":"March Ticket (3)","11283":"March Ticket (4)","11284":"March Ticket (5)","11285":"March Ticket (1) (2)","11286":"March Ticket (1) (3)","11287":"March Ticket (1) (4)","11288":"April Ticket (1)","11289":"April Ticket (2)","11290":"April Ticket (3)","11291":"April Ticket (4)","11292":"April Ticket (5)","11293":"April Ticket (1) (2)","11294":"April Ticket (1) (3)","11295":"April Ticket (1) (4)","11296":"May Ticket (1)","11297":"May Ticket (2)","11298":"May Ticket (3)","11299":"May Ticket (4)","11300":"May Ticket (5)","11301":"May Ticket (1) (2)","11302":"May Ticket (1) (3)","11303":"May Ticket (1) (4)","11304":"June Ticket (1)","11305":"June Ticket (2)","11306":"June Ticket (3)","11307":"June Ticket (4)","11308":"June Ticket (5)","11309":"June Ticket (1) (2)","11310":"June Ticket (1) (3)","11311":"June Ticket (1) (4)","11312":"July Ticket (1)","11313":"July Ticket (2)","11314":"July Ticket (3)","11315":"July Ticket (4)","11316":"July Ticket (5)","11317":"July Ticket (1) (2)","11318":"July Ticket (1) (3)","11319":"July Ticket (1) (4)","11320":"August Ticket (1)","11321":"August Ticket (2)","11322":"August Ticket (3)","11323":"August Ticket (4)","11324":"August Ticket (5)","11325":"August Ticket (1) (2)","11326":"August Ticket (1) (3)","11327":"August Ticket (1) (4)","11328":"September Ticket (1)","11329":"September Ticket (2)","11330":"September Ticket (3)","11331":"September Ticket (4)","11332":"September Ticket (5)","11333":"September Ticket (1) (2)","11334":"September Ticket (1) (3)","11335":"September Ticket (1) (4)","11336":"October Ticket (1)","11337":"October Ticket (2)","11338":"October Ticket (3)","11339":"October Ticket (4)","11340":"October Ticket (5)","11341":"October Ticket (1) (2)","11342":"October Ticket (1) (3)","11343":"October Ticket (1) (4)","11344":"November Ticket (1)","11345":"November Ticket (2)","11346":"November Ticket (3)","11347":"November Ticket (4)","11348":"November Ticket (5)","11349":"November Ticket (1) (2)","11350":"November Ticket (1) (3)","11351":"November Ticket (1) (4)","11352":"December Ticket (1)","11353":"December Ticket (2)","11354":"December Ticket (3)","11355":"December Ticket (4)","11356":"December Ticket (5)","11357":"December Ticket (1) (2)","11358":"December Ticket (1) (3)","11359":"December Ticket (1) (4)","11520":"Common Butterfly","11521":"Yellow Butterfly","11522":"Tiger Butterfly","11523":"Purple Butterfly","11524":"Robust Cicada","11525":"Walker Cicada","11526":"Evening Cicada","11527":"Brown Cicada","11528":"Bee","11529":"Common Dragonfly","11530":"Red Dragonfly","11531":"Darner Dragonfly","11532":"Banded Dragonfly","11533":"Long Locust","11534":"Migratory Locust","11535":"Cricket","11536":"Grasshopper","11537":"Bell Cricket","11538":"Pine Cricket","11539":"Drone Beetle","11540":"Dynastid Beetle","11541":"Flat Stag Beetle","11542":"Jewel Beetle","11543":"Longhorn Beetle","11544":"Ladybug","11545":"Spotted Ladybug","11546":"Mantis","11547":"Firefly","11548":"Cockroach","11549":"Saw Stag Beetle","11550":"Mountain Beetle","11551":"Giant Beetle","11552":"Snail","11553":"Mole Cricket","11554":"Pond Skater","11555":"Bagworm","11556":"Pill Bug","11557":"Spider","11558":"Ant","11559":"Mosquito","11560":"Spirit (1)","11561":"Spirit (2)","11562":"Spirit (3)","11563":"Spirit (4)","11564":"Spirit (5)","11776":"Grab Bag (1)","11777":"Grab Bag (2)","12032":"10 Turnips","12033":"50 Turnips","12034":"100 Turnips","12035":"Spoiled Turnips","12288":"Purple Balloon","12292":"Bunny P. Balloon","12296":"Bunny B. Balloon","12300":"Bunny O. Balloon","12304":"Lady Liberty","12308":"Arc De Triomphe","12312":"Stone Coin","12316":"Mermaid Statue","12320":"Post Model","12324":"House Model","12328":"Manor Model","12332":"Police Model","12336":"Museum Model","12340":"Plate Armor","12344":"Moon Dumpling","12348":"Bean Set","12352":"Osechi","12356":"Lovely Phone","12360":"Market Model","12364":"Katrina's Tent","12368":"Chinese Lion","12372":"Tanabata Palm","12376":"Spring Medal","12380":"Fall Medal","12384":"Shop Model","12388":"Compass","12392":"Long-life Noodle","12396":"Bass Boat","12400":"Lighthouse Model","12404":"Life Ring","12408":"Tree Model","12412":"Pink Tree Model","12416":"Weed Model","12420":"Tailor Model","12424":"Dump Model","12428":"Mortar Ball","12432":"Snowman","12436":"Miniature Car","12440":"Big Catch Flag","12444":"Moon","12448":"Locomotive Model","12452":"Dolly","12456":"Station Model 1","12460":"Station Model 2","12464":"Station Model 3","12468":"Station Model 4","12472":"Station Model 5","12476":"Station Model 6","12480":"Station Model 7","12484":"Station Model 8","12488":"Station Model 9","12492":"Station Model 10","12496":"Station Model 11","12500":"Station Model 12","12504":"Station Model 13","12508":"Station Model 14","12512":"Station Model 15","12516":"Well Model","12520":"Grass Model","12524":"Track Model","12528":"Dirt Model","12532":"Train Car Model","12536":"Orange Box","12540":"College Rule","12544":"School Pad","12548":"Organizer","12552":"Diary","12556":"Journal","12560":"Pink Diary","12564":"Captain's Log","12568":"Blue Diary","12572":"French Notebook","12576":"Scroll","12580":"Pink Plaid Pad","12584":"Blue Polka Pad","12588":"Green Plaid Pad","12592":"Red Polka Pad","12596":"Yellow Plaid Pad","12600":"Calligraphy Pad","12604":"Golden Net","12608":"Golden Axe","12612":"Golden Shovel","12616":"Golden Rod","12620":"Bluebell Fan","12624":"Plum Fan","12628":"Bamboo Fan","12632":"Cloud Fan","12636":"Maple Fan","12640":"Fan Fan","12644":"Flower Fan","12648":"Leaf Fan","12652":"Yellow Pinwheel","12656":"Red Pinwheel","12660":"Tiger Pinwheel","12664":"Green Pinwheel","12668":"Pink Pinwheel","12672":"Striped Pinwheel","12676":"Flower Pinwheel","12680":"Fancy Pinwheel","12684":"Net","12688":"Axe","12692":"Shovel","12696":"Fishing Rod","12700":"Crab Stew","12704":"Fireplace","12708":"Igloo Model","12712":"Snowy Tree Model","12716":"Snowcone Machine","12720":"Treasure Chest","12724":"Beach Chair","12728":"Beach Table","12732":"Hibachi Grill","12736":"Surfboard","12740":"Snowboard","12744":"Wave Breaker","12748":"Ukulele","12752":"Diver Dan","12756":"Snow Bunny","12760":"Scary Painting","12764":"Novel Painting","12768":"Sleigh","12772":"Nintendo Bench","12776":"G Logo","12780":"Merge Sign","12784":"Bottle Rocket","12788":"Wet Roadway Sign","12792":"Detour Sign","12796":"Men at Work Sign","12800":"Lefty Desk","12804":"Righty Desk","12808":"School Desk","12812":"Flagman Sign","12816":"Fishing Trophy","12820":"Jersey Barrier","12824":"Speed Sign","12828":"Golf Trophy","12832":"Teacher's Desk","12836":"Haz-mat Barrel","12840":"Tennis Trophy","12844":"Saw Horse","12848":"Kart Trophy","12852":"Bug Zapper","12856":"Telescope","12860":"Coffee Machine","12864":"Bird Bath","12868":"Barbecue","12872":"Radiator","12876":"Lawn Chair","12880":"Chess Table","12884":"Candy Machine","12888":"Backyard Pool","12892":"Cement Mixer","12896":"Jackhammer","12900":"Tiki Torch","12904":"Birdhouse","12908":"Potbelly Stove","12912":"Bus Stop","12916":"Hamster Cage","12920":"Flip-top Desk","12924":"Festive Flag","12928":"Super Tortimer","12932":"Bird Feeder","12936":"Teacher's Chair","12940":"Steam roller","12944":"Mr. Flamingo","12948":"Mailbox","12952":"Festive Candle","12956":"Hammock","12960":"Garden Gnome","12964":"Mrs. Flamingo","12968":"Spring Medal","12972":"Autumn Medal","12976":"Tumbleweed","12980":"Cow Skull","12984":"Oil Drum","12988":"Saddle Fence","12992":"Western Fence","12996":"Watering Trough","13000":"Luigi Trophy","13004":"Mario Trophy","13008":"Harvest Lamp","13012":"Covered Wagon","13016":"Storefront","13020":"Picnic Table","13024":"Harvest Table","13028":"Harvest TV","13032":"Harvest Bed","13036":"Harvest Chair","13040":"Harvest Clock","13044":"Harvest Sofa","13048":"Green Pipe","13052":"Brick Block","13056":"Harvest Bureau","13060":"Flagpole","13064":"Harvest Dresser","13068":"Super Mushroom","13072":"Harvest Mirror","13076":"Coin","13080":"? Block","13084":"Starman","13088":"Koopa Shell","13092":"Cannon","13096":"Desert Cactus","13100":"Fire Flower","13104":"Wagon Wheel","13108":"Well","13112":"Boxing Barricade","13116":"Neutral Corner","13120":"Red Corner","13124":"Blue Corner","13128":"Boxing Mat","13132":"Ringside Table","13136":"Speed Bag","13140":"Sandbag","13144":"Weight Bench","13148":"Campfire","13152":"Bonfire","13156":"Kayak","13160":"Sprinkler","13164":"Tent Model","13168":"Backpack","13172":"Angler Trophy","13176":"Pansy Model 1","13180":"Pansy Model 2","13184":"Pansy Model 3","13188":"Cosmos Model 1","13192":"Cosmos Model 2","13196":"Cosmos Model 3","13200":"Tulip Model 1","13204":"Tulip Model 2","13208":"Tulip Model 3","13212":"Lantern","13216":"Lawn Mower","13220":"Cooler","13224":"Mountain Bike","13228":"Sleeping Bag","13232":"Propane Stove","13236":"Cornucopia","13240":"Judge's Bell","13244":"Noisemaker","13248":"Chowder","13252":"DUMMY","8797":"Watering Can"};
+function itemName(id){ return ITEM_NAMES[id] ?? null; }
+function itemDisplay(id){
+  const n = itemName(id);
+  return `0x${hex(id,4)} — ${n ?? 'Unknown Item'}`;
+}
+function parseItemInput(raw){
+  const m = raw.match(/0x([0-9a-fA-F]{1,4})/);
+  if (m) return parseInt(m[1],16) & 0xFFFF;
+  const cleaned = raw.replace(/[^0-9a-fA-F]/g,'');
+  return cleaned ? (parseInt(cleaned,16) & 0xFFFF) : 0;
+}
+const VILLAGER_NAMES = {"0":"No Villager","57344":"Bob","57345":"Olivia","57346":"Mitzi","57347":"Kiki","57348":"Tangy","57349":"Kabuki","57350":"Tabby","57351":"Monique","57352":"Stinky","57353":"Purrl","57354":"Kitty","57355":"Tom","57356":"Rosie","57357":"Nosegay","57358":"Zoe","57359":"Pango","57360":"Cyrano","57361":"Snooty","57362":"Teddy","57363":"Chow","57364":"Dozer","57365":"Nate","57366":"Groucho","57367":"Tutu","57368":"Ursala","57369":"Grizzly","57370":"Pinky","57371":"Jay","57372":"Twiggy","57373":"Anchovy","57374":"Piper","57375":"Admiral","57376":"Otis","57377":"Robin","57378":"Midge","57379":"Ace","57380":"Twirp","57381":"Chuck","57382":"Stu","57383":"Goose","57384":"Betty","57385":"Hector","57386":"Egbert","57387":"Ava","57388":"Hank","57389":"Leigh","57390":"Rhoda","57391":"Vladimir","57392":"Murphy","57393":"Cupcake","57394":"Kody","57395":"Maple","57396":"Pudge","57397":"Olive","57398":"Poncho","57399":"Bluebear","57400":"Patty","57401":"Petunia","57402":"Bessie","57403":"Belle","57404":"Alfonso","57405":"Boots","57406":"Liz","57407":"Biskit","57408":"Goldie","57409":"Daisy","57410":"Lucky","57411":"Portia","57412":"Maddie","57413":"Butch","57414":"Bill","57415":"Pompom","57416":"Joey","57417":"Scoot","57418":"Derwin","57419":"Freckles","57420":"Paolo","57421":"Dizzy","57422":"Axel","57423":"Emerald","57424":"Tad","57425":"Wart Jr.","57426":"Cousteau","57427":"Puddles","57428":"Lily","57429":"Jeremiah","57430":"Huck","57431":"Camofrog","57432":"Ribbot","57433":"Prince","57434":"Jambette","57435":"Billy","57436":"Chevre","57437":"Iggy","57438":"Gruff","57439":"Sven","57440":"Velma","57441":"Jane","57442":"Cesar","57443":"Louie","57444":"Peewee","57445":"Rollo","57446":"Bubbles","57447":"Bertha","57448":"Elmer","57449":"Winnie","57450":"Savannah","57451":"Ed","57452":"Cleo","57453":"Peaches","57454":"Buck","57455":"Carrie","57456":"Mathilda","57457":"Marcy","57458":"Kitt","57459":"Valise","57460":"Astrid","57461":"Sydney","57462":"Gonzo","57463":"Ozzie","57464":"Yuka","57465":"Huggy","57466":"Rex","57467":"Aziz","57468":"Leopold","57469":"Samson","57470":"Penny","57471":"Dora","57472":"Chico","57473":"Candi","57474":"Rizzo","57475":"Anicotti","57476":"Limberg","57477":"Carmen","57478":"Octavian","57479":"Sandy","57480":"Sprocket","57481":"Rio","57482":"Queenie","57483":"Apollo","57484":"Buzz","57485":"Quetzal","57486":"Amelia","57487":"Pierce","57488":"Roald","57489":"Aurora","57490":"Hopper","57491":"Cube","57492":"Puck","57493":"Gwen","57494":"Friga","57495":"Curly","57496":"Truffles","57497":"Spork","57498":"Hugh","57499":"Rasher","57500":"Sue E","57501":"Hambo","57502":"Lucy","57503":"Cobb","57504":"Boris","57505":"Bunnie","57506":"Doc","57507":"Gaston","57508":"Coco","57509":"Gabi","57510":"Dotty","57511":"Genji","57512":"Snake","57513":"Claude","57514":"Tank","57515":"Spike","57516":"Tiara","57517":"Vesta","57518":"Filbert","57519":"Hazel","57520":"Peanut","57521":"Pecan","57522":"Ricky","57523":"Static","57524":"Mint","57525":"Nibbles","57526":"Tybalt","57527":"Rolf","57528":"Bangle","57529":"Lobo","57530":"Freya","57531":"Chief","57532":"Weber","57533":"Mallary","57534":"Wolfgang","57535":"Hornsby","57536":"Oxford","57537":"T-Bone","57538":"Biff","57539":"Opal","57540":"Bones","57541":"Bea","57542":"Bitty","57543":"Rocco","57544":"Lulu","57545":"Blaire","57546":"Sally","57547":"Ellie","57548":"Eloise","57549":"Alli","57550":"Pippy","57551":"Eunice","57552":"Baabara","57553":"Fang","57554":"Deena","57555":"Pate","57556":"Stella","57557":"Cashmere","57558":"Woolio","57559":"Cookie","57560":"Maelle","57561":"O'Hare","57562":"Bliss","57563":"Drift","57564":"Bud","57565":"Boomer","57566":"Elina","57567":"Flash","57568":"Dobie","57569":"Flossie","57570":"Annalise","57571":"Plucky","57572":"Faith","57573":"Yodel","57574":"Rowan","57575":"June","57576":"Cheri","57577":"Pigleg","57578":"Ankha","57579":"Punchy"};
+function villagerName(id){ return VILLAGER_NAMES[id] ?? null; }
+function villagerDisplay(id){
+  if (id === 0) return 'Empty Lot';
+  const n = villagerName(id);
+  return `0x${hex(id,4)} — ${n ?? 'Unknown Villager'}`;
+}
+const VILLAGER_DATA_OFF = 0x17438; // relative to SDO
+const VILLAGER_SIZE = 0x988;
+const VILLAGER_COUNT = 15; // slot 16 is the campsite islander, not handled here
+const V = {
+  VILLAGER_ID: 0x0,
+  TOWN_NAME: 0x4, TOWN_NAME_SIZE: 8,
+  PERSONALITY: 0xD,
+  CATCHPHRASE: 0x89D, CATCHPHRASE_SIZE: 0xA,
+  SHIRT: 0x8E4,
+  // Undocumented — not in any reference tooling. Found by manually diffing a
+  // save where the player's name still showed a stale leading-space copy
+  // here. Appears in both occupied and never-used villager slots, which
+  // points to leftover/uninitialized data rather than a real game-read field.
+  STALE_NAME: 0x8D0, STALE_NAME_SIZE: 16,
+};
+const VILLAGER_PERSONALITIES = ["Normal ♀","Peppy ♀","Lazy ♂","Jock ♂","Cranky ♂","Snooty ♀","Not Set"];
+
+const ITEM_IDS_SORTED = Object.keys(ITEM_NAMES).map(Number).sort((a,b)=>a-b);
+
+function searchItems(query, limit){
+  const q = query.trim().toLowerCase().replace(/^0x/,'');
+  if (!q) return ITEM_IDS_SORTED.slice(0, limit);
+  const out = [];
+  for (const id of ITEM_IDS_SORTED){
+    const name = ITEM_NAMES[id].toLowerCase();
+    const hexStr = hex(id,4).toLowerCase();
+    if (name.includes(q) || hexStr.includes(q)){
+      out.push(id);
+      if (out.length >= limit) break;
+    }
+  }
+  return out;
+}
+
+/* Custom searchable item picker — native <datalist> dropdowns don't render
+   on iOS/mobile Safari, so we build our own suggestion list instead. */
+function attachItemPicker(el, getOffset){
+  const wrap = document.createElement('div');
+  wrap.className = 'item-picker';
+  el.parentNode.insertBefore(wrap, el);
+  wrap.appendChild(el);
+  const list = document.createElement('div');
+  list.className = 'item-suggest';
+  wrap.appendChild(list);
+
+  function open(){
+    const results = searchItems(el.value.includes('—') ? '' : el.value, 60);
+    if (!results.length){
+      list.innerHTML = `<div class="empty">No matches — you can still type a raw hex ID.</div>`;
+    } else {
+      list.innerHTML = results.map(id =>
+        `<div class="row" data-id="${id}">${escapeHtml(itemDisplay(id))}</div>`
+      ).join('');
+    }
+    list.classList.add('show');
+  }
+  function close(){ list.classList.remove('show'); }
+
+  el.addEventListener('focus', open);
+  el.addEventListener('click', open);
+  el.addEventListener('input', open);
+  list.addEventListener('mousedown', e => {
+    const row = e.target.closest('.row');
+    if (!row) return;
+    e.preventDefault();
+    const id = +row.dataset.id;
+    el.value = itemDisplay(id);
+    wU16(getOffset(), id);
+    updateStatus();
+    close();
+  });
+  el.addEventListener('blur', () => {
+    setTimeout(() => {
+      const v = parseItemInput(el.value);
+      wU16(getOffset(), v);
+      el.value = itemDisplay(v);
+      updateStatus();
+      close();
+    }, 120);
+  });
+}
+
+/* Villager species picker — same UX as the item picker, scoped to
+   known base-game villagers only (0x0000 "No Villager" excluded,
+   since this picker is only used to swap an existing resident). */
+const VILLAGER_IDS_SORTED = Object.keys(VILLAGER_NAMES).map(Number).filter(id => id !== 0).sort((a,b)=>a-b);
+
+function searchVillagers(query, limit){
+  const q = query.trim().toLowerCase().replace(/^0x/,'');
+  if (!q) return VILLAGER_IDS_SORTED.slice(0, limit);
+  const out = [];
+  for (const id of VILLAGER_IDS_SORTED){
+    const name = VILLAGER_NAMES[id].toLowerCase();
+    const hexStr = hex(id,4).toLowerCase();
+    if (name.includes(q) || hexStr.includes(q)){
+      out.push(id);
+      if (out.length >= limit) break;
+    }
+  }
+  return out;
+}
+
+function attachVillagerPicker(el, getOffset){
+  const wrap = document.createElement('div');
+  wrap.className = 'item-picker';
+  el.parentNode.insertBefore(wrap, el);
+  wrap.appendChild(el);
+  const list = document.createElement('div');
+  list.className = 'item-suggest';
+  wrap.appendChild(list);
+
+  function open(){
+    const results = searchVillagers(el.value.includes('—') ? '' : el.value, 60);
+    if (!results.length){
+      list.innerHTML = `<div class="empty">No matches.</div>`;
+    } else {
+      list.innerHTML = results.map(id =>
+        `<div class="row" data-id="${id}">${escapeHtml(villagerDisplay(id))}</div>`
+      ).join('');
+    }
+    list.classList.add('show');
+  }
+  function close(){ list.classList.remove('show'); }
+
+  el.addEventListener('focus', open);
+  el.addEventListener('click', open);
+  el.addEventListener('input', open);
+  list.addEventListener('mousedown', e => {
+    const row = e.target.closest('.row');
+    if (!row) return;
+    e.preventDefault();
+    const id = +row.dataset.id;
+    el.value = villagerDisplay(id);
+    wU16(getOffset(), id);
+    updateStatus();
+    close();
+  });
+  el.addEventListener('blur', () => {
+    setTimeout(() => {
+      el.value = villagerDisplay(rU16(getOffset()));
+      close();
+    }, 120);
+  });
+}
+
+function decodeAcString(bytes){
+  let s = '';
+  for (const b of bytes) s += AC_CHARMAP[b] ?? '';
+  return s.replace(/ +$/,'');
+}
+function encodeAcString(str, size){
+  const out = new Uint8Array(size).fill(0x20);
+  const chars = Array.from(str).slice(0, size);
+  let hadUnknown = false;
+  chars.forEach((ch, i) => {
+    if (CHAR_TO_BYTE.has(ch)) out[i] = CHAR_TO_BYTE.get(ch);
+    else { out[i] = 0x20; hadUnknown = true; }
+  });
+  return { bytes: out, hadUnknown };
+}
+
+/* =========================================================
+   Save layout (Animal Crossing / GAFE / GAFP / GAFU, .gci)
+   Offsets sourced & verified against Cuyler36/ACSE.
+   ========================================================= */
+const FILE_LEN       = 0x72040;
+const SDO             = 0x26040;   // primary save block start
+const SAVE_SIZE       = 0x26000;   // size of one save copy
+const CHECKSUM_OFF    = 0x12;      // relative to SDO
+const PLAYER_START    = 0x20;
+const PLAYER_SIZE     = 0x2440;
+const PLAYER_COUNT    = 4;
+const TOWN_NAME_OFF   = 0x9120;    // relative to SDO
+const TOWN_NAME_SIZE  = 8;
+const TOWN_DATA_OFF   = 0x137A8;   // relative to SDO — the placed-item grid for every acre
+const ACRE_COUNT      = 30;        // 5x6 town grid
+const ACRE_TILE_COUNT = 256;       // 16x16 tiles per acre
+const ACRE_BYTES      = ACRE_TILE_COUNT * 2;
+const WEED_ITEM_IDS   = new Set([8, 9, 10]);
+const WEATHER_OFF     = 0x20F19;   // relative to SDO — high nibble = weather index
+const WEATHER_NAMES   = ["None","Rain","Snow","Cherry Blossoms","Fall Leaves"];
+const TRAIN_STATION_OFF = 0x20F18; // relative to SDO
+const TRAIN_STATION_NAMES = [
+  "Wooden Station #1","Wooden Station #2","Wooden Station #3","Wooden Station #4","Wooden Station #5",
+  "Metal Station #1","Metal Station #2","Metal Station #3","Metal Station #4","Metal Station #5",
+  "Brick Station #1","Brick Station #2","Brick Station #3","Brick Station #4","Brick Station #5",
+];
+
+const P = {
+  NAME:0x00, NAME_SIZE:8,
+  TOWN:0x08, TOWN_SIZE:8,
+  IDENT:0x10,
+  GENDER:0x14,
+  FACE:0x15,
+  RESET_COUNT:0x16,
+  POCKETS:0x68, POCKETS_COUNT:15,
+  BELLS:0x8C,
+  DEBT:0x90,
+  HELD_ITEM:0x4A4,
+  INV_BG:0x1084,
+  SHIRT:0x108A,
+  BIRTHDAY:0x10A6, // month byte, day byte
+  SAVINGS:0x1238,
+};
+
+const FACE_NAMES = [
+  "Male #1 — Eyelashes","Male #2 — Circle w/ Eyebrows","Male #3 — Purple Bags","Male #4 — Circle Dot",
+  "Male #5 — Large Oval","Male #6 — Half Oval","Male #7 — Flushed Cheeks","Male #8 — Blue Circle",
+  "Female #1 — Full Black (Pink Hair)","Female #2 — Squinty (Purple Hair)","Female #3 — Flushed (Brown Hair)","Female #4 — Bags (Blue Hair)",
+  "Female #5 — Eyelashes (Pink Hair)","Female #6 — Half Oval (Ginger)","Female #7 — Blue Eyes (Dark Blue)","Female #8 — Eyelashes (Red Hair)",
+  "Male #1 — Bee Sting","Male #2 — Bee Sting","Male #3 — Bee Sting","Male #4 — Bee Sting",
+  "Male #5 — Bee Sting","Male #6 — Bee Sting","Male #7 — Bee Sting","Male #8 — Bee Sting",
+  "Female #1 — Bee Sting","Female #2 — Bee Sting","Female #3 — Bee Sting","Female #4 — Bee Sting",
+  "Female #5 — Bee Sting","Female #6 — Bee Sting","Female #7 — Bee Sting","Female #8 — Bee Sting",
+];
+
+const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+
+/* =========================================================
+   State
+   ========================================================= */
+let bytes = null;       // Uint8Array of the whole file
+let fileBaseName = 'town';
+let players = [];       // {index, base, exists}
+let activeTab = 0;
+
+/* ---- byte helpers ---- */
+const rU8  = (o) => bytes[o];
+const wU8  = (o,v) => { bytes[o] = v & 0xFF; };
+const rU16 = (o) => (bytes[o] << 8) | bytes[o+1];
+const wU16 = (o,v) => { bytes[o] = (v>>8)&0xFF; bytes[o+1] = v&0xFF; };
+const rU32 = (o) => ((bytes[o]<<24) | (bytes[o+1]<<16) | (bytes[o+2]<<8) | bytes[o+3]) >>> 0;
+const wU32 = (o,v) => { v = v>>>0; bytes[o]=(v>>>24)&0xFF; bytes[o+1]=(v>>>16)&0xFF; bytes[o+2]=(v>>>8)&0xFF; bytes[o+3]=v&0xFF; };
+
+function hex(n, digits){ return n.toString(16).toUpperCase().padStart(digits,'0'); }
+
+/* =========================================================
+   Loading
+   ========================================================= */
+const dropzone = document.getElementById('dropzone');
+const fileInput = document.getElementById('fileInput');
+const errorBox = document.getElementById('errorBox');
+
+dropzone.addEventListener('click', () => fileInput.click());
+dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.classList.add('drag'); });
+dropzone.addEventListener('dragleave', () => dropzone.classList.remove('drag'));
+dropzone.addEventListener('drop', e => {
+  e.preventDefault();
+  dropzone.classList.remove('drag');
+  if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
+});
+fileInput.addEventListener('change', e => { if (e.target.files.length) handleFile(e.target.files[0]); });
+
+document.getElementById('reloadBtn').addEventListener('click', () => {
+  document.getElementById('editor').style.display = 'none';
+  document.getElementById('loadStage').style.display = 'block';
+  errorBox.style.display = 'none';
+  fileInput.value = '';
+});
+
+function showError(msg){
+  errorBox.textContent = msg;
+  errorBox.style.display = 'block';
+}
+
+function handleFile(file){
+  errorBox.style.display = 'none';
+  fileBaseName = file.name.replace(/\.[^.]+$/, '');
+  const reader = new FileReader();
+  reader.onload = () => {
+    const buf = new Uint8Array(reader.result);
+    if (buf.length !== FILE_LEN){
+      showError(`This file is ${buf.length.toLocaleString()} bytes — a standard GAFE01 memory card save is ${FILE_LEN.toLocaleString()} bytes. This tool only supports the .gci format exported from a memory card / Dolphin (GAFE, GAFP, or GAFU region).`);
+      return;
+    }
+    const gameId = String.fromCharCode(buf[0], buf[1], buf[2], buf[3]);
+    if (!['GAFE','GAFP','GAFU'].includes(gameId)){
+      showError(`Unrecognized game ID "${gameId}". This editor is built for the English-language Animal Crossing GameCube release (used by Deluxe) — GAFE (US), GAFP (PAL) or GAFU (Australia).`);
+      return;
+    }
+    bytes = buf;
+    loadPlayers();
+    buildUI();
+    document.getElementById('loadStage').style.display = 'none';
+    document.getElementById('editor').style.display = 'block';
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+function loadPlayers(){
+  players = [];
+  for (let i=0;i<PLAYER_COUNT;i++){
+    const base = SDO + PLAYER_START + i*PLAYER_SIZE;
+    const ident = rU16(base + P.IDENT);
+    const exists = ident !== 0 && ident !== 0xFFFF;
+    players.push({ index:i, base, exists });
+  }
+}
+
+/* =========================================================
+   Checksum + save
+   ========================================================= */
+function computeChecksum(){
+  let checksum = 0;
+  const end = SDO + SAVE_SIZE;
+  for (let off = SDO; off < end - 1; off += 2){
+    const rel = off - SDO;
+    if (rel === CHECKSUM_OFF) continue;
+    const word = (bytes[off] << 8) | bytes[off+1];
+    checksum = (checksum + word) & 0xFFFF;
+  }
+  return (0x10000 - checksum) & 0xFFFF;
+}
+
+function currentStoredChecksum(){
+  return rU16(SDO + CHECKSUM_OFF);
+}
+
+function finalizeAndDownload(){
+  // Sync town name across all existing players' per-player copy, and every villager's copy
+  const townField = document.getElementById('townNameInput');
+  if (townField){
+    const { bytes: tBytes } = encodeAcString(townField.value, TOWN_NAME_SIZE);
+    bytes.set(tBytes, SDO + TOWN_NAME_OFF);
+    players.forEach(p => { if (p.exists) bytes.set(tBytes, p.base + P.TOWN); });
+    for (let i = 0; i < VILLAGER_COUNT; i++){
+      const vBase = SDO + VILLAGER_DATA_OFF + i*VILLAGER_SIZE;
+      if (rU16(vBase + V.VILLAGER_ID) !== 0) bytes.set(tBytes, vBase + V.TOWN_NAME);
+    }
+  }
+
+  // Recalculate checksum
+  const newChecksum = computeChecksum();
+  wU16(SDO + CHECKSUM_OFF, newChecksum);
+
+  // Mirror primary save block to its backup copy, exactly like the game does
+  const primary = bytes.slice(SDO, SDO + SAVE_SIZE);
+  bytes.set(primary, SDO + SAVE_SIZE);
+
+  const blob = new Blob([bytes], { type: 'application/octet-stream' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${fileBaseName}_edited.gci`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+
+  updateStatus();
+  showToast('Save file downloaded ✓');
+}
+
+function updateStatus(){
+  const stored = currentStoredChecksum();
+  const computed = computeChecksum();
+  const dot = document.getElementById('statusDot');
+  const text = document.getElementById('statusText');
+  if (stored === computed){
+    dot.classList.remove('bad');
+    text.textContent = 'Checksum valid — ready to download';
+  } else {
+    dot.classList.add('bad');
+    text.textContent = 'Unsaved changes — checksum recalculates on download';
+  }
+}
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+document.getElementById('downloadBtn').addEventListener('click', finalizeAndDownload);
+
+/* =========================================================
+   Town utilities
+   ========================================================= */
+function removeAllWeeds(){
+  let removed = 0;
+  const base = SDO + TOWN_DATA_OFF;
+  for (let a = 0; a < ACRE_COUNT; a++){
+    for (let i = 0; i < ACRE_TILE_COUNT; i++){
+      const off = base + a*ACRE_BYTES + i*2;
+      if (WEED_ITEM_IDS.has(rU16(off))){
+        wU16(off, 0); // Empty
+        removed++;
+      }
+    }
+  }
+  updateStatus();
+  return removed;
+}
+
+function cleanupStaleNameCopies(){
+  // Scans the undocumented villager-record field for a leftover copy of a
+  // player's name with a stale leading space, and rewrites it to cleanly
+  // match that player's current name. Matches generically against whichever
+  // player it resembles — not hardcoded to any one name.
+  let fixed = 0;
+  const currentNames = players.filter(p => p.exists).map(p =>
+    decodeAcString(bytes.slice(p.base+P.NAME, p.base+P.NAME+P.NAME_SIZE))
+  ).filter(Boolean);
+
+  for (let i = 0; i < VILLAGER_COUNT; i++){
+    const vBase = SDO + VILLAGER_DATA_OFF + i*VILLAGER_SIZE;
+    const fieldOff = vBase + V.STALE_NAME;
+    const raw = bytes.slice(fieldOff, fieldOff + V.STALE_NAME_SIZE);
+    if (raw[0] !== 0x20) continue; // only touch the specific leading-space pattern
+    const decoded = decodeAcString(raw); // trims trailing spaces, keeps leading
+    const stripped = decoded.replace(/^ +/, '');
+    if (currentNames.includes(stripped)){
+      const { bytes: cleanBytes } = encodeAcString(stripped, V.STALE_NAME_SIZE);
+      bytes.set(cleanBytes, fieldOff);
+      fixed++;
+    }
+  }
+  updateStatus();
+  return fixed;
+}
+
+function readWeatherIndex(){ return rU8(SDO + WEATHER_OFF) >> 4; }
+function writeWeatherIndex(idx){
+  const cur = rU8(SDO + WEATHER_OFF);
+  wU8(SDO + WEATHER_OFF, (cur & 0x0F) | ((idx & 0x0F) << 4));
+}
+
+/* =========================================================
+   UI building
+   ========================================================= */
+function buildUI(){
+  const tabbar = document.getElementById('tabbar');
+  const panels = document.getElementById('panels');
+  tabbar.innerHTML = '';
+  panels.innerHTML = '';
+
+  const existing = players.filter(p => p.exists);
+  const tabs = [...existing.map(p => ({ type:'player', p })), { type:'town' }, { type:'villagers' }];
+
+  tabs.forEach((tab, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'tab-btn' + (i===0 ? ' active' : '');
+    btn.textContent = tab.type === 'town' ? '🏘 Town' : tab.type === 'villagers' ? '🐾 Villagers' :
+      `🙂 ${decodeAcString(bytes.slice(tab.p.base+P.NAME, tab.p.base+P.NAME+P.NAME_SIZE)) || 'Player ' + (tab.p.index+1)}`;
+    btn.addEventListener('click', () => switchTab(i));
+    tabbar.appendChild(btn);
+
+    const panel = document.createElement('div');
+    panel.className = 'panel' + (i===0 ? ' active' : '');
+    panel.id = 'panel-' + i;
+    panel.innerHTML = tab.type === 'town' ? townPanelHTML() : tab.type === 'villagers' ? villagersPanelHTML() : playerPanelHTML(tab.p);
+    panels.appendChild(panel);
+  });
+
+  tabs.forEach((tab, i) => { if (tab.type === 'player') wirePlayerPanel(tab.p, i); });
+  wireTownPanel();
+  wireVillagersPanel();
+
+  const townName = decodeAcString(bytes.slice(SDO+TOWN_NAME_OFF, SDO+TOWN_NAME_OFF+TOWN_NAME_SIZE));
+  const firstPlayer = existing[0];
+  const playerName = firstPlayer ? decodeAcString(bytes.slice(firstPlayer.base+P.NAME, firstPlayer.base+P.NAME+P.NAME_SIZE)) : '';
+  document.getElementById('signSub').innerHTML = townName
+    ? `Editing <b>${escapeHtml(townName)}</b>${playerName ? ' — ' + escapeHtml(playerName) + "'s save" : ''}`
+    : `A save editor for <b>Animal Crossing (GameCube)</b>, including saves patched with the <b>Deluxe</b> mod.`;
+
+  updateStatus();
+}
+
+function switchTab(i){
+  document.querySelectorAll('.tab-btn').forEach((b,idx) => b.classList.toggle('active', idx===i));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-'+i).classList.add('active');
+}
+
+function escapeHtml(s){
+  return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function playerPanelHTML(p){
+  const name = decodeAcString(bytes.slice(p.base+P.NAME, p.base+P.NAME+P.NAME_SIZE));
+  const gender = rU8(p.base+P.GENDER);
+  const face = rU8(p.base+P.FACE);
+  const bells = rU32(p.base+P.BELLS);
+  const debt = rU32(p.base+P.DEBT);
+  const savings = rU32(p.base+P.SAVINGS);
+  const heldItem = rU16(p.base+P.HELD_ITEM);
+  const shirt = rU16(p.base+P.SHIRT);
+  const invBg = rU16(p.base+P.INV_BG);
+  const month = rU8(p.base+P.BIRTHDAY);
+  const day = rU8(p.base+P.BIRTHDAY+1);
+  const resetCount = rU8(p.base+P.RESET_COUNT);
+
+  return `
+    <div class="card">
+      <h4>👤 Profile</h4>
+      <div class="grid">
+        <div>
+          <label>Name (max 8 characters)</label>
+          <input type="text" id="p${p.index}-name" maxlength="8" value="${escapeHtml(name)}">
+          <p class="hint" id="p${p.index}-name-hint">Uses the in-game Animal Crossing character set.</p>
+        </div>
+        <div>
+          <label>Gender</label>
+          <select id="p${p.index}-gender">
+            <option value="0" ${gender===0?'selected':''}>Male</option>
+            <option value="1" ${gender===1?'selected':''}>Female</option>
+          </select>
+        </div>
+        <div>
+          <label>Face</label>
+          <select id="p${p.index}-face">
+            ${FACE_NAMES.map((n,i)=>`<option value="${i}" ${i===face?'selected':''}>${n}</option>`).join('')}
+          </select>
+        </div>
+        <div>
+          <label>Birthday — Month</label>
+          <select id="p${p.index}-bmonth">
+            ${MONTHS.map((m,i)=>`<option value="${i+1}" ${i+1===month?'selected':''}>${m}</option>`).join('')}
+          </select>
+        </div>
+        <div>
+          <label>Birthday — Day</label>
+          <input type="number" id="p${p.index}-bday" min="1" max="31" value="${day}">
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h4>😤 Mr. Resetti</h4>
+      <div class="grid">
+        <div>
+          <label>Reset count</label>
+          <input type="number" class="mono" id="p${p.index}-resetcount" min="0" max="255" value="${resetCount}">
+          <p class="hint">How many times you've power-reset without saving. Higher counts make Resetti's lectures longer and angrier — zero it out for a clean slate.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h4>💰 Wallet</h4>
+      <div class="grid">
+        <div>
+          <label>Bells on hand</label>
+          <input type="number" class="mono" id="p${p.index}-bells" min="0" max="999999999" value="${bells}">
+        </div>
+        <div>
+          <label>Nook's loan (debt)</label>
+          <input type="number" class="mono" id="p${p.index}-debt" min="0" max="999999999" value="${debt}">
+        </div>
+        <div>
+          <label>Post office savings</label>
+          <input type="number" class="mono" id="p${p.index}-savings" min="0" max="999999999" value="${savings}">
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h4>🎽 Equipped &amp; wallpaper</h4>
+      <div class="grid">
+        <div>
+          <label>Held item</label>
+          <input type="text" class="mono" id="p${p.index}-held" value="${itemDisplay(heldItem)}">
+        </div>
+        <div>
+          <label>Shirt</label>
+          <input type="text" class="mono" id="p${p.index}-shirt" value="${itemDisplay(shirt)}">
+        </div>
+        <div>
+          <label>Inventory background</label>
+          <input type="text" class="mono" id="p${p.index}-invbg" value="${itemDisplay(invBg)}">
+        </div>
+      </div>
+      <p class="hint">Start typing an item name or hex ID and pick from the list. "Unknown Item" just means it isn't in the loaded item list — it's still safe to leave or edit by hex.</p>
+    </div>
+
+    <div class="card">
+      <h4>🎒 Pockets (15 slots)</h4>
+      <div class="pockets-grid">
+        ${Array.from({length:P.POCKETS_COUNT}).map((_,i) => {
+          const val = rU16(p.base + P.POCKETS + i*2);
+          return `<div class="pocket-slot"><label>Slot ${i+1}</label><input type="text" class="mono" id="p${p.index}-pocket${i}" value="${itemDisplay(val)}"></div>`;
+        }).join('')}
+      </div>
+      <p class="hint">0x0000 — Empty is an empty slot.</p>
+    </div>
+  `;
+}
+
+function wirePlayerPanel(p, tabIdx){
+  const idx = p.index;
+  const nameInput = document.getElementById(`p${idx}-name`);
+  nameInput.addEventListener('input', () => {
+    const { bytes: nBytes, hadUnknown } = encodeAcString(nameInput.value, P.NAME_SIZE);
+    bytes.set(nBytes, p.base + P.NAME);
+    document.getElementById(`p${idx}-name-hint`).innerHTML = hadUnknown
+      ? '<span class="warn-text">Some characters aren\'t in the AC font and were replaced with a space.</span>'
+      : 'Uses the in-game Animal Crossing character set.';
+    // keep tab label in sync
+    document.querySelectorAll('.tab-btn')[tabIdx].textContent = `🙂 ${nameInput.value || 'Player ' + (idx+1)}`;
+    updateStatus();
+  });
+
+  document.getElementById(`p${idx}-gender`).addEventListener('change', e => { wU8(p.base+P.GENDER, +e.target.value); updateStatus(); });
+  document.getElementById(`p${idx}-face`).addEventListener('change', e => { wU8(p.base+P.FACE, +e.target.value); updateStatus(); });
+  document.getElementById(`p${idx}-bmonth`).addEventListener('change', e => { wU8(p.base+P.BIRTHDAY, +e.target.value); updateStatus(); });
+  document.getElementById(`p${idx}-bday`).addEventListener('input', e => {
+    let v = Math.max(1, Math.min(31, +e.target.value || 1));
+    wU8(p.base+P.BIRTHDAY+1, v); updateStatus();
+  });
+  document.getElementById(`p${idx}-resetcount`).addEventListener('input', e => {
+    let v = Math.max(0, Math.min(255, +e.target.value || 0));
+    wU8(p.base+P.RESET_COUNT, v); updateStatus();
+  });
+  document.getElementById(`p${idx}-bells`).addEventListener('input', e => {
+    let v = Math.max(0, Math.min(999999999, +e.target.value || 0));
+    wU32(p.base+P.BELLS, v); updateStatus();
+  });
+  document.getElementById(`p${idx}-debt`).addEventListener('input', e => {
+    let v = Math.max(0, Math.min(999999999, +e.target.value || 0));
+    wU32(p.base+P.DEBT, v); updateStatus();
+  });
+  document.getElementById(`p${idx}-savings`).addEventListener('input', e => {
+    let v = Math.max(0, Math.min(999999999, +e.target.value || 0));
+    wU32(p.base+P.SAVINGS, v); updateStatus();
+  });
+
+  const itemField = (elId, offset) => {
+    attachItemPicker(document.getElementById(elId), () => offset);
+  };
+  itemField(`p${idx}-held`, p.base+P.HELD_ITEM);
+  itemField(`p${idx}-shirt`, p.base+P.SHIRT);
+  itemField(`p${idx}-invbg`, p.base+P.INV_BG);
+  for (let i=0;i<P.POCKETS_COUNT;i++){
+    itemField(`p${idx}-pocket${i}`, p.base + P.POCKETS + i*2);
+  }
+}
+
+function townPanelHTML(){
+  const townName = decodeAcString(bytes.slice(SDO+TOWN_NAME_OFF, SDO+TOWN_NAME_OFF+TOWN_NAME_SIZE));
+  const weatherIdx = readWeatherIndex();
+  const stationIdx = rU8(SDO+TRAIN_STATION_OFF);
+  return `
+    <div class="card">
+      <h4>🏘 Town</h4>
+      <div class="grid">
+        <div>
+          <label>Town name (max 8 characters)</label>
+          <input type="text" id="townNameInput" maxlength="8" value="${escapeHtml(townName)}">
+          <p class="hint" id="town-name-hint">Written to the town record and every resident's save on download.</p>
+        </div>
+        <div>
+          <label>Weather</label>
+          <select id="weatherSelect">
+            ${WEATHER_NAMES.map((n,i)=>`<option value="${i}" ${i===weatherIdx?'selected':''}>${n}</option>`).join('')}
+          </select>
+          <p class="hint">Based on testing, this doesn't force the visible weather on load, but setting Rain does mark flowers as watered/sparkling — so this doubles as an accidental "water all flowers" button.</p>
+        </div>
+        <div>
+          <label>Train station design</label>
+          <select id="stationSelect">
+            ${TRAIN_STATION_NAMES.map((n,i)=>`<option value="${i}" ${i===stationIdx?'selected':''}>${n}</option>`).join('')}
+          </select>
+          <p class="hint">Changes the look of your town's train station.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h4>🧹 Utilities</h4>
+      <div class="grid">
+        <div>
+          <label>Weeds</label>
+          <button class="ghost" id="removeWeedsBtn" style="color:var(--bark);border-color:var(--bark-soft);width:100%;">🌿 Remove all weeds</button>
+          <p class="hint" id="weedsResultHint">Scans every acre and clears any weed tiles.</p>
+        </div>
+        <div>
+          <label>Leftover name copies</label>
+          <button class="ghost" id="cleanupNamesBtn" style="color:var(--bark);border-color:var(--bark-soft);width:100%;">🧽 Clean up stale name copies</button>
+          <p class="hint" id="cleanupNamesResultHint">Fixes an undocumented copy of a player's name to match the name you have set.</p>
+        </div>
+      </div>
+      <p class="hint" style="margin-top:12px;">
+        Not included: watering flowers directly. Even ACSE (Cuyler36's own save editor, built off the game's decompilation)
+        doesn't implement flower-watering for the GameCube version — only for later DS/Wii/3DS titles — so the exact
+        watered-state mechanism here isn't confirmed anywhere I could verify it. (Though as noted above, setting the
+        weather to Rain seems to get you most of the way there.)
+      </p>
+    </div>
+
+    <div class="card">
+      <h4>ℹ️ About the town data</h4>
+      <p class="hint" style="font-size:13px;">
+        The acre layout, placed items, buried items, villagers, and buildings are complex, densely packed structures —
+        editing them safely needs a lot more validation than fits here, so beyond the weed tool above, this editor
+        leaves them untouched. Everything you haven't changed on this page is carried over byte-for-byte from your
+        original file.
+      </p>
+    </div>
+  `;
+}
+
+function wireTownPanel(){
+  const el = document.getElementById('townNameInput');
+  el.addEventListener('input', () => {
+    const { hadUnknown } = encodeAcString(el.value, TOWN_NAME_SIZE);
+    document.getElementById('town-name-hint').innerHTML = hadUnknown
+      ? '<span class="warn-text">Some characters aren\'t in the AC font and were replaced with a space.</span>'
+      : 'Written to the town record and every resident\'s save on download.';
+    updateStatus();
+  });
+
+  document.getElementById('weatherSelect').addEventListener('change', e => {
+    writeWeatherIndex(+e.target.value);
+    updateStatus();
+  });
+
+  document.getElementById('stationSelect').addEventListener('change', e => {
+    wU8(SDO+TRAIN_STATION_OFF, +e.target.value);
+    updateStatus();
+  });
+
+  document.getElementById('removeWeedsBtn').addEventListener('click', () => {
+    const removed = removeAllWeeds();
+    const hint = document.getElementById('weedsResultHint');
+    hint.textContent = removed > 0
+      ? `Cleared ${removed} weed tile${removed === 1 ? '' : 's'}. Download to keep the change.`
+      : `No weeds found — your town's already clean.`;
+    showToast(removed > 0 ? `Removed ${removed} weeds 🌿` : `No weeds to remove ✓`);
+  });
+
+  document.getElementById('cleanupNamesBtn').addEventListener('click', () => {
+    const fixed = cleanupStaleNameCopies();
+    const hint = document.getElementById('cleanupNamesResultHint');
+    hint.textContent = fixed > 0
+      ? `Fixed ${fixed} leftover cop${fixed === 1 ? 'y' : 'ies'}. Download to keep the change.`
+      : `Nothing to fix — no stale copies found.`;
+    showToast(fixed > 0 ? `Cleaned up ${fixed} 🧽` : `Nothing to clean ✓`);
+  });
+}
+
+function villagerSlotHTML(i){
+  const vBase = SDO + VILLAGER_DATA_OFF + i*VILLAGER_SIZE;
+  const vid = rU16(vBase + V.VILLAGER_ID);
+  const exists = vid !== 0;
+
+  if (!exists){
+    return `
+      <div class="card" style="opacity:.6;">
+        <h4>🏡 Lot ${i+1} — Empty</h4>
+        <p class="hint">No resident here. Moving a new villager into a vacant lot needs a proper house placement, which isn't something this editor sets up — so empty lots are left as-is.</p>
+      </div>
+    `;
+  }
+
+  const name = villagerName(vid);
+  const personality = rU8(vBase + V.PERSONALITY);
+  const catchphrase = decodeAcString(bytes.slice(vBase+V.CATCHPHRASE, vBase+V.CATCHPHRASE+V.CATCHPHRASE_SIZE));
+  const shirt = rU16(vBase + V.SHIRT);
+
+  return `
+    <div class="card">
+      <h4>🏡 Lot ${i+1} — ${escapeHtml(name ?? 'Unknown Villager')}</h4>
+      <div class="grid">
+        <div>
+          <label>Villager</label>
+          <input type="text" class="mono" id="v${i}-species" value="${escapeHtml(villagerDisplay(vid))}">
+          ${name ? '' : '<p class="hint">Not in the base-game roster — likely one of Deluxe\'s added villagers. Personality, catchphrase, and shirt are still safe to edit; species swaps only offer the base ~237 vanilla villagers.</p>'}
+        </div>
+        <div>
+          <label>Personality</label>
+          <select id="v${i}-personality">
+            ${VILLAGER_PERSONALITIES.map((n,idx)=>`<option value="${idx}" ${idx===personality?'selected':''}>${n}</option>`).join('')}
+          </select>
+        </div>
+        <div>
+          <label>Catchphrase (max 10 characters)</label>
+          <input type="text" id="v${i}-catchphrase" maxlength="10" value="${escapeHtml(catchphrase)}">
+        </div>
+        <div>
+          <label>Shirt</label>
+          <input type="text" class="mono" id="v${i}-shirt" value="${escapeHtml(itemDisplay(shirt))}">
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function villagersPanelHTML(){
+  let html = `
+    <div class="warn-banner">
+      ⚠️ <b>Known issue:</b> swapping a villager's species works for how they look and act outdoors — they'll walk
+      around the town fine — but reports back suggest the new resident can get stuck at their own front door and
+      never actually go inside (their house sits empty when you enter it yourself). I dug into this: house
+      furniture/interior data in this game only covers the 4 human players' houses — there's no documented villager
+      house structure anywhere, not even in the reference decompilation tooling — so whatever's causing this lives
+      somewhere I have no visibility into. I don't want to guess at a fix I can't verify the way everything else
+      here has been verified. If you're willing to do a controlled before/after test (swap a villager, save
+      immediately, no other actions) the same way we tracked down the town ordinance and stale-name issues, I'm glad
+      to dig further — otherwise, treat species swaps as cosmetic/outdoor-only for now.
+    </div>
+
+    <div class="card">
+      <h4>🐾 Residents</h4>
+      <p class="hint" style="font-size:13px;">
+        Swapping a villager's species, personality, catchphrase, or shirt is safe — none of it touches house
+        placement or furniture. Moving a villager <i>in</i> or <i>out</i> of a lot isn't offered here, since that
+        needs proper house coordinates this editor doesn't set up. The species picker only offers the ~237
+        base-game villagers; any of Deluxe's added villagers show up as "Unknown Villager" and are left as
+        whoever they currently are, per your call to leave those alone.
+      </p>
+    </div>
+  `;
+  for (let i = 0; i < VILLAGER_COUNT; i++){
+    html += villagerSlotHTML(i);
+  }
+  return html;
+}
+
+function wireVillagersPanel(){
+  for (let i = 0; i < VILLAGER_COUNT; i++){
+    const vBase = SDO + VILLAGER_DATA_OFF + i*VILLAGER_SIZE;
+    const vid = rU16(vBase + V.VILLAGER_ID);
+    if (vid === 0) continue; // empty lot, nothing to wire
+
+    attachVillagerPicker(document.getElementById(`v${i}-species`), () => vBase + V.VILLAGER_ID);
+
+    document.getElementById(`v${i}-personality`).addEventListener('change', e => {
+      wU8(vBase + V.PERSONALITY, +e.target.value);
+      updateStatus();
+    });
+
+    const catchEl = document.getElementById(`v${i}-catchphrase`);
+    catchEl.addEventListener('input', () => {
+      const { bytes: cBytes } = encodeAcString(catchEl.value, V.CATCHPHRASE_SIZE);
+      bytes.set(cBytes, vBase + V.CATCHPHRASE);
+      updateStatus();
+    });
+
+    attachItemPicker(document.getElementById(`v${i}-shirt`), () => vBase + V.SHIRT);
+  }
+}
+
+</script>
+
+</body>
+</html>
