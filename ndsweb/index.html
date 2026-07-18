@@ -1,0 +1,2096 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>NDSWeb — Play NDS, GBA, &amp; Retro Games in Your Browser</title>
+    <meta name="description" content="Play your favorite Nintendo DS, GBA, GB, and GBC games directly online with NDSWeb. Enjoy a clean launcher interface with secure local save state auto-tracking.">
+
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://codymkw.nekoweb.org/emulator">
+    <meta property="og:title" content="NDSWeb — Play NDS, GBA, &amp; Retro Games in Your Browser">
+    <meta property="og:description" content="Play your favorite Nintendo DS, GBA, GB, and GBC games directly online with NDSWeb. Enjoy a clean launcher interface with secure local save state auto-tracking.">
+    <meta property="og:image" content="/assets/images/controller.png">
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://codymkw.nekoweb.org/emulator">
+    <meta property="twitter:title" content="NDSWeb — Play NDS, GBA, &amp; Retro Games in Your Browser">
+    <meta property="twitter:description" content="Play your favorite Nintendo DS, GBA, GB, and GBC games directly online with NDSWeb. Enjoy a clean launcher interface with secure local save state auto-tracking.">
+    <meta property="twitter:image" content="/assets/images/controller.png">
+
+    <script src="https://unpkg.com/lucide@0.383.0/dist/umd/lucide.min.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        img, svg { display: block; max-width: 100%; }
+        button { cursor: pointer; background: none; border: none; font: inherit; color: inherit; }
+        a { color: inherit; text-decoration: none; }
+
+        :root {
+            --accent: #10b981;
+            --accent-glow: rgba(16, 185, 129, 0.35);
+            --accent-bg: rgba(16, 185, 129, 0.1);
+            --bg:           #0f0f14;
+            --surface:      #1a1a24;
+            --surface-light:#252533;
+            --white-5:  rgba(255,255,255,0.05);
+            --white-8:  rgba(255,255,255,0.08);
+            --white-10: rgba(255,255,255,0.10);
+        }
+
+        body.bg-grid {
+            background-image:
+                linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 32px 32px;
+        }
+        body.bg-scanlines::before {
+            content: "";
+            position: fixed; inset: 0;
+            background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.25) 50%);
+            background-size: 100% 4px;
+            z-index: 199;
+            pointer-events: none;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: #ffffff;
+            font-family: 'Inter', system-ui, sans-serif;
+            overflow: hidden;
+            height: 100vh; width: 100vw;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        ::selection { background: #10b981; color: #000; }
+
+        .glass-panel {
+            background: rgba(26,26,36,0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--white-5);
+        }
+
+        body.font-mono-theme {
+            font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace !important;
+        }
+
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
+        ::-webkit-scrollbar-thumb { background: var(--surface-light); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+        .dropzone-active {
+            border-color: var(--accent) !important;
+            background: var(--accent-bg) !important;
+            transform: scale(1.015);
+        }
+
+        /* ── Emulator wrapper ── */
+        #emulator-wrapper {
+            display: none;
+            position: absolute; inset: 0;
+            background: #000;
+            z-index: 50;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+        #emulator-wrapper.active { display: block; opacity: 1; }
+        #emu-toolbar { transition: opacity 0.25s ease, transform 0.25s ease; }
+        #emulator-wrapper:not(.toolbar-pinned) #emu-toolbar {
+            opacity: 0; pointer-events: none; transform: translateY(-8px);
+        }
+        #emulator-wrapper:not(.toolbar-pinned):hover #emu-toolbar,
+        #emulator-wrapper.toolbar-pinned #emu-toolbar {
+            opacity: 1; pointer-events: all; transform: translateY(0);
+        }
+
+        /* ── Ripple ── */
+        .btn-hover { position: relative; overflow: hidden; }
+        .btn-hover::after {
+            content: '';
+            position: absolute; top: 50%; left: 50%;
+            width: 0; height: 0;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            transform: translate(-50%,-50%);
+            transition: width 0.3s, height 0.3s;
+        }
+        .btn-hover:active::after { width: 200%; height: 200%; }
+
+        .accent-text   { color: var(--accent); }
+        .accent-border { border-color: var(--accent); }
+        .accent-bg-10  { background: var(--accent-bg); }
+        .accent-bg     { background: var(--accent); }
+        .accent-glow-shadow { box-shadow: 0 0 15px var(--accent-glow); }
+        .nav-btn.active { background: var(--accent-bg); color: var(--accent); font-weight: 500; }
+
+        input[type="file"] { display: none; }
+        .view-hidden { display: none !important; }
+        .hidden { display: none !important; }
+
+        /* ── Toast ── */
+        #toast-container {
+            position: fixed; bottom: 5.5rem; right: 1rem;
+            z-index: 9999;
+            display: flex; flex-direction: column-reverse; gap: 0.5rem;
+        }
+        .toast {
+            padding: 0.75rem 1.25rem;
+            border-radius: 0.75rem;
+            font-size: 0.875rem; font-weight: 500;
+            display: flex; align-items: center; gap: 0.5rem;
+            animation: toastIn 0.3s ease forwards;
+            max-width: 320px;
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--white-8);
+        }
+        .toast-success { background: rgba(16,185,129,0.2); color: #34d399; }
+        .toast-error   { background: rgba(239,68,68,0.2);  color: #f87171; }
+        .toast-info    { background: rgba(99,102,241,0.2); color: #a5b4fc; }
+        .toast-warn    { background: rgba(245,158,11,0.2); color: #fcd34d; }
+        @keyframes toastIn  { from { opacity:0; transform:translateY(12px) scale(0.95); } to { opacity:1; transform:translateY(0) scale(1); } }
+        @keyframes toastOut { from { opacity:1; transform:translateY(0) scale(1); }        to { opacity:0; transform:translateY(8px) scale(0.95); } }
+
+        /* ── Modal ── */
+        #modal-overlay {
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(4px);
+            z-index: 500;
+            display: flex; align-items: center; justify-content: center;
+        }
+        #modal-overlay.hidden { display: none; }
+        #modal-box {
+            background: var(--surface);
+            border: 1px solid var(--white-8);
+            border-radius: 1.25rem;
+            padding: 1.5rem;
+            max-width: 420px; width: 90%;
+            animation: modalIn 0.2s ease;
+        }
+        @keyframes modalIn { from { opacity:0; transform:scale(0.95) translateY(8px); } to { opacity:1; transform:scale(1) translateY(0); } }
+
+        /* ── Search ── */
+        #library-search {
+            background: rgba(37,37,51,0.6);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 0.75rem;
+            color: white; padding: 0.6rem 1rem 0.6rem 2.75rem;
+            width: 100%; outline: none; font-size: 0.875rem;
+            transition: border-color 0.2s;
+        }
+        #library-search:focus { border-color: var(--accent); }
+        #library-search::placeholder { color: #4b5563; }
+
+        /* ── Sort select ── */
+        .sort-select {
+            background: rgba(37,37,51,0.6);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 0.75rem;
+            color: #9ca3af; padding: 0.6rem 0.875rem;
+            outline: none; font-size: 0.8125rem;
+            font-family: inherit;
+            cursor: pointer;
+            transition: border-color 0.2s, color 0.2s;
+            flex-shrink: 0;
+        }
+        .sort-select:focus, .sort-select:hover { border-color: var(--accent); color: #fff; }
+        .sort-select option { background: #1a1a24; color: #fff; }
+
+        /* ── Color swatch ── */
+        .color-swatch {
+            width: 2rem; height: 2rem; border-radius: 50%;
+            cursor: pointer; border: 3px solid transparent;
+            transition: transform 0.15s, border-color 0.15s;
+        }
+        .color-swatch:hover { transform: scale(1.15); }
+        .color-swatch.selected { border-color: white; transform: scale(1.15); }
+
+        /* ── Storage bar ── */
+        #storage-bar-fill {
+            height: 6px; border-radius: 3px;
+            background: var(--accent);
+            transition: width 0.5s ease;
+        }
+
+        /* ── Delete / edit buttons ── */
+        .card-delete-btn {
+            position: absolute; top: 0.5rem; right: 0.5rem;
+            background: rgba(239,68,68,0.2); color: #f87171;
+            border-radius: 50%; width: 1.75rem; height: 1.75rem;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 1; transition: opacity 0.2s, background 0.2s; z-index: 10;
+        }
+        .card-delete-btn:hover { background: rgba(239,68,68,0.7); }
+
+        /* ── Shortcut table ── */
+        .shortcut-row {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            font-size: 0.85rem;
+        }
+        .shortcut-row:last-child { border-bottom: none; }
+        kbd {
+            background: var(--surface-light);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-bottom-width: 2px;
+            padding: 0.2rem 0.55rem;
+            border-radius: 0.35rem;
+            font-family: monospace; font-size: 0.8rem; color: #e5e7eb;
+        }
+
+        /* ── Animations ── */
+        @keyframes spin    { to { transform: rotate(360deg); } }
+        @keyframes pulse   { 0%,100% { opacity:1; } 50% { opacity:0.5; } }
+        @keyframes fadeIn  { from { opacity:0; transform:translateY(4px); } to { opacity:1; transform:none; } }
+        .animate-spin  { animation: spin 1s linear infinite; }
+        .animate-pulse { animation: pulse 2s ease-in-out infinite; }
+
+        /* ── App layout ── */
+        #app-ui {
+            display: flex; flex-direction: column;
+            width: 100%; height: 100%;
+            transition: opacity 0.5s; position: relative;
+        }
+
+        /* Mobile header */
+        #mobile-header {
+            display: flex; align-items: center; gap: 0.75rem;
+            padding: 1rem;
+            border-bottom: 1px solid var(--white-5);
+            z-index: 20; flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        #mobile-header .logo-wrap {
+            width: 2rem; height: 2rem; border-radius: 0.5rem;
+            display: flex; align-items: center; justify-content: center;
+        }
+        #mobile-header h1 { font-size: 1.25rem; font-weight: 700; letter-spacing: -0.025em; flex: 1; }
+
+        /* Desktop sidebar */
+        #sidebar {
+            display: none; width: 16rem;
+            flex-direction: column;
+            border-right: 1px solid var(--white-5);
+            z-index: 20; flex-shrink: 0;
+        }
+        #sidebar .sidebar-logo {
+            padding: 1.5rem;
+            display: flex; align-items: center; gap: 0.75rem;
+        }
+        #sidebar .sidebar-logo .logo-wrap {
+            width: 2.5rem; height: 2.5rem; border-radius: 0.75rem;
+            display: flex; align-items: center; justify-content: center;
+        }
+        #sidebar .sidebar-logo h1 { font-size: 1.25rem; font-weight: 700; letter-spacing: -0.025em; }
+        #sidebar nav {
+            margin-top: 0.5rem; padding: 0 1rem;
+            flex: 1; display: flex; flex-direction: column; gap: 0.5rem;
+        }
+        .nav-btn {
+            width: 100%;
+            display: flex; align-items: center; gap: 0.75rem;
+            padding: 0.75rem 1rem; border-radius: 0.75rem;
+            transition: background 0.15s, color 0.15s;
+            color: #9ca3af; font-size: 0.9375rem;
+        }
+        .nav-btn:hover { color: #fff; background: var(--white-5); }
+        .nav-btn .nav-label { flex: 1; text-align: left; }
+        #sidebar .sidebar-footer {
+            padding: 1.5rem; font-size: 0.75rem; color: #6b7280; text-align: center;
+        }
+
+        /* Main */
+        main {
+            flex: 1; display: flex; flex-direction: column;
+            height: 100%; overflow-y: auto; overflow-x: hidden;
+            position: relative; z-index: 10;
+            padding-bottom: 5rem; min-width: 0;
+        }
+        .main-inner {
+            padding: 1.25rem;
+            max-width: 64rem; margin: 0 auto; width: 100%;
+            position: relative; z-index: 10; min-width: 0; box-sizing: border-box;
+        }
+
+        /* ── Ambient glow ── */
+        #ambient-glow {
+            position: absolute; top: 5%; left: 50%;
+            transform: translateX(-50%);
+            width: 300px; height: 300px;
+            filter: blur(80px); border-radius: 50%;
+            pointer-events: none; transition: opacity 0.5s; z-index: 0;
+            background: var(--accent); opacity: 0.2;
+        }
+
+        /* ── Home view ── */
+        #view-home header { margin-bottom: 2rem; }
+        #view-home header h2 { font-size: 1.875rem; font-weight: 700; margin-bottom: 0.5rem; }
+        #view-home header p  { color: #9ca3af; font-size: 0.875rem; }
+
+        /* Dropzone */
+        #dropzone {
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            width: 100%; height: 12rem;
+            border: 2px dashed #4b5563; border-radius: 1rem;
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s, transform 0.2s;
+            position: relative; overflow: hidden; margin-bottom: 2.5rem;
+        }
+        #dropzone:hover { border-color: var(--accent); background: var(--accent-bg); }
+        #dropzone:hover .dz-icon-wrap { transform: scale(1.1); background: var(--accent-bg); }
+        #dropzone:hover .dz-icon      { color: var(--accent); }
+        #dropzone:hover .dz-main-text { color: #fff; }
+        .dz-inner {
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            padding: 1.25rem 1rem; text-align: center;
+        }
+        .dz-icon-wrap {
+            width: 3.5rem; height: 3.5rem; margin-bottom: 1rem;
+            border-radius: 50%; background: var(--surface-light);
+            display: flex; align-items: center; justify-content: center;
+            transition: transform 0.3s, background 0.3s;
+        }
+        .dz-icon { width: 1.5rem; height: 1.5rem; color: #9ca3af; transition: color 0.2s; }
+        .dz-main-text { margin-bottom: 0.5rem; font-size: 1.125rem; font-weight: 500; color: #d1d5db; transition: color 0.2s; }
+        .dz-main-text strong { color: var(--accent); font-weight: 700; }
+        .dz-sub-text  { font-size: 0.75rem; color: #6b7280; }
+
+        /* Section header */
+        .section-header {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+        .section-title {
+            font-size: 1.125rem; font-weight: 600;
+            display: flex; align-items: center; gap: 0.5rem;
+        }
+        .section-title .lucide { width: 1.25rem; height: 1.25rem; color: var(--accent); }
+        .view-all-btn { font-size: 0.875rem; color: var(--accent); transition: color 0.2s; }
+        .view-all-btn:hover { color: #fff; }
+
+        /* ── Game grid ── */
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1rem; width: 100%; min-width: 0;
+        }
+        .empty-state {
+            color: #6b7280; font-style: italic; text-align: center;
+            padding: 2.5rem 0;
+            background: rgba(37,37,51,0.3);
+            border-radius: 0.75rem; border: 1px solid var(--white-5);
+            font-size: 0.875rem; grid-column: 1 / -1;
+        }
+        .empty-state-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+
+        /* ── Library view ── */
+        #view-library header {
+            margin-bottom: 1.5rem;
+            display: flex; align-items: center; gap: 1rem;
+        }
+        #view-library header .icon-wrap {
+            width: 2.5rem; height: 2.5rem; border-radius: 50%;
+            background: var(--surface-light);
+            display: flex; align-items: center; justify-content: center;
+            border: 1px solid var(--white-5); flex-shrink: 0;
+        }
+        #view-library header h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.25rem; }
+        #view-library header p  { color: #9ca3af; font-size: 0.75rem; }
+        #library-no-results {
+            color: #6b7280; font-style: italic; text-align: center;
+            padding: 2.5rem 0; font-size: 0.875rem;
+        }
+        #library-no-results.hidden { display: none; }
+        .search-wrap { position: relative; flex: 1; }
+        .search-wrap .lucide {
+            position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%);
+            width: 1rem; height: 1rem; color: #6b7280; pointer-events: none;
+        }
+        .library-controls {
+            display: flex; gap: 0.75rem; align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        /* ── Settings view ── */
+        #view-settings header {
+            margin-bottom: 2rem;
+            display: flex; align-items: center; gap: 1rem;
+        }
+        #view-settings header .icon-wrap {
+            width: 2.5rem; height: 2.5rem; border-radius: 50%;
+            background: var(--surface-light);
+            display: flex; align-items: center; justify-content: center;
+            border: 1px solid var(--white-5); flex-shrink: 0;
+        }
+        #view-settings header h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.25rem; }
+        #view-settings header p  { color: #9ca3af; font-size: 0.75rem; }
+        .settings-grid { display: grid; grid-template-columns: 1fr; gap: 1.25rem; }
+        .settings-panel { border-radius: 1rem; padding: 1.25rem; }
+        .settings-panel h3 {
+            font-size: 1.125rem; font-weight: 600; margin-bottom: 1.25rem;
+            display: flex; align-items: center; gap: 0.5rem;
+        }
+        .settings-panel h3 .lucide { width: 1.25rem; height: 1.25rem; color: #9ca3af; }
+        .settings-label { font-size: 0.875rem; font-weight: 500; color: #d1d5db; margin-bottom: 0.75rem; }
+        .settings-section { margin-bottom: 1.5rem; }
+        .settings-section:last-child { margin-bottom: 0; }
+
+        /* Segment controls */
+        .seg-ctrl {
+            display: flex; gap: 0.375rem;
+            background: rgba(37,37,51,0.4);
+            padding: 0.375rem; border-radius: 0.75rem;
+            border: 1px solid var(--white-5);
+        }
+        .seg-btn {
+            flex: 1; padding: 0.5rem; font-size: 0.75rem; font-weight: 500;
+            border-radius: 0.5rem; transition: background 0.15s, color 0.15s; color: #9ca3af;
+        }
+        .seg-btn:hover { color: #fff; background: var(--white-5); }
+        .seg-btn.active { color: #fff; background: var(--white-10); box-shadow: 0 1px 2px rgba(0,0,0,0.3); }
+
+        #color-swatches { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+
+        /* BIOS */
+        .bios-row {
+            background: rgba(37,37,51,0.5);
+            padding: 0.75rem 1rem; border-radius: 0.75rem;
+            border: 1px solid var(--white-5);
+            display: flex; align-items: center; justify-content: space-between;
+            margin-top: 0.75rem;
+        }
+        .bios-row:first-of-type { margin-top: 0; }
+        .bios-row h4 { font-weight: 500; color: #fff; font-size: 0.875rem; }
+        .bios-row p  { font-size: 0.7rem; color: #9ca3af; margin-top: 0.125rem; }
+        .bios-upload-label {
+            padding: 0.375rem 0.75rem;
+            background: var(--white-5); color: #fff;
+            border-radius: 0.5rem; cursor: pointer;
+            font-weight: 500; font-size: 0.75rem;
+            display: flex; align-items: center; gap: 0.5rem;
+            transition: background 0.2s, color 0.2s;
+        }
+        .bios-upload-label:hover { background: var(--accent); color: #000; }
+        .bios-upload-label .lucide { width: 1rem; height: 1rem; }
+        .bios-status {
+            font-size: 0.75rem; color: var(--accent);
+            margin-top: 0.375rem;
+            display: flex; align-items: center; gap: 0.25rem;
+        }
+        .bios-status.hidden { display: none; }
+
+        /* Storage */
+        .storage-header-row {
+            display: flex; justify-content: space-between;
+            font-size: 0.75rem; color: #9ca3af; margin-bottom: 0.375rem;
+        }
+        .storage-track {
+            width: 100%; height: 6px;
+            background: var(--surface-light); border-radius: 3px; overflow: hidden;
+            margin-bottom: 1.25rem;
+        }
+        .storage-btns { display: flex; flex-direction: column; gap: 0.75rem; }
+        .storage-btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+        .btn-danger {
+            display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+            padding: 0.625rem 0.75rem;
+            background: rgba(239,68,68,0.1); color: #f87171;
+            border-radius: 0.75rem; font-weight: 500;
+            border: 1px solid rgba(239,68,68,0.2);
+            font-size: 0.75rem; transition: background 0.2s, color 0.2s;
+        }
+        .btn-danger:hover { background: #ef4444; color: #fff; }
+        .btn-danger-lg {
+            width: 100%;
+            display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+            padding: 0.75rem 1rem;
+            background: rgba(239,68,68,0.2); color: #ef4444;
+            border-radius: 0.75rem; font-weight: 500;
+            border: 1px solid rgba(239,68,68,0.3);
+            font-size: 0.875rem; transition: background 0.2s, color 0.2s;
+        }
+        .btn-danger-lg:hover { background: #dc2626; color: #fff; }
+        .btn-accent {
+            display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+            padding: 0.625rem 1rem;
+            background: var(--accent-bg); color: var(--accent);
+            border-radius: 0.75rem; font-weight: 500;
+            border: 1px solid rgba(16,185,129,0.2);
+            font-size: 0.75rem; transition: background 0.2s, color 0.2s;
+        }
+        .btn-accent:hover { background: var(--accent); color: #000; }
+        .divider { height: 1px; background: var(--white-5); margin: 0.25rem 0; }
+
+        /* Tips */
+        .tips-grid { display: grid; grid-template-columns: 1fr; gap: 2rem; }
+        .tips-title {
+            font-size: 1.125rem; font-weight: 600; margin-bottom: 1rem;
+            display: flex; align-items: center; gap: 0.5rem;
+        }
+        .tips-title .lucide { width: 1.25rem; height: 1.25rem; color: #9ca3af; }
+        .tips-list { display: flex; flex-direction: column; gap: 0.75rem; list-style: none; }
+        .tips-list li {
+            display: flex; align-items: flex-start; gap: 0.5rem;
+            border-bottom: 1px solid var(--white-5);
+            padding-bottom: 0.75rem; font-size: 0.8125rem; color: #d1d5db;
+        }
+        .tips-list li:last-child { border-bottom: none; padding-bottom: 0; }
+        .tip-dot { width: 0.5rem; height: 0.5rem; border-radius: 50%; background: var(--accent); margin-top: 0.375rem; flex-shrink: 0; }
+        .tip-dot-red { background: #ef4444; animation: pulse 2s ease-in-out infinite; }
+        .tips-list li code {
+            background: var(--surface-light); padding: 0.1rem 0.3rem;
+            border-radius: 0.25rem; font-size: 0.75rem; color: #fff; font-family: monospace;
+        }
+
+        /* ── Mobile nav ── */
+        #mobile-nav {
+            display: flex; position: fixed; bottom: 0; left: 0;
+            width: 100%; border-top: 1px solid var(--white-5);
+            align-items: center; justify-content: space-around;
+            padding: 0.5rem; padding-bottom: env(safe-area-inset-bottom, 0.5rem);
+            z-index: 40; background: rgba(26,26,36,0.95); backdrop-filter: blur(20px);
+        }
+        .mobile-nav-btn {
+            display: flex; flex-direction: column; align-items: center; gap: 0.25rem;
+            padding: 0.5rem; border-radius: 0.75rem;
+            color: #9ca3af; transition: color 0.15s; width: 4rem; position: relative;
+        }
+        .mobile-nav-btn .lucide, .mobile-nav-btn svg { width: 1.25rem; height: 1.25rem; }
+        .mobile-nav-btn span.label { font-size: 0.625rem; font-weight: 500; }
+        .mobile-nav-btn.active { color: var(--accent); }
+        .mobile-nav-btn .badge {
+            position: absolute; top: 0.25rem; right: 0.5rem;
+            width: 1rem; height: 1rem;
+            background: var(--accent); color: #000;
+            font-size: 0.5625rem; font-weight: 700;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 50%;
+        }
+        .mobile-nav-btn .badge.hidden { display: none; }
+
+        #library-count-badge {
+            font-size: 0.6875rem; background: var(--white-10); color: #9ca3af;
+            padding: 0.125rem 0.5rem; border-radius: 9999px;
+        }
+        #library-count-badge.hidden { display: none; }
+
+        /* ── Loading overlay ── */
+        #loading-overlay {
+            position: fixed; inset: 0;
+            background: rgba(15,15,20,0.9); backdrop-filter: blur(4px);
+            z-index: 200;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            text-align: center; padding: 1rem;
+        }
+        #loading-overlay.hidden { display: none !important; }
+        .loader-ring { position: relative; width: 5rem; height: 5rem; margin-bottom: 1.5rem; }
+        .loader-ring .ring-track { position: absolute; inset: 0; border: 4px solid var(--surface-light); border-radius: 50%; }
+        .loader-ring .ring-spin  { position: absolute; inset: 0; border: 4px solid var(--accent); border-radius: 50%; border-top-color: transparent; animation: spin 1s linear infinite; }
+        .loader-ring .ring-icon  { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+        .loader-ring .ring-icon .lucide { width: 2rem; height: 2rem; color: var(--accent); animation: pulse 2s ease-in-out infinite; }
+        #loading-overlay h3 { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+        #loading-subtext { color: #9ca3af; font-size: 0.875rem; }
+        #loading-progress { margin-top: 1rem; font-size: 0.75rem; color: #6b7280; }
+
+        /* ── Emulator toolbar ── */
+        #emu-toolbar {
+            position: absolute; top: 0; left: 0; width: 100%;
+            padding: 0.5rem 0.75rem;
+            display: flex; justify-content: space-between; align-items: center;
+            z-index: 100; border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        #emu-toolbar .toolbar-left  { display: flex; align-items: center; gap: 0.75rem; }
+        #emu-toolbar .toolbar-right { display: flex; align-items: center; gap: 0.5rem; }
+        #btn-quit {
+            display: flex; align-items: center; gap: 0.5rem;
+            padding: 0.375rem 0.75rem;
+            background: rgba(239,68,68,0.2); color: #f87171;
+            border-radius: 0.5rem; font-weight: 500; font-size: 0.75rem;
+            transition: background 0.2s, color 0.2s;
+        }
+        #btn-quit:hover { background: #ef4444; color: #fff; }
+        #btn-quit .lucide { width: 1rem; height: 1rem; }
+        #now-playing-title {
+            font-weight: 600; color: #d1d5db; font-size: 0.8125rem;
+            max-width: 10rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+        }
+        .toolbar-icon-btn {
+            padding: 0.5rem; background: var(--surface-light); border-radius: 0.5rem;
+            color: #9ca3af; transition: background 0.2s, color 0.2s;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .toolbar-icon-btn:hover { background: var(--white-10); color: #fff; }
+        .toolbar-icon-btn.active { background: var(--accent-bg); color: var(--accent); }
+        .toolbar-icon-btn .lucide { width: 1rem; height: 1rem; }
+
+        /* ── Modal interior ── */
+        .modal-header { display: flex; align-items: flex-start; gap: 0.75rem; margin-bottom: 1rem; }
+        #modal-icon {
+            width: 2.5rem; height: 2.5rem; border-radius: 50%;
+            background: rgba(239,68,68,0.2);
+            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+        }
+        #modal-icon .lucide { width: 1.25rem; height: 1.25rem; color: #f87171; }
+        #modal-title { font-weight: 700; font-size: 1rem; color: #fff; }
+        #modal-message { font-size: 0.8125rem; color: #9ca3af; margin-top: 0.25rem; }
+        .modal-actions { display: flex; gap: 0.75rem; justify-content: flex-end; margin-top: 1.5rem; }
+        #modal-cancel {
+            padding: 0.5rem 1rem; background: var(--white-5); border-radius: 0.5rem;
+            font-size: 0.8125rem; font-weight: 500; color: #d1d5db; transition: background 0.2s;
+        }
+        #modal-cancel:hover { background: var(--white-10); }
+        #modal-confirm {
+            padding: 0.5rem 1rem; background: #ef4444; border-radius: 0.5rem;
+            font-size: 0.8125rem; font-weight: 500; color: #fff; transition: background 0.2s;
+        }
+        #modal-confirm:hover { background: #dc2626; }
+
+        /* ── Game card ── */
+        .game-card {
+            padding: 1rem; border-radius: 1rem;
+            display: flex; flex-direction: column;
+            cursor: pointer; position: relative;
+            transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+            min-width: 0; overflow: hidden;
+            animation: fadeIn 0.25s ease;
+        }
+        .game-card:hover {
+            border-color: rgba(var(--accent-rgb,16,185,129),0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+        }
+        .game-card:hover .play-btn { background: var(--accent); color: #000; }
+        .game-card:hover .card-art-overlay { background: transparent !important; }
+        @media (min-width: 768px) {
+            .card-delete-btn { opacity: 0; }
+            .game-card:hover .card-delete-btn { opacity: 1; }
+            .card-edit-btn { opacity: 0; }
+            .game-card:hover .card-edit-btn { opacity: 1; }
+        }
+        .card-edit-btn {
+            position: absolute; top: 0.5rem; left: 0.5rem;
+            background: rgba(0,0,0,0.4); color: rgba(255,255,255,0.7);
+            border-radius: 50%; width: 1.75rem; height: 1.75rem;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 1; transition: opacity 0.2s, background 0.2s, color 0.2s; z-index: 30;
+        }
+        .card-edit-btn:hover { background: var(--accent); color: #fff; }
+        .card-edit-btn .lucide { width: 0.875rem; height: 0.875rem; }
+        .card-art {
+            height: 7rem; border-radius: 0.75rem; margin-bottom: 0.75rem;
+            position: relative; overflow: hidden;
+            display: flex; align-items: center; justify-content: center;
+            transition: box-shadow 0.2s;
+        }
+        .card-art-bg {
+            position: absolute; inset: 0; width: 100%; height: 100%;
+            object-fit: cover; transform: scale(1.1);
+            filter: blur(8px) brightness(0.5); z-index: 1; opacity: 0; transition: opacity 0.3s;
+        }
+        .card-art-fg {
+            position: absolute; inset: 0; width: 100%; height: 100%;
+            object-fit: contain; padding: 0.5rem; z-index: 2; opacity: 0; transition: opacity 0.3s;
+            filter: drop-shadow(0 4px 12px rgba(0,0,0,0.8));
+        }
+        .card-art-icon { width: 3rem; height: 3rem; color: rgba(255,255,255,0.5); position: relative; z-index: 0; }
+        .card-art-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.2); transition: background 0.2s; z-index: 20; pointer-events: none; }
+        .card-art-badge {
+            position: absolute; bottom: 0.375rem; right: 0.5rem;
+            font-size: 0.625rem; font-weight: 600;
+            background: rgba(0,0,0,0.5); color: rgba(255,255,255,0.85);
+            padding: 0.125rem 0.375rem; border-radius: 0.25rem;
+            z-index: 25; pointer-events: none; letter-spacing: 0.05em;
+        }
+        .card-name { font-weight: 600; font-size: 0.875rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #fff; }
+        .card-meta { display: flex; justify-content: space-between; align-items: center; margin-top: 0.375rem; font-size: 0.6875rem; color: #9ca3af; }
+        .card-meta .console { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .card-meta-right { display: flex; align-items: center; gap: 0.375rem; flex-shrink: 0; margin-left: 0.25rem; }
+        .card-meta-right .save-icon .lucide { width: 0.875rem; height: 0.875rem; color: var(--accent); }
+        .card-time { font-size: 0.6875rem; color: #6b7280; margin-top: 0.125rem; display: flex; align-items: center; gap: 0.25rem; }
+        .card-time .lucide { width: 0.75rem; height: 0.75rem; }
+        .play-btn {
+            margin-top: 0.75rem; width: 100%; padding: 0.4375rem 0;
+            background: var(--white-5); border-radius: 0.5rem; font-weight: 500;
+            transition: background 0.2s, color 0.2s;
+            display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+            font-size: 0.8125rem;
+        }
+        .play-btn .lucide { width: 0.875rem; height: 0.875rem; }
+
+        .grad-1 { background: linear-gradient(135deg, #3b82f6, #9333ea); }
+        .grad-2 { background: linear-gradient(135deg, #10b981, #0f766e); }
+        .grad-3 { background: linear-gradient(135deg, #ec4899, #e11d48); }
+        .grad-4 { background: linear-gradient(135deg, #facc15, #f97316); }
+        .grad-5 { background: linear-gradient(135deg, #06b6d4, #2563eb); }
+        .grad-6 { background: linear-gradient(135deg, #8b5cf6, #6366f1); }
+
+        /* ── Cover art shimmer placeholder ── */
+        .card-art-shimmer {
+            position: absolute; inset: 0; z-index: 1;
+            background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.04) 50%, transparent 100%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+        @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+
+        /* ── Responsive ── */
+        @media (min-width: 768px) {
+            #mobile-header { display: none; }
+            #mobile-nav    { display: none; }
+            #sidebar       { display: flex; }
+            #app-ui { flex-direction: row; }
+            main { padding-bottom: 0; }
+            .main-inner { padding: 2.5rem; }
+            #ambient-glow { top: 0; width: 800px; height: 400px; filter: blur(120px); }
+            #view-home header { margin-bottom: 2.5rem; }
+            #view-home header h2 { font-size: 2.25rem; }
+            #view-home header p  { font-size: 1rem; }
+            #dropzone { height: 16rem; }
+            .dz-icon-wrap  { width: 4rem; height: 4rem; }
+            .dz-icon       { width: 2rem; height: 2rem; }
+            .dz-main-text  { font-size: 1.25rem; }
+            .dz-sub-text   { font-size: 0.875rem; }
+            .section-title { font-size: 1.25rem; }
+            .games-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem; }
+            #view-library header { margin-bottom: 2rem; }
+            #view-library header .icon-wrap { width: 3rem; height: 3rem; }
+            #view-library header h2 { font-size: 1.875rem; }
+            #view-library header p  { font-size: 0.875rem; }
+            #view-settings header { margin-bottom: 2.5rem; }
+            #view-settings header .icon-wrap { width: 3rem; height: 3rem; }
+            #view-settings header h2 { font-size: 1.875rem; }
+            #view-settings header p  { font-size: 0.875rem; }
+            .settings-grid { grid-template-columns: repeat(2, 1fr); gap: 2rem; }
+            .settings-panel { padding: 1.5rem; }
+            .tips-grid { grid-template-columns: repeat(2, 1fr); }
+            #modal-box { padding: 2rem; }
+            #modal-title   { font-size: 1.125rem; }
+            #modal-message { font-size: 0.875rem; }
+            #modal-cancel, #modal-confirm { font-size: 0.875rem; }
+            #emu-toolbar { padding: 0.75rem 1rem; }
+            #now-playing-title { font-size: 0.875rem; max-width: 20rem; }
+            #btn-quit { font-size: 0.875rem; }
+            .card-art { height: 8rem; }
+            #loading-overlay h3 { font-size: 1.75rem; }
+            .loader-ring { width: 6rem; height: 6rem; }
+            .loader-ring .ring-icon .lucide { width: 2.5rem; height: 2.5rem; }
+            .bios-row { padding: 1rem; }
+            .bios-row h4 { font-size: unset; }
+            .bios-row p  { font-size: 0.75rem; }
+            .bios-upload-label { padding: 0.5rem 0.75rem; font-size: 0.875rem; }
+            #toast-container { bottom: 1rem; }
+        }
+        @media (min-width: 1024px) {
+            .games-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+            #library-games-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+            .settings-tips-panel { grid-column: span 2; }
+        }
+        @media (min-width: 640px) {
+            #library-games-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+        }
+    </style>
+</head>
+
+<body>
+
+<div id="app-ui">
+
+    <!-- Mobile Header -->
+    <header id="mobile-header" class="glass-panel">
+        <div class="logo-wrap accent-bg accent-glow-shadow">
+            <i data-lucide="gamepad-2" style="width:1.25rem;height:1.25rem;color:#fff;"></i>
+        </div>
+        <h1>NDS<span class="accent-text">Web</span></h1>
+    </header>
+
+    <!-- Desktop Sidebar -->
+    <aside id="sidebar" class="glass-panel">
+        <div class="sidebar-logo">
+            <div class="logo-wrap accent-bg accent-glow-shadow">
+                <i data-lucide="gamepad-2" style="width:1.5rem;height:1.5rem;color:#fff;"></i>
+            </div>
+            <h1>NDS<span class="accent-text">Web</span></h1>
+        </div>
+        <nav>
+            <button onclick="switchView('home')" id="nav-home" class="nav-btn active">
+                <i data-lucide="home" style="width:1.25rem;height:1.25rem;"></i>
+                <span class="nav-label">Home</span>
+            </button>
+            <button onclick="switchView('library')" id="nav-library" class="nav-btn">
+                <i data-lucide="library" style="width:1.25rem;height:1.25rem;"></i>
+                <span class="nav-label">Library</span>
+                <span id="library-count-badge" class="hidden"></span>
+            </button>
+            <button onclick="switchView('settings')" id="nav-settings" class="nav-btn">
+                <i data-lucide="settings" style="width:1.25rem;height:1.25rem;"></i>
+                <span class="nav-label">Settings</span>
+            </button>
+        </nav>
+        <div class="sidebar-footer">Powered by EmulatorJS<br><a href="/">← Back to Main site</a></div>
+    </aside>
+
+    <!-- Main Content -->
+    <main>
+        <div id="ambient-glow"></div>
+
+        <div class="main-inner">
+
+            <!-- HOME VIEW -->
+            <div id="view-home">
+                <header>
+                    <h2>Emulator Dashboard</h2>
+                    <p>Load a new game or jump back into a recent adventure.</p>
+                </header>
+
+                <label id="dropzone" class="glass-panel">
+                    <div class="dz-inner">
+                        <div class="dz-icon-wrap">
+                            <i data-lucide="upload-cloud" class="dz-icon"></i>
+                        </div>
+                        <p class="dz-main-text"><strong>Tap to browse</strong> or drag &amp; drop</p>
+                        <p class="dz-sub-text">Supported: .nds, .gba, .gb, .gbc</p>
+                    </div>
+                    <input type="file" id="file-input" accept=".nds,.gba,.gb,.gbc" />
+                </label>
+
+                <div class="section-header">
+                    <h3 class="section-title">
+                        <i data-lucide="clock"></i> Jump Back In
+                    </h3>
+                    <button onclick="switchView('library')" class="view-all-btn">View All →</button>
+                </div>
+
+                <div id="recent-games-grid" class="games-grid">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🎮</div>
+                        No games played yet. Load a ROM above to start!
+                    </div>
+                </div>
+            </div>
+
+            <!-- LIBRARY VIEW -->
+            <div id="view-library" class="view-hidden">
+                <header>
+                    <div class="icon-wrap">
+                        <i data-lucide="library" style="width:1.25rem;height:1.25rem;" class="accent-text"></i>
+                    </div>
+                    <div>
+                        <h2>Game Library</h2>
+                        <p id="library-subtitle">All saved ROMs stored securely in your browser.</p>
+                    </div>
+                </header>
+
+                <div class="library-controls">
+                    <div class="search-wrap">
+                        <i data-lucide="search"></i>
+                        <input type="text" id="library-search" placeholder="Search your library…" oninput="filterLibrary(this.value)" />
+                    </div>
+                    <select class="sort-select" id="sort-select" onchange="applySortAndFilter()">
+                        <option value="recent">Recently Played</option>
+                        <option value="added">Date Added</option>
+                        <option value="name">Name (A–Z)</option>
+                        <option value="size">File Size</option>
+                    </select>
+                </div>
+
+                <div id="library-games-grid" class="games-grid"></div>
+                <p id="library-no-results" class="hidden">No games match your search.</p>
+            </div>
+
+            <!-- SETTINGS VIEW -->
+            <div id="view-settings" class="view-hidden">
+                <header>
+                    <div class="icon-wrap">
+                        <i data-lucide="settings" style="width:1.25rem;height:1.25rem;" class="accent-text"></i>
+                    </div>
+                    <div>
+                        <h2>Settings &amp; Data</h2>
+                        <p>Manage storage, BIOS files, and emulator preferences.</p>
+                    </div>
+                </header>
+
+                <div class="settings-grid">
+
+                    <!-- Appearance -->
+                    <div class="glass-panel settings-panel">
+                        <h3><i data-lucide="palette"></i> Appearance &amp; Theme</h3>
+
+                        <div class="settings-section">
+                            <p class="settings-label">Accent Color</p>
+                            <div id="color-swatches"></div>
+                        </div>
+                        <div class="settings-section">
+                            <p class="settings-label">Background Style</p>
+                            <div class="seg-ctrl" id="bg-style-toggles">
+                                <button class="seg-btn active" data-bg="default">Clean</button>
+                                <button class="seg-btn" data-bg="grid">Retro Grid</button>
+                                <button class="seg-btn" data-bg="scanlines">Scanlines</button>
+                            </div>
+                        </div>
+                        <div class="settings-section">
+                            <p class="settings-label">Ambient Glow</p>
+                            <div class="seg-ctrl" id="glow-toggles">
+                                <button class="seg-btn" data-glow="0">Off</button>
+                                <button class="seg-btn active" data-glow="0.2">Low</button>
+                                <button class="seg-btn" data-glow="0.5">High</button>
+                            </div>
+                        </div>
+                        <div class="settings-section">
+                            <p class="settings-label">UI Font</p>
+                            <div class="seg-ctrl" id="font-toggles">
+                                <button class="seg-btn active" data-font="sans">Modern</button>
+                                <button class="seg-btn" data-font="mono">Retro Mono</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- BIOS -->
+                    <div class="glass-panel settings-panel">
+                        <h3>
+                            <i data-lucide="cpu"></i> Custom BIOS
+                            <span style="font-size:0.75rem;font-weight:400;color:#6b7280;margin-left:0.25rem;">(Optional)</span>
+                        </h3>
+                        <p style="font-size:0.8125rem;color:#9ca3af;margin-bottom:1rem;">Provide official BIOS files to improve accuracy. NDS BIOS must be imported inside the emulator menu.</p>
+
+                        <div class="bios-row">
+                            <div><h4>GBA BIOS</h4><p>gba_bios.bin</p></div>
+                            <label class="bios-upload-label">
+                                <i data-lucide="upload"></i> Upload
+                                <input type="file" class="hidden" accept=".bin,.rom" id="upload-gba-bios" />
+                            </label>
+                        </div>
+                        <p id="gba-bios-status" class="bios-status hidden">
+                            <i data-lucide="check-circle" style="width:0.75rem;height:0.75rem;"></i> GBA BIOS saved.
+                        </p>
+
+                        <div class="bios-row" style="margin-top:0.75rem;">
+                            <div><h4>GB BIOS</h4><p>gb_bios.bin</p></div>
+                            <label class="bios-upload-label">
+                                <i data-lucide="upload"></i> Upload
+                                <input type="file" class="hidden" accept=".bin,.rom" id="upload-gb-bios" />
+                            </label>
+                        </div>
+                        <p id="gb-bios-status" class="bios-status hidden">
+                            <i data-lucide="check-circle" style="width:0.75rem;height:0.75rem;"></i> GB BIOS saved.
+                        </p>
+
+                        <div class="bios-row" style="margin-top:0.75rem;">
+                            <div><h4>GBC BIOS</h4><p>gbc_bios.bin</p></div>
+                            <label class="bios-upload-label">
+                                <i data-lucide="upload"></i> Upload
+                                <input type="file" class="hidden" accept=".bin,.rom" id="upload-gbc-bios" />
+                            </label>
+                        </div>
+                        <p id="gbc-bios-status" class="bios-status hidden">
+                            <i data-lucide="check-circle" style="width:0.75rem;height:0.75rem;"></i> GBC BIOS saved.
+                        </p>
+                    </div>
+
+                    <!-- Storage -->
+                    <div class="glass-panel settings-panel">
+                        <h3><i data-lucide="hard-drive"></i> Local Storage</h3>
+                        <p style="font-size:0.8125rem;color:#9ca3af;margin-bottom:1rem;">ROMs, saves, and BIOS files are stored in IndexedDB — private to your browser.</p>
+
+                        <div class="storage-header-row">
+                            <span>Storage used</span>
+                            <span id="storage-used-label">Calculating…</span>
+                        </div>
+                        <div class="storage-track">
+                            <div id="storage-bar-fill" style="width:0%"></div>
+                        </div>
+
+                        <div class="storage-btns">
+                            <div class="storage-btn-row">
+                                <button id="export-saves-btn" class="btn-accent">
+                                    <i data-lucide="download" style="width:1rem;height:1rem;"></i> Export Saves
+                                </button>
+                                <button id="import-saves-btn" class="btn-accent">
+                                    <i data-lucide="upload" style="width:1rem;height:1rem;"></i> Import Saves
+                                    <input type="file" id="import-saves-input" accept=".json" class="hidden" />
+                                </button>
+                            </div>
+                            <div class="divider"></div>
+                            <div class="storage-btn-row">
+                                <button id="clear-library-btn" class="btn-danger">
+                                    <i data-lucide="gamepad-2" style="width:1rem;height:1rem;"></i> Clear Games
+                                </button>
+                                <button id="clear-saves-btn" class="btn-danger">
+                                    <i data-lucide="save" style="width:1rem;height:1rem;"></i> Clear Saves
+                                </button>
+                            </div>
+                            <button id="clear-bios-btn" class="btn-danger" style="justify-content:center;">
+                                <i data-lucide="cpu" style="width:1rem;height:1rem;"></i> Clear BIOS Files
+                            </button>
+                            <div class="divider"></div>
+                            <button id="clear-db-btn" class="btn-danger-lg">
+                                <i data-lucide="trash-2" style="width:1rem;height:1rem;"></i> Clear Everything
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Shortcuts + Tips -->
+                    <div class="glass-panel settings-panel settings-tips-panel">
+                        <div class="tips-grid">
+                            <div>
+                                <p class="tips-title"><i data-lucide="keyboard"></i> Shortcuts</p>
+                                <div>
+                                    <div class="shortcut-row"><span style="color:#d1d5db;">Fullscreen</span><kbd>F11</kbd></div>
+                                    <div class="shortcut-row"><span style="color:#d1d5db;">A button</span><kbd>Z</kbd></div>
+                                    <div class="shortcut-row"><span style="color:#d1d5db;">B button</span><kbd>X</kbd></div>
+                                    <div class="shortcut-row"><span style="color:#d1d5db;">X button</span><kbd>A</kbd></div>
+                                    <div class="shortcut-row"><span style="color:#d1d5db;">Y button</span><kbd>S</kbd></div>
+                                    <div class="shortcut-row"><span style="color:#d1d5db;">L / R</span><span><kbd>Q</kbd> / <kbd>E</kbd></span></div>
+                                    <div class="shortcut-row"><span style="color:#d1d5db;">Start / Select</span><span><kbd>Enter</kbd> / <kbd>Shift</kbd></span></div>
+                                </div>
+                            </div>
+                            <div>
+                                <p class="tips-title"><i data-lucide="gamepad-2"></i> Emulator Tips</p>
+                                <ul class="tips-list">
+                                    <li>
+                                        <span class="tip-dot tip-dot-red"></span>
+                                        <span><strong style="color:#f87171;">Important:</strong> In-game save features (like in-game menus) <strong>will not persist</strong> between sessions. Use the <strong>Save State</strong> option in the EmulatorJS menu — this is saved automatically when you quit.</span>
+                                    </li>
+                                    <li>
+                                        <span class="tip-dot"></span>
+                                        <span>To export a raw <code>.sav</code> or <code>.srm</code> file, first trigger the game's native save, then use <strong>Export Save</strong> in the EmulatorJS menu to get the latest data.</span>
+                                    </li>
+                                    <li>
+                                        <span class="tip-dot"></span>
+                                        <span>Games with <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:text-bottom;margin:0 2px;" class="accent-text"><path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"/><path d="M7 3v4a1 1 0 0 0 1 1h7"/></svg> have a save state that loads automatically.</span>
+                                    </li>
+                                    <li>
+                                        <span class="tip-dot"></span>
+                                        <span>Games launched from your <strong>Library</strong> automatically save and restore state on quit.</span>
+                                    </li>
+                                    <li>
+                                        <span class="tip-dot"></span>
+                                        <span>Use the <strong>Export Saves</strong> button above to back up all your progress as a JSON file.</span>
+                                    </li>
+                                    <li>
+                                        <span class="tip-dot"></span>
+                                        <span>The toolbar auto-hides during play. Click <strong>Pin</strong> to keep it visible, or hover the top of the screen.</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Mobile Nav -->
+    <nav id="mobile-nav" class="glass-panel">
+        <button onclick="switchView('home')" id="nav-home-mobile" class="mobile-nav-btn active">
+            <i data-lucide="home" style="filter:drop-shadow(0 0 8px var(--accent-glow))"></i>
+            <span class="label">Home</span>
+        </button>
+        <button onclick="switchView('library')" id="nav-library-mobile" class="mobile-nav-btn">
+            <i data-lucide="library"></i>
+            <span class="label">Library</span>
+            <span id="library-count-badge-mobile" class="badge hidden"></span>
+        </button>
+        <button onclick="switchView('settings')" id="nav-settings-mobile" class="mobile-nav-btn">
+            <i data-lucide="settings"></i>
+            <span class="label">Settings</span>
+        </button>
+    </nav>
+
+</div>
+
+<!-- Emulator Wrapper -->
+<div id="emulator-wrapper">
+    <div id="emu-toolbar" class="glass-panel">
+        <div class="toolbar-left">
+            <button id="btn-quit">
+                <i data-lucide="arrow-left"></i> Quit
+            </button>
+            <span id="now-playing-title">Playing: Unknown</span>
+        </div>
+        <div class="toolbar-right">
+            <button id="btn-save-state" title="Save state now" class="toolbar-icon-btn">
+                <i data-lucide="save"></i>
+            </button>
+            <button id="btn-pin-toolbar" title="Pin toolbar" class="toolbar-icon-btn" onclick="toggleToolbarPin()">
+                <i data-lucide="pin"></i>
+            </button>
+            <button class="toolbar-icon-btn" title="Fullscreen" onclick="document.getElementById('game-container').requestFullscreen?.()">
+                <i data-lucide="maximize"></i>
+            </button>
+        </div>
+    </div>
+    <div id="game-container" style="width:100%;height:100%;"></div>
+</div>
+
+<!-- Loading Overlay -->
+<div id="loading-overlay" class="hidden">
+    <div class="loader-ring">
+        <div class="ring-track"></div>
+        <div class="ring-spin"></div>
+        <div class="ring-icon"><i data-lucide="gamepad-2"></i></div>
+    </div>
+    <h3>Booting Console…</h3>
+    <p id="loading-subtext">Initializing emulator core…</p>
+    <p id="loading-progress"></p>
+</div>
+
+<!-- Toast Container -->
+<div id="toast-container"></div>
+
+<!-- Modal -->
+<div id="modal-overlay" class="hidden">
+    <div id="modal-box">
+        <div class="modal-header">
+            <div id="modal-icon"><i data-lucide="alert-triangle"></i></div>
+            <div>
+                <h3 id="modal-title">Are you sure?</h3>
+                <p id="modal-message"></p>
+            </div>
+        </div>
+        <div class="modal-actions">
+            <button id="modal-cancel">Cancel</button>
+            <button id="modal-confirm">Confirm</button>
+        </div>
+    </div>
+</div>
+
+<script>
+// ─────────────────────────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────────────────────────
+let _currentGameName = null;   // name of game currently playing
+let _objectURLs = [];          // URLs to revoke on quit
+let _lastSaveData = null;      // most recent save state data
+let _allRoms = [];             // cached ROM list for sort/filter
+
+// ─────────────────────────────────────────────────────────────
+// ACCENT COLORS
+// ─────────────────────────────────────────────────────────────
+const ACCENT_COLORS = [
+    { name: 'Emerald', hex: '#10b981', glow: 'rgba(16,185,129,0.35)',  bg: 'rgba(16,185,129,0.1)'  },
+    { name: 'Sky',     hex: '#38bdf8', glow: 'rgba(56,189,248,0.35)',  bg: 'rgba(56,189,248,0.1)'  },
+    { name: 'Violet',  hex: '#8b5cf6', glow: 'rgba(139,92,246,0.35)', bg: 'rgba(139,92,246,0.1)'  },
+    { name: 'Rose',    hex: '#f43f5e', glow: 'rgba(244,63,94,0.35)',   bg: 'rgba(244,63,94,0.1)'   },
+    { name: 'Amber',   hex: '#f59e0b', glow: 'rgba(245,158,11,0.35)', bg: 'rgba(245,158,11,0.1)'  },
+    { name: 'Fuchsia', hex: '#d946ef', glow: 'rgba(217,70,239,0.35)', bg: 'rgba(217,70,239,0.1)'  },
+    { name: 'Cyan',    hex: '#06b6d4', glow: 'rgba(6,182,212,0.35)',   bg: 'rgba(6,182,212,0.1)'   },
+    { name: 'Orange',  hex: '#f97316', glow: 'rgba(249,115,22,0.35)', bg: 'rgba(249,115,22,0.1)'  },
+];
+
+function applyAccent(color) {
+    const root = document.documentElement;
+    root.style.setProperty('--accent', color.hex);
+    root.style.setProperty('--accent-glow', color.glow);
+    root.style.setProperty('--accent-bg', color.bg);
+    window._accentHex = color.hex;
+    localStorage.setItem('ndsweb_accent', color.hex);
+    document.querySelectorAll('.color-swatch').forEach(s =>
+        s.classList.toggle('selected', s.dataset.hex === color.hex));
+    const glowEl = document.getElementById('ambient-glow');
+    if (glowEl) glowEl.style.background = color.hex;
+    // Re-render so card play-buttons update accent
+    renderLibrary();
+}
+
+function buildColorSwatches() {
+    const container = document.getElementById('color-swatches');
+    const savedHex  = localStorage.getItem('ndsweb_accent') || '#10b981';
+    ACCENT_COLORS.forEach(c => {
+        const btn = document.createElement('button');
+        btn.className = 'color-swatch' + (c.hex === savedHex ? ' selected' : '');
+        btn.style.background = c.hex;
+        btn.title = c.name;
+        btn.dataset.hex = c.hex;
+        btn.addEventListener('click', () => applyAccent(c));
+        container.appendChild(btn);
+    });
+}
+
+// ─────────────────────────────────────────────────────────────
+// THEME SYSTEM
+// ─────────────────────────────────────────────────────────────
+function initThemeSettings() {
+    const savedBg   = localStorage.getItem('ndsweb_bg')   || 'default';
+    const savedGlow = localStorage.getItem('ndsweb_glow') || '0.2';
+    const savedFont = localStorage.getItem('ndsweb_font') || 'sans';
+
+    applyBackgroundStyle(savedBg);
+    applyGlow(savedGlow);
+    applyFont(savedFont);
+
+    document.querySelectorAll('#bg-style-toggles .seg-btn').forEach(btn =>
+        btn.addEventListener('click', e => {
+            applyBackgroundStyle(e.target.dataset.bg);
+            localStorage.setItem('ndsweb_bg', e.target.dataset.bg);
+        }));
+    document.querySelectorAll('#glow-toggles .seg-btn').forEach(btn =>
+        btn.addEventListener('click', e => {
+            applyGlow(e.target.dataset.glow);
+            localStorage.setItem('ndsweb_glow', e.target.dataset.glow);
+        }));
+    document.querySelectorAll('#font-toggles .seg-btn').forEach(btn =>
+        btn.addEventListener('click', e => {
+            applyFont(e.target.dataset.font);
+            localStorage.setItem('ndsweb_font', e.target.dataset.font);
+        }));
+}
+
+function applyBackgroundStyle(style) {
+    document.body.classList.remove('bg-grid', 'bg-scanlines');
+    if (style !== 'default') document.body.classList.add(`bg-${style}`);
+    document.querySelectorAll('#bg-style-toggles .seg-btn').forEach(btn =>
+        btn.classList.toggle('active', btn.dataset.bg === style));
+}
+function applyGlow(opacity) {
+    const glowEl = document.getElementById('ambient-glow');
+    if (glowEl) glowEl.style.opacity = opacity;
+    document.querySelectorAll('#glow-toggles .seg-btn').forEach(btn =>
+        btn.classList.toggle('active', btn.dataset.glow === opacity.toString()));
+}
+function applyFont(font) {
+    document.body.classList.toggle('font-mono-theme', font === 'mono');
+    document.querySelectorAll('#font-toggles .seg-btn').forEach(btn =>
+        btn.classList.toggle('active', btn.dataset.font === font));
+}
+
+// ─────────────────────────────────────────────────────────────
+// TOAST
+// ─────────────────────────────────────────────────────────────
+const TOAST_ICONS = { success: 'check-circle', error: 'x-circle', info: 'info', warn: 'alert-triangle' };
+
+function showToast(message, type = 'info', duration = 3500) {
+    const container = document.getElementById('toast-container');
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    toast.innerHTML = `<i data-lucide="${TOAST_ICONS[type]}" style="width:1rem;height:1rem;flex-shrink:0;"></i><span>${message}</span>`;
+    container.appendChild(toast);
+    lucide.createIcons({ nodes: [toast] });
+    setTimeout(() => {
+        toast.style.animation = 'toastOut 0.3s ease forwards';
+        setTimeout(() => toast.remove(), 300);
+    }, duration);
+}
+
+// ─────────────────────────────────────────────────────────────
+// MODAL — generic confirmation dialog
+// ─────────────────────────────────────────────────────────────
+function showModal(title, message, onConfirm, confirmLabel = 'Confirm', confirmStyle = '') {
+    document.getElementById('modal-title').textContent   = title;
+    document.getElementById('modal-message').textContent = message;
+    const overlay = document.getElementById('modal-overlay');
+    overlay.classList.remove('hidden');
+
+    const confirmBtn = document.getElementById('modal-confirm').cloneNode(true);
+    const cancelBtn  = document.getElementById('modal-cancel').cloneNode(true);
+    document.getElementById('modal-confirm').replaceWith(confirmBtn);
+    document.getElementById('modal-cancel').replaceWith(cancelBtn);
+
+    if (confirmLabel) confirmBtn.textContent = confirmLabel;
+    if (confirmStyle) confirmBtn.style.cssText = confirmStyle;
+
+    const close = () => overlay.classList.add('hidden');
+    confirmBtn.addEventListener('click', () => { close(); onConfirm(); });
+    cancelBtn.addEventListener('click', close);
+}
+
+document.getElementById('modal-overlay').addEventListener('click', e => {
+    if (e.target === e.currentTarget) e.currentTarget.classList.add('hidden');
+});
+
+// ─────────────────────────────────────────────────────────────
+// VIEW SWITCHING
+// ─────────────────────────────────────────────────────────────
+function switchView(viewName) {
+    ['home','library','settings'].forEach(v => {
+        document.getElementById(`view-${v}`).classList.add('view-hidden');
+        document.getElementById(`nav-${v}`)?.classList.remove('active');
+        const mBtn = document.getElementById(`nav-${v}-mobile`);
+        if (mBtn) {
+            mBtn.classList.remove('active');
+            const icon = mBtn.querySelector('svg, i');
+            if (icon) icon.style.filter = 'none';
+        }
+    });
+
+    document.getElementById(`view-${viewName}`).classList.remove('view-hidden');
+    document.getElementById(`nav-${viewName}`)?.classList.add('active');
+    const activeMBtn = document.getElementById(`nav-${viewName}-mobile`);
+    if (activeMBtn) {
+        activeMBtn.classList.add('active');
+        const icon = activeMBtn.querySelector('svg, i');
+        if (icon) icon.style.filter = 'drop-shadow(0 0 8px var(--accent-glow))';
+    }
+
+    if (viewName === 'settings') updateStorageMeter();
+    if (viewName === 'library') applySortAndFilter();
+}
+
+// ─────────────────────────────────────────────────────────────
+// TOOLBAR PIN
+// ─────────────────────────────────────────────────────────────
+function toggleToolbarPin() {
+    const wrapper = document.getElementById('emulator-wrapper');
+    const pinBtn  = document.getElementById('btn-pin-toolbar');
+    const pinned  = wrapper.classList.toggle('toolbar-pinned');
+    pinBtn.classList.toggle('active', pinned);
+    pinBtn.title = pinned ? 'Unpin toolbar' : 'Pin toolbar';
+}
+
+// ─────────────────────────────────────────────────────────────
+// INDEXEDDB
+// ─────────────────────────────────────────────────────────────
+const DB_NAME    = 'NDS_Emulator_DB';
+const DB_VERSION = 2;
+const STORE_ROMS  = 'roms';
+const STORE_SAVES = 'saves';
+let db;
+
+const initDB = () => new Promise((resolve, reject) => {
+    const request = indexedDB.open(DB_NAME, DB_VERSION);
+    request.onerror = e => reject('Database error: ' + e.target.error);
+    request.onsuccess = e => { db = e.target.result; resolve(db); };
+    request.onupgradeneeded = e => {
+        const d = e.target.result;
+        if (!d.objectStoreNames.contains(STORE_ROMS))  d.createObjectStore(STORE_ROMS,  { keyPath: 'name' });
+        if (!d.objectStoreNames.contains(STORE_SAVES)) d.createObjectStore(STORE_SAVES, { keyPath: 'name' });
+    };
+});
+
+// FIX: saveToDB accepts any object and wraps File separately so BIOS entries work correctly
+const saveToDB = (store, record) => new Promise((resolve, reject) => {
+    const tx  = db.transaction([store], 'readwrite');
+    const req = tx.objectStore(store).put(record);
+    req.onsuccess = () => resolve();
+    req.onerror   = () => reject(req.error);
+});
+
+const saveROM = (file) => saveToDB(STORE_ROMS, {
+    name:       file.name,
+    data:       file,
+    timestamp:  Date.now(),
+    lastPlayed: Date.now(),
+    size:       (file.size / (1024 * 1024)).toFixed(2) + ' MB'
+});
+
+// FIX: saveBIOS stores a proper File object (previously a plain object was stored)
+const saveBIOS = (key, file) => saveToDB(STORE_ROMS, {
+    name:      key,
+    data:      file,
+    timestamp: Date.now(),
+    size:      file.size
+});
+
+const getROMs = () => new Promise((resolve, reject) => {
+    const tx  = db.transaction([STORE_ROMS], 'readonly');
+    const req = tx.objectStore(STORE_ROMS).getAll();
+    req.onsuccess = () => resolve(req.result.sort((a, b) => b.timestamp - a.timestamp));
+    req.onerror   = () => reject(req.error);
+});
+
+const getROM = (name) => new Promise((resolve, reject) => {
+    const tx  = db.transaction([STORE_ROMS], 'readonly');
+    const req = tx.objectStore(STORE_ROMS).get(name);
+    req.onsuccess = () => resolve(req.result);
+    req.onerror   = () => reject(req.error);
+});
+
+const deleteROM = (name) => new Promise((resolve, reject) => {
+    const tx  = db.transaction([STORE_ROMS], 'readwrite');
+    const req = tx.objectStore(STORE_ROMS).delete(name);
+    req.onsuccess = () => resolve();
+    req.onerror   = () => reject(req.error);
+});
+
+const getGameSave = (name) => new Promise((resolve, reject) => {
+    const tx  = db.transaction([STORE_SAVES], 'readonly');
+    const req = tx.objectStore(STORE_SAVES).get(name);
+    req.onsuccess = () => resolve(req.result ? req.result.data : null);
+    req.onerror   = () => reject(req.error);
+});
+
+const getAllSaves = () => new Promise((resolve, reject) => {
+    const tx  = db.transaction([STORE_SAVES], 'readonly');
+    const req = tx.objectStore(STORE_SAVES).getAll();
+    req.onsuccess = () => resolve(req.result || []);
+    req.onerror   = () => reject(req.error);
+});
+
+const getAllSaveKeys = () => new Promise((resolve, reject) => {
+    const tx  = db.transaction([STORE_SAVES], 'readonly');
+    const req = tx.objectStore(STORE_SAVES).getAllKeys();
+    req.onsuccess = () => resolve(req.result || []);
+    req.onerror   = () => reject(req.error);
+});
+
+const saveGameSave = (name, data) => saveToDB(STORE_SAVES, { name, data, timestamp: Date.now() });
+
+const updateLastPlayed = async (name) => {
+    try {
+        const rom = await getROM(name);
+        if (!rom) return;
+        rom.lastPlayed = Date.now();
+        await saveToDB(STORE_ROMS, rom);
+    } catch(e) { /* non-fatal */ }
+};
+
+const updateCustomCover = async (name, url) => {
+    try {
+        const rom = await getROM(name);
+        if (!rom) return;
+        rom.customCover = url;
+        await saveToDB(STORE_ROMS, rom);
+    } catch(e) { console.error('Cover update failed:', e); }
+};
+
+const clearDB = () => new Promise((resolve, reject) => {
+    const tx = db.transaction([STORE_ROMS, STORE_SAVES], 'readwrite');
+    tx.objectStore(STORE_ROMS).clear();
+    const req = tx.objectStore(STORE_SAVES).clear();
+    req.onsuccess = () => resolve();
+    req.onerror   = () => reject(req.error);
+});
+
+// ─────────────────────────────────────────────────────────────
+// SAVE STATE PERSISTENCE (for toolbar button)
+// ─────────────────────────────────────────────────────────────
+async function triggerManualSave() {
+    if (!_lastSaveData || !_currentGameName) {
+        showToast('No save data yet — play a bit first!', 'warn');
+        return;
+    }
+    try {
+        await saveGameSave(_currentGameName, _lastSaveData);
+        showToast('Saved!', 'success');
+    } catch(e) {
+        showToast('Save failed.', 'error');
+    }
+}
+
+document.getElementById('btn-save-state').addEventListener('click', triggerManualSave);
+
+// ─────────────────────────────────────────────────────────────
+// STORAGE METER
+// ─────────────────────────────────────────────────────────────
+async function updateStorageMeter() {
+    const label = document.getElementById('storage-used-label');
+    const bar   = document.getElementById('storage-bar-fill');
+    try {
+        if (navigator.storage && navigator.storage.estimate) {
+            const { usage, quota } = await navigator.storage.estimate();
+            const usedMB  = (usage  / (1024 * 1024)).toFixed(1);
+            const quotaMB = (quota  / (1024 * 1024)).toFixed(0);
+            const pct     = Math.min(100, (usage / quota) * 100).toFixed(1);
+            label.textContent = `${usedMB} MB / ~${quotaMB} MB (${pct}%)`;
+            bar.style.width = `${pct}%`;
+            bar.style.background = pct > 95 ? '#f43f5e' : pct > 80 ? '#f97316' : 'var(--accent)';
+        } else {
+            label.textContent = 'Not available in this browser';
+        }
+    } catch(e) {
+        label.textContent = 'Unable to estimate';
+    }
+}
+
+// ─────────────────────────────────────────────────────────────
+// EXPORT / IMPORT SAVES
+// ─────────────────────────────────────────────────────────────
+document.getElementById('export-saves-btn').addEventListener('click', async () => {
+    try {
+        const allSaves = await getAllSaves();
+        if (!allSaves.length) { showToast('No saves to export.', 'warn'); return; }
+
+        // Convert ArrayBuffer/Uint8Array data to Base64 for JSON portability.
+        // FIX: chunk the bytes instead of spreading the whole array into
+        // String.fromCharCode(), which blows the call stack on large saves.
+        function toBase64(data) {
+            const bytes = data instanceof ArrayBuffer ? new Uint8Array(data)
+                        : ArrayBuffer.isView(data)    ? new Uint8Array(data.buffer, data.byteOffset, data.byteLength)
+                        : null;
+            if (!bytes) return data; // already a string or unknown — pass through
+            let binary = '';
+            const CHUNK = 8192;
+            for (let i = 0; i < bytes.length; i += CHUNK) {
+                binary += String.fromCharCode(...bytes.subarray(i, i + CHUNK));
+            }
+            return btoa(binary);
+        }
+
+        const exportable = allSaves.map(s => ({
+            name:      s.name,
+            data:      toBase64(s.data),
+            timestamp: s.timestamp,
+        }));
+
+        const blob = new Blob([JSON.stringify(exportable, null, 2)], { type: 'application/json' });
+        const url  = URL.createObjectURL(blob);
+        const a    = document.createElement('a');
+        a.href     = url;
+        a.download = `ndsweb-saves-${new Date().toISOString().slice(0,10)}.json`;
+        a.click();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+        showToast(`${allSaves.length} save${allSaves.length > 1 ? 's' : ''} exported!`, 'success');
+    } catch(e) {
+        showToast('Export failed.', 'error');
+        console.error(e);
+    }
+});
+
+document.getElementById('import-saves-btn').addEventListener('click', () =>
+    document.getElementById('import-saves-input').click());
+
+document.getElementById('import-saves-input').addEventListener('change', async e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    try {
+        const text = await file.text();
+        const saves = JSON.parse(text);
+        if (!Array.isArray(saves)) throw new Error('Invalid format');
+
+        for (const s of saves) {
+            let data = s.data;
+            // Re-decode Base64 back to Uint8Array
+            if (typeof data === 'string') {
+                const binary = atob(data);
+                data = new Uint8Array(binary.length);
+                for (let i = 0; i < binary.length; i++) data[i] = binary.charCodeAt(i);
+            }
+            await saveGameSave(s.name, data);
+        }
+        await renderLibrary();
+        showToast(`${saves.length} save${saves.length > 1 ? 's' : ''} imported!`, 'success');
+    } catch(err) {
+        showToast('Import failed — invalid file.', 'error');
+        console.error(err);
+    }
+    e.target.value = '';
+});
+
+// ─────────────────────────────────────────────────────────────
+// LIBRARY SEARCH & SORT
+// ─────────────────────────────────────────────────────────────
+function filterLibrary(query) {
+    applySortAndFilter(query);
+}
+
+async function applySortAndFilter(overrideQuery) {
+    const query   = overrideQuery !== undefined ? overrideQuery
+                  : (document.getElementById('library-search').value || '').toLowerCase().trim();
+    const sortVal = document.getElementById('sort-select').value;
+
+    if (!_allRoms.length) return;
+    const roms = _allRoms.filter(r => !r.name.startsWith('_bios_'));
+
+    // Filter
+    const filtered = query
+        ? roms.filter(r => r.name.toLowerCase().includes(query))
+        : [...roms];
+
+    // Sort
+    filtered.sort((a, b) => {
+        if (sortVal === 'name')   return a.name.localeCompare(b.name);
+        if (sortVal === 'size')   return parseFloat(b.size) - parseFloat(a.size);
+        if (sortVal === 'added')  return b.timestamp - a.timestamp;
+        return (b.lastPlayed || 0) - (a.lastPlayed || 0); // recent
+    });
+
+    const saveKeys = await getAllSaveKeys();
+    const grid     = document.getElementById('library-games-grid');
+    grid.innerHTML  = '';
+
+    if (filtered.length === 0 && query) {
+        document.getElementById('library-no-results').classList.remove('hidden');
+        return;
+    }
+    document.getElementById('library-no-results').classList.add('hidden');
+
+    if (filtered.length === 0) {
+        grid.innerHTML = `<div class="empty-state"><div class="empty-state-icon">📁</div>Your library is empty. Drop a ROM on the Home tab to add games!</div>`;
+        return;
+    }
+
+    filtered.forEach(rom => grid.appendChild(createGameCard(rom, saveKeys.includes(rom.name))));
+    lucide.createIcons({ nodes: [grid] });
+}
+
+// ─────────────────────────────────────────────────────────────
+// CONSOLE INFO HELPER
+// ─────────────────────────────────────────────────────────────
+function getConsoleInfo(filename) {
+    const lower = filename.toLowerCase();
+    if (lower.endsWith('.gba')) return { consoleName: 'Game Boy Advance', badge: 'GBA', icon: 'gamepad', system: 'Nintendo - Game Boy Advance' };
+    if (lower.endsWith('.gbc')) return { consoleName: 'Game Boy Color',   badge: 'GBC', icon: 'gamepad', system: 'Nintendo - Game Boy Color' };
+    if (lower.endsWith('.gb'))  return { consoleName: 'Game Boy',         badge: 'GB',  icon: 'gamepad', system: 'Nintendo - Game Boy' };
+    return                            { consoleName: 'Nintendo DS',        badge: 'NDS', icon: 'tablet-smartphone', system: 'Nintendo - Nintendo DS' };
+}
+
+// ─────────────────────────────────────────────────────────────
+// RELATIVE TIME
+// ─────────────────────────────────────────────────────────────
+function relativeTime(ts) {
+    if (!ts) return 'Never played';
+    const diff = Date.now() - ts;
+    if (diff < 60_000)        return 'Just now';
+    if (diff < 3_600_000)     return `${Math.floor(diff / 60_000)}m ago`;
+    if (diff < 86_400_000)    return `${Math.floor(diff / 3_600_000)}h ago`;
+    if (diff < 7 * 86_400_000) return `${Math.floor(diff / 86_400_000)}d ago`;
+    return new Date(ts).toLocaleDateString();
+}
+
+// ─────────────────────────────────────────────────────────────
+// GAME CARD
+// ─────────────────────────────────────────────────────────────
+const CARD_GRADS = ['grad-1','grad-2','grad-3','grad-4','grad-5','grad-6'];
+
+function createGameCard(rom, hasSave = false) {
+    const card = document.createElement('div');
+    card.className = 'glass-panel game-card';
+    card.dataset.romName = rom.name;
+
+    const grad      = CARD_GRADS[Math.abs(rom.name.split('').reduce((h,c) => h * 31 + c.charCodeAt(0), 0)) % CARD_GRADS.length];
+    const info      = getConsoleInfo(rom.name);
+    const cleanName = rom.name.replace(/\.(nds|gba|gb|gbc)$/i, '');
+    const coverUrl  = rom.customCover
+        || `https://thumbnails.libretro.com/${encodeURI(info.system)}/Named_Boxarts/${encodeURIComponent(cleanName)}.png`;
+
+    card.innerHTML = `
+        <button class="card-edit-btn" title="Set custom cover" aria-label="Edit cover for ${cleanName}">
+            <i data-lucide="image"></i>
+        </button>
+        <button class="card-delete-btn" title="Remove from library" aria-label="Delete ${cleanName}">
+            <i data-lucide="x" style="width:0.75rem;height:0.75rem;"></i>
+        </button>
+        <div class="card-art ${grad}">
+            <div class="card-art-shimmer"></div>
+            <img class="card-art-bg" alt="" loading="lazy" />
+            <img class="card-art-fg" alt="Cover art for ${cleanName}" loading="lazy" />
+            <i data-lucide="${info.icon}" class="card-art-icon"></i>
+            <div class="card-art-overlay"></div>
+            <span class="card-art-badge">${info.badge}</span>
+        </div>
+        <h4 class="card-name" title="${cleanName}">${cleanName}</h4>
+        <div class="card-meta">
+            <span class="console">${info.consoleName}</span>
+            <div class="card-meta-right">
+                ${hasSave ? '<span class="save-icon" title="Save state exists"><i data-lucide="save"></i></span>' : ''}
+                <span>${rom.size}</span>
+            </div>
+        </div>
+        <div class="card-time">
+            <i data-lucide="clock"></i> ${relativeTime(rom.lastPlayed)}
+        </div>
+        <button class="play-btn">
+            <i data-lucide="play"></i> Play
+        </button>
+    `;
+
+    // FIX: Load cover images properly with onload/onerror handlers
+    // (avoids the shimmer remaining after a failed load)
+    const artDiv  = card.querySelector('.card-art');
+    const shimmer = artDiv.querySelector('.card-art-shimmer');
+    const bgImg   = artDiv.querySelector('.card-art-bg');
+    const fgImg   = artDiv.querySelector('.card-art-fg');
+
+    const revealCover = () => {
+        shimmer.style.display = 'none';
+        bgImg.style.opacity   = '1';
+        fgImg.style.opacity   = '1';
+    };
+    const hideCover = () => {
+        shimmer.style.display = 'none'; // just stop shimmer, show gradient
+        bgImg.remove();
+        fgImg.remove();
+    };
+
+    bgImg.onload  = revealCover;
+    bgImg.onerror = hideCover;
+    bgImg.src     = coverUrl;
+    fgImg.src     = coverUrl;
+
+    // Play
+    const playBtn = card.querySelector('.play-btn');
+    playBtn.addEventListener('click', e => { e.stopPropagation(); launchFromLibrary(rom.name); });
+    card.addEventListener('click', () => launchFromLibrary(rom.name));
+
+    // Delete
+    card.querySelector('.card-delete-btn').addEventListener('click', e => {
+        e.stopPropagation();
+        showModal(
+            'Remove game',
+            `Remove "${cleanName}" from your library? This cannot be undone.`,
+            async () => {
+                await deleteROM(rom.name);
+                await renderLibrary();
+                showToast(`"${cleanName}" removed.`, 'info');
+            }
+        );
+    });
+
+    // Custom cover
+    card.querySelector('.card-edit-btn').addEventListener('click', async e => {
+        e.stopPropagation();
+        const newUrl = prompt(`Enter a direct image URL for cover art:\n(leave blank to reset)`, rom.customCover || '');
+        if (newUrl === null) return; // cancelled
+        const finalUrl = newUrl.trim() || null;
+        await updateCustomCover(rom.name, finalUrl);
+        await renderLibrary();
+        showToast(finalUrl ? 'Cover art updated!' : 'Cover reset to default.', 'success');
+    });
+
+    return card;
+}
+
+// ─────────────────────────────────────────────────────────────
+// RENDER LIBRARY
+// ─────────────────────────────────────────────────────────────
+async function renderLibrary() {
+    const recentGrid = document.getElementById('recent-games-grid');
+    if (!db) return;
+
+    try {
+        const allFiles = await getROMs();
+        _allRoms       = allFiles; // cache for sort/filter
+
+        const roms     = allFiles.filter(f => !f.name.startsWith('_bios_'));
+        const saveKeys = await getAllSaveKeys();
+
+        // BIOS status badges
+        document.getElementById('gba-bios-status').classList.toggle('hidden', !allFiles.some(f => f.name === '_bios_gba'));
+        document.getElementById('gb-bios-status').classList.toggle('hidden',  !allFiles.some(f => f.name === '_bios_gb'));
+        document.getElementById('gbc-bios-status').classList.toggle('hidden', !allFiles.some(f => f.name === '_bios_gbc'));
+
+        // Nav badges
+        const badge       = document.getElementById('library-count-badge');
+        const badgeMobile = document.getElementById('library-count-badge-mobile');
+        if (roms.length > 0) {
+            badge?.classList.remove('hidden');
+            badgeMobile?.classList.remove('hidden');
+            if (badge)       badge.textContent = roms.length;
+            if (badgeMobile) badgeMobile.textContent = roms.length;
+        } else {
+            badge?.classList.add('hidden');
+            badgeMobile?.classList.add('hidden');
+        }
+
+        // Library subtitle
+        const subtitle = document.getElementById('library-subtitle');
+        if (subtitle) subtitle.textContent = roms.length
+            ? `${roms.length} game${roms.length > 1 ? 's' : ''} stored locally in your browser.`
+            : 'All saved ROMs stored securely in your browser.';
+
+        // Recent grid (home)
+        recentGrid.innerHTML = '';
+        if (roms.length === 0) {
+            recentGrid.innerHTML = `<div class="empty-state"><div class="empty-state-icon">🎮</div>No games yet. Load a ROM above to start!</div>`;
+        } else {
+            const recentRoms = [...roms].sort((a, b) => (b.lastPlayed || 0) - (a.lastPlayed || 0)).slice(0, 3);
+            recentRoms.forEach(rom => recentGrid.appendChild(createGameCard(rom, saveKeys.includes(rom.name))));
+        }
+
+        // Library grid (re-apply current filter/sort)
+        await applySortAndFilter();
+
+        lucide.createIcons({ nodes: [recentGrid] });
+    } catch(err) {
+        console.error('renderLibrary error:', err);
+    }
+}
+
+// ─────────────────────────────────────────────────────────────
+// LAUNCH FROM LIBRARY — fetches fresh File from IDB
+// ─────────────────────────────────────────────────────────────
+async function launchFromLibrary(romName) {
+    try {
+        const rom = await getROM(romName);
+        if (!rom || !rom.data) {
+            showToast('Could not load ROM — try re-adding it.', 'error');
+            return;
+        }
+        launchEmulator(rom.data, rom.name);
+    } catch(e) {
+        showToast('Failed to open ROM.', 'error');
+    }
+}
+
+// ─────────────────────────────────────────────────────────────
+// DRAG & DROP / FILE INPUT
+// ─────────────────────────────────────────────────────────────
+const dropzone  = document.getElementById('dropzone');
+const fileInput = document.getElementById('file-input');
+
+const preventDefaults = e => { e.preventDefault(); e.stopPropagation(); };
+['dragenter','dragover','dragleave','drop'].forEach(ev => dropzone.addEventListener(ev, preventDefaults));
+['dragenter','dragover'].forEach(ev => dropzone.addEventListener(ev, () => dropzone.classList.add('dropzone-active')));
+['dragleave','drop'].forEach(ev => dropzone.addEventListener(ev, () => dropzone.classList.remove('dropzone-active')));
+dropzone.addEventListener('drop', e => handleFiles(e.dataTransfer.files));
+fileInput.addEventListener('change', e => { handleFiles(e.target.files); e.target.value = ''; });
+
+async function handleFiles(files) {
+    if (!files.length) return;
+    const file  = files[0];
+    const valid = ['.nds','.gba','.gb','.gbc'].some(ext => file.name.toLowerCase().endsWith(ext));
+    if (!valid) { showToast('Please upload a valid .nds, .gba, .gb, or .gbc file.', 'error'); return; }
+    try {
+        await saveROM(file);
+        await renderLibrary();
+    } catch(e) {
+        showToast('Could not save ROM locally. It will still launch.', 'warn');
+    }
+    launchEmulator(file, file.name);
+}
+
+// ─────────────────────────────────────────────────────────────
+// REVOKE OBJECT URLS (memory leak fix)
+// ─────────────────────────────────────────────────────────────
+function revokeAll() {
+    _objectURLs.forEach(url => { try { URL.revokeObjectURL(url); } catch(e) {} });
+    _objectURLs = [];
+}
+
+function trackURL(url) {
+    _objectURLs.push(url);
+    return url;
+}
+
+// ─────────────────────────────────────────────────────────────
+// QUIT — saves state first, then returns to launcher
+// ─────────────────────────────────────────────────────────────
+async function quitEmulator() {
+    // If we have unsaved state, save it before quitting
+    if (_lastSaveData && _currentGameName) {
+        try {
+            await saveGameSave(_currentGameName, _lastSaveData);
+            showToast('Progress saved!', 'success');
+        } catch(e) { /* non-fatal */ }
+    }
+    revokeAll();
+    _currentGameName = null;
+    _lastSaveData    = null;
+    window.location.reload();
+}
+
+document.getElementById('btn-quit').addEventListener('click', () => {
+    showModal(
+        'Quit game',
+        'Your save state will be preserved. Ready to quit?',
+        quitEmulator,
+        'Quit & Save',
+        'background:#ef4444;'
+    );
+});
+
+// ─────────────────────────────────────────────────────────────
+// CLEAR DATA BUTTONS
+// ─────────────────────────────────────────────────────────────
+document.getElementById('clear-library-btn').addEventListener('click', () =>
+    showModal('Clear games', 'Remove all ROMs? Saves and BIOS files are kept.', async () => {
+        const roms = await getROMs();
+        for (const rom of roms) if (!rom.name.startsWith('_bios_')) await deleteROM(rom.name);
+        await renderLibrary(); updateStorageMeter(); showToast('Game library cleared.', 'info');
+    })
+);
+document.getElementById('clear-saves-btn').addEventListener('click', () =>
+    showModal('Clear saves', 'Permanently delete all game saves?', () => {
+        const req = db.transaction([STORE_SAVES], 'readwrite').objectStore(STORE_SAVES).clear();
+        req.onsuccess = async () => { await renderLibrary(); updateStorageMeter(); showToast('All saves cleared.', 'info'); };
+    })
+);
+document.getElementById('clear-bios-btn').addEventListener('click', () =>
+    showModal('Clear BIOS files', 'Remove all custom BIOS files?', async () => {
+        await Promise.allSettled([deleteROM('_bios_gba'), deleteROM('_bios_gb'), deleteROM('_bios_gbc')]);
+        await renderLibrary(); updateStorageMeter(); showToast('BIOS files cleared.', 'info');
+    })
+);
+document.getElementById('clear-db-btn').addEventListener('click', () =>
+    showModal('Clear everything', 'Permanently remove ALL data — ROMs, saves, and BIOS files? This cannot be undone.', async () => {
+        await clearDB(); await renderLibrary(); updateStorageMeter(); switchView('home'); showToast('All data wiped.', 'info');
+    })
+);
+
+// ─────────────────────────────────────────────────────────────
+// BIOS UPLOAD (FIX: pass File object directly)
+// ─────────────────────────────────────────────────────────────
+const handleBiosUpload = async (e, key, label) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    try {
+        await saveBIOS(key, file);
+        await renderLibrary();
+        showToast(`${label} saved!`, 'success');
+    } catch(err) {
+        showToast(`Failed to save ${label}.`, 'error');
+    }
+    e.target.value = '';
+};
+document.getElementById('upload-gba-bios').addEventListener('change', e => handleBiosUpload(e, '_bios_gba', 'GBA BIOS'));
+document.getElementById('upload-gb-bios').addEventListener('change',  e => handleBiosUpload(e, '_bios_gb',  'GB BIOS'));
+document.getElementById('upload-gbc-bios').addEventListener('change', e => handleBiosUpload(e, '_bios_gbc', 'GBC BIOS'));
+
+// ─────────────────────────────────────────────────────────────
+// EMULATORJS LAUNCH
+// ─────────────────────────────────────────────────────────────
+async function launchEmulator(file, gameName) {
+    const lower = gameName.toLowerCase();
+    let coreName = 'nds', coreDisplayName = 'melonDS';
+    if (lower.endsWith('.gba'))                        { coreName = 'gba'; coreDisplayName = 'mGBA';     }
+    else if (lower.endsWith('.gb') || lower.endsWith('.gbc')) { coreName = 'gb';  coreDisplayName = 'Gambatte'; }
+
+    _currentGameName = gameName;
+    _lastSaveData    = null;
+
+    const loadingEl = document.getElementById('loading-overlay');
+    const subtextEl = document.getElementById('loading-subtext');
+    const progressEl = document.getElementById('loading-progress');
+    subtextEl.textContent  = `Initializing ${coreDisplayName} core…`;
+    progressEl.textContent = '';
+    loadingEl.classList.remove('hidden');
+
+    // BIOS lookup
+    let biosUrl = null;
+    try {
+        if (coreName === 'gba') {
+            const bios = await getROM('_bios_gba');
+            if (bios?.data) biosUrl = trackURL(URL.createObjectURL(bios.data));
+        } else if (coreName === 'gb') {
+            const biosKey = lower.endsWith('.gbc') ? '_bios_gbc' : '_bios_gb';
+            const bios    = await getROM(biosKey);
+            if (bios?.data) biosUrl = trackURL(URL.createObjectURL(bios.data));
+        }
+    } catch(e) { /* BIOS optional */ }
+
+    await updateLastPlayed(gameName);
+
+    // Load prior save state
+    try {
+        const existingSave = await getGameSave(gameName);
+        if (existingSave) {
+            window.EJS_loadStateURL = trackURL(URL.createObjectURL(new Blob([existingSave])));
+            progressEl.textContent = '↩ Restoring your save…';
+        } else {
+            delete window.EJS_loadStateURL;
+        }
+    } catch(e) { delete window.EJS_loadStateURL; }
+
+    // FIX: Robust save state handler — EJS emits various event shapes
+    window.EJS_onSaveState = async function(event) {
+        // EJS passes either (data) or an event-like object
+        let saveData = null;
+        if (event instanceof ArrayBuffer || ArrayBuffer.isView(event)) {
+            saveData = event;
+        } else if (event && typeof event === 'object') {
+            saveData = event.state ?? event.data ?? event[0] ?? event[1] ?? null;
+        }
+        if (!saveData) return;
+
+        _lastSaveData = saveData; // cache for manual saves too
+
+        try {
+            await saveGameSave(gameName, saveData);
+            showToast('Progress auto-saved!', 'success', 2000);
+        } catch(err) {
+            showToast('Auto-save failed!', 'error');
+        }
+    };
+
+    // Also capture any load-state events to keep _lastSaveData fresh
+    window.EJS_onLoadState = function(event) {
+        let saveData = null;
+        if (event instanceof ArrayBuffer || ArrayBuffer.isView(event)) saveData = event;
+        else if (event && typeof event === 'object') saveData = event.state ?? event.data ?? null;
+        if (saveData) _lastSaveData = saveData;
+    };
+
+    // Animate transition
+    const appUI = document.getElementById('app-ui');
+    appUI.style.opacity = '0';
+
+    await new Promise(r => setTimeout(r, 800));
+
+    loadingEl.classList.add('hidden');
+    appUI.style.display = 'none';
+
+    const emuWrapper = document.getElementById('emulator-wrapper');
+    emuWrapper.classList.add('active');
+    document.getElementById('now-playing-title').textContent = gameName.replace(/\.(nds|gba|gb|gbc)$/i, '');
+
+    const gameUrl = trackURL(URL.createObjectURL(file));
+
+    window.EJS_player        = '#game-container';
+    window.EJS_core          = coreName;
+    window.EJS_gameName      = gameName.replace(/\.(nds|gba|gb|gbc)$/i, '');
+    window.EJS_color         = window._accentHex || '#10b981';
+    window.EJS_startOnLoaded = true;
+    window.EJS_pathtodata    = 'https://cdn.emulatorjs.org/stable/data/';
+    window.EJS_gameUrl       = gameUrl;
+    if (biosUrl) window.EJS_biosUrl = biosUrl;
+
+    window.EJS_Buttons = {
+        0: 88, 1: 90, 2: 83, 3: 65,
+        4: 81, 5: 69,
+        12: 38, 13: 40, 14: 37, 15: 39,
+        8: 16, 9: 13
+    };
+
+    // Remove any previously injected EmulatorJS script
+    document.querySelectorAll('script[src*="emulatorjs"]').forEach(s => s.remove());
+
+    const script = document.createElement('script');
+    script.src   = 'https://cdn.emulatorjs.org/stable/data/loader.js';
+    document.body.appendChild(script);
+}
+
+// ─────────────────────────────────────────────────────────────
+// KEYBOARD SHORTCUT: Escape to open quit dialog while playing
+// ─────────────────────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && document.getElementById('emulator-wrapper').classList.contains('active')) {
+        document.getElementById('btn-quit').click();
+    }
+});
+
+// ─────────────────────────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────────────────────────
+window.onload = async () => {
+    lucide.createIcons();
+
+    const savedHex   = localStorage.getItem('ndsweb_accent') || '#10b981';
+    const savedColor = ACCENT_COLORS.find(c => c.hex === savedHex) || ACCENT_COLORS[0];
+    // Apply accent without triggering a renderLibrary call (DB not ready yet)
+    const root = document.documentElement;
+    root.style.setProperty('--accent', savedColor.hex);
+    root.style.setProperty('--accent-glow', savedColor.glow);
+    root.style.setProperty('--accent-bg', savedColor.bg);
+    window._accentHex = savedColor.hex;
+    document.getElementById('ambient-glow').style.background = savedColor.hex;
+
+    buildColorSwatches();
+    initThemeSettings();
+
+    try {
+        await initDB();
+        await renderLibrary();
+    } catch(e) {
+        showToast('Private browsing may limit storage features.', 'warn', 6000);
+        console.warn('DB init error:', e);
+    }
+
+    // Restore sort preference
+    const savedSort = localStorage.getItem('ndsweb_sort') || 'recent';
+    document.getElementById('sort-select').value = savedSort;
+    document.getElementById('sort-select').addEventListener('change', e => {
+        localStorage.setItem('ndsweb_sort', e.target.value);
+    });
+};
+</script>
+</body>
+</html>
