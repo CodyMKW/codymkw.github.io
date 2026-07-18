@@ -1073,28 +1073,34 @@
     currentGif = gif;
 
     let stalled = false;
-    const stallTimer = setTimeout(()=>{
-      stalled = true;
-      cancelRequested = true;
-      try{ gif.abort(); }catch(_){}
-      currentGif = null;
-      progressPanel.classList.remove('show');
-      transport.classList.add('show');
-      overlayPanel.classList.add('show');
-      settings.classList.add('show');
-      loadError.classList.add('show');
-      loadError.textContent = "GIF encoding stalled and was cancelled. This can happen if your browser is blocking the background worker the encoder needs — try a different browser, or check the console for a security/worker error.";
-      setStatus('ready', true);
-    }, 30000);
+    let lastProgressAt = Date.now();
+    const STALL_LIMIT_MS = 60000; // only cancel if truly no progress for a full minute
+    const watchdog = setInterval(()=>{
+      if (Date.now() - lastProgressAt > STALL_LIMIT_MS){
+        stalled = true;
+        cancelRequested = true;
+        clearInterval(watchdog);
+        try{ gif.abort(); }catch(_){}
+        currentGif = null;
+        progressPanel.classList.remove('show');
+        transport.classList.add('show');
+        overlayPanel.classList.add('show');
+        settings.classList.add('show');
+        loadError.classList.add('show');
+        loadError.textContent = "GIF encoding stalled and was cancelled — no progress for a full minute. This can happen if your browser is blocking the background worker the encoder needs; try a different browser, or check the console for a security/worker error.";
+        setStatus('ready', true);
+      }
+    }, 5000);
 
     gif.on('progress', p=>{
+      lastProgressAt = Date.now();
       const pctVal = Math.round(50 + p*50);
       progressFill.style.width = pctVal+'%';
       progressPct.textContent = pctVal+'%';
       progressLabel.textContent = 'Encoding GIF…';
     });
     gif.on('finished', blob=>{
-      clearTimeout(stallTimer);
+      clearInterval(watchdog);
       if (cancelRequested || stalled) return;
       const url = URL.createObjectURL(blob);
       resultImg.src = url;
@@ -1122,6 +1128,7 @@
           wctx.globalAlpha = 1;
         }
         gif.addFrame(wctx, { copy:true, delay: frame.delay });
+        lastProgressAt = Date.now();
         const pctVal = Math.round(((i+1)/total)*50);
         progressFill.style.width = pctVal+'%';
         progressPct.textContent = pctVal+'%';
@@ -1130,7 +1137,7 @@
       if (cancelRequested) throw new Error('cancelled');
       gif.render();
     } catch(err){
-      clearTimeout(stallTimer);
+      clearInterval(watchdog);
       currentGif = null;
       progressPanel.classList.remove('show');
       transport.classList.add('show');
@@ -1144,4 +1151,3 @@
 </script>
 </body>
 </html>
-
