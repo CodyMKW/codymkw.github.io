@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>nincfg.bin Editor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #100e17;
+    --bg-grid: #17141f;
+    --panel: #1a1725;
+    --panel-alt: #211d30;
+    --line: #322c47;
+    --line-soft: #241f34;
+    --text: #eeeaf9;
+    --muted: #948fb3;
+    --muted-dim: #6a6588;
+    --accent: #8f7bff;
+    --accent-bright: #a894ff;
+    --accent-dim: #4c3fa0;
+    --good: #33d6a6;
+    --warn: #f2a93b;
+    --bad: #ff6b7a;
+    --mono: 'JetBrains Mono', ui-monospace, monospace;
+    --display: 'Space Grotesk', ui-sans-serif, sans-serif;
+    --radius: 10px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(circle at 12% -10%, rgba(143,123,255,0.14), transparent 45%),
+      radial-gradient(circle at 100% 0%, rgba(51,214,166,0.08), transparent 40%),
+      var(--bg);
+    color:var(--text);
+    font-family:var(--mono);
+    font-size:14px;
+    line-height:1.5;
+    min-height:100vh;
+    padding:32px 20px 80px;
+  }
+  .wrap{max-width:1180px;margin:0 auto;}
+
+  /* header */
+  header.top{
+    display:flex; justify-content:space-between; align-items:flex-end; gap:24px;
+    margin-bottom:28px; flex-wrap:wrap;
+  }
+  .brand{display:flex; flex-direction:column; gap:6px;}
+  .brand .kicker{
+    font-family:var(--mono); font-size:11px; letter-spacing:.18em; text-transform:uppercase;
+    color:var(--accent-bright); display:flex; align-items:center; gap:8px;
+  }
+  .brand .kicker::before{
+    content:''; width:7px; height:7px; border-radius:50%; background:var(--good);
+    box-shadow:0 0 0 3px rgba(51,214,166,0.18);
+  }
+  .brand h1{
+    font-family:var(--display); font-weight:700; font-size:30px; margin:0; letter-spacing:-.01em;
+  }
+  .brand h1 span{color:var(--accent-bright);}
+  .brand p{margin:0; color:var(--muted); font-size:13px; max-width:520px;}
+
+  .fileops{display:flex; gap:10px; align-items:center; flex-wrap:wrap;}
+  input[type=file]{display:none;}
+  .btn{
+    font-family:var(--mono); font-size:12.5px; font-weight:600; letter-spacing:.02em;
+    border-radius:7px; border:1px solid var(--line); background:var(--panel-alt); color:var(--text);
+    padding:10px 16px; cursor:pointer; display:inline-flex; align-items:center; gap:8px;
+    transition:border-color .15s, transform .1s, background .15s;
+  }
+  .btn:hover{border-color:var(--accent-dim); background:#251f38;}
+  .btn:active{transform:translateY(1px);}
+  .btn.primary{
+    background:linear-gradient(135deg, var(--accent), #6f5cff); border-color:transparent; color:#0e0c17;
+    color:white;
+  }
+  .btn.primary:hover{filter:brightness(1.08);}
+  .btn.ghost{background:transparent;}
+  .btn svg{width:14px; height:14px; flex:none;}
+
+  .status-line{
+    font-size:12px; color:var(--muted-dim); margin-bottom:20px; display:flex; gap:10px; align-items:center; flex-wrap:wrap;
+  }
+  .status-line .tag{
+    border:1px solid var(--line); border-radius:5px; padding:2px 8px; color:var(--muted);
+  }
+  .status-line .tag.ok{color:var(--good); border-color:rgba(51,214,166,.35);}
+  .status-line .tag.warn{color:var(--warn); border-color:rgba(242,169,59,.35);}
+
+  /* layout */
+  .layout{
+    display:grid; grid-template-columns: 1fr 340px; gap:20px; align-items:start;
+  }
+  @media (max-width: 920px){ .layout{grid-template-columns:1fr;} }
+
+  /* tabs */
+  .tabs{display:flex; gap:4px; margin-bottom:16px; border-bottom:1px solid var(--line-soft); flex-wrap:wrap;}
+  .tab{
+    font-family:var(--display); font-weight:600; font-size:13px; color:var(--muted);
+    background:none; border:none; padding:10px 14px; cursor:pointer; position:relative; top:1px;
+    border-bottom:2px solid transparent;
+  }
+  .tab.active{color:var(--text); border-bottom-color:var(--accent);}
+  .tab:hover{color:var(--text);}
+
+  .panel{
+    background:var(--panel); border:1px solid var(--line-soft); border-radius:var(--radius);
+    padding:22px; margin-bottom:16px;
+  }
+  .section-title{
+    font-family:var(--display); font-size:14px; font-weight:600; color:var(--accent-bright);
+    margin:0 0 4px; letter-spacing:.01em;
+  }
+  .section-desc{color:var(--muted); font-size:12px; margin:0 0 18px;}
+
+  .grid{display:grid; grid-template-columns:1fr 1fr; gap:16px 20px;}
+  .grid.single{grid-template-columns:1fr;}
+  .field{display:flex; flex-direction:column; gap:6px;}
+  .field.span2{grid-column:1/-1;}
+  label.flabel{
+    font-size:11.5px; color:var(--muted); letter-spacing:.03em; text-transform:uppercase;
+    display:flex; justify-content:space-between; gap:8px;
+  }
+  label.flabel .hint{text-transform:none; color:var(--muted-dim); font-size:11px; letter-spacing:0;}
+
+  input[type=text], input[type=number], select{
+    font-family:var(--mono); font-size:13.5px; color:var(--text);
+    background:var(--panel-alt); border:1px solid var(--line); border-radius:6px;
+    padding:9px 10px; outline:none; width:100%;
+  }
+  input[type=text]:focus, input[type=number]:focus, select:focus{
+    border-color:var(--accent); box-shadow:0 0 0 3px rgba(143,123,255,0.15);
+  }
+  input[readonly]{color:var(--muted-dim); background:#181521;}
+  select{appearance:none; background-image:linear-gradient(45deg, transparent 50%, var(--muted) 50%), linear-gradient(135deg, var(--muted) 50%, transparent 50%); background-position: calc(100% - 16px) center, calc(100% - 11px) center; background-size: 5px 5px, 5px 5px; background-repeat:no-repeat; padding-right:30px;}
+
+  .charcount{font-size:10.5px; color:var(--muted-dim); text-align:right;}
+
+  /* checkbox rows */
+  .check-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px 20px;}
+  @media (max-width:640px){ .check-grid{grid-template-columns:1fr;} }
+  .check-row{
+    display:flex; align-items:flex-start; gap:10px; padding:9px 10px; border-radius:7px;
+    border:1px solid transparent; cursor:pointer;
+  }
+  .check-row:hover{background:var(--panel-alt); border-color:var(--line-soft);}
+  .check-row input{margin-top:2px; accent-color:var(--accent); width:15px; height:15px; flex:none;}
+  .check-row .ct{display:flex; flex-direction:column; gap:1px;}
+  .check-row .ct .name{font-size:12.5px; color:var(--text); font-weight:500;}
+  .check-row .ct .desc{font-size:11px; color:var(--muted-dim); font-family:var(--mono);}
+
+  .radio-pill-row{display:flex; gap:8px; flex-wrap:wrap;}
+  .radio-pill{
+    font-size:12px; padding:7px 12px; border-radius:20px; border:1px solid var(--line);
+    background:var(--panel-alt); color:var(--muted); cursor:pointer; user-select:none;
+  }
+  .radio-pill input{display:none;}
+  .radio-pill.active{border-color:var(--accent); color:var(--text); background:rgba(143,123,255,0.15);}
+
+  .divider{height:1px; background:var(--line-soft); margin:18px 0;}
+
+  .disabled-note{opacity:.45; pointer-events:none;}
+
+  .warn-box{
+    display:flex; gap:10px; align-items:flex-start; background:rgba(242,169,59,0.08);
+    border:1px solid rgba(242,169,59,0.3); color:#e9c078; padding:12px 14px; border-radius:8px;
+    font-size:12px; margin-bottom:16px;
+  }
+
+  /* sidebar */
+  .side-panel{
+    background:var(--panel); border:1px solid var(--line-soft); border-radius:var(--radius);
+    padding:18px; position:sticky; top:20px;
+  }
+  .side-panel h2{
+    font-family:var(--display); font-size:13px; margin:0 0 4px; color:var(--text);
+  }
+  .side-panel .side-desc{color:var(--muted-dim); font-size:11.5px; margin:0 0 14px;}
+  .hexdump{
+    background:#0c0a13; border:1px solid var(--line-soft); border-radius:7px; padding:12px;
+    font-size:10.5px; line-height:1.65; max-height:340px; overflow-y:auto; color:var(--muted);
+    white-space:pre;
+  }
+  .hexdump .addr{color:var(--muted-dim);}
+  .hexdump .byte{color:#c9c3f0;}
+  .hexdump .byte.zero{color:#39344f;}
+  .hexdump .ascii{color:var(--good);}
+  .hexdump::-webkit-scrollbar{width:7px;}
+  .hexdump::-webkit-scrollbar-thumb{background:var(--line); border-radius:6px;}
+
+  .summary-list{list-style:none; margin:14px 0 0; padding:0; display:flex; flex-direction:column; gap:8px;}
+  .summary-list li{display:flex; justify-content:space-between; font-size:11.5px; gap:10px;}
+  .summary-list li span:first-child{color:var(--muted-dim);}
+  .summary-list li span:last-child{color:var(--text); text-align:right; word-break:break-all;}
+
+  footer.note{
+    margin-top:26px; color:var(--muted-dim); font-size:11px; text-align:center;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="brand">
+      <div class="kicker">Nintendont · NIN_CFG v10</div>
+      <h1>nincfg<span>.bin</span> Editor</h1>
+      <p>Load a Nintendont config file, edit every field of the NIN_CFG struct, and export a fresh 548-byte binary. Everything happens locally in your browser.</p>
+    </div>
+    <div class="fileops">
+      <label class="btn ghost" for="fileInput">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Load nincfg.bin
+      </label>
+      <input type="file" id="fileInput" accept=".bin">
+      <button class="btn primary" id="downloadBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2" stroke-linecap="round" stroke-linejoin="round" transform="rotate(180 12 12)"/></svg>
+        Save nincfg.bin
+      </button>
+    </div>
+  </header>
+
+  <div class="status-line">
+    <span class="tag ok" id="fileTag">Loaded: sample file (Mario Kart Arcade GP)</span>
+    <span class="tag" id="sizeTag">548 bytes</span>
+    <span class="tag" id="magicTag">Magic OK · Version 10</span>
+  </div>
+
+  <div class="layout">
+    <div>
+      <div class="tabs" id="tabs">
+        <button class="tab active" data-tab="game">Game & Boot</button>
+        <button class="tab" data-tab="video">Video & Region</button>
+        <button class="tab" data-tab="memcard">Memory Card</button>
+        <button class="tab" data-tab="options">Options</button>
+        <button class="tab" data-tab="advanced">Advanced</button>
+      </div>
+
+      <!-- GAME TAB -->
+      <div class="tab-pane" id="pane-game">
+        <div class="panel">
+          <p class="section-title">Game path</p>
+          <p class="section-desc">Path to the disc image Nintendont should load. Autoboot skips the Nintendont menu and loads this game directly.</p>
+          <div class="grid single">
+            <div class="field">
+              <label class="flabel">Game path <span class="hint" id="gamePathCount">0/254</span></label>
+              <input type="text" id="gamePath" maxlength="254" placeholder="/games/Mario Kart Arcade GP (USA).iso">
+            </div>
+            <div class="field">
+              <label class="flabel">Game ID <span class="hint">4 characters, read from disc header</span></label>
+              <input type="text" id="gameID" maxlength="4" placeholder="GGPE" style="text-transform:uppercase; width:140px;">
+            </div>
+          </div>
+          <div class="divider"></div>
+          <div class="check-grid">
+            <label class="check-row"><input type="checkbox" id="cfg_AUTO_BOOT"><span class="ct"><span class="name">Auto boot</span><span class="desc">Skip the menu, load Game path immediately</span></span></label>
+            <label class="check-row"><input type="checkbox" id="cfg_SKIP_IPL"><span class="ct"><span class="name">Skip IPL / BIOS</span><span class="desc">Boot straight past the GameCube BIOS animation</span></span></label>
+          </div>
+        </div>
+
+        <div class="panel">
+          <p class="section-title">Cheats</p>
+          <p class="section-desc">Optional Gecko/Action Replay code file, loaded alongside the game.</p>
+          <div class="grid single">
+            <div class="field">
+              <label class="flabel">Cheat path <span class="hint" id="cheatPathCount">0/254</span></label>
+              <input type="text" id="cheatPath" maxlength="254" placeholder="/games/Mario Kart Arcade GP (USA)/codes.txt">
+            </div>
+          </div>
+          <div class="divider"></div>
+          <div class="check-grid">
+            <label class="check-row"><input type="checkbox" id="cfg_CHEATS"><span class="ct"><span class="name">Cheats enabled</span><span class="desc">Apply loaded cheat codes at boot</span></span></label>
+            <label class="check-row"><input type="checkbox" id="cfg_CHEAT_PATH"><span class="ct"><span class="name">Use cheat path</span><span class="desc">Load codes from Cheat path above instead of default location</span></span></label>
+          </div>
+        </div>
+
+        <div class="panel">
+          <p class="section-title">Controllers</p>
+          <div class="grid">
+            <div class="field">
+              <label class="flabel">Max pads <span class="hint">0–4</span></label>
+              <input type="number" id="maxPads" min="0" max="4" step="1">
+            </div>
+            <div class="field">
+              <label class="flabel">Arcade mode</label>
+              <div class="check-row" style="padding-left:0;">
+                <input type="checkbox" id="cfg_ARCADE_MODE" style="margin-top:9px;"><span class="ct" style="justify-content:center;"><span class="name">Enable arcade coin-op behavior</span><span class="desc">For Triforce/arcade GameCube titles</span></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIDEO TAB -->
+      <div class="tab-pane" id="pane-video" style="display:none;">
+        <div class="panel">
+          <p class="section-title">Language</p>
+          <div class="grid">
+            <div class="field">
+              <label class="flabel">Menu / game language</label>
+              <select id="language">
+                <option value="-1">Auto (region default)</option>
+                <option value="0">English</option>
+                <option value="1">German</option>
+                <option value="2">French</option>
+                <option value="3">Spanish</option>
+                <option value="4">Italian</option>
+                <option value="5">Dutch</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <p class="section-title">Video detection</p>
+          <p class="section-desc">Controls how Nintendont selects a TV standard. VideoMode packs a detection mode with optional force flags.</p>
+          <div class="grid">
+            <div class="field">
+              <label class="flabel">Detection mode</label>
+              <select id="videoIndex">
+                <option value="0">Auto</option>
+                <option value="1">Force</option>
+                <option value="2">None</option>
+                <option value="4">Force + Deflicker</option>
+              </select>
+            </div>
+            <div class="field" id="forceStandardField">
+              <label class="flabel">Forced standard <span class="hint">only used when Detection = Force</span></label>
+              <div class="radio-pill-row" id="forceStandardPills">
+                <label class="radio-pill" data-val="0"><input type="radio" name="forceStd">PAL 50Hz</label>
+                <label class="radio-pill" data-val="1"><input type="radio" name="forceStd">PAL 60Hz</label>
+                <label class="radio-pill" data-val="2"><input type="radio" name="forceStd">NTSC</label>
+                <label class="radio-pill" data-val="3"><input type="radio" name="forceStd">M-PAL</label>
+              </div>
+            </div>
+          </div>
+          <div class="divider"></div>
+          <div class="check-grid">
+            <label class="check-row"><input type="checkbox" id="vid_PROG"><span class="ct"><span class="name">Force progressive scan</span><span class="desc">480p output where supported</span></span></label>
+            <label class="check-row"><input type="checkbox" id="vid_PATCH_PAL50"><span class="ct"><span class="name">PAL50 patch</span><span class="desc">Alternate patch behavior for 50Hz-only titles</span></span></label>
+            <label class="check-row"><input type="checkbox" id="cfg_FORCE_WIDE"><span class="ct"><span class="name">Force widescreen (16:9)</span><span class="desc">Anamorphic patch for the game itself</span></span></label>
+            <label class="check-row"><input type="checkbox" id="cfg_WIIU_WIDE"><span class="ct"><span class="name">Wii U GamePad widescreen</span><span class="desc">vWii output patch, Wii U only</span></span></label>
+          </div>
+        </div>
+      </div>
+
+      <!-- MEMORY CARD TAB -->
+      <div class="tab-pane" id="pane-memcard" style="display:none;">
+        <div class="panel">
+          <p class="section-title">Memory card emulation</p>
+          <p class="section-desc">Nintendont can emulate a GameCube memory card as a file on your storage device instead of requiring real hardware.</p>
+          <div class="check-grid">
+            <label class="check-row"><input type="checkbox" id="cfg_MEMCARDEMU"><span class="ct"><span class="name">Enable memory card emulation</span><span class="desc">Saves go to a .raw file instead of real memory card</span></span></label>
+            <label class="check-row"><input type="checkbox" id="cfg_MC_MULTI"><span class="ct"><span class="name">Multi-game card</span><span class="desc">Share one card image across every game</span></span></label>
+          </div>
+          <div class="divider"></div>
+          <div class="grid">
+            <div class="field">
+              <label class="flabel">Card size</label>
+              <select id="memCardBlocks">
+                <option value="0">59 blocks (0.5 Mbit)</option>
+                <option value="1">123 blocks (1 Mbit)</option>
+                <option value="2">251 blocks (2 Mbit)</option>
+                <option value="3">507 blocks (4 Mbit)</option>
+                <option value="4">1019 blocks (8 Mbit)</option>
+                <option value="5">2043 blocks (16 Mbit)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- OPTIONS TAB -->
+      <div class="tab-pane" id="pane-options" style="display:none;">
+        <div class="panel">
+          <p class="section-title">Storage & system</p>
+          <div class="check-grid">
+            <label class="check-row"><input type="checkbox" id="cfg_USB"><span class="ct"><span class="name">Use USB storage</span><span class="desc">Read the game from USB instead of SD</span></span></label>
+            <label class="check-row"><input type="checkbox" id="cfg_HID"><span class="ct"><span class="name">HID / remote limit</span><span class="desc">USB HID controller support (older builds) / remote limit (newer)</span></span></label>
+            <label class="check-row"><input type="checkbox" id="cfg_NATIVE_SI"><span class="ct"><span class="name">Native SI (Wii only)</span><span class="desc">Use real GameCube controller ports directly</span></span></label>
+            <label class="check-row"><input type="checkbox" id="cfg_BBA_EMU"><span class="ct"><span class="name">Broadband Adapter emulation</span><span class="desc">Emulate the GameCube network adapter</span></span></label>
+            <label class="check-row"><input type="checkbox" id="cfg_CC_RUMBLE"><span class="ct"><span class="name">Classic Controller rumble</span><span class="desc">Rumble through a Wii Classic Controller</span></span></label>
+            <label class="check-row"><input type="checkbox" id="cfg_LED"><span class="ct"><span class="name">Drive slot LED activity</span><span class="desc">Blink the SD/USB slot LED on access (Wii only)</span></span></label>
+          </div>
+        </div>
+        <div class="panel">
+          <p class="section-title">Debugging</p>
+          <div class="check-grid">
+            <label class="check-row"><input type="checkbox" id="cfg_DEBUGGER"><span class="ct"><span class="name">Enable debugger</span><span class="desc">Wii only</span></span></label>
+            <label class="check-row"><input type="checkbox" id="cfg_DEBUGWAIT"><span class="ct"><span class="name">Wait for debugger</span><span class="desc">Pause boot until a debugger attaches, Wii only</span></span></label>
+            <label class="check-row"><input type="checkbox" id="cfg_OSREPORT"><span class="ct"><span class="name">OSReport to USB Gecko</span><span class="desc">Forward console output over USB Gecko</span></span></label>
+            <label class="check-row"><input type="checkbox" id="cfg_LOG"><span class="ct"><span class="name">Write log file</span><span class="desc">Save a boot log to storage</span></span></label>
+          </div>
+        </div>
+      </div>
+
+      <!-- ADVANCED TAB -->
+      <div class="tab-pane" id="pane-advanced" style="display:none;">
+        <div class="warn-box">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex:none; margin-top:1px;"><path d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>These fields are normally managed automatically by Nintendont. Wrong values here are usually harmless, but change them only if you know what you're doing.</span>
+        </div>
+        <div class="panel">
+          <p class="section-title">Wii U</p>
+          <div class="grid">
+            <div class="field">
+              <label class="flabel">Wii U GamePad slot</label>
+              <input type="number" id="wiiuGamepadSlot" min="0" max="4294967295" step="1">
+            </div>
+          </div>
+        </div>
+        <div class="panel">
+          <p class="section-title">Display calibration</p>
+          <div class="grid">
+            <div class="field">
+              <label class="flabel">Video scale <span class="hint">signed, -128..127</span></label>
+              <input type="number" id="videoScale" min="-128" max="127" step="1">
+            </div>
+            <div class="field">
+              <label class="flabel">Video offset <span class="hint">signed, -128..127</span></label>
+              <input type="number" id="videoOffset" min="-128" max="127" step="1">
+            </div>
+          </div>
+        </div>
+        <div class="panel">
+          <p class="section-title">Misc</p>
+          <div class="grid">
+            <div class="field">
+              <label class="flabel">Network profile</label>
+              <input type="number" id="networkProfile" min="0" max="255" step="1">
+            </div>
+            <div class="field">
+              <label class="flabel">Memory card in slot B <span class="hint">internal kernel flag</span></label>
+              <div class="check-row" style="padding-left:0;">
+                <input type="checkbox" id="cfg_MC_SLOTB" style="margin-top:9px;"><span class="ct" style="justify-content:center;"><span class="name">Card image is loaded in Slot B</span></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="panel">
+          <p class="section-title">Struct header</p>
+          <div class="grid">
+            <div class="field">
+              <label class="flabel">Magic bytes</label>
+              <input type="text" id="magicOut" readonly value="0x01070CF6">
+            </div>
+            <div class="field">
+              <label class="flabel">Struct version</label>
+              <input type="text" id="versionOut" readonly value="10">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SIDEBAR -->
+    <div class="side-panel">
+      <h2>Live binary preview</h2>
+      <p class="side-desc">548-byte NIN_CFG struct, big-endian. Updates as you edit.</p>
+      <div class="hexdump" id="hexdump"></div>
+      <ul class="summary-list">
+        <li><span>Config flags</span><span id="sumConfig">0x00000000</span></li>
+        <li><span>VideoMode</span><span id="sumVideo">0x00000000</span></li>
+        <li><span>Game ID</span><span id="sumGameID">----</span></li>
+        <li><span>Total size</span><span>548 bytes</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <footer class="note">Runs entirely in your browser — no file is uploaded anywhere. Struct reference: Nintendont NIN_CFG v10 (CommonConfig.h).</footer>
+</div>
+
+<script>
+// ---------- struct layout ----------
+const OFF = {
+  MAGIC: 0, VERSION: 4, CONFIG: 8, VIDEOMODE: 12, LANGUAGE: 16,
+  GAMEPATH: 20, GAMEPATH_LEN: 255,
+  CHEATPATH: 275, CHEATPATH_LEN: 255,
+  MAXPADS: 532, GAMEID: 536,
+  MEMCARDBLOCKS: 540, VIDEOSCALE: 541, VIDEOOFFSET: 542, NETWORKPROFILE: 543,
+  WIIUGAMEPADSLOT: 544
+};
+const TOTAL_SIZE = 548;
+const MAGIC = 0x01070CF6;
+const VERSION = 10;
+
+const CFG_BITS = {
+  CHEATS:0, DEBUGGER:1, DEBUGWAIT:2, MEMCARDEMU:3, CHEAT_PATH:4, FORCE_WIDE:5,
+  FORCE_PROG:6, AUTO_BOOT:7, HID:8, OSREPORT:9, USB:10, LED:11, LOG:12, MC_MULTI:13,
+  NATIVE_SI:14, WIIU_WIDE:15, ARCADE_MODE:16, CC_RUMBLE:17, SKIP_IPL:18, BBA_EMU:19,
+  MC_SLOTB:31
+};
+
+// ---------- default / sample state ----------
+function defaultState(){
+  return {
+    config: (1<<CFG_BITS.CHEATS) | (1<<CFG_BITS.MEMCARDEMU) | (1<<CFG_BITS.FORCE_PROG) | (1<<CFG_BITS.USB) | (1<<CFG_BITS.WIIU_WIDE),
+    videoIndex: 0, forceStd: 0, vidProg: true, vidPatchPal50: false,
+    language: -1,
+    gamePath: '/games/Mario Kart Arcade GP (USA).iso',
+    cheatPath: '',
+    maxPads: 4,
+    gameID: 'GGPE',
+    memCardBlocks: 2,
+    videoScale: 0, videoOffset: 0, networkProfile: 0,
+    wiiuGamepadSlot: 0
+  };
+}
+let state = defaultState();
+
+// ---------- bind helpers ----------
+const $ = id => document.getElementById(id);
+function bitOn(cfg, bit){ return !!(cfg & (1<<bit)); }
+function setBit(cfg, bit, on){ return on ? (cfg | (1<<bit)) : (cfg & ~(1<<bit)); }
+
+const cfgCheckboxIds = Object.keys(CFG_BITS).reduce((acc,name)=>{ acc[name]='cfg_'+name; return acc; },{});
+
+function loadStateIntoForm(){
+  $('gamePath').value = state.gamePath;
+  $('cheatPath').value = state.cheatPath;
+  $('gameID').value = state.gameID;
+  $('maxPads').value = state.maxPads;
+  $('language').value = String(state.language);
+  $('videoIndex').value = String(state.videoIndex);
+  $('vid_PROG').checked = state.vidProg;
+  $('vid_PATCH_PAL50').checked = state.vidPatchPal50;
+  $('memCardBlocks').value = String(state.memCardBlocks);
+  $('videoScale').value = state.videoScale;
+  $('videoOffset').value = state.videoOffset;
+  $('networkProfile').value = state.networkProfile;
+  $('wiiuGamepadSlot').value = state.wiiuGamepadSlot;
+
+  Object.entries(CFG_BITS).forEach(([name,bit])=>{
+    const el = $('cfg_'+name);
+    if(el) el.checked = bitOn(state.config, bit);
+  });
+
+  document.querySelectorAll('#forceStandardPills .radio-pill').forEach(p=>{
+    p.classList.toggle('active', Number(p.dataset.val) === state.forceStd);
+  });
+
+  updateCounts();
+  updateForceStandardVisibility();
+  render();
+}
+
+function readFormIntoState(){
+  state.gamePath = $('gamePath').value.slice(0,254);
+  state.cheatPath = $('cheatPath').value.slice(0,254);
+  state.gameID = $('gameID').value.toUpperCase().slice(0,4);
+  state.maxPads = clamp(parseInt($('maxPads').value||'0',10), 0, 4);
+  state.language = parseInt($('language').value,10);
+  state.videoIndex = parseInt($('videoIndex').value,10);
+  state.vidProg = $('vid_PROG').checked;
+  state.vidPatchPal50 = $('vid_PATCH_PAL50').checked;
+  state.memCardBlocks = parseInt($('memCardBlocks').value,10);
+  state.videoScale = clamp(parseInt($('videoScale').value||'0',10), -128, 127);
+  state.videoOffset = clamp(parseInt($('videoOffset').value||'0',10), -128, 127);
+  state.networkProfile = clamp(parseInt($('networkProfile').value||'0',10), 0, 255);
+  state.wiiuGamepadSlot = Math.max(0, parseInt($('wiiuGamepadSlot').value||'0',10));
+
+  Object.entries(CFG_BITS).forEach(([name,bit])=>{
+    const el = $('cfg_'+name);
+    if(el) state.config = setBit(state.config, bit, el.checked);
+  });
+}
+
+function clamp(v,min,max){ return Math.min(max, Math.max(min, isNaN(v)?0:v)); }
+
+function updateCounts(){
+  $('gamePathCount').textContent = state.gamePath.length + '/254';
+  $('cheatPathCount').textContent = state.cheatPath.length + '/254';
+}
+
+function updateForceStandardVisibility(){
+  const field = $('forceStandardField');
+  field.classList.toggle('disabled-note', state.videoIndex !== 1);
+}
+
+// ---------- encode / decode ----------
+function encodeVideoMode(){
+  const low = (state.forceStd & 0xF) === state.forceStd && state.videoIndex === 1 ? (1<<state.forceStd) : 0;
+  let bits = 0;
+  if(state.videoIndex === 1) bits |= low;
+  if(state.vidProg) bits |= (1<<4);
+  if(state.vidPatchPal50) bits |= (1<<5);
+  return ((state.videoIndex & 0xFFFF) << 16) | (bits & 0xFFFF);
+}
+
+function decodeVideoMode(vm){
+  const index = (vm >>> 16) & 0xFFFF;
+  const low = vm & 0xFFFF;
+  let forceStd = 0;
+  for(let b=0;b<4;b++){ if(low & (1<<b)){ forceStd = b; break; } }
+  return { videoIndex: index, forceStd, vidProg: !!(low & (1<<4)), vidPatchPal50: !!(low & (1<<5)) };
+}
+
+function buildBuffer(){
+  const buf = new ArrayBuffer(TOTAL_SIZE);
+  const dv = new DataView(buf);
+  dv.setUint32(OFF.MAGIC, MAGIC, false);
+  dv.setUint32(OFF.VERSION, VERSION, false);
+  dv.setUint32(OFF.CONFIG, state.config >>> 0, false);
+  dv.setUint32(OFF.VIDEOMODE, encodeVideoMode() >>> 0, false);
+  dv.setInt32(OFF.LANGUAGE, state.language, false);
+  writeCString(dv, OFF.GAMEPATH, OFF.GAMEPATH_LEN, state.gamePath);
+  writeCString(dv, OFF.CHEATPATH, OFF.CHEATPATH_LEN, state.cheatPath);
+  dv.setUint32(OFF.MAXPADS, state.maxPads, false);
+  writeAscii4(dv, OFF.GAMEID, state.gameID);
+  dv.setUint8(OFF.MEMCARDBLOCKS, state.memCardBlocks);
+  dv.setInt8(OFF.VIDEOSCALE, state.videoScale);
+  dv.setInt8(OFF.VIDEOOFFSET, state.videoOffset);
+  dv.setUint8(OFF.NETWORKPROFILE, state.networkProfile);
+  dv.setUint32(OFF.WIIUGAMEPADSLOT, state.wiiuGamepadSlot >>> 0, false);
+  return new Uint8Array(buf);
+}
+
+function writeCString(dv, offset, maxLen, str){
+  const bytes = [...str].map(c=>c.charCodeAt(0) & 0xFF).slice(0, maxLen-1);
+  for(let i=0;i<maxLen;i++){ dv.setUint8(offset+i, i<bytes.length ? bytes[i] : 0); }
+}
+function writeAscii4(dv, offset, str){
+  for(let i=0;i<4;i++){ dv.setUint8(offset+i, i<str.length ? (str.charCodeAt(i)&0xFF) : 0); }
+}
+function readCString(dv, offset, maxLen){
+  let out = '';
+  for(let i=0;i<maxLen;i++){
+    const c = dv.getUint8(offset+i);
+    if(c===0) break;
+    out += String.fromCharCode(c);
+  }
+  return out;
+}
+
+function parseBuffer(buf){
+  const dv = new DataView(buf);
+  const magic = dv.getUint32(OFF.MAGIC, false);
+  const version = dv.getUint32(OFF.VERSION, false);
+  const config = dv.getUint32(OFF.CONFIG, false);
+  const videoMode = dv.getUint32(OFF.VIDEOMODE, false);
+  const language = dv.getInt32(OFF.LANGUAGE, false);
+  const gamePath = readCString(dv, OFF.GAMEPATH, OFF.GAMEPATH_LEN);
+  const cheatPath = readCString(dv, OFF.CHEATPATH, OFF.CHEATPATH_LEN);
+  const maxPads = dv.getUint32(OFF.MAXPADS, false);
+  let gameID = '';
+  for(let i=0;i<4;i++){ const c = dv.getUint8(OFF.GAMEID+i); if(c) gameID += String.fromCharCode(c); }
+  const memCardBlocks = dv.getUint8(OFF.MEMCARDBLOCKS);
+  const videoScale = dv.getInt8(OFF.VIDEOSCALE);
+  const videoOffset = dv.getInt8(OFF.VIDEOOFFSET);
+  const networkProfile = dv.getUint8(OFF.NETWORKPROFILE);
+  const wiiuGamepadSlot = dv.getUint32(OFF.WIIUGAMEPADSLOT, false);
+
+  const vm = decodeVideoMode(videoMode);
+  return {
+    magic, version, config,
+    videoIndex: vm.videoIndex, forceStd: vm.forceStd, vidProg: vm.vidProg, vidPatchPal50: vm.vidPatchPal50,
+    language, gamePath, cheatPath, maxPads, gameID,
+    memCardBlocks: Math.min(memCardBlocks,5), videoScale, videoOffset, networkProfile, wiiuGamepadSlot
+  };
+}
+
+// ---------- rendering ----------
+function render(){
+  const bytes = buildBuffer();
+  renderHexdump(bytes);
+  $('sumConfig').textContent = '0x' + (state.config>>>0).toString(16).padStart(8,'0').toUpperCase();
+  $('sumVideo').textContent = '0x' + (encodeVideoMode()>>>0).toString(16).padStart(8,'0').toUpperCase();
+  $('sumGameID').textContent = state.gameID || '----';
+}
+
+function renderHexdump(bytes){
+  const rows = [];
+  for(let i=0;i<bytes.length;i+=16){
+    const chunk = bytes.slice(i, i+16);
+    const addr = i.toString(16).padStart(4,'0');
+    let hexPart = '';
+    let asciiPart = '';
+    chunk.forEach(b=>{
+      hexPart += (b===0? `<span class="byte zero">${b.toString(16).padStart(2,'0')}</span> ` : `<span class="byte">${b.toString(16).padStart(2,'0')}</span> `);
+      asciiPart += (b>=32 && b<127) ? String.fromCharCode(b) : '.';
+    });
+    rows.push(`<span class="addr">${addr}</span>  ${hexPart} <span class="ascii">${escapeHtml(asciiPart)}</span>`);
+  }
+  $('hexdump').innerHTML = rows.join('\n');
+}
+function escapeHtml(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// ---------- events ----------
+document.querySelectorAll('#tabs .tab').forEach(tab=>{
+  tab.addEventListener('click', ()=>{
+    document.querySelectorAll('#tabs .tab').forEach(t=>t.classList.remove('active'));
+    tab.classList.add('active');
+    document.querySelectorAll('.tab-pane').forEach(p=>p.style.display='none');
+    $('pane-'+tab.dataset.tab).style.display='block';
+  });
+});
+
+document.querySelectorAll('#forceStandardPills .radio-pill').forEach(pill=>{
+  pill.addEventListener('click', ()=>{
+    state.forceStd = Number(pill.dataset.val);
+    document.querySelectorAll('#forceStandardPills .radio-pill').forEach(p=>p.classList.remove('active'));
+    pill.classList.add('active');
+    render();
+  });
+});
+
+document.querySelectorAll('input, select').forEach(el=>{
+  el.addEventListener('input', ()=>{
+    if(el.id==='gameID'){ el.value = el.value.toUpperCase(); }
+    readFormIntoState();
+    updateCounts();
+    updateForceStandardVisibility();
+    render();
+  });
+});
+
+$('fileInput').addEventListener('change', async (e)=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  const buf = await file.arrayBuffer();
+  if(buf.byteLength < TOTAL_SIZE){
+    setStatus(false, `File too small (${buf.byteLength} bytes, expected ${TOTAL_SIZE})`);
+    return;
+  }
+  const parsed = parseBuffer(buf);
+  const magicOk = parsed.magic === MAGIC;
+  state = {
+    config: parsed.config, videoIndex: parsed.videoIndex, forceStd: parsed.forceStd,
+    vidProg: parsed.vidProg, vidPatchPal50: parsed.vidPatchPal50, language: parsed.language,
+    gamePath: parsed.gamePath, cheatPath: parsed.cheatPath, maxPads: parsed.maxPads,
+    gameID: parsed.gameID, memCardBlocks: parsed.memCardBlocks, videoScale: parsed.videoScale,
+    videoOffset: parsed.videoOffset, networkProfile: parsed.networkProfile, wiiuGamepadSlot: parsed.wiiuGamepadSlot
+  };
+  loadStateIntoForm();
+  setStatus(magicOk, magicOk ? `Loaded: ${file.name}` : `Loaded: ${file.name} (magic mismatch — file may not be a valid nincfg.bin, values loaded anyway)`);
+  $('sizeTag').textContent = buf.byteLength + ' bytes read';
+});
+
+$('downloadBtn').addEventListener('click', ()=>{
+  const bytes = buildBuffer();
+  const blob = new Blob([bytes], {type:'application/octet-stream'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'nincfg.bin';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+});
+
+function setStatus(ok, text){
+  const tag = $('fileTag');
+  tag.textContent = text;
+  tag.className = 'tag ' + (ok ? 'ok' : 'warn');
+}
+
+// ---------- init ----------
+loadStateIntoForm();
+</script>
+</body>
+</html>
