@@ -302,6 +302,18 @@ if ($('select[name=fourthTool] option:selected', "#settings").val() == 'custom')
             write(0, curDimensions.lh * 12, 'Booting Cafe OS...');
             line2 = 'Copyright(C) 2026, Maschell';
             break;
+        case 'tiramisu2022':
+            write(0, curDimensions.lh * 12, 'Booting Cafe OS...');
+            line2 = 'Copyright(C) 2022, Maschell';
+            break;
+        case 'tiramisu2023':
+            write(0, curDimensions.lh * 12, 'Booting Cafe OS...');
+            line2 = 'Copyright(C) 2023, Maschell';
+            break;
+        case 'tiramisu2024':
+            write(0, curDimensions.lh * 12, 'Booting Cafe OS...');
+            line2 = 'Copyright(C) 2024, Maschell';
+            break;
     }
 
     switch ($('select[name=logoOptions] option:selected', "#settings").val()) {
@@ -397,6 +409,17 @@ if ($('select[name=fourthTool] option:selected', "#settings").val() == 'custom')
                 sHeight: 84,
                 sx: 0,
                 sy: 0
+            });
+            break;
+        case 'tiramisuLogo':
+            $topscreen.drawImage({
+                source: 'images/symbolsWiiU.png',
+                x: curDimensions.w - 134,
+                y: 8,
+                sWidth: 133,
+                sHeight: 84,
+                sx: 0,
+                sy: 84
             });
             break;
     }
