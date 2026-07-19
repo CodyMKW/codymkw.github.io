@@ -261,9 +261,25 @@ if ($('select[name=fourthTool] option:selected', "#settings").val() == 'custom')
             write(0, curDimensions.lh * 12, 'Booting Horizon OS...');
             line2 = 'Copyright(C) 2018, Team Xecuter';
             break;
-        case 'aroma2018':
+        case 'aroma2022':
             write(0, curDimensions.lh * 12, 'Booting Cafe OS...');
-            line2 = 'Copyright(C) 2018, Maschell';
+            line2 = 'Copyright(C) 2022, Maschell';
+            break;
+        case 'aroma2023':
+            write(0, curDimensions.lh * 12, 'Booting Cafe OS...');
+            line2 = 'Copyright(C) 2023, Maschell';
+            break;
+        case 'aroma2024':
+            write(0, curDimensions.lh * 12, 'Booting Cafe OS...');
+            line2 = 'Copyright(C) 2024, Maschell';
+            break;
+        case 'aroma2025':
+            write(0, curDimensions.lh * 12, 'Booting Cafe OS...');
+            line2 = 'Copyright(C) 2025, Maschell';
+            break;
+        case 'aroma2026':
+            write(0, curDimensions.lh * 12, 'Booting Cafe OS...');
+            line2 = 'Copyright(C) 2026, Maschell';
             break;
     }
 
