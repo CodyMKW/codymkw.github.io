@@ -51,13 +51,46 @@ self.onmessage = async (e) => {
             }
             
             self.postMessage({ type: 'STATUS', message: 'Staging local source files...' });
-            ffmpeg.FS('writeFile', 'intro.mp4', await fetchFile(e.data.introUrl));
             ffmpeg.FS('writeFile', 'user.mp4', new Uint8Array(e.data.userFile));
 
-            self.postMessage({ type: 'STATUS', message: 'Aligning stream parameters and compiling...' });
-            
-            // Core FFmpeg compilation arguments
-            let ffmpegArgs = [
+            let ffmpegArgs;
+
+            if (e.data.noIntro) {
+                // Compress-only mode: no intro, just re-encode the user clip
+                self.postMessage({ type: 'STATUS', message: 'Encoding video stream...' });
+
+                ffmpegArgs = [
+                    '-i', 'user.mp4',
+                    '-c:v', 'libx264',
+                    '-preset', 'ultrafast',
+                    '-pix_fmt', 'yuv420p'
+                ];
+
+                if (e.data.limitTo8MB && e.data.duration) {
+                    const targetSizeBits = 7.8 * 1024 * 1024 * 8;
+                    const audioBitrateKbps = 96;
+                    let videoBitrateKbps = Math.floor((targetSizeBits / e.data.duration) / 1000) - audioBitrateKbps;
+                    if (videoBitrateKbps < 150) videoBitrateKbps = 150;
+
+                    ffmpegArgs.push(
+                        '-b:v', `${videoBitrateKbps}k`,
+                        '-maxrate', `${videoBitrateKbps * 1.2}k`,
+                        '-bufsize', `${videoBitrateKbps}k`,
+                        '-c:a', 'aac',
+                        '-b:a', `${audioBitrateKbps}k`
+                    );
+                } else {
+                    ffmpegArgs.push('-crf', '23', '-c:a', 'aac');
+                }
+
+                ffmpegArgs.push('-threads', '1', '-movflags', '+faststart', 'output.mp4');
+
+            } else {
+                ffmpeg.FS('writeFile', 'intro.mp4', await fetchFile(e.data.introUrl));
+
+                self.postMessage({ type: 'STATUS', message: 'Aligning stream parameters and compiling...' });
+
+                ffmpegArgs = [
                 '-i', 'intro.mp4', 
                 '-i', 'user.mp4', 
                 '-filter_complex', 
@@ -107,6 +140,8 @@ self.onmessage = async (e) => {
                 'output.mp4'
             );
             
+            } // end noIntro else block
+
             await ffmpeg.run(...ffmpegArgs);
 
             self.postMessage({ type: 'STATUS', message: 'Validating binary stream output...' });
