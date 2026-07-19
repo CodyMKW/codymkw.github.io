@@ -61,6 +61,8 @@ self.onmessage = async (e) => {
 
                 ffmpegArgs = [
                     '-i', 'user.mp4',
+                    '-vf', 'fps=30,scale=1280:720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2,setsar=1',
+                    '-af', 'aformat=channel_layouts=stereo,aresample=44100',
                     '-c:v', 'libx264',
                     '-preset', 'ultrafast',
                     '-pix_fmt', 'yuv420p'
