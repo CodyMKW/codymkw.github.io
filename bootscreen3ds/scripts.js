@@ -231,34 +231,34 @@ if ($('select[name=fourthTool] option:selected', "#settings").val() == 'custom')
     }
     switch (type) {
 		case 'luma2016':
-			line2 = 'Copyright(C) 2016, ' + line2;
+			line2 = 'Copyright(C) 2016, AuroraWright';
 			break;
 		case 'luma2017':
-			line2 = 'Copyright(C) 2017, ' + line2;
+			line2 = 'Copyright(C) 2017, AuroraWright';
 			break;
 		case 'luma2018':
-			line2 = 'Copyright(C) 2018, ' + line2;
+			line2 = 'Copyright(C) 2018, AuroraWright';
 			break;
 		case 'luma2019':
-			line2 = 'Copyright(C) 2019, ' + line2;
+			line2 = 'Copyright(C) 2019, AuroraWright';
 			break;
 		case 'luma2020':
-			line2 = 'Copyright(C) 2020, ' + line2;
+			line2 = 'Copyright(C) 2020, AuroraWright';
 			break;
 		case 'luma2022':
-			line2 = 'Copyright(C) 2022, ' + line2;
+			line2 = 'Copyright(C) 2022, AuroraWright';
 			break;
 		case 'luma2023':
-			line2 = 'Copyright(C) 2023, ' + line2;
+			line2 = 'Copyright(C) 2023, AuroraWright';
 			break;
 		case 'luma2024':
-			line2 = 'Copyright(C) 2024, ' + line2;
+			line2 = 'Copyright(C) 2024, AuroraWright';
 			break;
 		case 'luma2025':
-			line2 = 'Copyright(C) 2025, ' + line2;
+			line2 = 'Copyright(C) 2025, AuroraWright';
 			break;
 		case 'luma2026':
-			line2 = 'Copyright(C) 2026, ' + line2;
+			line2 = 'Copyright(C) 2026, AuroraWright';
 			break;
         case 'menuhax2015':
             line2 = 'Copyright(C) 2015, yellow8';
