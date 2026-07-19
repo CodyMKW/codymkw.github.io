@@ -230,15 +230,46 @@ if ($('select[name=fourthTool] option:selected', "#settings").val() == 'custom')
             break;
     }
     switch (type) {
-        case 'luma2016':
-            line2 = 'Copyright(C) 2016, AuroraWright';
-            break;
-        case 'luma2017':
-            line2 = 'Copyright(C) 2017, AuroraWright';
-            break;
-        case 'luma2018':
-            line2 = 'Copyright(C) 2018, AuroraWright';
-            break;
+		case 'luma2016':
+			$topscreen.attr('width', 400);
+			line2 = 'Copyright(C) 2016, ' + line2;
+			break;
+		case 'luma2017':
+			$topscreen.attr('width', 400);
+			line2 = 'Copyright(C) 2017, ' + line2;
+			break;
+		case 'luma2018':
+			$topscreen.attr('width', 400);
+			line2 = 'Copyright(C) 2018, ' + line2;
+			break;
+		case 'luma2019':
+			$topscreen.attr('width', 400);
+			line2 = 'Copyright(C) 2019, ' + line2;
+			break;
+		case 'luma2020':
+			$topscreen.attr('width', 400);
+			line2 = 'Copyright(C) 2020, ' + line2;
+			break;
+		case 'luma2022':
+			$topscreen.attr('width', 400);
+			line2 = 'Copyright(C) 2022, ' + line2;
+			break;
+		case 'luma2023':
+			$topscreen.attr('width', 400);
+			line2 = 'Copyright(C) 2023, ' + line2;
+			break;
+		case 'luma2024':
+			$topscreen.attr('width', 400);
+			line2 = 'Copyright(C) 2024, ' + line2;
+			break;
+		case 'luma2025':
+			$topscreen.attr('width', 400);
+			line2 = 'Copyright(C) 2025, ' + line2;
+			break;
+		case 'luma2026':
+			$topscreen.attr('width', 400);
+			line2 = 'Copyright(C) 2026, ' + line2;
+			break;
         case 'menuhax2015':
             line2 = 'Copyright(C) 2015, yellow8';
             break;
