@@ -1,0 +1,63 @@
+@media only screen and (min-width:993px) {
+    .container {
+        width: 800px;
+    }
+}
+
+#consoles label {
+    text-align: center;
+}
+
+#consoles label input + img {
+    cursor: pointer;
+    opacity: 0.5;
+    padding: 8px 0;
+}
+
+#consoles label input:checked + img {
+    opacity: 1;
+}
+
+#options .col {
+    margin-bottom: -10px;
+}
+
+#otheroptions p {
+    margin-top: 4px;
+    margin-left: 6px;
+    margin-bottom: -10px;
+}
+
+#otheroptions p > label {
+    margin-right: -8px;
+}
+
+#otheroptions p > span {
+    position: relative;
+    top: -10px;
+}
+
+h1 {
+    font-family: PerfectDOSVGA437Win;
+    font-size: 48px;
+    letter-spacing: -2px;
+    margin: 0;
+    padding-top: 32px;
+    text-align: center;
+}
+
+p#subtitle {
+    display: block;
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 40px;
+    margin-top: -12px;
+    text-align: center;
+}
+
+p#credit {
+    font-size: 12px;
+    margin-top: -40px;
+    text-align: center;
+}
