@@ -95,7 +95,7 @@
 
         .intro-selector {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1fr 1fr 1fr;
             background-color: var(--bg-input);
             padding: 5px;
             border-radius: 12px;
@@ -127,6 +127,12 @@
         .selector-option:checked + .selector-button.switch-2 {
             background-color: var(--switch-grey);
             color: white;
+            border: 1px solid #444852;
+        }
+
+        .selector-option:checked + .selector-button.no-intro {
+            background-color: #1a1d22;
+            color: var(--text-main);
             border: 1px solid #444852;
         }
 
@@ -514,6 +520,10 @@
                     <input type="radio" name="introType" value="nintendoswitch2intro.mp4" class="selector-option">
                     <div class="selector-button switch-2">Nintendo Switch 2</div>
                 </label>
+                <label>
+                    <input type="radio" name="introType" value="none" class="selector-option">
+                    <div class="selector-button no-intro">No Intro</div>
+                </label>
             </div>
 
             <div class="toggle-container">
@@ -587,7 +597,7 @@
         </div>
 
         <footer>
-            <p>&copy; 2026 CodyMKW &bull; Powered by WebAssembly &bull; <a href="/">Return to the main hub</a></p>
+            <p>&copy; 2026 CodyMKW &bull; Powered by WebAssembly</p>
         </footer>
     </div>
 
@@ -689,7 +699,7 @@
                         requestAnimationFrame(() => {
                             if (!isDone) {
                                 progressBar.style.width = `${percentage}%`;
-                                statusMessage.textContent = `Processing video... ${percentage}%`;
+                                statusMessage.textContent = `Processing clip matrix... ${percentage}%`;
                             }
                         });
                     }
@@ -773,6 +783,14 @@
             statusMessage.textContent = "Ready to compile.";
         }
 
+        // Update merge button label based on intro selection
+        document.querySelectorAll('input[name="introType"]').forEach(radio => {
+            radio.addEventListener('change', () => {
+                const isNone = document.querySelector('input[name="introType"]:checked').value === 'none';
+                mergeBtn.textContent = isNone ? 'Process Video' : 'Merge Intro Sequence';
+            });
+        });
+
         videoInput.addEventListener('change', (e) => {
             if (e.target.files.length > 0) loadFile(e.target.files[0]);
         });
@@ -808,8 +826,9 @@
             statusMessage.textContent = "Reading local raw asset buffer...";
             isDone = false;
 
-            const selectedIntroFile = document.querySelector('input[name="introType"]:checked').value;
-            const cleanIntroUrl = new URL(selectedIntroFile, window.location.href).href;
+            const selectedIntroValue = document.querySelector('input[name="introType"]:checked').value;
+            const noIntro = selectedIntroValue === 'none';
+            const cleanIntroUrl = noIntro ? null : new URL(selectedIntroValue, window.location.href).href;
 
             try {
                 const arrayBuffer = await targetFile.arrayBuffer();
@@ -819,6 +838,7 @@
                     type: 'START',
                     userFile: arrayBuffer,
                     introUrl: cleanIntroUrl,
+                    noIntro: noIntro,
                     limitTo8MB: nitroBypassToggle.checked,
                     duration: targetDuration
                 }, [arrayBuffer]);
