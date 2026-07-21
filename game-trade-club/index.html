@@ -180,6 +180,53 @@
   .btn-buy:disabled{ background:#d6dcea; box-shadow: 0 4px 0 #c2cadf; color:#99a5c2; cursor:not-allowed; }
   .btn-buy.owned{ background:#eef1f8; color: var(--ink-soft); box-shadow:none; }
 
+  /* ---------- NPC OFFERS ---------- */
+  .npc-card{
+    display:flex; gap: 14px; align-items:flex-start; margin-top: 14px;
+    border: 2px solid var(--line); border-radius: 16px; padding: 16px;
+    background: #fbfcfe;
+  }
+  .npc-avatar{
+    width: 44px; height:44px; min-width:44px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-family: var(--display); font-weight:600; font-size:16px; color:#fff;
+  }
+  .npc-body{ flex:1; min-width:0; }
+  .npc-name{ font-family: var(--display); font-weight:600; font-size: 14.5px; margin-bottom: 4px; }
+  .npc-dialogue{ font-size: 13.5px; line-height:1.55; color: var(--ink); margin-bottom: 10px; }
+  .npc-offer-row{
+    display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;
+    background: #f6f8fd; border: 1px dashed var(--line); border-radius: 10px; padding: 8px 12px;
+    margin-bottom: 12px; font-size: 13px;
+  }
+  .npc-offer-row .game-name{ font-weight:700; }
+  .npc-offer-row .price{ font-family: var(--display); font-weight:600; color: var(--teal); }
+  .npc-actions{ display:flex; gap:10px; }
+  .btn-accept{
+    font-family: var(--display); font-weight:600; font-size: 13px;
+    background: var(--teal); color:#fff; border:none; padding: 8px 16px;
+    border-radius: 10px; cursor:pointer; box-shadow: 0 4px 0 #0e8f81;
+    transition: transform .08s, box-shadow .08s;
+  }
+  .btn-accept:active{ transform: translateY(3px); box-shadow: 0 1px 0 #0e8f81; }
+  .btn-decline{
+    font-family: var(--display); font-weight:600; font-size: 13px;
+    background: #fff; border: 2px solid var(--line); color: var(--ink-soft);
+    padding: 7px 15px; border-radius: 10px; cursor:pointer; transition: all .15s;
+  }
+  .btn-decline:hover{ border-color: var(--coral); color: var(--coral-deep); }
+  .npc-waiting{
+    margin-top: 14px; font-size: 13px; color: var(--ink-soft);
+    border: 2px dashed var(--line); border-radius: 16px; padding: 16px; text-align:center;
+  }
+  .npc-log{
+    margin-top: 12px; font-size: 12px; color: var(--ink-soft); max-height: 90px;
+    overflow-y:auto; line-height:1.9;
+  }
+  .npc-log .entry .who{ font-weight:700; color: var(--ink); }
+  .npc-log .entry .win{ color: var(--teal); font-weight:600; }
+  .npc-log .entry .pass{ color: #a7b2c9; font-weight:600; }
+
   /* ---------- MINI-GAME ---------- */
   .game-body{ display:flex; gap: 24px; align-items:center; flex-wrap: wrap; margin-top: 14px; }
   .pad-grid{
@@ -379,6 +426,19 @@
       <div class="hero">
         <h1>Trade some <span class="hi">games</span> with a friend</h1>
         <p>Pick a name, share your code, and start swapping cartridges.</p>
+      </div>
+
+      <div class="section-panel">
+        <div class="section-head">
+          <div>
+            <h2>📞 Incoming Offers</h2>
+            <p>Other collectors sometimes reach out wanting to buy something from you.</p>
+          </div>
+        </div>
+        <div id="npcArea">
+          <div class="npc-waiting" id="npcWaiting">No one's reached out yet — keep browsing, someone might stop by.</div>
+        </div>
+        <div class="npc-log" id="npcLog"></div>
       </div>
 
       <div class="section-panel">
@@ -1072,6 +1132,200 @@
   });
 
   gameStartBtn.addEventListener('click', startGame);
+
+  /* ============ NPC TRADERS ============ */
+  const NPC_FIRST_NAMES = [
+    "James","Maria","Andre","Priya","Liam","Sofia","Wei","Aiko","Marcus","Fatima",
+    "Noah","Emma","Diego","Chen","Grace","Ingrid","Kwame","Yuki","Ravi","Elena"
+  ];
+  const NPC_LAST_NAMES = [
+    "Johnson","Garcia","Patel","Kim","Nguyen","Smith","Okafor","Andersson","Rossi","Tanaka",
+    "Silva","Muller","Kowalski","Haddad","Larsen"
+  ];
+  let NPC_NAME_POOL = [];
+  function rebuildNpcPool(){
+    NPC_NAME_POOL = [];
+    for(const f of NPC_FIRST_NAMES){
+      for(const l of NPC_LAST_NAMES){
+        NPC_NAME_POOL.push(`${f} ${l}`);
+      }
+    }
+    NPC_NAME_POOL.sort(() => Math.random() - 0.5);
+  }
+  rebuildNpcPool();
+  let npcNameCursor = 0;
+  function nextNpcName(){
+    if(npcNameCursor >= NPC_NAME_POOL.length){ rebuildNpcPool(); npcNameCursor = 0; }
+    return NPC_NAME_POOL[npcNameCursor++];
+  }
+
+  const NPC_AVATAR_COLORS = ['#ff6b5f','#17b3a3','#8b7cf6','#ffc93c','#2896c9','#e5493d','#5fb87a','#d68a1b'];
+  function npcAvatarColor(name){ return NPC_AVATAR_COLORS[hashStr(name) % NPC_AVATAR_COLORS.length]; }
+
+  const NPC_OPENERS = [
+    "Hey! Mind if I ask you something?",
+    "Yo, quick question for you —",
+    "Excuse me, I couldn't help but notice your collection.",
+    "Hi there! I've been looking everywhere for this one.",
+    "Got a sec? I think you have something I need.",
+    "This might sound random, but hear me out.",
+    "I promise I'm not a bot, just a fellow collector.",
+    "Sorry to bug you, but I had to ask.",
+    "Okay, this is a long shot, but here goes.",
+    "I've been searching for ages, and I think you have it.",
+    "Small world — I saw you've got a copy of this.",
+    "Not gonna lie, I got a little excited seeing this.",
+    "Quick one for you, if you've got a moment.",
+    "Hope this isn't weird, but I have a proposal.",
+    "I'll get straight to the point.",
+    "So, funny story...",
+    "I don't usually do this, but I had to reach out.",
+    "Hey, fellow trader! Can we talk shop?"
+  ];
+  const NPC_PITCHES = [
+    "I've been hunting for {game} for months.",
+    "{game} was my favorite growing up, and I finally want to own it again.",
+    "My little brother won't stop asking about {game}, and I want to surprise him.",
+    "I'm trying to complete my collection, and {game} is the missing piece.",
+    "I heard you had {game} and I couldn't resist reaching out.",
+    "{game} has some serious nostalgia for me.",
+    "I used to have {game}, but I lost my copy years ago.",
+    "I'm building a shelf display and {game} would look perfect on it.",
+    "A friend recommended {game} to me, and now I have to try it.",
+    "I promised my kid I'd track down {game} this week.",
+    "I'm doing a retro challenge and {game} is on the list.",
+    "{game} is criminally underrated, and I want more people playing it.",
+    "I saw a video essay about {game} and now I need it.",
+    "I'm starting my collection over from scratch, and {game} tops the list.",
+    "Random fact: {game} is the reason I got into gaming in the first place."
+  ];
+  const NPC_OFFERS = [
+    "I can offer you §{price} for it — fair?",
+    "Would §{price} work for you?",
+    "I've got §{price} set aside for this exact thing.",
+    "How does §{price} sound?",
+    "I can do §{price}, no haggling needed.",
+    "Best I can do is §{price}, but it's a solid offer.",
+    "§{price} — take it or leave it, no pressure.",
+    "I'm prepared to pay §{price} for it, if you're willing."
+  ];
+  const NPC_ACCEPT_LINES = [
+    "You're a lifesaver, thank you!",
+    "Deal! Pleasure doing business.",
+    "Awesome, appreciate it so much!",
+    "You just made my week.",
+    "Perfect, thanks a ton!",
+    "Yes! Thank you so much for this.",
+    "Legend. Thanks for trusting me with it.",
+    "This means more than you know.",
+    "Sweet, thank you!",
+    "Much appreciated — take care!"
+  ];
+  const NPC_DECLINE_LINES = [
+    "No worries, thanks anyway.",
+    "Ah, that's alright. Good luck out there.",
+    "Fair enough, I'll keep looking elsewhere.",
+    "Understood, thanks for considering it.",
+    "All good — maybe next time.",
+    "No problem, take care!",
+    "That's okay, I appreciate you thinking it over.",
+    "Alright then, I'll find it somewhere else.",
+    "Fair, no hard feelings at all.",
+    "Okay, thanks for your time regardless."
+  ];
+
+  function pickRandom(arr){ return arr[Math.floor(Math.random() * arr.length)]; }
+
+  const npcArea = document.getElementById('npcArea');
+  const npcLog = document.getElementById('npcLog');
+  let currentNpc = null;
+  let npcNextVisitAt = Date.now() + 8000 + Math.random() * 12000;
+
+  function addNpcLogEntry(name, resultText, resultClass){
+    const div = document.createElement('div');
+    div.className = 'entry';
+    div.innerHTML = `<span class="who">${escapeHtml(name)}</span> — <span class="${resultClass}">${escapeHtml(resultText)}</span>`;
+    npcLog.prepend(div);
+    while(npcLog.children.length > 6) npcLog.removeChild(npcLog.lastChild);
+  }
+
+  function trySpawnNpc(){
+    if(!stateReady) return;
+    if(currentNpc) return;
+    if(floor.classList.contains('active')) return;
+    if(!myCollection.length) return;
+
+    const gameId = myCollection[Math.floor(Math.random() * myCollection.length)];
+    const game = gameByTitle(gameId);
+    if(!game) return;
+
+    const priceMult = 0.7 + Math.random() * 0.65;
+    const price = Math.max(8, Math.round(game.value * priceMult));
+    const name = nextNpcName();
+
+    const dialogue = `${pickRandom(NPC_OPENERS)} ${pickRandom(NPC_PITCHES).replace('{game}', game.title)} ${pickRandom(NPC_OFFERS).replace('{price}', price)}`;
+
+    currentNpc = { name, gameId, game, price, dialogue };
+    renderNpc();
+  }
+
+  function renderNpc(){
+    if(!currentNpc){
+      npcArea.innerHTML = `<div class="npc-waiting" id="npcWaiting">No one's reached out yet — keep browsing, someone might stop by.</div>`;
+      return;
+    }
+    const { name, game, price, dialogue } = currentNpc;
+    npcArea.innerHTML = `
+      <div class="npc-card">
+        <div class="npc-avatar" style="background:${npcAvatarColor(name)}">${escapeHtml(initials(name))}</div>
+        <div class="npc-body">
+          <div class="npc-name">${escapeHtml(name)}</div>
+          <div class="npc-dialogue">${escapeHtml(dialogue)}</div>
+          <div class="npc-offer-row">
+            <span>Wants: <span class="game-name">${escapeHtml(game.title)}</span></span>
+            <span class="price">§${price}</span>
+          </div>
+          <div class="npc-actions">
+            <button class="btn-accept" id="npcAcceptBtn">Accept</button>
+            <button class="btn-decline" id="npcDeclineBtn">Decline</button>
+          </div>
+        </div>
+      </div>`;
+    document.getElementById('npcAcceptBtn').addEventListener('click', resolveNpc.bind(null, true));
+    document.getElementById('npcDeclineBtn').addEventListener('click', resolveNpc.bind(null, false));
+  }
+
+  function resolveNpc(accepted){
+    if(!currentNpc) return;
+    const { name, game, price } = currentNpc;
+    if(accepted){
+      myCollection = myCollection.filter(id => id !== currentNpc.gameId);
+      myCoins += price;
+      renderCoins();
+      renderStore();
+      saveState();
+      const line = pickRandom(NPC_ACCEPT_LINES);
+      npcArea.innerHTML = `<div class="npc-waiting">${escapeHtml(name)}: "${escapeHtml(line)}"</div>`;
+      addNpcLogEntry(name, `sold ${game.title} for §${price}`, 'win');
+    } else {
+      const line = pickRandom(NPC_DECLINE_LINES);
+      npcArea.innerHTML = `<div class="npc-waiting">${escapeHtml(name)}: "${escapeHtml(line)}"</div>`;
+      addNpcLogEntry(name, `passed on ${game.title}`, 'pass');
+    }
+    currentNpc = null;
+    npcNextVisitAt = Date.now() + 25000 + Math.random() * 35000;
+    setTimeout(() => { if(!currentNpc) renderNpc(); }, 3000);
+  }
+
+  setInterval(() => {
+    if(!currentNpc && Date.now() >= npcNextVisitAt){
+      trySpawnNpc();
+      if(!currentNpc){
+        // nothing to offer on (e.g. empty collection) — check again soon
+        npcNextVisitAt = Date.now() + 10000;
+      }
+    }
+  }, 1000);
 
   function escapeHtml(s){
     const d = document.createElement('div');
