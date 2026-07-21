@@ -1,0 +1,1365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trade Pile — swap games with a friend</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.2/peerjs.min.js"></script>
+<style>
+  :root{
+    --bg: #eef3fb;
+    --bg-2: #e4edfa;
+    --card: #ffffff;
+    --ink: #26314a;
+    --ink-soft: #5c6a86;
+    --line: #dbe4f3;
+    --coral: #ff6b5f;
+    --coral-deep: #e5493d;
+    --teal: #17b3a3;
+    --teal-soft: #e3f8f5;
+    --yellow: #ffc93c;
+    --purple: #8b7cf6;
+    --shadow: 0 10px 26px rgba(38,49,74,0.08);
+    --shadow-sm: 0 4px 12px rgba(38,49,74,0.06);
+    --display: 'Fredoka', sans-serif;
+    --body: 'Inter', sans-serif;
+  }
+  *{ box-sizing: border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    background:
+      radial-gradient(700px 400px at 90% -5%, rgba(255,201,60,0.18), transparent 60%),
+      radial-gradient(800px 500px at -5% 10%, rgba(139,124,246,0.14), transparent 55%),
+      var(--bg);
+    color: var(--ink);
+    font-family: var(--body);
+    min-height: 100vh;
+  }
+  ::selection{ background: var(--yellow); color: var(--ink); }
+  ::-webkit-scrollbar{ width:8px; height:8px; }
+  ::-webkit-scrollbar-track{ background: transparent; }
+  ::-webkit-scrollbar-thumb{ background: #c7d3ea; border-radius:8px; }
+
+  header{
+    display:flex; align-items:center; justify-content:space-between;
+    padding: 22px clamp(16px,4vw,48px);
+  }
+  .brand{ display:flex; align-items:center; gap:10px; }
+  .brand .logo{
+    width: 38px; height:38px; border-radius: 11px;
+    background: linear-gradient(135deg, var(--coral), var(--yellow));
+    display:flex; align-items:center; justify-content:center;
+    font-size: 19px; box-shadow: var(--shadow-sm);
+    transform: rotate(-6deg);
+  }
+  .brand .name{ font-family: var(--display); font-weight:600; font-size: 21px; }
+  .brand .name span{ color: var(--coral); }
+
+  .status-chip{
+    display:flex; align-items:center; gap:8px;
+    font-family: var(--body); font-weight:600; font-size: 13px; color: var(--ink-soft);
+    background: var(--card); border: 1px solid var(--line); border-radius: 999px;
+    padding: 8px 16px; box-shadow: var(--shadow-sm);
+  }
+  .status-chip .dot{ width:8px; height:8px; border-radius:50%; background:#c9d2e6; }
+  .status-chip.linked .dot{ background: var(--teal); box-shadow: 0 0 0 4px var(--teal-soft); }
+  .status-chip.pending .dot{ background: var(--yellow); animation: pulse 1s infinite; }
+  @keyframes pulse{ 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+
+  main{ max-width: 1320px; margin: 0 auto; padding: 8px clamp(16px,3vw,40px) 60px; }
+
+  /* ---------- CONNECT SCREEN ---------- */
+  .connect-wrap{ max-width: 760px; margin: 4vh auto 0; }
+  .hero{ text-align:center; margin-bottom: 22px; }
+  .hero h1{
+    font-family: var(--display); font-weight:600; font-size: clamp(28px,4vw,36px);
+    margin: 0 0 8px; line-height: 1.15;
+  }
+  .hero h1 .hi{ color: var(--coral); }
+  .hero p{ color: var(--ink-soft); font-size: 15px; margin:0; }
+
+  .card-panel{
+    background: var(--card); border-radius: 22px; box-shadow: var(--shadow);
+    padding: 28px clamp(20px,4vw,36px) 32px; border: 1px solid var(--line);
+  }
+  .field-label{
+    font-weight: 600; font-size: 13px; color: var(--ink); margin-bottom: 8px; display:block;
+  }
+  input[type=text]{
+    width:100%; background: #f6f8fd; border: 2px solid var(--line); color: var(--ink);
+    font-family: var(--body); font-size: 15px; padding: 12px 14px; border-radius: 12px;
+  }
+  input[type=text]:focus{ outline:none; border-color: var(--coral); background:#fff; }
+  input[type=text]::placeholder{ color: #a7b2c9; }
+
+  .name-field{ margin-bottom: 20px; }
+
+  .id-display{
+    display:flex; align-items:center; gap:10px;
+    background: #f6f8fd; border: 2px dashed var(--line);
+    border-radius: 12px; padding: 12px 14px; margin-bottom: 20px;
+  }
+  .id-display code{
+    font-family: var(--body); font-weight:700; color: var(--teal); font-size: 15px;
+    letter-spacing: 0.03em; flex:1; overflow-wrap: anywhere;
+  }
+  .id-display code.waiting{ color: var(--ink-soft); font-weight:500; font-size: 13px; }
+  .btn-copy{
+    font-family: var(--body); font-weight:600; font-size: 12.5px;
+    background: #fff; border: 2px solid var(--line); color: var(--ink-soft);
+    padding: 7px 12px; border-radius: 10px; cursor:pointer; transition: all .15s;
+  }
+  .btn-copy:hover{ border-color: var(--teal); color: var(--teal); }
+
+  .connect-row{ display:flex; gap:10px; margin-bottom: 4px; }
+
+  button.primary{
+    font-family: var(--display); font-weight:600; font-size: 14.5px;
+    background: var(--coral); color: #fff; border:none;
+    padding: 12px 22px; border-radius: 12px; cursor: pointer;
+    box-shadow: 0 6px 0 var(--coral-deep);
+    transition: transform .08s, box-shadow .08s, filter .15s;
+    white-space: nowrap;
+  }
+  button.primary:hover{ filter: brightness(1.04); }
+  button.primary:active{ transform: translateY(4px); box-shadow: 0 2px 0 var(--coral-deep); }
+  button.primary:disabled{ background: #d6dcea; box-shadow: 0 6px 0 #c2cadf; color: #99a5c2; cursor: not-allowed; }
+
+  button.secondary{
+    font-family: var(--display); font-weight:600; font-size: 13.5px;
+    background: #fff; border: 2px solid var(--line); color: var(--ink);
+    padding: 10px 18px; border-radius: 12px; cursor:pointer; transition: all .15s;
+  }
+  button.secondary:hover{ border-color: var(--purple); color: var(--purple); }
+  button.secondary:disabled{ opacity:.45; cursor:not-allowed; }
+
+  .console-log{
+    margin-top: 18px; background: #f6f8fd; border: 1px solid var(--line);
+    border-radius: 12px; padding: 12px 14px; height: 110px; overflow-y:auto;
+    font-family: var(--body); font-size: 12.5px; color: var(--ink-soft); line-height:1.8;
+  }
+  .console-log .ln .tag{ font-weight:700; color: var(--purple); margin-right: 4px; }
+  .console-log .ln.err .tag{ color: var(--coral-deep); }
+  .console-log .ln.ok .tag{ color: var(--teal); }
+
+  /* ---------- STORE ---------- */
+  .section-panel{
+    background: var(--card); border-radius: 22px; box-shadow: var(--shadow);
+    padding: 22px clamp(18px,4vw,30px) 26px; border: 1px solid var(--line);
+    margin-bottom: 20px;
+  }
+  .section-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom: 4px; flex-wrap: wrap; gap:8px; }
+  .section-head h2{ font-family: var(--display); font-weight:600; font-size: 19px; margin:0; }
+  .section-head p{ margin: 2px 0 0; color: var(--ink-soft); font-size: 13px; }
+  .restock-timer{
+    font-size: 12.5px; font-weight:700; color: var(--purple); background: #f3f0ff;
+    padding: 6px 12px; border-radius: 999px; white-space: nowrap;
+  }
+  .store-grid{
+    display:grid; grid-template-columns: repeat(auto-fill,minmax(180px,1fr));
+    gap: 12px; margin-top: 16px;
+  }
+  .store-card{
+    border: 2px solid var(--line); border-radius: 14px; padding: 13px 14px;
+    background: #fbfcfe; transition: all .15s;
+  }
+  .store-card:hover{ border-color: var(--yellow); transform: translateY(-2px); box-shadow: var(--shadow-sm); }
+  .store-card .title{ font-size: 13.5px; font-weight:700; line-height:1.3; margin-bottom: 6px; min-height: 34px; }
+  .store-card .meta{ font-size: 11px; color: var(--ink-soft); font-weight:500; margin-bottom: 8px; }
+  .store-card .buy-row{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top: 10px; }
+  .store-card .price{ font-family: var(--display); font-weight:600; font-size: 14px; }
+  .btn-buy{
+    font-family: var(--display); font-weight:600; font-size: 12.5px;
+    background: var(--teal); color:#fff; border:none; padding: 7px 14px;
+    border-radius: 10px; cursor:pointer; box-shadow: 0 4px 0 #0e8f81;
+    transition: transform .08s, box-shadow .08s;
+  }
+  .btn-buy:active{ transform: translateY(3px); box-shadow: 0 1px 0 #0e8f81; }
+  .btn-buy:disabled{ background:#d6dcea; box-shadow: 0 4px 0 #c2cadf; color:#99a5c2; cursor:not-allowed; }
+  .btn-buy.owned{ background:#eef1f8; color: var(--ink-soft); box-shadow:none; }
+
+  /* ---------- MINI-GAME ---------- */
+  .game-body{ display:flex; gap: 24px; align-items:center; flex-wrap: wrap; margin-top: 14px; }
+  .pad-grid{
+    display:grid; grid-template-columns: repeat(2, 76px); grid-template-rows: repeat(2, 76px);
+    gap: 10px;
+  }
+  .pad{
+    border-radius: 16px; border: none; cursor: pointer; font-size: 26px;
+    display:flex; align-items:center; justify-content:center;
+    transition: filter .08s, transform .06s;
+    box-shadow: 0 5px 0 rgba(0,0,0,0.12);
+  }
+  .pad:active{ transform: translateY(3px); box-shadow: 0 2px 0 rgba(0,0,0,0.12); }
+  .pad.p0{ background: #ff6b5f; }
+  .pad.p1{ background: #17b3a3; }
+  .pad.p2{ background: #ffc93c; }
+  .pad.p3{ background: #8b7cf6; }
+  .pad.lit{ filter: brightness(1.4); }
+  .pad:disabled{ cursor: default; }
+  .game-info{ flex:1; min-width: 200px; }
+  .game-status{ font-family: var(--display); font-weight:600; font-size: 15px; margin-bottom: 6px; }
+  .game-sub{ font-size: 13px; color: var(--ink-soft); margin-bottom: 14px; min-height: 18px; }
+
+  /* ---------- FLOOR ---------- */
+  .floor{ display:none; }
+  .floor.active{ display:block; }
+
+  .partner-banner{
+    display:flex; align-items:center; gap:12px;
+    background: linear-gradient(135deg, #fff, var(--teal-soft));
+    border: 1px solid var(--line); border-radius: 18px; padding: 14px 20px;
+    margin-top: 12px; box-shadow: var(--shadow-sm);
+  }
+  .avatar-pair{ display:flex; align-items:center; }
+  .avatar{
+    width:38px; height:38px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    font-family: var(--display); font-weight:600; font-size:15px; color:#fff; border: 3px solid #fff;
+  }
+  .avatar.me{ background: var(--coral); }
+  .avatar.them{ background: var(--purple); margin-left:-12px; }
+  .partner-banner .txt{ font-size: 14px; }
+  .partner-banner .txt b{ font-family: var(--display); }
+
+  .floor-grid{
+    display:grid; grid-template-columns: 1.05fr 1.55fr; gap: 18px; margin-top: 16px;
+  }
+  @media (max-width: 980px){ .floor-grid{ grid-template-columns: 1fr; } }
+
+  .panel{
+    background: var(--card); border: 1px solid var(--line); border-radius: 20px;
+    box-shadow: var(--shadow); overflow:hidden;
+  }
+  .panel-head{
+    display:flex; align-items:center; justify-content:space-between;
+    padding: 16px 20px; border-bottom: 1px solid var(--line);
+  }
+  .panel-head h2{
+    font-family: var(--display); font-weight:600; font-size: 16px; margin:0;
+  }
+  .panel-head .count{ font-size: 12.5px; color: var(--ink-soft); font-weight:600; }
+
+  .vault-controls{ padding: 14px 20px 0; display:flex; gap:8px; }
+  .vault-controls input[type=text]{ padding: 9px 12px; font-size: 13px; }
+  select{
+    background: #f6f8fd; border: 2px solid var(--line); color: var(--ink);
+    font-family: var(--body); font-size: 13px; padding: 9px 10px; border-radius: 10px;
+    font-weight:600;
+  }
+  .vault-grid{
+    padding: 14px 20px 20px; display:grid; grid-template-columns: repeat(auto-fill,minmax(150px,1fr));
+    gap: 10px; max-height: 460px; overflow-y:auto;
+  }
+  .card{
+    border: 2px solid var(--line); border-radius: 14px; padding: 11px 12px;
+    background: #fbfcfe; cursor:pointer; transition: all .15s;
+  }
+  .card:hover{ border-color: var(--purple); transform: translateY(-2px); box-shadow: var(--shadow-sm); }
+  .card.staged{ border-color: var(--teal); background: var(--teal-soft); }
+  .card .title{ font-size: 13.5px; font-weight:700; line-height:1.3; margin-bottom:6px; }
+  .card .meta{ font-size: 11px; color: var(--ink-soft); font-weight:500; }
+  .rarity-tag{
+    display:inline-block; font-size: 11px; font-weight:700; padding: 3px 8px; border-radius:999px; margin-top:8px;
+  }
+  .r-common{ background: #eef1f8; color:#7a869e; }
+  .r-uncommon{ background: #e6f6ff; color:#2896c9; }
+  .r-rare{ background: #fff2df; color:#d68a1b; }
+  .r-legendary{ background: #fdeaf8; color:#c24bab; }
+  .empty-note{ font-size: 13px; color: var(--ink-soft); padding: 30px 20px; text-align:center; }
+
+  .ledger{ display:grid; grid-template-columns: 1fr 1fr; }
+  .ledger-col{ padding: 16px 20px; }
+  .ledger-col + .ledger-col{ border-left: 1px solid var(--line); }
+  .ledger-col h3{
+    font-family: var(--display); font-weight:600; font-size: 14px;
+    margin: 0 0 12px; display:flex; align-items:center; gap:8px;
+  }
+  .lock-badge{
+    font-size: 10.5px; font-weight:700; padding: 3px 8px; border-radius:999px;
+    background: #eef1f8; color: var(--ink-soft);
+  }
+  .lock-badge.on{ background: var(--teal-soft); color: var(--teal); }
+  .offer-item{
+    display:flex; align-items:center; justify-content:space-between;
+    font-size: 13px; font-weight:500; padding: 9px 12px; border: 1px solid var(--line);
+    border-radius: 10px; margin-bottom: 8px; background: #fbfcfe;
+  }
+  .offer-item .x{ color: var(--ink-soft); cursor:pointer; font-weight:700; }
+  .offer-item .x:hover{ color: var(--coral-deep); }
+  .offer-empty{ font-size: 12.5px; color: #a7b2c9; padding: 6px 2px; }
+
+  .ledger-actions{
+    display:flex; align-items:center; gap:12px; justify-content: space-between;
+    padding: 14px 20px; border-top: 1px solid var(--line); flex-wrap: wrap;
+  }
+  .value-readout{ font-size: 13px; color: var(--ink-soft); font-weight:500; }
+  .value-readout b{ color: var(--ink); }
+  .diff-pos{ color: var(--teal); font-weight:700; }
+  .diff-neg{ color: var(--coral-deep); font-weight:700; }
+
+  .execute-bar{
+    display:none; padding: 16px 20px; border-top: 1px solid var(--line);
+    background: var(--teal-soft); align-items:center; justify-content: space-between; flex-wrap: wrap; gap:10px;
+  }
+  .execute-bar.show{ display:flex; }
+  .execute-bar span{ font-weight:700; font-size: 13.5px; color: #0e8f81; }
+
+  .activity{
+    margin-top: 18px; background: var(--card); border: 1px solid var(--line);
+    border-radius: 20px; box-shadow: var(--shadow);
+  }
+  .activity-feed{
+    font-size: 13px; padding: 14px 20px; max-height: 150px;
+    overflow-y:auto; line-height:2; color: var(--ink-soft);
+  }
+  .activity-feed .t{ color: #b9c2d8; margin-right:8px; font-weight:600; font-size:11.5px; }
+
+  /* ---------- CHAT ---------- */
+  .chat-panel{
+    margin-top: 18px; background: var(--card); border: 1px solid var(--line);
+    border-radius: 20px; box-shadow: var(--shadow); overflow:hidden;
+  }
+  .chat-feed{
+    padding: 16px 20px; max-height: 260px; overflow-y:auto;
+    display:flex; flex-direction:column; gap:10px;
+  }
+  .chat-empty{ font-size: 13px; color: #a7b2c9; text-align:center; padding: 12px 0; }
+  .msg{ display:flex; flex-direction:column; max-width: 72%; }
+  .msg.me{ align-self:flex-end; align-items:flex-end; }
+  .msg.them{ align-self:flex-start; align-items:flex-start; }
+  .msg .bubble{
+    font-size: 13.5px; line-height:1.5; padding: 9px 14px; border-radius: 16px;
+    word-break: break-word;
+  }
+  .msg.me .bubble{ background: var(--coral); color:#fff; border-bottom-right-radius: 4px; }
+  .msg.them .bubble{ background: #eef1f8; color: var(--ink); border-bottom-left-radius: 4px; }
+  .msg .meta{ font-size: 10.5px; color: #a7b2c9; font-weight:600; margin: 4px 6px 0; }
+  .chat-input-row{
+    display:flex; gap:10px; padding: 14px 20px; border-top: 1px solid var(--line);
+  }
+  .chat-input-row input[type=text]{ flex:1; padding: 11px 14px; font-size: 13.5px; }
+  button.send-btn{
+    font-family: var(--display); font-weight:600; font-size: 13.5px;
+    background: var(--teal); color:#fff; border:none;
+    padding: 0 20px; border-radius: 12px; cursor:pointer;
+    box-shadow: 0 6px 0 #0e8f81; transition: transform .08s, box-shadow .08s;
+  }
+  button.send-btn:active{ transform: translateY(4px); box-shadow: 0 2px 0 #0e8f81; }
+  button.send-btn:disabled{ background:#d6dcea; box-shadow: 0 6px 0 #c2cadf; color:#99a5c2; cursor:not-allowed; }
+
+  footer{
+    text-align:center; padding: 30px 20px 40px; font-size: 12px;
+    color: #9aa5bd;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .status-chip.pending .dot{ animation: none; }
+  }
+</style>
+</head>
+<body>
+
+  <header>
+    <div class="brand">
+      <div class="logo">🎮</div>
+      <div class="name">Trade<span>Pile</span></div>
+    </div>
+    <div style="display:flex; align-items:center; gap:10px;">
+      <div class="status-chip" id="coinChip"><span style="font-size:15px;">🪙</span><span id="coinBalance">0</span></div>
+      <div class="status-chip" id="statusPill"><div class="dot"></div><span id="statusText">Not connected</span></div>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- CONNECT SCREEN -->
+    <section class="connect-wrap" id="connectScreen">
+      <div class="hero">
+        <h1>Trade some <span class="hi">games</span> with a friend</h1>
+        <p>Pick a name, share your code, and start swapping cartridges.</p>
+      </div>
+
+      <div class="section-panel">
+        <div class="section-head">
+          <div>
+            <h2>🏪 The Cart Stop</h2>
+            <p>Grab a few extra games for your collection before you trade.</p>
+          </div>
+          <div class="restock-timer" id="restockTimer">Restocking in 60s</div>
+        </div>
+        <div class="store-grid" id="storeGrid"></div>
+      </div>
+
+      <div class="section-panel">
+        <div class="section-head">
+          <div>
+            <h2>🎮 Combo Rush</h2>
+            <p>Watch the pattern, repeat it back. Gets faster every round — earn coins for how far you get.</p>
+          </div>
+        </div>
+        <div class="game-body">
+          <div class="pad-grid">
+            <button class="pad p0" data-pad="0"></button>
+            <button class="pad p1" data-pad="1"></button>
+            <button class="pad p2" data-pad="2"></button>
+            <button class="pad p3" data-pad="3"></button>
+          </div>
+          <div class="game-info">
+            <div class="game-status" id="gameStatus">Ready when you are</div>
+            <div class="game-sub" id="gameSub">Clear rounds to earn coins for the store.</div>
+            <button class="secondary" id="gameStartBtn">Start game</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-panel">
+        <div class="name-field">
+          <label class="field-label">Your name</label>
+          <input type="text" id="nameInput" placeholder="What should we call you?" maxlength="18" autocomplete="off">
+        </div>
+
+        <label class="field-label">Your trade code</label>
+        <div class="id-display">
+          <code id="myId" class="waiting">getting your code ready…</code>
+          <button class="btn-copy" id="copyBtn">Copy</button>
+        </div>
+
+        <label class="field-label">Friend's trade code</label>
+        <div class="connect-row">
+          <input type="text" id="partnerInput" placeholder="Paste their code here" autocomplete="off">
+          <button class="primary" id="connectBtn" disabled>Connect</button>
+        </div>
+
+        <div class="console-log" id="consoleLog"></div>
+      </div>
+    </section>
+
+    <!-- TRADE FLOOR -->
+    <section class="floor" id="floor">
+
+      <div class="partner-banner">
+        <div class="avatar-pair">
+          <div class="avatar me" id="myAvatar">Y</div>
+          <div class="avatar them" id="theirAvatar">?</div>
+        </div>
+        <div class="txt">Trading with <b id="partnerNameLabel">your friend</b> — pick some games and make an offer!</div>
+      </div>
+
+      <div class="floor-grid">
+
+        <!-- YOUR VAULT -->
+        <div class="panel">
+          <div class="panel-head">
+            <h2>Your games</h2>
+            <span class="count" id="vaultCount">0 items</span>
+          </div>
+          <div class="vault-controls">
+            <input type="text" id="vaultSearch" placeholder="Search your games…">
+            <select id="vaultFilter"><option value="">All genres</option></select>
+          </div>
+          <div class="vault-grid" id="vaultGrid"></div>
+        </div>
+
+        <!-- LEDGER -->
+        <div class="panel">
+          <div class="panel-head">
+            <h2>The trade</h2>
+            <span class="count" id="linkLabel">—</span>
+          </div>
+          <div class="ledger">
+            <div class="ledger-col">
+              <h3 id="myOfferHeading">You're offering <span class="lock-badge" id="myLockBadge">not locked</span></h3>
+              <div id="myOfferList"></div>
+            </div>
+            <div class="ledger-col">
+              <h3 id="theirOfferHeading">They're offering <span class="lock-badge" id="theirLockBadge">not locked</span></h3>
+              <div id="theirOfferList"></div>
+            </div>
+          </div>
+          <div class="ledger-actions">
+            <div class="value-readout" id="valueReadout">—</div>
+            <div style="display:flex; gap:10px;">
+              <button class="secondary" id="clearOfferBtn">Clear</button>
+              <button class="primary" id="lockBtn">Lock it in</button>
+            </div>
+          </div>
+          <div class="execute-bar" id="executeBar">
+            <span>You're both locked in! Ready to trade 🎉</span>
+            <button class="primary" id="executeBtn">Make the trade</button>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="chat-panel">
+        <div class="panel-head"><h2>Chat</h2></div>
+        <div class="chat-feed" id="chatFeed"><div class="chat-empty">Say something! 👋</div></div>
+        <div class="chat-input-row">
+          <input type="text" id="chatInput" placeholder="Type a message…" autocomplete="off" maxlength="300">
+          <button class="send-btn" id="chatSendBtn">Send</button>
+        </div>
+      </div>
+
+      <div class="activity">
+        <div class="panel-head"><h2>What's happening</h2></div>
+        <div class="activity-feed" id="activityFeed"></div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <footer>Just a fun little simulation — no real games change hands. Made for messing around with friends.</footer>
+
+<script>
+(function(){
+
+  /* ============ CATALOG ============ */
+  const RAW_GAMES = [
+    ["The Legend of Zelda: Breath of the Wild","Action-Adventure","Switch",2017],
+    ["The Legend of Zelda: Tears of the Kingdom","Action-Adventure","Switch",2023],
+    ["The Legend of Zelda: Ocarina of Time","Action-Adventure","N64",1998],
+    ["The Legend of Zelda: Majora's Mask","Action-Adventure","N64",2000],
+    ["The Legend of Zelda: Wind Waker","Action-Adventure","GameCube",2002],
+    ["Super Mario Odyssey","Platformer","Switch",2017],
+    ["Super Mario Galaxy","Platformer","Wii",2007],
+    ["Super Mario Galaxy 2","Platformer","Wii",2010],
+    ["Super Mario 64","Platformer","N64",1996],
+    ["Super Mario Sunshine","Platformer","GameCube",2002],
+    ["Super Mario Bros. Wonder","Platformer","Switch",2023],
+    ["Mario Kart 8 Deluxe","Racing","Switch",2017],
+    ["Mario Kart Wii","Racing","Wii",2008],
+    ["Mario Kart: Double Dash!!","Racing","GameCube",2003],
+    ["Mario Kart Arcade GP","Racing","Arcade",2005],
+    ["Super Smash Bros. Ultimate","Fighting","Switch",2018],
+    ["Super Smash Bros. Melee","Fighting","GameCube",2001],
+    ["Super Smash Bros. Brawl","Fighting","Wii",2008],
+    ["Splatoon","Shooter","Wii U",2015],
+    ["Splatoon 2","Shooter","Switch",2017],
+    ["Splatoon 3","Shooter","Switch",2022],
+    ["Animal Crossing: New Horizons","Life Sim","Switch",2020],
+    ["Animal Crossing: New Leaf","Life Sim","3DS",2012],
+    ["Animal Crossing (GameCube)","Life Sim","GameCube",2001],
+    ["Animal Crossing: Wild World","Life Sim","DS",2005],
+    ["Pikmin 3","Strategy","Wii U",2013],
+    ["Pikmin 4","Strategy","Switch",2023],
+    ["Metroid Prime","Action-Adventure","GameCube",2002],
+    ["Metroid Dread","Action-Adventure","Switch",2021],
+    ["Fire Emblem: Three Houses","Tactics RPG","Switch",2019],
+    ["Fire Emblem Engage","Tactics RPG","Switch",2023],
+    ["Xenoblade Chronicles 3","JRPG","Switch",2022],
+    ["Kirby and the Forgotten Land","Platformer","Switch",2022],
+    ["Pokémon Scarlet","RPG","Switch",2022],
+    ["Pokémon Violet","RPG","Switch",2022],
+    ["Pokémon Legends: Arceus","RPG","Switch",2022],
+    ["Pokémon Sword","RPG","Switch",2019],
+    ["Pokémon Shield","RPG","Switch",2019],
+    ["Pokémon FireRed","RPG","GBA",2004],
+    ["Pokémon LeafGreen","RPG","GBA",2004],
+    ["Pokémon Emerald","RPG","GBA",2004],
+    ["Pokémon Diamond","RPG","DS",2006],
+    ["Pokémon Pearl","RPG","DS",2006],
+    ["Tomodachi Life","Life Sim","3DS",2013],
+    ["Nintendogs","Life Sim","DS",2005],
+    ["Star Fox 64","Shooter","N64",1997],
+    ["Donkey Kong Country: Tropical Freeze","Platformer","Wii U",2014],
+    ["Luigi's Mansion 3","Action-Adventure","Switch",2019],
+    ["Ring Fit Adventure","Fitness","Switch",2019],
+    ["Bayonetta 3","Action","Switch",2022],
+    ["Astral Chain","Action","Switch",2019],
+    ["Breath of Fire","JRPG","SNES",1994],
+    ["EarthBound","RPG","SNES",1995],
+    ["Chrono Trigger","JRPG","SNES",1995],
+    ["Final Fantasy VII","JRPG","PS1",1997],
+    ["Final Fantasy VII Remake","JRPG","PS4",2020],
+    ["Final Fantasy X","JRPG","PS2",2001],
+    ["Final Fantasy XVI","JRPG","PS5",2023],
+    ["Persona 5 Royal","JRPG","PS4",2019],
+    ["Persona 4 Golden","JRPG","PS Vita",2012],
+    ["Dragon Quest XI","JRPG","PS4",2017],
+    ["NieR: Automata","Action RPG","PS4",2017],
+    ["Elden Ring","Action RPG","Multi",2022],
+    ["Dark Souls III","Action RPG","Multi",2016],
+    ["Bloodborne","Action RPG","PS4",2015],
+    ["Sekiro: Shadows Die Twice","Action","Multi",2019],
+    ["Demon's Souls (Remake)","Action RPG","PS5",2020],
+    ["God of War (2018)","Action-Adventure","PS4",2018],
+    ["God of War Ragnarök","Action-Adventure","PS5",2022],
+    ["The Last of Us Part I","Action-Adventure","PS5",2022],
+    ["The Last of Us Part II","Action-Adventure","PS4",2020],
+    ["Uncharted 4: A Thief's End","Action-Adventure","PS4",2016],
+    ["Horizon Zero Dawn","Action RPG","PS4",2017],
+    ["Horizon Forbidden West","Action RPG","PS5",2022],
+    ["Spider-Man (2018)","Action-Adventure","PS4",2018],
+    ["Spider-Man 2","Action-Adventure","PS5",2023],
+    ["Ghost of Tsushima","Action-Adventure","PS4",2020],
+    ["Bloodstained: Ritual of the Night","Metroidvania","Multi",2019],
+    ["Gran Turismo 7","Racing","PS5",2022],
+    ["Ratchet & Clank: Rift Apart","Platformer","PS5",2021],
+    ["Halo: Combat Evolved","Shooter","Xbox",2001],
+    ["Halo 3","Shooter","Xbox 360",2007],
+    ["Halo Infinite","Shooter","Xbox Series",2021],
+    ["Gears of War","Shooter","Xbox 360",2006],
+    ["Forza Horizon 5","Racing","Xbox Series",2021],
+    ["Starfield","RPG","Xbox Series",2023],
+    ["Fable II","RPG","Xbox 360",2008],
+    ["Sea of Thieves","Adventure","Multi",2018],
+    ["Half-Life 2","Shooter","PC",2004],
+    ["Half-Life: Alyx","Shooter","PC VR",2020],
+    ["Portal 2","Puzzle","Multi",2011],
+    ["Team Fortress 2","Shooter","PC",2007],
+    ["Counter-Strike 2","Shooter","PC",2023],
+    ["DOOM Eternal","Shooter","Multi",2020],
+    ["DOOM (2016)","Shooter","Multi",2016],
+    ["Overwatch 2","Shooter","Multi",2022],
+    ["Apex Legends","Battle Royale","Multi",2019],
+    ["Fortnite","Battle Royale","Multi",2017],
+    ["Valorant","Shooter","PC",2020],
+    ["League of Legends","MOBA","PC",2009],
+    ["Dota 2","MOBA","PC",2013],
+    ["World of Warcraft","MMORPG","PC",2004],
+    ["Final Fantasy XIV","MMORPG","Multi",2010],
+    ["Diablo IV","Action RPG","Multi",2023],
+    ["Baldur's Gate 3","RPG","Multi",2023],
+    ["Divinity: Original Sin 2","RPG","Multi",2017],
+    ["Disco Elysium","RPG","Multi",2019],
+    ["Hades","Roguelike","Multi",2020],
+    ["Hades II","Roguelike","Multi",2024],
+    ["Hollow Knight","Metroidvania","Multi",2017],
+    ["Celeste","Platformer","Multi",2018],
+    ["Undertale","RPG","Multi",2015],
+    ["Stardew Valley","Life Sim","Multi",2016],
+    ["Terraria","Sandbox","Multi",2011],
+    ["Minecraft","Sandbox","Multi",2011],
+    ["Slay the Spire","Roguelike","Multi",2019],
+    ["Balatro","Roguelike","Multi",2024],
+    ["Cult of the Lamb","Roguelike","Multi",2022],
+    ["Dead Cells","Roguelike","Multi",2018],
+    ["Cuphead","Run and Gun","Multi",2017],
+    ["Ori and the Blind Forest","Metroidvania","Multi",2015],
+    ["Ori and the Will of the Wisps","Metroidvania","Multi",2020],
+    ["Death Stranding","Action","Multi",2019],
+    ["Metal Gear Solid V: The Phantom Pain","Action","Multi",2015],
+    ["Resident Evil 4 (Remake)","Survival Horror","Multi",2023],
+    ["Resident Evil 2 (Remake)","Survival Horror","Multi",2019],
+    ["Silent Hill 2 (Remake)","Survival Horror","Multi",2024],
+    ["Dead Space (Remake)","Survival Horror","Multi",2023],
+    ["Alan Wake 2","Survival Horror","Multi",2023],
+    ["My Hero Ultra Rumble","Battle Royale","Multi",2023],
+    ["Naruto Shippuden: Ultimate Ninja Storm 4","Fighting","Multi",2016],
+    ["Dragon Ball FighterZ","Fighting","Multi",2018],
+    ["Street Fighter 6","Fighting","Multi",2023],
+    ["Tekken 8","Fighting","Multi",2024],
+    ["Guilty Gear Strive","Fighting","Multi",2021],
+    ["Persona 3 Reload","JRPG","Multi",2024],
+    ["Octopath Traveler","JRPG","Multi",2018],
+    ["Triangle Strategy","Tactics RPG","Switch",2022],
+    ["Genshin Impact","Action RPG","Multi",2020],
+    ["Honkai: Star Rail","RPG","Multi",2023],
+    ["Super Metroid","Metroidvania","SNES",1994],
+    ["Chrono Cross","JRPG","PS1",1999],
+    ["Shovel Knight","Platformer","Multi",2014],
+    ["A Hat in Time","Platformer","Multi",2017],
+    ["Katamari Damacy","Puzzle","PS2",2004],
+    ["Journey","Adventure","PS3",2012],
+    ["Portal","Puzzle","PC",2007],
+    ["It Takes Two","Co-op Adventure","Multi",2021],
+    ["Overcooked! 2","Co-op Party","Multi",2018],
+    ["Mario Party Superstars","Party","Switch",2021],
+    ["Just Dance 2024","Rhythm","Multi",2023],
+    ["Rock Band 4","Rhythm","Multi",2015],
+    ["Guitar Hero III: Legends of Rock","Rhythm","Multi",2007],
+    ["Grand Theft Auto V","Action","Multi",2013],
+    ["Grand Theft Auto: San Andreas","Action","PS2",2004],
+    ["Red Dead Redemption 2","Action-Adventure","Multi",2018],
+    ["The Witcher 3: Wild Hunt","RPG","Multi",2015],
+    ["Cyberpunk 2077","RPG","Multi",2020],
+    ["The Elder Scrolls V: Skyrim","RPG","Multi",2011],
+    ["Fallout 4","RPG","Multi",2015],
+    ["Fallout: New Vegas","RPG","Multi",2010],
+    ["Fallout 3","RPG","Multi",2008],
+    ["Mass Effect 2","RPG","Multi",2010],
+    ["Mass Effect Legendary Edition","RPG","Multi",2021],
+    ["BioShock Infinite","Shooter","Multi",2013],
+    ["BioShock","Shooter","Multi",2007],
+    ["Titanfall 2","Shooter","Multi",2016],
+    ["Destiny 2","Shooter","Multi",2017],
+    ["Borderlands 2","Shooter","Multi",2012],
+    ["Left 4 Dead 2","Shooter","Multi",2009],
+    ["Payday 2","Shooter","Multi",2013],
+    ["Warframe","Shooter","Multi",2013],
+    ["Path of Exile","Action RPG","PC",2013],
+    ["Diablo II: Resurrected","Action RPG","Multi",2021],
+    ["Diablo III","Action RPG","Multi",2012],
+    ["StarCraft II","Strategy","PC",2010],
+    ["Warcraft III: Reforged","Strategy","PC",2020],
+    ["Age of Empires II: Definitive Edition","Strategy","PC",2019],
+    ["Sid Meier's Civilization VI","Strategy","Multi",2016],
+    ["XCOM 2","Tactics","Multi",2016],
+    ["Total War: Warhammer III","Strategy","PC",2022],
+    ["Crusader Kings III","Strategy","PC",2020],
+    ["Cities: Skylines","Simulation","Multi",2015],
+    ["The Sims 4","Life Sim","Multi",2014],
+    ["Animal Well","Metroidvania","Multi",2024],
+    ["Tunic","Action-Adventure","Multi",2022],
+    ["Return of the Obra Dinn","Puzzle","Multi",2018],
+    ["Outer Wilds","Adventure","Multi",2019],
+    ["Subnautica","Survival","Multi",2018],
+    ["No Man's Sky","Survival","Multi",2016],
+    ["Fall Guys","Party","Multi",2020],
+    ["Phasmophobia","Horror","PC",2020],
+    ["PUBG: Battlegrounds","Battle Royale","Multi",2017],
+    ["Rust","Survival","PC",2018],
+    ["ARK: Survival Evolved","Survival","Multi",2017],
+    ["Assassin's Creed Valhalla","Action RPG","Multi",2020],
+    ["Assassin's Creed Odyssey","Action RPG","Multi",2018],
+    ["Far Cry 5","Shooter","Multi",2018],
+    ["Watch Dogs 2","Action-Adventure","Multi",2016],
+    ["Tom Clancy's Rainbow Six Siege","Shooter","Multi",2015],
+    ["Sonic Frontiers","Platformer","Multi",2022],
+    ["Sonic Mania","Platformer","Multi",2017],
+    ["Sonic the Hedgehog 2","Platformer","Genesis",1992],
+    ["Streets of Rage 4","Beat 'em Up","Multi",2020],
+    ["Streets of Rage 2","Beat 'em Up","Genesis",1992],
+    ["Yakuza 0","Action","Multi",2015],
+    ["Like a Dragon: Infinite Wealth","RPG","Multi",2024],
+    ["Monster Hunter World","Action RPG","Multi",2018],
+    ["Monster Hunter Rise","Action RPG","Multi",2021],
+    ["Devil May Cry 5","Action","Multi",2019],
+    ["Resident Evil Village","Survival Horror","Multi",2021],
+    ["Kingdom Hearts III","Action RPG","Multi",2019],
+    ["Crash Bandicoot 4: It's About Time","Platformer","Multi",2020],
+    ["Spyro Reignited Trilogy","Platformer","Multi",2018],
+    ["Jak and Daxter: The Precursor Legacy","Platformer","PS2",2001],
+    ["Sly Cooper and the Thievius Raccoonus","Platformer","PS2",2002],
+    ["LittleBigPlanet","Platformer","PS3",2008],
+    ["Gravity Rush","Action-Adventure","PS Vita",2012],
+    ["Ico","Action-Adventure","PS2",2001],
+    ["Shadow of the Colossus","Action-Adventure","PS2",2005],
+    ["The Last Guardian","Action-Adventure","PS4",2016],
+    ["Okami","Action-Adventure","PS2",2006],
+    ["Bayonetta","Action","Multi",2009],
+    ["Vanquish","Shooter","Multi",2010],
+    ["NieR Replicant","Action RPG","Multi",2021],
+    ["Yakuza: Like a Dragon","RPG","Multi",2020],
+    ["Judgment","Action","Multi",2018],
+    ["Ghostwire: Tokyo","Action","Multi",2022],
+    ["Hi-Fi Rush","Rhythm Action","Multi",2023],
+    ["Grounded","Survival","Multi",2022],
+    ["Pentiment","RPG","Multi",2022],
+    ["Psychonauts 2","Platformer","Multi",2021],
+    ["Inside","Puzzle Platformer","Multi",2016],
+    ["Limbo","Puzzle Platformer","Multi",2010],
+    ["Little Nightmares","Puzzle Platformer","Multi",2017],
+    ["Little Nightmares II","Puzzle Platformer","Multi",2021],
+    ["What Remains of Edith Finch","Adventure","Multi",2017],
+    ["Firewatch","Adventure","Multi",2016],
+    ["Gone Home","Adventure","PC",2013],
+    ["Kentucky Route Zero","Adventure","Multi",2020],
+    ["Oxenfree","Adventure","Multi",2016],
+    ["Night in the Woods","Adventure","Multi",2017],
+    ["Untitled Goose Game","Puzzle","Multi",2019],
+    ["Getting Over It with Bennett Foddy","Platformer","Multi",2017],
+    ["Human: Fall Flat","Puzzle","Multi",2016],
+    ["Goat Simulator","Sandbox","Multi",2014],
+    ["Job Simulator","VR","Multi",2016],
+    ["Beat Saber","Rhythm","VR",2018],
+    ["Superhot","Shooter","Multi",2016],
+    ["The Stanley Parable","Adventure","PC",2013],
+    ["Papers, Please","Puzzle","Multi",2013],
+    ["Her Story","Mystery","Multi",2015],
+    ["The Witness","Puzzle","Multi",2016],
+    ["Braid","Puzzle Platformer","Multi",2008],
+    ["Fez","Puzzle Platformer","Multi",2012],
+    ["Machinarium","Puzzle","Multi",2009],
+    ["Gris","Platformer","Multi",2018],
+    ["ABZU","Adventure","Multi",2016],
+    ["Sable","Adventure","Multi",2021],
+    ["A Short Hike","Adventure","Multi",2019],
+    ["Spiritfarer","Simulation","Multi",2020],
+    ["Coffee Talk","Simulation","Multi",2020],
+    ["Unpacking","Puzzle","Multi",2021],
+    ["Wandersong","Adventure","Multi",2018],
+    ["EA Sports FC 24","Sports","Multi",2023],
+    ["Madden NFL 24","Sports","Multi",2023],
+    ["NBA 2K24","Sports","Multi",2023],
+    ["MLB The Show 23","Sports","Multi",2023],
+    ["NHL 24","Sports","Multi",2023],
+    ["Tony Hawk's Pro Skater 1+2","Sports","Multi",2020],
+    ["Skate 3","Sports","Multi",2010],
+    ["Need for Speed Heat","Racing","Multi",2019],
+    ["Forza Motorsport","Racing","Xbox Series",2023],
+    ["F1 23","Racing","Multi",2023],
+    ["Burnout Paradise Remastered","Racing","Multi",2018],
+    ["WipEout Omega Collection","Racing","PS4",2017],
+    ["Trackmania","Racing","PC",2020],
+    ["Mortal Kombat 1","Fighting","Multi",2023],
+    ["Injustice 2","Fighting","Multi",2017],
+    ["Killer Instinct","Fighting","Xbox One",2013],
+    ["Pac-Man","Arcade","Arcade",1980],
+    ["Space Invaders","Arcade","Arcade",1978],
+    ["Tetris","Puzzle","Multi",1984],
+    ["Donkey Kong","Arcade","Arcade",1981],
+    ["Frogger","Arcade","Arcade",1981],
+    ["Galaga","Arcade","Arcade",1981],
+    ["Contra","Run and Gun","NES",1987],
+    ["Mega Man 2","Platformer","NES",1988],
+    ["Castlevania: Symphony of the Night","Metroidvania","PS1",1997],
+    ["Metal Slug","Run and Gun","Arcade",1996],
+    ["Golden Axe","Beat 'em Up","Arcade",1989],
+    ["Punch-Out!!","Sports","NES",1987],
+    ["Duck Hunt","Shooter","NES",1984],
+    ["Excitebike","Racing","NES",1984],
+    ["Ice Climber","Platformer","NES",1985],
+    ["Kid Icarus","Platformer","NES",1986],
+    ["Metroid","Metroidvania","NES",1986],
+    ["Candy Crush Saga","Puzzle","Mobile",2012],
+    ["Clash of Clans","Strategy","Mobile",2012],
+    ["Clash Royale","Strategy","Mobile",2016],
+    ["Pokémon GO","Adventure","Mobile",2016],
+    ["Fire Emblem Heroes","Tactics RPG","Mobile",2017],
+    ["Angry Birds","Puzzle","Mobile",2009],
+    ["Subway Surfers","Runner","Mobile",2012],
+    ["Monument Valley","Puzzle","Mobile",2014],
+    ["Alto's Odyssey","Runner","Mobile",2018]
+  ];
+
+  function hashStr(s){
+    let h = 0;
+    for(let i=0;i<s.length;i++){ h = (Math.imul(31,h) + s.charCodeAt(i)) | 0; }
+    return Math.abs(h);
+  }
+  function rarityFor(name){
+    const h = hashStr(name) % 100;
+    if(h < 55) return "common";
+    if(h < 82) return "uncommon";
+    if(h < 96) return "rare";
+    return "legendary";
+  }
+  const RARITY_BASE = { common: 40, uncommon: 120, rare: 340, legendary: 900 };
+  function valueFor(name, rarity){
+    const h = hashStr(name + "|val");
+    const wobble = (h % 60) - 20;
+    return Math.max(10, RARITY_BASE[rarity] + wobble);
+  }
+
+  const GAMES = RAW_GAMES.map(([title, genre, platform, year]) => {
+    const rarity = rarityFor(title);
+    return { id: title, title, genre, platform, year, rarity, value: valueFor(title, rarity) };
+  });
+  const GENRES = [...new Set(GAMES.map(g => g.genre))].sort();
+
+  /* ============ STATE ============ */
+  let peer = null;
+  let conn = null;
+  let myName = '';
+  let theirName = '';
+  let myCollection = [];
+  let myOffer = new Set();
+  let theirOfferTitles = [];
+  let myLocked = false;
+  let theirLocked = false;
+
+  function starterPack(){
+    const shuffled = [...GAMES].sort(() => Math.random() - 0.5);
+    return shuffled.slice(0, 6).map(g => g.id);
+  }
+  myCollection = starterPack();
+
+  let myCoins = 300;
+  const coinBalanceEl = document.getElementById('coinBalance');
+  function renderCoins(){ coinBalanceEl.textContent = myCoins; }
+  renderCoins();
+
+  /* ============ STORE ============ */
+  const storeGrid = document.getElementById('storeGrid');
+  const restockTimer = document.getElementById('restockTimer');
+  let storeStock = [];
+  let restockSeconds = 60;
+
+  function pickStoreStock(){
+    storeStock = [...GAMES].sort(() => Math.random() - 0.5).slice(0, 6).map(g => g.id);
+  }
+
+  function renderStore(){
+    storeGrid.innerHTML = storeStock.map(id => {
+      const g = gameByTitle(id);
+      if(!g) return '';
+      const owned = myCollection.includes(id);
+      const afford = myCoins >= g.value;
+      return `<div class="store-card">
+        <div class="title">${escapeHtml(g.title)}</div>
+        <div class="meta">${escapeHtml(g.platform)} · ${g.year}</div>
+        <span class="rarity-tag r-${g.rarity}">${g.rarity}</span>
+        <div class="buy-row">
+          <span class="price">§${g.value}</span>
+          <button class="btn-buy ${owned ? 'owned' : ''}" data-id="${escapeHtml(g.id)}" ${owned || !afford ? 'disabled' : ''}>
+            ${owned ? 'Owned' : afford ? 'Buy' : 'Not enough coins'}
+          </button>
+        </div>
+      </div>`;
+    }).join('');
+
+    storeGrid.querySelectorAll('.btn-buy').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.id;
+        const g = gameByTitle(id);
+        if(!g || myCollection.includes(id) || myCoins < g.value) return;
+        myCoins -= g.value;
+        myCollection.push(id);
+        renderCoins();
+        renderStore();
+        if(floor.classList.contains('active')) renderVault();
+      });
+    });
+  }
+
+  function refreshStock(){
+    pickStoreStock();
+    restockSeconds = 60;
+    renderStore();
+  }
+
+  refreshStock();
+  setInterval(() => {
+    restockSeconds -= 1;
+    if(restockSeconds <= 0){
+      refreshStock();
+      restockTimer.textContent = `Just restocked!`;
+      setTimeout(() => { restockTimer.textContent = `Restocking in ${restockSeconds}s`; }, 1200);
+    } else {
+      restockTimer.textContent = `Restocking in ${restockSeconds}s`;
+      renderStore();
+    }
+  }, 1000);
+
+  /* ============ MINI-GAME: COMBO RUSH ============ */
+  const pads = [...document.querySelectorAll('.pad')];
+  const gameStatus = document.getElementById('gameStatus');
+  const gameSub = document.getElementById('gameSub');
+  const gameStartBtn = document.getElementById('gameStartBtn');
+
+  let sequence = [];
+  let playerStep = 0;
+  let gameActive = false;
+  let accepting = false;
+
+  function litSpeed(round){ return Math.max(260, 620 - round * 22); }
+
+  function setPadsDisabled(disabled){
+    pads.forEach(p => p.disabled = disabled);
+  }
+
+  function flashPad(idx, ms){
+    return new Promise(resolve => {
+      const pad = pads[idx];
+      pad.classList.add('lit');
+      setTimeout(() => { pad.classList.remove('lit'); resolve(); }, ms);
+    });
+  }
+
+  async function playSequence(){
+    accepting = false;
+    setPadsDisabled(true);
+    gameStatus.textContent = `Round ${sequence.length} — watch closely`;
+    gameSub.textContent = '';
+    await new Promise(r => setTimeout(r, 500));
+    const speed = litSpeed(sequence.length);
+    for(const idx of sequence){
+      await flashPad(idx, speed * 0.7);
+      await new Promise(r => setTimeout(r, speed * 0.3));
+    }
+    playerStep = 0;
+    accepting = true;
+    setPadsDisabled(false);
+    gameStatus.textContent = `Round ${sequence.length} — your turn`;
+    gameSub.textContent = 'Repeat the pattern.';
+  }
+
+  function nextRound(){
+    sequence.push(Math.floor(Math.random() * 4));
+    playSequence();
+  }
+
+  function startGame(){
+    sequence = [];
+    gameActive = true;
+    gameStartBtn.textContent = 'Restart';
+    nextRound();
+  }
+
+  function endGame(){
+    gameActive = false;
+    accepting = false;
+    setPadsDisabled(true);
+    const roundsCleared = sequence.length - 1;
+    const earned = Math.max(0, roundsCleared) * 15;
+    myCoins += earned;
+    renderCoins();
+    renderStore();
+    gameStatus.textContent = roundsCleared > 0 ? `Nice! You cleared ${roundsCleared} round${roundsCleared===1?'':'s'}` : `Missed the first one — try again`;
+    gameSub.textContent = earned > 0 ? `+§${earned} added to your coins.` : `No coins this time. Give it another shot!`;
+    gameStartBtn.textContent = 'Play again';
+    setTimeout(() => setPadsDisabled(false), 50);
+  }
+
+  pads.forEach(pad => {
+    pad.addEventListener('click', () => {
+      if(!accepting || !gameActive) return;
+      const idx = Number(pad.dataset.pad);
+      flashPad(idx, 180);
+      if(idx === sequence[playerStep]){
+        playerStep += 1;
+        if(playerStep === sequence.length){
+          accepting = false;
+          setPadsDisabled(true);
+          gameStatus.textContent = `Round ${sequence.length} clear!`;
+          setTimeout(nextRound, 650);
+        }
+      } else {
+        endGame();
+      }
+    });
+  });
+
+  gameStartBtn.addEventListener('click', startGame);
+
+  function escapeHtml(s){
+    const d = document.createElement('div');
+    d.textContent = s;
+    return d.innerHTML;
+  }
+  function initials(name){
+    if(!name) return '?';
+    return name.trim().slice(0,1).toUpperCase();
+  }
+
+  /* ============ LOG HELPERS ============ */
+  const consoleLog = document.getElementById('consoleLog');
+  function logLine(tag, msg, kind){
+    const div = document.createElement('div');
+    div.className = 'ln' + (kind ? ' ' + kind : '');
+    div.innerHTML = `<span class="tag">${tag}</span> ${msg}`;
+    consoleLog.appendChild(div);
+    consoleLog.scrollTop = consoleLog.scrollHeight;
+  }
+
+  const activityFeed = document.getElementById('activityFeed');
+  function activityLine(msg){
+    const div = document.createElement('div');
+    const now = new Date();
+    const t = now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+    div.innerHTML = `<span class="t">${t}</span>${msg}`;
+    activityFeed.appendChild(div);
+    activityFeed.scrollTop = activityFeed.scrollHeight;
+  }
+
+  /* ============ STATUS CHIP ============ */
+  const statusPill = document.getElementById('statusPill');
+  const statusText = document.getElementById('statusText');
+  function setStatus(state){
+    statusPill.className = 'status-chip' + (state === 'linked' ? ' linked' : state === 'pending' ? ' pending' : '');
+    statusText.textContent = state === 'linked' ? `Connected with ${theirName || 'a friend'}` : state === 'pending' ? 'Connecting…' : 'Not connected';
+  }
+
+  /* ============ PEERJS SETUP ============ */
+  const myIdEl = document.getElementById('myId');
+  const connectBtn = document.getElementById('connectBtn');
+  const partnerInput = document.getElementById('partnerInput');
+  const copyBtn = document.getElementById('copyBtn');
+  const nameInput = document.getElementById('nameInput');
+
+  nameInput.addEventListener('input', () => {
+    myName = nameInput.value.trim();
+  });
+
+  logLine('👋', 'Getting things ready…');
+  setStatus('pending');
+
+  peer = new Peer(undefined, { debug: 0 });
+
+  peer.on('open', (id) => {
+    myIdEl.textContent = id;
+    myIdEl.classList.remove('waiting');
+    connectBtn.disabled = false;
+    logLine('✅', `You're all set. Share your code with a friend!`, 'ok');
+    setStatus('offline');
+  });
+
+  peer.on('error', (err) => {
+    logLine('⚠️', escapeHtml(String(err && err.type ? err.type : err)), 'err');
+  });
+
+  peer.on('connection', (c) => {
+    logLine('📨', `Someone's trying to connect…`);
+    bindConnection(c);
+  });
+
+  copyBtn.addEventListener('click', () => {
+    const id = myIdEl.textContent;
+    if(!id || myIdEl.classList.contains('waiting')) return;
+    navigator.clipboard.writeText(id).then(() => {
+      copyBtn.textContent = 'Copied!';
+      setTimeout(() => copyBtn.textContent = 'Copy', 1400);
+    }).catch(() => {});
+  });
+
+  connectBtn.addEventListener('click', () => {
+    const target = partnerInput.value.trim();
+    if(!target) return;
+    if(!myName){ myName = 'Trader'; nameInput.value = ''; nameInput.placeholder = 'e.g. Alex — set a name next time!'; }
+    logLine('📞', `Connecting…`);
+    setStatus('pending');
+    const c = peer.connect(target, { reliable: true });
+    bindConnection(c);
+  });
+
+  partnerInput.addEventListener('keydown', (e) => { if(e.key === 'Enter') connectBtn.click(); });
+  nameInput.addEventListener('keydown', (e) => { if(e.key === 'Enter') partnerInput.focus(); });
+
+  function bindConnection(c){
+    conn = c;
+    conn.on('open', () => {
+      if(!myName) myName = 'Trader';
+      logLine('🤝', 'Connected! Say hi.', 'ok');
+      setStatus('linked');
+      showFloor();
+      sendState();
+      activityLine(`You connected. Waiting to hear their name…`);
+    });
+    conn.on('data', (data) => handleData(data));
+    conn.on('close', () => {
+      logLine('👋', `${theirName || 'Your friend'} disconnected.`, 'err');
+      activityLine(`${theirName || 'Your friend'} left the trade.`);
+      setStatus('offline');
+      theirOfferTitles = [];
+      theirLocked = false;
+      renderLedger();
+    });
+    conn.on('error', (err) => {
+      logLine('⚠️', escapeHtml(String(err)), 'err');
+    });
+  }
+
+  /* ============ FLOOR TOGGLE ============ */
+  const connectScreen = document.getElementById('connectScreen');
+  const floor = document.getElementById('floor');
+  const linkLabel = document.getElementById('linkLabel');
+  const myAvatar = document.getElementById('myAvatar');
+  const theirAvatar = document.getElementById('theirAvatar');
+  const partnerNameLabel = document.getElementById('partnerNameLabel');
+  const myOfferHeading = document.getElementById('myOfferHeading');
+  const theirOfferHeading = document.getElementById('theirOfferHeading');
+
+  function showFloor(){
+    connectScreen.style.display = 'none';
+    floor.classList.add('active');
+    linkLabel.textContent = 'connected';
+    myAvatar.textContent = initials(myName);
+    renderVault();
+    renderLedger();
+  }
+
+  /* ============ MESSAGING ============ */
+  function sendState(){
+    if(!conn || !conn.open) return;
+    conn.send({ type: 'offer', items: [...myOffer], locked: myLocked, name: myName });
+  }
+
+  function handleData(data){
+    if(!data || !data.type) return;
+    if(data.type === 'offer'){
+      theirOfferTitles = data.items || [];
+      theirLocked = !!data.locked;
+      if(data.name && data.name !== theirName){
+        theirName = data.name;
+        theirAvatar.textContent = initials(theirName);
+        partnerNameLabel.textContent = theirName;
+        myOfferHeading.innerHTML = `You're offering <span class="lock-badge" id="myLockBadge">${myLocked ? 'locked' : 'not locked'}</span>`;
+        theirOfferHeading.innerHTML = `${escapeHtml(theirName)} is offering <span class="lock-badge" id="theirLockBadge">${theirLocked ? 'locked' : 'not locked'}</span>`;
+        setStatus('linked');
+        activityLine(`Say hi to <b>${escapeHtml(theirName)}</b>! 👋`);
+      }
+      activityLine(`${escapeHtml(theirName || 'Your friend')} updated their offer.`);
+      renderLedger();
+    } else if(data.type === 'execute'){
+      performTrade(true);
+    } else if(data.type === 'chat'){
+      addChatMessage('them', data.name || theirName || 'Them', data.text);
+    }
+  }
+
+  /* ============ VAULT RENDER ============ */
+  const vaultGrid = document.getElementById('vaultGrid');
+  const vaultCount = document.getElementById('vaultCount');
+  const vaultSearch = document.getElementById('vaultSearch');
+  const vaultFilter = document.getElementById('vaultFilter');
+
+  GENRES.forEach(g => {
+    const opt = document.createElement('option');
+    opt.value = g; opt.textContent = g;
+    vaultFilter.appendChild(opt);
+  });
+
+  function gameByTitle(title){ return GAMES.find(g => g.id === title); }
+
+  function renderVault(){
+    const q = vaultSearch.value.trim().toLowerCase();
+    const genre = vaultFilter.value;
+    vaultCount.textContent = `${myCollection.length} item${myCollection.length === 1 ? '' : 's'}`;
+
+    const items = myCollection
+      .map(gameByTitle)
+      .filter(Boolean)
+      .filter(g => (!q || g.title.toLowerCase().includes(q)) && (!genre || g.genre === genre));
+
+    if(items.length === 0){
+      vaultGrid.innerHTML = `<div class="empty-note">Nothing here matches — try a different search.</div>`;
+      return;
+    }
+
+    vaultGrid.innerHTML = items.map(g => `
+      <div class="card ${myOffer.has(g.id) ? 'staged' : ''}" data-id="${escapeHtml(g.id)}">
+        <div class="title">${escapeHtml(g.title)}</div>
+        <div class="meta">${escapeHtml(g.platform)} · ${g.year}</div>
+        <span class="rarity-tag r-${g.rarity}">${g.rarity} · §${g.value}</span>
+      </div>
+    `).join('');
+
+    vaultGrid.querySelectorAll('.card').forEach(card => {
+      card.addEventListener('click', () => {
+        if(myLocked) { activityLine('Unlock your offer first if you want to change it.'); return; }
+        const id = card.dataset.id;
+        if(myOffer.has(id)) myOffer.delete(id); else myOffer.add(id);
+        renderVault();
+        renderLedger();
+        sendState();
+      });
+    });
+  }
+  vaultSearch.addEventListener('input', renderVault);
+  vaultFilter.addEventListener('change', renderVault);
+
+  /* ============ LEDGER RENDER ============ */
+  const myOfferList = document.getElementById('myOfferList');
+  const theirOfferList = document.getElementById('theirOfferList');
+  const valueReadout = document.getElementById('valueReadout');
+  const lockBtn = document.getElementById('lockBtn');
+  const clearOfferBtn = document.getElementById('clearOfferBtn');
+  const executeBar = document.getElementById('executeBar');
+  const executeBtn = document.getElementById('executeBtn');
+
+  function offerListHtml(titles, removable){
+    if(titles.length === 0) return `<div class="offer-empty">Nothing staged yet.</div>`;
+    return titles.map(t => {
+      const g = gameByTitle(t);
+      if(!g) return '';
+      return `<div class="offer-item">
+        <span>${escapeHtml(g.title)} <span style="color:var(--ink-soft)">· §${g.value}</span></span>
+        ${removable ? `<span class="x" data-id="${escapeHtml(g.id)}">✕</span>` : ''}
+      </div>`;
+    }).join('');
+  }
+
+  function renderLedger(){
+    const myTitles = [...myOffer];
+    myOfferList.innerHTML = offerListHtml(myTitles, !myLocked);
+    theirOfferList.innerHTML = offerListHtml(theirOfferTitles, false);
+
+    myOfferList.querySelectorAll('.x').forEach(x => {
+      x.addEventListener('click', () => {
+        myOffer.delete(x.dataset.id);
+        renderVault(); renderLedger(); sendState();
+      });
+    });
+
+    const myBadge = document.getElementById('myLockBadge');
+    const theirBadge = document.getElementById('theirLockBadge');
+    if(myBadge){ myBadge.textContent = myLocked ? 'locked' : 'not locked'; myBadge.classList.toggle('on', myLocked); }
+    if(theirBadge){ theirBadge.textContent = theirLocked ? 'locked' : 'not locked'; theirBadge.classList.toggle('on', theirLocked); }
+
+    const myVal = myTitles.reduce((s,t) => s + (gameByTitle(t)?.value || 0), 0);
+    const theirVal = theirOfferTitles.reduce((s,t) => s + (gameByTitle(t)?.value || 0), 0);
+    const diff = theirVal - myVal;
+    const diffClass = diff > 0 ? 'diff-pos' : diff < 0 ? 'diff-neg' : '';
+    const diffSign = diff > 0 ? '+' : '';
+    valueReadout.innerHTML = `You: <b>§${myVal}</b> &nbsp;·&nbsp; Them: <b>§${theirVal}</b> &nbsp;·&nbsp; <span class="${diffClass}">${diffSign}${diff}</span>`;
+
+    lockBtn.textContent = myLocked ? 'Unlock' : 'Lock it in';
+    clearOfferBtn.disabled = myLocked;
+
+    const bothLocked = myLocked && theirLocked;
+    executeBar.classList.toggle('show', bothLocked);
+  }
+
+  /* ============ CHAT ============ */
+  const chatFeed = document.getElementById('chatFeed');
+  const chatInput = document.getElementById('chatInput');
+  const chatSendBtn = document.getElementById('chatSendBtn');
+  let chatStarted = false;
+
+  function addChatMessage(who, name, text){
+    if(!text) return;
+    if(!chatStarted){
+      chatFeed.innerHTML = '';
+      chatStarted = true;
+    }
+    const now = new Date();
+    const t = now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+    const wrap = document.createElement('div');
+    wrap.className = 'msg ' + (who === 'me' ? 'me' : 'them');
+    wrap.innerHTML = `<div class="bubble">${escapeHtml(text)}</div><div class="meta">${escapeHtml(name)} · ${t}</div>`;
+    chatFeed.appendChild(wrap);
+    chatFeed.scrollTop = chatFeed.scrollHeight;
+  }
+
+  function sendChat(){
+    const text = chatInput.value.trim();
+    if(!text) return;
+    if(!conn || !conn.open){ activityLine('Connect with someone first!'); return; }
+    conn.send({ type: 'chat', name: myName || 'Trader', text });
+    addChatMessage('me', myName || 'Trader', text);
+    chatInput.value = '';
+  }
+
+  chatSendBtn.addEventListener('click', sendChat);
+  chatInput.addEventListener('keydown', (e) => { if(e.key === 'Enter') sendChat(); });
+
+  lockBtn.addEventListener('click', () => {
+    myLocked = !myLocked;
+    activityLine(myLocked ? 'You locked in your offer.' : 'You unlocked your offer.');
+    renderLedger();
+    sendState();
+  });
+
+  clearOfferBtn.addEventListener('click', () => {
+    if(myLocked) return;
+    myOffer.clear();
+    renderVault(); renderLedger(); sendState();
+  });
+
+  executeBtn.addEventListener('click', () => {
+    if(conn && conn.open) conn.send({ type: 'execute' });
+    performTrade(false);
+  });
+
+  function performTrade(fromRemote){
+    const gained = [...theirOfferTitles];
+    const given = [...myOffer];
+    myCollection = myCollection.filter(t => !given.includes(t)).concat(gained);
+    activityLine(`Trade complete! You got ${gained.length} game${gained.length===1?'':'s'} and gave away ${given.length}. 🎉`);
+    myOffer.clear();
+    theirOfferTitles = [];
+    myLocked = false;
+    theirLocked = false;
+    renderVault();
+    renderLedger();
+    if(!fromRemote) sendState();
+  }
+
+})();
+</script>
+</body>
+</html>
