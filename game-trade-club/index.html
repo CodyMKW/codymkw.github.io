@@ -857,6 +857,7 @@
   let myName = '';
   let theirName = '';
   let myCollection = [];
+  let myCoins = 300;
   let myOffer = new Set();
   let theirOfferTitles = [];
   let myLocked = false;
@@ -866,12 +867,51 @@
     const shuffled = [...GAMES].sort(() => Math.random() - 0.5);
     return shuffled.slice(0, 6).map(g => g.id);
   }
-  myCollection = starterPack();
 
-  let myCoins = 300;
   const coinBalanceEl = document.getElementById('coinBalance');
   function renderCoins(){ coinBalanceEl.textContent = myCoins; }
-  renderCoins();
+
+  /* Persistence: use the artifact storage API when available (Claude.ai),
+     fall back to localStorage when this file is hosted standalone. */
+  const hasWidgetStorage = (typeof window !== 'undefined') && window.storage && typeof window.storage.get === 'function';
+  let stateReady = false;
+
+  async function loadState(){
+    try{
+      if(hasWidgetStorage){
+        let collRes = null, coinRes = null;
+        try{ collRes = await window.storage.get('collection', false); }catch(e){}
+        try{ coinRes = await window.storage.get('coins', false); }catch(e){}
+        myCollection = (collRes && collRes.value) ? JSON.parse(collRes.value) : starterPack();
+        myCoins = (coinRes && coinRes.value) ? JSON.parse(coinRes.value) : 300;
+      } else {
+        const savedColl = localStorage.getItem('tradepile_collection');
+        const savedCoins = localStorage.getItem('tradepile_coins');
+        myCollection = savedColl ? JSON.parse(savedColl) : starterPack();
+        myCoins = (savedCoins !== null) ? JSON.parse(savedCoins) : 300;
+      }
+    } catch(e){
+      myCollection = starterPack();
+      myCoins = 300;
+    }
+    if(!Array.isArray(myCollection) || myCollection.length === 0) myCollection = starterPack();
+    if(typeof myCoins !== 'number' || isNaN(myCoins)) myCoins = 300;
+    stateReady = true;
+    renderCoins();
+    saveState();
+  }
+
+  function saveState(){
+    try{
+      if(hasWidgetStorage){
+        window.storage.set('collection', JSON.stringify(myCollection), false).catch(() => {});
+        window.storage.set('coins', JSON.stringify(myCoins), false).catch(() => {});
+      } else {
+        localStorage.setItem('tradepile_collection', JSON.stringify(myCollection));
+        localStorage.setItem('tradepile_coins', JSON.stringify(myCoins));
+      }
+    } catch(e){ /* storage unavailable — state just won't persist */ }
+  }
 
   /* ============ STORE ============ */
   const storeGrid = document.getElementById('storeGrid');
@@ -911,6 +951,7 @@
         myCollection.push(id);
         renderCoins();
         renderStore();
+        saveState();
         if(floor.classList.contains('active')) renderVault();
       });
     });
@@ -922,8 +963,13 @@
     renderStore();
   }
 
-  refreshStock();
+  loadState().then(() => {
+    refreshStock();
+    if(floor.classList.contains('active')) renderVault();
+  });
+
   setInterval(() => {
+    if(!stateReady) return;
     restockSeconds -= 1;
     if(restockSeconds <= 0){
       refreshStock();
@@ -999,6 +1045,7 @@
     myCoins += earned;
     renderCoins();
     renderStore();
+    if(earned > 0) saveState();
     gameStatus.textContent = roundsCleared > 0 ? `Nice! You cleared ${roundsCleared} round${roundsCleared===1?'':'s'}` : `Missed the first one — try again`;
     gameSub.textContent = earned > 0 ? `+§${earned} added to your coins.` : `No coins this time. Give it another shot!`;
     gameStartBtn.textContent = 'Play again';
@@ -1349,6 +1396,7 @@
     const gained = [...theirOfferTitles];
     const given = [...myOffer];
     myCollection = myCollection.filter(t => !given.includes(t)).concat(gained);
+    saveState();
     activityLine(`Trade complete! You got ${gained.length} game${gained.length===1?'':'s'} and gave away ${given.length}. 🎉`);
     myOffer.clear();
     theirOfferTitles = [];
