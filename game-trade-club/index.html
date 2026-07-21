@@ -1561,19 +1561,25 @@
     });
     conn.on('data', (data) => handleData(data));
     conn.on('close', () => {
-      logLine('👋', `${theirName || 'Your friend'} disconnected.`, 'err');
-      if(floor.classList.contains('active')){
-        activityLine(`${theirName || 'Your friend'} left the trade.`);
-      }
+      const wasTrading = floor.classList.contains('active');
+      const leftName = theirName || 'Your friend';
       hideTradeRequestPopup();
       resetToDisconnected();
-      if(floor.classList.contains('active')) renderLedger();
+      if(wasTrading){
+        returnToHome(`${leftName} left the trade — you're back at the lobby.`);
+      } else {
+        logLine('👋', `${escapeHtml(leftName)} disconnected.`, 'err');
+      }
     });
     conn.on('error', (err) => {
       logLine('⚠️', escapeHtml(String(err)), 'err');
       connectBtn.disabled = false;
     });
   }
+
+  window.addEventListener('beforeunload', () => {
+    if(conn && conn.open) conn.close();
+  });
 
   /* ============ TRADE REQUEST HANDSHAKE ============ */
   const tradeRequestOverlay = document.getElementById('tradeRequestOverlay');
@@ -1635,6 +1641,24 @@
     }
     renderVault();
     renderLedger();
+  }
+
+  function returnToHome(message){
+    floor.classList.remove('active');
+    connectScreen.style.display = '';
+    myOffer.clear();
+    theirOfferTitles = [];
+    myLocked = false;
+    theirLocked = false;
+    theirName = '';
+    chatStarted = false;
+    if(chatFeed) chatFeed.innerHTML = '<div class="chat-empty">Say something! 👋</div>';
+    renderPreVault();
+    renderStore();
+    if(message){
+      logLine('🏠', escapeHtml(message));
+      activityLine(escapeHtml(message));
+    }
   }
 
   /* ============ MESSAGING ============ */
@@ -1777,13 +1801,14 @@
   const executeBar = document.getElementById('executeBar');
   const executeBtn = document.getElementById('executeBtn');
 
-  function offerListHtml(titles, removable){
+  function offerListHtml(titles, removable, flagDuplicates){
     if(titles.length === 0) return `<div class="offer-empty">Nothing staged yet.</div>`;
     return titles.map(t => {
       const g = gameByTitle(t);
       if(!g) return '';
-      return `<div class="offer-item">
-        <span>${escapeHtml(g.title)} <span style="color:var(--ink-soft)">· §${g.value}</span></span>
+      const isDup = flagDuplicates && myCollection.includes(t);
+      return `<div class="offer-item" ${isDup ? 'style="border-color:#f3b8b0; background:#fff6f5;"' : ''}>
+        <span>${escapeHtml(g.title)} <span style="color:var(--ink-soft)">· §${g.value}</span>${isDup ? '<span style="color:var(--coral-deep); font-weight:700; font-size:11px; margin-left:6px;">already yours — won\u2019t be added</span>' : ''}</span>
         ${removable ? `<span class="x" data-id="${escapeHtml(g.id)}">✕</span>` : ''}
       </div>`;
     }).join('');
@@ -1791,8 +1816,8 @@
 
   function renderLedger(){
     const myTitles = [...myOffer];
-    myOfferList.innerHTML = offerListHtml(myTitles, !myLocked);
-    theirOfferList.innerHTML = offerListHtml(theirOfferTitles, false);
+    myOfferList.innerHTML = offerListHtml(myTitles, !myLocked, false);
+    theirOfferList.innerHTML = offerListHtml(theirOfferTitles, false, true);
 
     myOfferList.querySelectorAll('.x').forEach(x => {
       x.addEventListener('click', () => {
@@ -1874,10 +1899,17 @@
   function performTrade(fromRemote){
     const gained = [...theirOfferTitles];
     const given = [...myOffer];
-    myCollection = myCollection.filter(t => !given.includes(t)).concat(gained);
+    const remaining = myCollection.filter(t => !given.includes(t));
+    const newlyGained = gained.filter(t => !remaining.includes(t));
+    const skippedDuplicates = gained.filter(t => remaining.includes(t));
+    myCollection = remaining.concat(newlyGained);
     saveState();
     renderPreVault();
-    activityLine(`Trade complete! You got ${gained.length} game${gained.length===1?'':'s'} and gave away ${given.length}. 🎉`);
+    activityLine(`Trade complete! You got ${newlyGained.length} game${newlyGained.length===1?'':'s'} and gave away ${given.length}. 🎉`);
+    if(skippedDuplicates.length){
+      const names = skippedDuplicates.map(t => gameByTitle(t)?.title).filter(Boolean).join(', ');
+      activityLine(`Skipped ${skippedDuplicates.length} game${skippedDuplicates.length===1?'':'s'} you already owned: ${escapeHtml(names)}.`);
+    }
     myOffer.clear();
     theirOfferTitles = [];
     myLocked = false;
