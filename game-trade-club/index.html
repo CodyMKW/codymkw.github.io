@@ -186,6 +186,12 @@
     border: 2px solid var(--line); border-radius: 16px; padding: 16px;
     background: #fbfcfe;
   }
+  .npc-card.rude{ border-color: #f3b8b0; background: #fff6f5; }
+  .npc-tone-tag{
+    display:inline-block; font-size: 10.5px; font-weight:700; padding: 2px 8px;
+    border-radius: 999px; margin-left: 8px; background: #ffe3de; color: var(--coral-deep);
+    vertical-align: middle;
+  }
   .npc-avatar{
     width: 44px; height:44px; min-width:44px; border-radius:50%;
     display:flex; align-items:center; justify-content:center;
@@ -1234,6 +1240,67 @@
     "Okay, thanks for your time regardless."
   ];
 
+  /* A minority of NPCs are just... not that pleasant. Rude, dismissive,
+     lowball offers — but never profane or abusive. */
+  const RUDE_OPENERS = [
+    "Ugh, finally someone with decent stock.",
+    "Don't waste my time, I'll be quick.",
+    "Look, I don't have all day.",
+    "Alright, let's make this fast.",
+    "I've seen better collections, but this'll do.",
+    "Not gonna lie, I expected more from you.",
+    "Whatever, let's just get this over with.",
+    "I'm only here because nobody else had this.",
+    "Skip the small talk, I want to deal.",
+    "Honestly? This better be worth my time.",
+    "I don't do pleasantries, just business.",
+    "Cut the chit-chat — what's your price."
+  ];
+  const RUDE_PITCHES = [
+    "{game} is overrated anyway, but I need it for a friend.",
+    "I only want {game} because everyone else was sold out.",
+    "{game} isn't even that good, but whatever.",
+    "I guess {game} will do for now.",
+    "Needed {game} yesterday, so let's not drag this out.",
+    "{game} better not be scratched up.",
+    "I've been to five other people before you about {game}.",
+    "{game} was my last resort, honestly.",
+    "Don't really care about {game}, just need it off my list.",
+    "{game} again? Fine, I'll bite.",
+    "Everyone's hyped about {game} for no reason, but sure.",
+    "I want {game}, and I want it cheap."
+  ];
+  const RUDE_OFFERS = [
+    "§{price}. Take it or don't.",
+    "I'll give you §{price} — that's already generous.",
+    "§{price}, and that's me being nice.",
+    "Best offer you'll get is §{price}.",
+    "§{price}, final answer.",
+    "Don't push it — §{price} is fair enough.",
+    "§{price}. Yes or no?",
+    "I'm not paying more than §{price} for this."
+  ];
+  const RUDE_ACCEPT_LINES = [
+    "Finally. Took long enough.",
+    "Fine, that works.",
+    "About time. Later.",
+    "Whatever, deal's a deal.",
+    "Guess that'll do.",
+    "Alright, we're done here.",
+    "Cool. Wasn't expecting much, but fine.",
+    "Sure. Don't expect a thank you."
+  ];
+  const RUDE_DECLINE_LINES = [
+    "Wow, okay. Your loss.",
+    "Fine, forget it then.",
+    "Typical. Whatever.",
+    "Guess I'll find it somewhere better anyway.",
+    "Not surprised, honestly.",
+    "Suit yourself.",
+    "Ugh, fine. Bye.",
+    "Didn't want it that bad anyway."
+  ];
+
   function pickRandom(arr){ return arr[Math.floor(Math.random() * arr.length)]; }
 
   const npcArea = document.getElementById('npcArea');
@@ -1259,13 +1326,21 @@
     const game = gameByTitle(gameId);
     if(!game) return;
 
-    const priceMult = 0.7 + Math.random() * 0.65;
-    const price = Math.max(8, Math.round(game.value * priceMult));
+    const isRude = Math.random() < 0.28;
     const name = nextNpcName();
 
-    const dialogue = `${pickRandom(NPC_OPENERS)} ${pickRandom(NPC_PITCHES).replace('{game}', game.title)} ${pickRandom(NPC_OFFERS).replace('{price}', price)}`;
+    let price, dialogue;
+    if(isRude){
+      const priceMult = 0.35 + Math.random() * 0.35;
+      price = Math.max(5, Math.round(game.value * priceMult));
+      dialogue = `${pickRandom(RUDE_OPENERS)} ${pickRandom(RUDE_PITCHES).replace('{game}', game.title)} ${pickRandom(RUDE_OFFERS).replace('{price}', price)}`;
+    } else {
+      const priceMult = 0.7 + Math.random() * 0.65;
+      price = Math.max(8, Math.round(game.value * priceMult));
+      dialogue = `${pickRandom(NPC_OPENERS)} ${pickRandom(NPC_PITCHES).replace('{game}', game.title)} ${pickRandom(NPC_OFFERS).replace('{price}', price)}`;
+    }
 
-    currentNpc = { name, gameId, game, price, dialogue };
+    currentNpc = { name, gameId, game, price, dialogue, isRude };
     renderNpc();
   }
 
@@ -1274,12 +1349,12 @@
       npcArea.innerHTML = `<div class="npc-waiting" id="npcWaiting">No one's reached out yet — keep browsing, someone might stop by.</div>`;
       return;
     }
-    const { name, game, price, dialogue } = currentNpc;
+    const { name, game, price, dialogue, isRude } = currentNpc;
     npcArea.innerHTML = `
-      <div class="npc-card">
+      <div class="npc-card ${isRude ? 'rude' : ''}">
         <div class="npc-avatar" style="background:${npcAvatarColor(name)}">${escapeHtml(initials(name))}</div>
         <div class="npc-body">
-          <div class="npc-name">${escapeHtml(name)}</div>
+          <div class="npc-name">${escapeHtml(name)}${isRude ? '<span class="npc-tone-tag">tough crowd</span>' : ''}</div>
           <div class="npc-dialogue">${escapeHtml(dialogue)}</div>
           <div class="npc-offer-row">
             <span>Wants: <span class="game-name">${escapeHtml(game.title)}</span></span>
@@ -1297,18 +1372,18 @@
 
   function resolveNpc(accepted){
     if(!currentNpc) return;
-    const { name, game, price } = currentNpc;
+    const { name, game, price, isRude } = currentNpc;
     if(accepted){
       myCollection = myCollection.filter(id => id !== currentNpc.gameId);
       myCoins += price;
       renderCoins();
       renderStore();
       saveState();
-      const line = pickRandom(NPC_ACCEPT_LINES);
+      const line = pickRandom(isRude ? RUDE_ACCEPT_LINES : NPC_ACCEPT_LINES);
       npcArea.innerHTML = `<div class="npc-waiting">${escapeHtml(name)}: "${escapeHtml(line)}"</div>`;
       addNpcLogEntry(name, `sold ${game.title} for §${price}`, 'win');
     } else {
-      const line = pickRandom(NPC_DECLINE_LINES);
+      const line = pickRandom(isRude ? RUDE_DECLINE_LINES : NPC_DECLINE_LINES);
       npcArea.innerHTML = `<div class="npc-waiting">${escapeHtml(name)}: "${escapeHtml(line)}"</div>`;
       addNpcLogEntry(name, `passed on ${game.title}`, 'pass');
     }
