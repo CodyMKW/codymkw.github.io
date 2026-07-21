@@ -233,6 +233,20 @@
   .npc-log .entry .win{ color: var(--teal); font-weight:600; }
   .npc-log .entry .pass{ color: #a7b2c9; font-weight:600; }
 
+  /* ---------- MODAL ---------- */
+  .modal-overlay{
+    position: fixed; inset: 0; background: rgba(38,49,74,0.5);
+    display:none; align-items:center; justify-content:center; z-index: 1000; padding: 20px;
+  }
+  .modal-overlay.show{ display:flex; }
+  .modal-card{
+    background:#fff; border-radius: 20px; padding: 30px clamp(22px,5vw,38px) 26px;
+    max-width: 380px; width:100%; text-align:center; box-shadow: 0 20px 50px rgba(38,49,74,0.25);
+  }
+  .modal-icon{ font-size: 36px; margin-bottom: 8px; }
+  .modal-title{ font-family: var(--display); font-weight:600; font-size: 18px; margin-bottom: 24px; line-height:1.35; }
+  .modal-actions{ display:flex; gap: 12px; justify-content:center; }
+
   /* ---------- MINI-GAME ---------- */
   .game-body{ display:flex; gap: 24px; align-items:center; flex-wrap: wrap; margin-top: 14px; }
   .pad-grid{
@@ -437,6 +451,21 @@
       <div class="section-panel">
         <div class="section-head">
           <div>
+            <h2>🎒 My Collection</h2>
+            <p>Everything you own so far — browse it any time, even before you connect.</p>
+          </div>
+          <span class="restock-timer" id="preVaultCount" style="background:#eef1f8; color:var(--ink-soft);">0 items</span>
+        </div>
+        <div class="vault-controls" style="padding:14px 0 0;">
+          <input type="text" id="preVaultSearch" placeholder="Search your games…">
+          <select id="preVaultFilter"><option value="">All genres</option></select>
+        </div>
+        <div class="vault-grid" id="preVaultGrid" style="padding:14px 0 4px; max-height:360px;"></div>
+      </div>
+
+      <div class="section-panel">
+        <div class="section-head">
+          <div>
             <h2>📞 Incoming Offers</h2>
             <p>Other collectors sometimes reach out wanting to buy something from you.</p>
           </div>
@@ -578,6 +607,17 @@
   </main>
 
   <footer>Just a fun little simulation — no real games change hands. Made for messing around with friends.</footer>
+
+  <div class="modal-overlay" id="tradeRequestOverlay">
+    <div class="modal-card">
+      <div class="modal-icon">🎮</div>
+      <div class="modal-title" id="tradeRequestTitle">Someone wants to trade games?</div>
+      <div class="modal-actions">
+        <button class="secondary" id="tradeDeclineBtn">Decline</button>
+        <button class="primary" id="tradeAcceptBtn">Accept</button>
+      </div>
+    </div>
+  </div>
 
 <script>
 (function(){
@@ -1017,6 +1057,7 @@
         myCollection.push(id);
         renderCoins();
         renderStore();
+        renderPreVault();
         saveState();
         if(floor.classList.contains('active')) renderVault();
       });
@@ -1031,6 +1072,7 @@
 
   loadState().then(() => {
     refreshStock();
+    renderPreVault();
     if(floor.classList.contains('active')) renderVault();
   });
 
@@ -1378,6 +1420,7 @@
       myCoins += price;
       renderCoins();
       renderStore();
+      renderPreVault();
       saveState();
       const line = pickRandom(isRude ? RUDE_ACCEPT_LINES : NPC_ACCEPT_LINES);
       npcArea.innerHTML = `<div class="npc-waiting">${escapeHtml(name)}: "${escapeHtml(line)}"</div>`;
@@ -1470,7 +1513,7 @@
 
   peer.on('connection', (c) => {
     logLine('📨', `Someone's trying to connect…`);
-    bindConnection(c);
+    bindConnection(c, false);
   });
 
   copyBtn.addEventListener('click', () => {
@@ -1488,36 +1531,87 @@
     if(!myName){ myName = 'Trader'; nameInput.value = ''; nameInput.placeholder = 'e.g. Alex — set a name next time!'; }
     logLine('📞', `Connecting…`);
     setStatus('pending');
+    connectBtn.disabled = true;
     const c = peer.connect(target, { reliable: true });
-    bindConnection(c);
+    bindConnection(c, true);
   });
 
   partnerInput.addEventListener('keydown', (e) => { if(e.key === 'Enter') connectBtn.click(); });
   nameInput.addEventListener('keydown', (e) => { if(e.key === 'Enter') partnerInput.focus(); });
 
-  function bindConnection(c){
+  function resetToDisconnected(){
+    setStatus('offline');
+    connectBtn.disabled = false;
+    conn = null;
+    theirOfferTitles = [];
+    theirLocked = false;
+  }
+
+  function bindConnection(c, isInitiator){
     conn = c;
     conn.on('open', () => {
       if(!myName) myName = 'Trader';
-      logLine('🤝', 'Connected! Say hi.', 'ok');
-      setStatus('linked');
-      showFloor();
-      sendState();
-      activityLine(`You connected. Waiting to hear their name…`);
+      if(isInitiator){
+        logLine('📤', 'Connected — sending your trade request…', 'ok');
+        conn.send({ type: 'trade_request', name: myName });
+        activityLine('Waiting for them to accept…');
+      } else {
+        logLine('🤝', 'Connected. Waiting for their request…', 'ok');
+      }
     });
     conn.on('data', (data) => handleData(data));
     conn.on('close', () => {
       logLine('👋', `${theirName || 'Your friend'} disconnected.`, 'err');
-      activityLine(`${theirName || 'Your friend'} left the trade.`);
-      setStatus('offline');
-      theirOfferTitles = [];
-      theirLocked = false;
-      renderLedger();
+      if(floor.classList.contains('active')){
+        activityLine(`${theirName || 'Your friend'} left the trade.`);
+      }
+      hideTradeRequestPopup();
+      resetToDisconnected();
+      if(floor.classList.contains('active')) renderLedger();
     });
     conn.on('error', (err) => {
       logLine('⚠️', escapeHtml(String(err)), 'err');
+      connectBtn.disabled = false;
     });
   }
+
+  /* ============ TRADE REQUEST HANDSHAKE ============ */
+  const tradeRequestOverlay = document.getElementById('tradeRequestOverlay');
+  const tradeRequestTitle = document.getElementById('tradeRequestTitle');
+  const tradeAcceptBtn = document.getElementById('tradeAcceptBtn');
+  const tradeDeclineBtn = document.getElementById('tradeDeclineBtn');
+  let pendingRequestName = null;
+
+  function showTradeRequestPopup(name){
+    pendingRequestName = name;
+    tradeRequestTitle.textContent = `${name} wants to trade games?`;
+    tradeRequestOverlay.classList.add('show');
+  }
+  function hideTradeRequestPopup(){
+    tradeRequestOverlay.classList.remove('show');
+    pendingRequestName = null;
+  }
+
+  tradeAcceptBtn.addEventListener('click', () => {
+    if(!pendingRequestName || !conn || !conn.open) { hideTradeRequestPopup(); return; }
+    if(!myName) myName = 'Trader';
+    theirName = pendingRequestName;
+    conn.send({ type: 'trade_accept', name: myName });
+    hideTradeRequestPopup();
+    setStatus('linked');
+    showFloor();
+    sendState();
+    activityLine(`You accepted a trade request from <b>${escapeHtml(theirName)}</b>.`);
+  });
+
+  tradeDeclineBtn.addEventListener('click', () => {
+    const declinedName = pendingRequestName;
+    if(conn && conn.open) conn.send({ type: 'trade_decline' });
+    hideTradeRequestPopup();
+    logLine('🚫', `You declined a trade request from ${escapeHtml(declinedName || 'them')}.`);
+    if(conn) conn.close();
+    resetToDisconnected();
+  });
 
   /* ============ FLOOR TOGGLE ============ */
   const connectScreen = document.getElementById('connectScreen');
@@ -1534,6 +1628,11 @@
     floor.classList.add('active');
     linkLabel.textContent = 'connected';
     myAvatar.textContent = initials(myName);
+    if(theirName){
+      theirAvatar.textContent = initials(theirName);
+      partnerNameLabel.textContent = theirName;
+      theirOfferHeading.innerHTML = `${escapeHtml(theirName)} is offering <span class="lock-badge" id="theirLockBadge">${theirLocked ? 'locked' : 'not locked'}</span>`;
+    }
     renderVault();
     renderLedger();
   }
@@ -1546,7 +1645,20 @@
 
   function handleData(data){
     if(!data || !data.type) return;
-    if(data.type === 'offer'){
+    if(data.type === 'trade_request'){
+      showTradeRequestPopup(data.name || 'Someone');
+    } else if(data.type === 'trade_accept'){
+      theirName = data.name || 'Trader';
+      logLine('✅', `${escapeHtml(theirName)} accepted your trade request!`, 'ok');
+      setStatus('linked');
+      showFloor();
+      sendState();
+      activityLine(`<b>${escapeHtml(theirName)}</b> accepted your request. Let's trade!`);
+    } else if(data.type === 'trade_decline'){
+      logLine('🚫', `They declined your trade request.`, 'err');
+      connectBtn.disabled = false;
+      setStatus('offline');
+    } else if(data.type === 'offer'){
       theirOfferTitles = data.items || [];
       theirLocked = !!data.locked;
       if(data.name && data.name !== theirName){
@@ -1617,6 +1729,44 @@
   }
   vaultSearch.addEventListener('input', renderVault);
   vaultFilter.addEventListener('change', renderVault);
+
+  /* ============ PRE-CONNECT COLLECTION VIEWER ============ */
+  const preVaultGrid = document.getElementById('preVaultGrid');
+  const preVaultCount = document.getElementById('preVaultCount');
+  const preVaultSearch = document.getElementById('preVaultSearch');
+  const preVaultFilter = document.getElementById('preVaultFilter');
+
+  GENRES.forEach(g => {
+    const opt = document.createElement('option');
+    opt.value = g; opt.textContent = g;
+    preVaultFilter.appendChild(opt);
+  });
+
+  function renderPreVault(){
+    const q = preVaultSearch.value.trim().toLowerCase();
+    const genre = preVaultFilter.value;
+    preVaultCount.textContent = `${myCollection.length} item${myCollection.length === 1 ? '' : 's'}`;
+
+    const items = myCollection
+      .map(gameByTitle)
+      .filter(Boolean)
+      .filter(g => (!q || g.title.toLowerCase().includes(q)) && (!genre || g.genre === genre));
+
+    if(items.length === 0){
+      preVaultGrid.innerHTML = `<div class="empty-note">${myCollection.length === 0 ? "You don't own any games yet — visit the store below!" : "Nothing here matches — try a different search."}</div>`;
+      return;
+    }
+
+    preVaultGrid.innerHTML = items.map(g => `
+      <div class="card">
+        <div class="title">${escapeHtml(g.title)}</div>
+        <div class="meta">${escapeHtml(g.platform)} · ${g.year}</div>
+        <span class="rarity-tag r-${g.rarity}">${g.rarity} · §${g.value}</span>
+      </div>
+    `).join('');
+  }
+  preVaultSearch.addEventListener('input', renderPreVault);
+  preVaultFilter.addEventListener('change', renderPreVault);
 
   /* ============ LEDGER RENDER ============ */
   const myOfferList = document.getElementById('myOfferList');
@@ -1726,6 +1876,7 @@
     const given = [...myOffer];
     myCollection = myCollection.filter(t => !given.includes(t)).concat(gained);
     saveState();
+    renderPreVault();
     activityLine(`Trade complete! You got ${gained.length} game${gained.length===1?'':'s'} and gave away ${given.length}. 🎉`);
     myOffer.clear();
     theirOfferTitles = [];
