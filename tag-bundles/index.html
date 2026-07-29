@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tag Bundles — hashtag bundler</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ctext y='19' font-size='20'%3E%F0%9F%8F%B7%EF%B8%8F%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500;1,9..144,600&family=Public+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper: #F5EFDF;
+    --paper-2: #ECE3CC;
+    --paper-3: #E4D8B8;
+    --ink: #2B241B;
+    --ink-soft: #6E6350;
+    --ink-faint: #9B8F76;
+    --kraft: #8B5E3C;
+    --kraft-light: #C7A87C;
+    --twine: #C97C34;
+    --twine-dark: #A5621F;
+    --moss: #52704F;
+    --moss-dark: #3E5A3B;
+    --tagred: #AE4A3C;
+    --tagred-dark: #8E3A2F;
+    --card-shadow: 0 1px 0 rgba(43,36,27,0.06), 0 6px 16px -8px rgba(43,36,27,0.25);
+    --radius: 10px;
+  }
+
+  *{ box-sizing: border-box; }
+  html{ scroll-behavior: smooth; }
+
+  body{
+    margin:0;
+    background:
+      radial-gradient(ellipse at top left, rgba(201,124,52,0.06), transparent 45%),
+      radial-gradient(ellipse at bottom right, rgba(82,112,79,0.06), transparent 45%),
+      var(--paper);
+    color: var(--ink);
+    font-family: 'Public Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* subtle paper grain */
+  body::before{
+    content:"";
+    position: fixed; inset:0; pointer-events:none; z-index:0;
+    opacity: 0.5;
+    background-image: radial-gradient(rgba(43,36,27,0.035) 1px, transparent 1px);
+    background-size: 3px 3px;
+  }
+
+  a{ color: inherit; }
+  button{ font-family: inherit; }
+
+  .wrap{
+    position: relative; z-index:1;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  /* ---------- header + garland signature ---------- */
+  header{ text-align:center; margin-bottom: 8px; }
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--twine-dark);
+    font-weight: 600;
+  }
+  h1{
+    font-family:'Fraunces', serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-style: italic;
+    font-size: clamp(34px, 5vw, 52px);
+    margin: 4px 0 2px;
+    letter-spacing: -0.01em;
+  }
+  .sub{
+    color: var(--ink-soft);
+    font-size: 14.5px;
+    margin: 0 0 6px;
+  }
+
+  .garland{ width: 100%; max-width: 520px; margin: 18px auto 30px; display:block; }
+  .garland .string{ fill:none; stroke: var(--kraft-light); stroke-width: 1.6; stroke-dasharray: 1 6; stroke-linecap: round; }
+  .garland .tag-hole{ fill: var(--paper); stroke: var(--ink-faint); stroke-width: 1; }
+  .garland .tag-shape{ stroke-width: 1.4; }
+  .garland text{ font-family:'JetBrains Mono', monospace; font-weight:600; }
+
+  /* ---------- toolbar ---------- */
+  .toolbar{
+    display:flex; gap:10px; flex-wrap: wrap; align-items:center;
+    margin-bottom: 26px;
+  }
+  .search-box{
+    position: relative; flex: 1 1 220px; min-width: 180px;
+  }
+  .search-box input{
+    width:100%; padding: 11px 14px 11px 36px;
+    border-radius: var(--radius); border: 1.5px solid var(--kraft-light);
+    background: var(--paper); color: var(--ink);
+    font-size: 14px; outline: none;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  .search-box input:focus{ border-color: var(--twine); box-shadow: 0 0 0 3px rgba(201,124,52,0.15); }
+  .search-box svg{ position:absolute; left:11px; top:50%; transform:translateY(-50%); width:15px; height:15px; color: var(--ink-faint); }
+
+  .btn{
+    display:inline-flex; align-items:center; gap:7px;
+    padding: 10px 16px; border-radius: var(--radius);
+    border: 1.5px solid transparent; cursor:pointer;
+    font-size: 13.5px; font-weight: 600; letter-spacing: 0.01em;
+    transition: transform .12s ease, box-shadow .12s ease, background .12s ease, border-color .12s ease;
+    white-space: nowrap;
+  }
+  .btn:active{ transform: translateY(1px); }
+  .btn-primary{ background: var(--moss); color: #FBF6E9; box-shadow: var(--card-shadow); }
+  .btn-primary:hover{ background: var(--moss-dark); }
+  .btn-twine{ background: var(--twine); color: #FBF6E9; box-shadow: var(--card-shadow); }
+  .btn-twine:hover{ background: var(--twine-dark); }
+  .btn-ghost{ background: transparent; border-color: var(--kraft-light); color: var(--ink); }
+  .btn-ghost:hover{ background: var(--paper-2); border-color: var(--kraft); }
+  .btn-danger{ background: transparent; border-color: rgba(174,74,60,0.4); color: var(--tagred-dark); }
+  .btn-danger:hover{ background: var(--tagred); border-color: var(--tagred); color: #fff; }
+  .btn-sm{ padding: 7px 11px; font-size: 12.5px; border-radius: 8px; }
+  .btn-icon{ padding: 9px; }
+  .btn[disabled]{ opacity:.45; cursor:not-allowed; pointer-events:none; }
+
+  /* ---------- layout ---------- */
+  .layout{ display:grid; grid-template-columns: minmax(0,1.15fr) minmax(0,1fr); gap: 26px; align-items:start; }
+  @media (max-width: 900px){ .layout{ grid-template-columns: 1fr; } }
+
+  .panel{
+    background: var(--paper);
+    border: 1px solid var(--paper-3);
+    border-radius: 16px;
+    box-shadow: var(--card-shadow);
+    padding: 20px;
+  }
+  .panel + .panel{ margin-top: 22px; }
+  .panel-head{ display:flex; align-items:baseline; justify-content:space-between; margin-bottom: 14px; gap:10px; flex-wrap:wrap; }
+  .panel-title{ font-family:'Fraunces', serif; font-weight:600; font-size: 19px; }
+  .panel-count{ font-family:'JetBrains Mono', monospace; font-size: 11.5px; color: var(--ink-faint); }
+  .panel-hint{ font-size: 12.5px; color: var(--ink-soft); margin: -8px 0 14px; }
+
+  select.sort-select{
+    font-family: inherit; font-size: 12.5px; padding: 6px 10px;
+    border-radius: 7px; border: 1.5px solid var(--kraft-light);
+    background: var(--paper); color: var(--ink-soft); cursor:pointer;
+  }
+
+  /* ---------- empty state ---------- */
+  .empty{
+    text-align:center; padding: 36px 12px; color: var(--ink-soft);
+  }
+  .empty .glyph{ font-size: 30px; margin-bottom: 8px; opacity:.7; }
+  .empty p{ margin: 4px 0; font-size: 13.5px; }
+  .empty strong{ color: var(--ink); }
+
+  /* ---------- bundle list ---------- */
+  .bundle-list{ display:flex; flex-direction:column; gap: 12px; max-height: 640px; overflow-y:auto; padding-right:4px; }
+  .bundle-list::-webkit-scrollbar{ width:7px; }
+  .bundle-list::-webkit-scrollbar-thumb{ background: var(--kraft-light); border-radius: 10px; }
+
+  .tag-card{
+    position: relative;
+    background: var(--paper-2);
+    border: 1px solid var(--paper-3);
+    border-radius: 4px 14px 14px 4px;
+    padding: 13px 16px 13px 30px;
+    cursor: pointer;
+    transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+  }
+  .tag-card::before{
+    content:"";
+    position:absolute; left:11px; top:50%; transform:translateY(-50%);
+    width:8px; height:8px; border-radius:50%;
+    background: var(--paper); border: 1.5px solid var(--ink-faint);
+  }
+  .tag-card:hover{ transform: translateX(2px) rotate(-0.3deg); box-shadow: var(--card-shadow); border-color: var(--kraft-light); }
+  .tag-card.open{ border-color: var(--twine); box-shadow: var(--card-shadow); }
+  .tag-card.favorite::after{
+    content:"★"; position:absolute; right:14px; top:12px; color: var(--twine); font-size: 13px;
+  }
+
+  .tc-row{ display:flex; justify-content:space-between; align-items:flex-start; gap:8px; }
+  .tc-name{ font-weight:700; font-size:14.5px; }
+  .tc-meta{ font-family:'JetBrains Mono', monospace; font-size: 11px; color: var(--ink-faint); white-space:nowrap; margin-top:2px; }
+  .tc-preview{
+    font-family:'JetBrains Mono', monospace; font-size: 12px; color: var(--ink-soft);
+    margin-top: 6px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+  }
+
+  .tc-detail{ margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--kraft-light); display:none; }
+  .tag-card.open .tc-detail{ display:block; }
+
+  .chip-wrap{ display:flex; flex-wrap:wrap; gap:6px; margin-bottom: 12px; }
+  .chip{
+    font-family:'JetBrains Mono', monospace; font-size: 11.5px;
+    background: var(--paper); border: 1px solid var(--kraft-light);
+    color: var(--kraft); padding: 3px 8px; border-radius: 20px;
+  }
+
+  .append-row{ display:flex; gap:6px; margin-bottom: 12px; }
+  .append-row input{
+    flex:1; padding: 8px 10px; border-radius: 8px; border: 1.5px solid var(--kraft-light);
+    background: var(--paper); font-family:'JetBrains Mono', monospace; font-size: 12.5px; outline:none;
+  }
+  .append-row input:focus{ border-color: var(--twine); }
+
+  .action-grid{ display:grid; grid-template-columns: repeat(4, 1fr); gap:6px; }
+  .action-grid .btn{ justify-content:center; padding:8px 6px; }
+  .action-grid .span2{ grid-column: span 2; }
+  .action-grid .span4{ grid-column: span 4; }
+
+  /* ---------- workbench: compose ---------- */
+  .platform-toggle{ display:flex; gap:6px; background: var(--paper-2); padding:4px; border-radius: 10px; }
+  .platform-toggle button{
+    border:none; background:transparent; padding:6px 12px; border-radius:7px;
+    font-size:12.5px; font-weight:600; color: var(--ink-soft); cursor:pointer;
+  }
+  .platform-toggle button.active{ background: var(--paper); color: var(--ink); box-shadow: 0 1px 0 rgba(43,36,27,0.08); }
+
+  textarea.compose{
+    width:100%; min-height: 140px; resize: vertical;
+    padding: 14px; border-radius: 12px; border: 1.5px solid var(--kraft-light);
+    background: var(--paper); color: var(--ink);
+    font-family: 'Public Sans', sans-serif; font-size: 14.5px; line-height:1.5;
+    outline:none; transition: border-color .15s;
+  }
+  textarea.compose:focus{ border-color: var(--twine); box-shadow: 0 0 0 3px rgba(201,124,52,0.15); }
+
+  .counter-row{ display:flex; justify-content:space-between; align-items:center; margin: 8px 0 16px; }
+  .counter{ font-family:'JetBrains Mono', monospace; font-size: 12px; color: var(--ink-soft); }
+  .counter.warn{ color: var(--twine-dark); font-weight:600; }
+  .counter.over{ color: var(--tagred); font-weight:700; }
+
+  .row-actions{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom: 4px; }
+
+  hr.dash{ border:none; border-top: 1px dashed var(--kraft-light); margin: 20px 0; }
+
+  .capture-box textarea{
+    width:100%; min-height: 70px; resize: vertical;
+    padding: 10px 12px; border-radius: 10px; border: 1.5px solid var(--kraft-light);
+    background: var(--paper); font-size: 13px; font-family:'JetBrains Mono', monospace;
+    outline:none; margin-bottom: 8px;
+  }
+  .capture-box textarea:focus{ border-color: var(--twine); }
+
+  /* combined bundles */
+  .combo-card{
+    background: var(--paper-2); border:1px solid var(--paper-3); border-radius: 12px;
+    padding: 12px 14px; margin-bottom:10px;
+  }
+  .combo-head{ display:flex; justify-content:space-between; align-items:center; margin-bottom:4px; }
+  .combo-label{ font-weight:700; font-size: 13.5px; color: var(--twine-dark); }
+  .combo-sources{ font-size: 11px; color: var(--ink-faint); font-family:'JetBrains Mono', monospace; }
+  .combo-tags{ font-family:'JetBrains Mono', monospace; font-size: 12px; color: var(--ink-soft); margin: 6px 0 10px; max-height: 50px; overflow:hidden; }
+  .combo-actions{ display:flex; gap:8px; }
+  .combo-actions .btn{ flex:1; justify-content:center; }
+
+  .checklist{ display:flex; flex-direction:column; gap:2px; max-height: 220px; overflow-y:auto; margin-bottom: 12px; background: var(--paper-2); border-radius: 10px; padding: 6px; }
+  .checklist label{ display:flex; align-items:center; gap:9px; padding:8px 8px; border-radius:7px; cursor:pointer; font-size: 13px; }
+  .checklist label:hover{ background: var(--paper); }
+  .checklist input{ accent-color: var(--moss); width:15px; height:15px; }
+
+  /* ---------- modal ---------- */
+  .modal-backdrop{
+    position: fixed; inset:0; background: rgba(43,36,27,0.45); backdrop-filter: blur(3px);
+    display:flex; align-items:center; justify-content:center; z-index: 1000; padding: 20px;
+  }
+  .modal{
+    background: var(--paper); width: 420px; max-width: 100%; max-height: 86vh; overflow-y:auto;
+    border-radius: 18px; padding: 24px; border: 1px solid var(--paper-3);
+    box-shadow: 0 24px 48px -12px rgba(43,36,27,0.45);
+  }
+  .modal-head{ display:flex; justify-content:space-between; align-items:center; margin-bottom: 18px; }
+  .modal-title{ font-family:'Fraunces', serif; font-weight:600; font-size: 20px; }
+  .modal-close{ cursor:pointer; font-size: 22px; color: var(--ink-faint); line-height:1; background:none; border:none; }
+  .modal-close:hover{ color: var(--ink); }
+  .field-label{ font-size: 11.5px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color: var(--ink-soft); margin: 0 0 6px; }
+  .modal input[type=text], .modal input:not([type]), .modal textarea{
+    width:100%; padding: 10px 12px; border-radius: 9px; border: 1.5px solid var(--kraft-light);
+    background: var(--paper); color: var(--ink); font-size: 13.5px; outline:none; margin-bottom: 16px;
+  }
+  .modal textarea{ font-family:'JetBrains Mono', monospace; min-height: 120px; resize:vertical; }
+  .modal input:focus, .modal textarea:focus{ border-color: var(--twine); box-shadow: 0 0 0 3px rgba(201,124,52,0.15); }
+
+  /* ---------- toast ---------- */
+  .toast-stack{ position: fixed; bottom: 22px; right: 22px; z-index: 1100; display:flex; flex-direction:column; gap:8px; }
+  .toast{
+    padding: 12px 18px; border-radius: 10px; font-size: 13.5px; color: #FBF6E9;
+    box-shadow: 0 12px 24px -8px rgba(43,36,27,0.4); min-width: 220px;
+    animation: toastIn .25s ease;
+  }
+  .toast.success{ background: var(--moss); }
+  .toast.error{ background: var(--tagred); }
+  .toast.info{ background: var(--twine); }
+  @keyframes toastIn{ from{ opacity:0; transform: translateY(12px); } to{ opacity:1; transform: translateY(0); } }
+
+  footer{ text-align:center; margin-top: 50px; color: var(--ink-faint); font-size: 12px; font-family:'JetBrains Mono', monospace; }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ transition: none !important; animation: none !important; }
+  }
+
+  .visually-hidden{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0); }
+
+  :focus-visible{ outline: 2px solid var(--twine); outline-offset: 2px; }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">for X · Bluesky · anywhere else</div>
+    <h1>Tag Bundles</h1>
+    <p class="sub">Keep your go-to hashtags tied up and ready to grab.</p>
+    <svg class="garland" viewBox="0 0 520 60" aria-hidden="true">
+      <path class="string" d="M 10 14 Q 130 55, 260 20 T 510 14" />
+      <g transform="translate(58,10) rotate(-8)">
+        <rect class="tag-shape" x="0" y="0" width="34" height="24" rx="4" fill="var(--paper-2)" stroke="var(--kraft-light)"/>
+        <circle class="tag-hole" cx="8" cy="12" r="2.6"/>
+        <text x="16" y="16" font-size="11" fill="var(--kraft)">#</text>
+      </g>
+      <g transform="translate(160,30) rotate(6)">
+        <rect class="tag-shape" x="0" y="0" width="34" height="24" rx="4" fill="var(--paper-2)" stroke="var(--kraft-light)"/>
+        <circle class="tag-hole" cx="8" cy="12" r="2.6"/>
+        <text x="16" y="16" font-size="11" fill="var(--twine-dark)">#</text>
+      </g>
+      <g transform="translate(268,6) rotate(-4)">
+        <rect class="tag-shape" x="0" y="0" width="34" height="24" rx="4" fill="var(--paper-2)" stroke="var(--kraft-light)"/>
+        <circle class="tag-hole" cx="8" cy="12" r="2.6"/>
+        <text x="16" y="16" font-size="11" fill="var(--moss-dark)">#</text>
+      </g>
+      <g transform="translate(378,26) rotate(9)">
+        <rect class="tag-shape" x="0" y="0" width="34" height="24" rx="4" fill="var(--paper-2)" stroke="var(--kraft-light)"/>
+        <circle class="tag-hole" cx="8" cy="12" r="2.6"/>
+        <text x="16" y="16" font-size="11" fill="var(--tagred-dark)">#</text>
+      </g>
+      <g transform="translate(462,2) rotate(-6)">
+        <rect class="tag-shape" x="0" y="0" width="34" height="24" rx="4" fill="var(--paper-2)" stroke="var(--kraft-light)"/>
+        <circle class="tag-hole" cx="8" cy="12" r="2.6"/>
+        <text x="16" y="16" font-size="11" fill="var(--kraft)">#</text>
+      </g>
+    </svg>
+  </header>
+
+  <div class="toolbar">
+    <div class="search-box">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      <input id="searchInput" type="text" placeholder="Search your bundles…" autocomplete="off">
+    </div>
+    <button class="btn btn-primary" id="newBundleBtn">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+      New bundle
+    </button>
+    <select class="sort-select" id="sortSelect">
+      <option value="favorite">Favorites first</option>
+      <option value="name">Name A–Z</option>
+      <option value="count">Most tags</option>
+      <option value="recent">Recently edited</option>
+    </select>
+    <button class="btn btn-ghost btn-icon" id="exportBtn" title="Export all data as a file">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0-4-4m4 4 4-4M4 17v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg>
+    </button>
+    <button class="btn btn-ghost btn-icon" id="importBtn" title="Import data from a file">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15V3m0 0L8 7m4-4 4 4M4 17v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg>
+    </button>
+    <input type="file" id="importFile" accept=".json" class="visually-hidden">
+    <button class="btn btn-danger btn-icon" id="resetBtn" title="Erase everything">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2m2 0-1 14a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1L5 6h14Z"/></svg>
+    </button>
+  </div>
+
+  <div class="layout">
+    <!-- LIBRARY -->
+    <div class="panel">
+      <div class="panel-head">
+        <span class="panel-title">Your bundles</span>
+        <span class="panel-count" id="bundleCount">0 bundles</span>
+      </div>
+      <div id="bundleList" class="bundle-list"></div>
+    </div>
+
+    <!-- WORKBENCH -->
+    <div>
+      <div class="panel">
+        <div class="panel-head">
+          <span class="panel-title">Draft</span>
+          <div class="platform-toggle" id="platformToggle">
+            <button data-platform="x" class="active">X / Twitter</button>
+            <button data-platform="bsky">Bluesky</button>
+          </div>
+        </div>
+        <p class="panel-hint">Write your post here, then drop a bundle in. Copy it over when it's ready.</p>
+        <textarea class="compose" id="composeArea" placeholder="Start typing your post…"></textarea>
+        <div class="counter-row">
+          <span class="counter" id="charCounter">280 characters left</span>
+          <button class="btn btn-ghost btn-sm" id="clearComposeBtn">Clear draft</button>
+        </div>
+        <div class="row-actions">
+          <button class="btn btn-twine btn-sm" id="randomInsertBtn">🎲 Insert random bundle</button>
+          <button class="btn btn-primary btn-sm" id="copyDraftBtn">Copy draft</button>
+        </div>
+
+        <hr class="dash">
+
+        <div class="capture-box">
+          <div class="field-label">Quick capture</div>
+          <p class="panel-hint" style="margin-top:-2px;">Paste a caption or old post — I'll pull out the hashtags and save them as a new bundle.</p>
+          <textarea id="captureInput" placeholder="#paste #your #hashtags #or #a #whole #caption #here"></textarea>
+          <button class="btn btn-ghost btn-sm" id="captureBtn" style="width:100%; justify-content:center;">Capture as new bundle</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <span class="panel-title">Combined bundles</span>
+          <span class="panel-count" id="comboCount">0 combos</span>
+        </div>
+        <p class="panel-hint">Tie two or more bundles together into one reusable set.</p>
+        <button class="btn btn-ghost btn-sm" id="newComboBtn" style="width:100%; justify-content:center; margin-bottom:14px;">+ Combine bundles</button>
+        <div id="comboList"></div>
+      </div>
+    </div>
+  </div>
+
+  <footer>tied together with vanilla JS, stored only in this browser</footer>
+</div>
+
+<div id="modalRoot"></div>
+<div class="toast-stack" id="toastStack"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  const STORE_KEY = "tagBundlesApp_v1";
+  const PLATFORM_LIMITS = { x: 280, bsky: 300 };
+
+  /* ---------------- state ---------------- */
+  function loadState(){
+    try{
+      const raw = JSON.parse(localStorage.getItem(STORE_KEY) || "{}");
+      return {
+        bundles: raw.bundles || {},
+        combined: raw.combined || {},
+        draft: raw.draft || "",
+        platform: raw.platform || "x",
+      };
+    }catch{
+      return { bundles:{}, combined:{}, draft:"", platform:"x" };
+    }
+  }
+  let state = loadState();
+  function persist(){ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }
+
+  let openCard = null;      // name of currently expanded bundle card
+  let searchTerm = "";
+  let sortMode = "favorite";
+
+  /* ---------------- helpers ---------------- */
+  const $ = (sel, root=document) => root.querySelector(sel);
+  const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+
+  function el(tag, props={}, kids=[]){
+    const e = document.createElement(tag);
+    for(const k in props){
+      if(k === "style" && typeof props[k] === "object") Object.assign(e.style, props[k]);
+      else if(k === "html") e.innerHTML = props[k];
+      else if(k === "className") e.className = props[k];
+      else if(k.startsWith("on")) e.addEventListener(k.slice(2), props[k]);
+      else e.setAttribute(k, props[k]);
+    }
+    kids.forEach(c => c && e.appendChild(c));
+    return e;
+  }
+
+  function normalizeTags(raw){
+    return raw.trim().split(/\s+/).filter(Boolean).map(t => t.startsWith("#") ? t : "#" + t);
+  }
+
+  function slugKey(name){
+    return name.trim();
+  }
+
+  /* ---------------- toasts ---------------- */
+  function toast(msg, type="success"){
+    const stack = $("#toastStack");
+    const t = el("div", { className: `toast ${type}`, textContent: msg });
+    stack.appendChild(t);
+    setTimeout(() => { t.style.opacity = "0"; t.style.transition = "opacity .3s"; setTimeout(() => t.remove(), 300); }, 2600);
+  }
+
+  /* ---------------- confirm modal ---------------- */
+  function confirmDialog(title, message, confirmLabel="Delete"){
+    return new Promise((resolve) => {
+      const root = $("#modalRoot");
+      const backdrop = el("div", { className: "modal-backdrop" });
+      const modal = el("div", { className: "modal", style:{width:"360px"} });
+      modal.appendChild(el("div", { className: "modal-head" }, [
+        el("span", { className: "modal-title", textContent: title }),
+      ]));
+      modal.appendChild(el("p", { style:{fontSize:"13.5px", color:"var(--ink-soft)", marginBottom:"20px"}, textContent: message }));
+      const row = el("div", { style:{display:"flex", gap:"8px"} });
+      const cancelBtn = el("button", { className:"btn btn-ghost", style:{flex:"1", justifyContent:"center"}, textContent:"Cancel" });
+      const okBtn = el("button", { className:"btn btn-danger", style:{flex:"1", justifyContent:"center"}, textContent: confirmLabel });
+      cancelBtn.onclick = () => { backdrop.remove(); resolve(false); };
+      okBtn.onclick = () => { backdrop.remove(); resolve(true); };
+      row.append(cancelBtn, okBtn);
+      modal.appendChild(row);
+      backdrop.appendChild(modal);
+      backdrop.onclick = (e) => { if(e.target === backdrop){ backdrop.remove(); resolve(false); } };
+      root.appendChild(backdrop);
+    });
+  }
+
+  function promptDialog(title, placeholder, defaultValue=""){
+    return new Promise((resolve) => {
+      const root = $("#modalRoot");
+      const backdrop = el("div", { className: "modal-backdrop" });
+      const modal = el("div", { className: "modal", style:{width:"360px"} });
+      modal.appendChild(el("div", { className: "modal-head" }, [
+        el("span", { className: "modal-title", textContent: title }),
+      ]));
+      const input = el("input", { type:"text", placeholder, value: defaultValue });
+      modal.appendChild(input);
+      const row = el("div", { style:{display:"flex", gap:"8px"} });
+      const cancelBtn = el("button", { className:"btn btn-ghost", style:{flex:"1", justifyContent:"center"}, textContent:"Cancel" });
+      const okBtn = el("button", { className:"btn btn-primary", style:{flex:"1", justifyContent:"center"}, textContent:"Save" });
+      cancelBtn.onclick = () => { backdrop.remove(); resolve(null); };
+      okBtn.onclick = () => { const v = input.value.trim(); backdrop.remove(); resolve(v || null); };
+      input.addEventListener("keydown", e => { if(e.key === "Enter") okBtn.click(); });
+      row.append(cancelBtn, okBtn);
+      modal.appendChild(row);
+      backdrop.appendChild(modal);
+      backdrop.onclick = (e) => { if(e.target === backdrop){ backdrop.remove(); resolve(null); } };
+      root.appendChild(backdrop);
+      setTimeout(() => input.focus(), 30);
+    });
+  }
+
+  /* ---------------- new / edit bundle modal ---------------- */
+  function openBundleModal(existingName){
+    const isEdit = !!existingName;
+    const data = isEdit ? state.bundles[existingName] : null;
+    const root = $("#modalRoot");
+    const backdrop = el("div", { className: "modal-backdrop" });
+    const modal = el("div", { className: "modal" });
+
+    modal.appendChild(el("div", { className: "modal-head" }, [
+      el("span", { className: "modal-title", textContent: isEdit ? "Edit bundle" : "New bundle" }),
+      el("button", { className: "modal-close", html: "&times;", onclick: () => backdrop.remove() }),
+    ]));
+
+    modal.appendChild(el("div", { className: "field-label", textContent: "Bundle name" }));
+    const nameInput = el("input", { type:"text", placeholder: "e.g. Splatoon posts", value: isEdit ? existingName : "" });
+    modal.appendChild(nameInput);
+
+    modal.appendChild(el("div", { className: "field-label", textContent: "Hashtags" }));
+    const tagsInput = el("textarea", { placeholder: "#splatoon3 #nintendoswitch #gaming" });
+    tagsInput.value = isEdit ? data.tags.join(" ") : "";
+    modal.appendChild(tagsInput);
+
+    const saveBtn = el("button", { className: "btn btn-primary", style:{width:"100%", justifyContent:"center"}, textContent: isEdit ? "Save changes" : "Create bundle" });
+    saveBtn.onclick = () => {
+      const name = nameInput.value.trim();
+      if(!name) return toast("Give the bundle a name first", "error");
+      const tags = normalizeTags(tagsInput.value);
+      if(!tags.length) return toast("Add at least one hashtag", "error");
+      if(!isEdit && state.bundles[name]) return toast("A bundle with that name already exists", "error");
+
+      if(isEdit && name !== existingName){
+        delete state.bundles[existingName];
+      }
+      const prev = isEdit ? data : {};
+      state.bundles[name] = { tags, favorite: !!prev.favorite, updatedAt: Date.now() };
+      persist();
+      if(isEdit && name !== existingName) openCard = name;
+      renderLibrary();
+      toast(isEdit ? "Bundle updated" : `Bundle "${name}" created`);
+      backdrop.remove();
+    };
+    modal.appendChild(saveBtn);
+
+    backdrop.appendChild(modal);
+    backdrop.onclick = (e) => { if(e.target === backdrop) backdrop.remove(); };
+    root.appendChild(backdrop);
+    setTimeout(() => nameInput.focus(), 30);
+  }
+
+  /* ---------------- combine modal ---------------- */
+  function openCombineModal(){
+    const names = Object.keys(state.bundles).sort();
+    if(!names.length) return toast("Create a bundle first", "error");
+
+    const root = $("#modalRoot");
+    const backdrop = el("div", { className: "modal-backdrop" });
+    const modal = el("div", { className: "modal" });
+
+    modal.appendChild(el("div", { className: "modal-head" }, [
+      el("span", { className: "modal-title", textContent: "Combine bundles" }),
+      el("button", { className: "modal-close", html: "&times;", onclick: () => backdrop.remove() }),
+    ]));
+
+    let selected = [];
+    const checklist = el("div", { className: "checklist" });
+    const preview = el("div", { style:{
+      padding:"12px", background:"var(--paper-2)", borderRadius:"9px", minHeight:"44px",
+      marginBottom:"16px", fontSize:"12px", fontFamily:"'JetBrains Mono', monospace", color:"var(--ink-soft)",
+      border:"1px dashed var(--kraft-light)", wordBreak:"break-word"
+    }, textContent: "Pick bundles below…" });
+
+    names.forEach(n => {
+      const cb = el("input", { type:"checkbox" });
+      cb.onchange = () => {
+        if(cb.checked) selected.push(n); else selected = selected.filter(x => x !== n);
+        const tags = [...new Set(selected.flatMap(k => state.bundles[k].tags))];
+        preview.textContent = tags.length ? tags.join(" ") : "Pick bundles below…";
+      };
+      checklist.appendChild(el("label", {}, [cb, el("span", { textContent: `${n} (${state.bundles[n].tags.length})` })]));
+    });
+
+    modal.appendChild(checklist);
+    modal.appendChild(el("div", { className:"field-label", textContent:"Preview (unique tags)" }));
+    modal.appendChild(preview);
+
+    const saveBtn = el("button", { className: "btn btn-twine", style:{width:"100%", justifyContent:"center"}, textContent: "Save combined bundle" });
+    saveBtn.onclick = async () => {
+      if(!selected.length) return toast("Select at least one bundle", "error");
+      const label = await promptDialog("Name this combo", "e.g. Weekend post pack");
+      if(!label) return;
+      const id = "combo_" + Date.now();
+      state.combined[id] = {
+        label,
+        sources: [...selected],
+        tags: [...new Set(selected.flatMap(k => state.bundles[k].tags))],
+        createdAt: Date.now(),
+      };
+      persist();
+      renderCombined();
+      backdrop.remove();
+      toast("Combined bundle saved");
+    };
+    modal.appendChild(saveBtn);
+
+    backdrop.appendChild(modal);
+    backdrop.onclick = (e) => { if(e.target === backdrop) backdrop.remove(); };
+    root.appendChild(backdrop);
+  }
+
+  /* ---------------- compose helpers ---------------- */
+  function insertIntoDraft(text){
+    const area = $("#composeArea");
+    const cur = area.value;
+    const sep = cur && !cur.endsWith(" ") && !cur.endsWith("\n") ? " " : "";
+    area.value = cur + sep + text;
+    state.draft = area.value;
+    persist();
+    updateCounter();
+    area.focus();
+    area.scrollTop = area.scrollHeight;
+  }
+
+  function updateCounter(){
+    const area = $("#composeArea");
+    const limit = PLATFORM_LIMITS[state.platform];
+    const remaining = limit - area.value.length;
+    const counter = $("#charCounter");
+    counter.textContent = `${remaining} character${remaining === 1 ? "" : "s"} left`;
+    counter.className = "counter" + (remaining < 0 ? " over" : remaining < 20 ? " warn" : "");
+  }
+
+  /* ---------------- render: library ---------------- */
+  function sortedNames(){
+    let names = Object.keys(state.bundles);
+    if(searchTerm){
+      const t = searchTerm.toLowerCase();
+      names = names.filter(n => n.toLowerCase().includes(t) || state.bundles[n].tags.some(tag => tag.toLowerCase().includes(t)));
+    }
+    switch(sortMode){
+      case "name": names.sort((a,b) => a.localeCompare(b)); break;
+      case "count": names.sort((a,b) => state.bundles[b].tags.length - state.bundles[a].tags.length); break;
+      case "recent": names.sort((a,b) => (state.bundles[b].updatedAt||0) - (state.bundles[a].updatedAt||0)); break;
+      default: // favorite
+        names.sort((a,b) => {
+          const fa = state.bundles[a].favorite ? 1 : 0;
+          const fb = state.bundles[b].favorite ? 1 : 0;
+          if(fa !== fb) return fb - fa;
+          return a.localeCompare(b);
+        });
+    }
+    return names;
+  }
+
+  function renderLibrary(){
+    const list = $("#bundleList");
+    list.innerHTML = "";
+    const names = sortedNames();
+    const total = Object.keys(state.bundles).length;
+    $("#bundleCount").textContent = `${total} bundle${total === 1 ? "" : "s"}`;
+
+    if(!total){
+      list.appendChild(el("div", { className:"empty" }, [
+        el("div", { className:"glyph", textContent:"🏷️" }),
+        el("p", {}, [el("strong", { textContent:"No bundles yet." })]),
+        el("p", { textContent:"Make one with \"New bundle\", or paste a caption into Quick capture." }),
+      ]));
+      return;
+    }
+    if(!names.length){
+      list.appendChild(el("div", { className:"empty" }, [
+        el("div", { className:"glyph", textContent:"🔍" }),
+        el("p", {}, [el("strong", { textContent:"Nothing matches that search." })]),
+      ]));
+      return;
+    }
+
+    names.forEach(name => {
+      const b = state.bundles[name];
+      const isOpen = openCard === name;
+      const card = el("div", { className: "tag-card" + (isOpen ? " open" : "") + (b.favorite ? " favorite" : "") });
+
+      const row = el("div", { className: "tc-row" }, [
+        el("div", {}, [
+          el("div", { className:"tc-name", textContent: name }),
+          el("div", { className:"tc-preview", textContent: b.tags.join(" ") }),
+        ]),
+        el("div", { className:"tc-meta", textContent: `${b.tags.length} tag${b.tags.length===1?"":"s"}` }),
+      ]);
+      card.appendChild(row);
+
+      const detail = el("div", { className:"tc-detail" });
+      if(isOpen){
+        detail.appendChild(el("div", { className:"chip-wrap" }, b.tags.map(t => el("span", { className:"chip", textContent:t }))));
+
+        const appendInput = el("input", { type:"text", placeholder:"Add more #tags…" });
+        const appendBtn = el("button", { className:"btn btn-ghost btn-sm", textContent:"Add" });
+        appendBtn.onclick = () => {
+          const add = normalizeTags(appendInput.value);
+          if(!add.length) return;
+          b.tags = [...new Set([...b.tags, ...add])];
+          b.updatedAt = Date.now();
+          persist();
+          appendInput.value = "";
+          renderLibrary();
+          toast("Tags added");
+        };
+        appendInput.addEventListener("keydown", e => { if(e.key === "Enter") appendBtn.click(); });
+        detail.appendChild(el("div", { className:"append-row" }, [appendInput, appendBtn]));
+
+        const actions = el("div", { className:"action-grid" });
+        actions.appendChild(el("button", { className:"btn btn-primary span2", textContent:"Insert into draft", onclick:(e) => { e.stopPropagation(); insertIntoDraft(b.tags.join(" ")); toast("Inserted into draft"); } }));
+        actions.appendChild(el("button", { className:"btn btn-ghost span2", textContent:"Copy", onclick: async (e) => { e.stopPropagation(); await navigator.clipboard.writeText(b.tags.join(" ")); toast("Copied to clipboard"); } }));
+        actions.appendChild(el("button", { className:"btn btn-ghost", textContent: b.favorite ? "★ Unpin" : "☆ Pin", onclick:(e) => { e.stopPropagation(); b.favorite = !b.favorite; persist(); renderLibrary(); } }));
+        actions.appendChild(el("button", { className:"btn btn-ghost", textContent:"Edit", onclick:(e) => { e.stopPropagation(); openBundleModal(name); } }));
+        actions.appendChild(el("button", { className:"btn btn-ghost", textContent:"Duplicate", onclick:(e) => {
+          e.stopPropagation();
+          let dup = name + " copy"; let i = 2;
+          while(state.bundles[dup]) dup = `${name} copy ${i++}`;
+          state.bundles[dup] = { tags:[...b.tags], favorite:false, updatedAt: Date.now() };
+          persist(); renderLibrary();
+          toast(`Duplicated as "${dup}"`);
+        }}));
+        actions.appendChild(el("button", { className:"btn btn-danger span4", textContent:"Delete bundle", onclick: async (e) => {
+          e.stopPropagation();
+          const ok = await confirmDialog("Delete this bundle?", `"${name}" and its ${b.tags.length} tags will be gone for good.`);
+          if(!ok) return;
+          delete state.bundles[name];
+          if(openCard === name) openCard = null;
+          persist(); renderLibrary();
+          toast("Bundle deleted");
+        }}));
+        detail.appendChild(actions);
+      }
+      card.appendChild(detail);
+
+      card.addEventListener("click", (e) => {
+        if(e.target.closest("button") || e.target.closest("input")) return;
+        openCard = isOpen ? null : name;
+        renderLibrary();
+      });
+
+      list.appendChild(card);
+    });
+  }
+
+  /* ---------------- render: combined ---------------- */
+  function renderCombined(){
+    const wrap = $("#comboList");
+    wrap.innerHTML = "";
+    const ids = Object.keys(state.combined).sort((a,b) => (state.combined[b].createdAt||0) - (state.combined[a].createdAt||0));
+    $("#comboCount").textContent = `${ids.length} combo${ids.length===1?"":"s"}`;
+
+    if(!ids.length){
+      wrap.appendChild(el("div", { className:"empty" }, [
+        el("div", { className:"glyph", textContent:"🔗" }),
+        el("p", { textContent:"No combos yet — tie a few bundles together above." }),
+      ]));
+      return;
+    }
+
+    ids.forEach(id => {
+      const c = state.combined[id];
+      const card = el("div", { className:"combo-card" });
+      card.appendChild(el("div", { className:"combo-head" }, [
+        el("span", { className:"combo-label", textContent:c.label }),
+        el("button", { className:"btn btn-danger btn-sm btn-icon", html:"&times;", onclick: async () => {
+          const ok = await confirmDialog("Delete this combo?", `"${c.label}" will be removed. The original bundles stay untouched.`);
+          if(!ok) return;
+          delete state.combined[id]; persist(); renderCombined();
+          toast("Combo deleted");
+        }}),
+      ]));
+      card.appendChild(el("div", { className:"combo-sources", textContent: "from: " + c.sources.join(", ") }));
+      card.appendChild(el("div", { className:"combo-tags", textContent: c.tags.join(" ") }));
+      const actions = el("div", { className:"combo-actions" });
+      actions.appendChild(el("button", { className:"btn btn-primary btn-sm", textContent:"Insert into draft", onclick:() => { insertIntoDraft(c.tags.join(" ")); toast("Inserted into draft"); } }));
+      actions.appendChild(el("button", { className:"btn btn-ghost btn-sm", textContent:"Copy", onclick: async () => { await navigator.clipboard.writeText(c.tags.join(" ")); toast("Copied to clipboard"); } }));
+      card.appendChild(actions);
+      wrap.appendChild(card);
+    });
+  }
+
+  /* ---------------- toolbar wiring ---------------- */
+  $("#searchInput").addEventListener("input", (e) => { searchTerm = e.target.value; renderLibrary(); });
+  $("#sortSelect").addEventListener("change", (e) => { sortMode = e.target.value; renderLibrary(); });
+  $("#newBundleBtn").addEventListener("click", () => openBundleModal(null));
+  $("#newComboBtn").addEventListener("click", openCombineModal);
+
+  $("#exportBtn").addEventListener("click", () => {
+    const blob = new Blob([JSON.stringify({ bundles: state.bundles, combined: state.combined }, null, 2)], { type:"application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `TagBundles_${new Date().toISOString().slice(0,10)}.json`;
+    a.click();
+    toast("Exported");
+  });
+
+  $("#importBtn").addEventListener("click", () => $("#importFile").click());
+  $("#importFile").addEventListener("change", (e) => {
+    const file = e.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      try{
+        const parsed = JSON.parse(ev.target.result);
+        state.bundles = { ...state.bundles, ...(parsed.bundles || {}) };
+        state.combined = { ...state.combined, ...(parsed.combined || {}) };
+        persist(); renderLibrary(); renderCombined();
+        toast("Import successful");
+      }catch{
+        toast("That file doesn't look right", "error");
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = "";
+  });
+
+  $("#resetBtn").addEventListener("click", async () => {
+    const ok = await confirmDialog("Erase everything?", "All bundles and combos in this browser will be deleted. This can't be undone.", "Erase all");
+    if(!ok) return;
+    state = { bundles:{}, combined:{}, draft:"", platform: state.platform };
+    persist(); openCard = null;
+    renderLibrary(); renderCombined();
+    $("#composeArea").value = ""; updateCounter();
+    toast("Everything's been wiped");
+  });
+
+  /* ---------------- workbench wiring ---------------- */
+  const composeArea = $("#composeArea");
+  composeArea.value = state.draft;
+  composeArea.addEventListener("input", () => { state.draft = composeArea.value; persist(); updateCounter(); });
+
+  $$("#platformToggle button").forEach(btn => {
+    btn.addEventListener("click", () => {
+      $$("#platformToggle button").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      state.platform = btn.dataset.platform;
+      persist();
+      updateCounter();
+    });
+  });
+  if(state.platform === "bsky"){
+    $$("#platformToggle button").forEach(b => b.classList.toggle("active", b.dataset.platform === "bsky"));
+  }
+
+  $("#clearComposeBtn").addEventListener("click", () => {
+    composeArea.value = ""; state.draft = ""; persist(); updateCounter(); composeArea.focus();
+  });
+
+  $("#copyDraftBtn").addEventListener("click", async () => {
+    if(!composeArea.value.trim()) return toast("Nothing to copy yet", "error");
+    await navigator.clipboard.writeText(composeArea.value);
+    toast("Draft copied to clipboard");
+  });
+
+  $("#randomInsertBtn").addEventListener("click", () => {
+    const names = Object.keys(state.bundles);
+    if(!names.length) return toast("No bundles yet", "error");
+    const pick = names[Math.floor(Math.random() * names.length)];
+    insertIntoDraft(state.bundles[pick].tags.join(" "));
+    toast(`Inserted "${pick}"`);
+  });
+
+  $("#captureBtn").addEventListener("click", async () => {
+    const text = $("#captureInput").value;
+    const tags = text.match(/#[^\s#]+/g);
+    if(!tags || !tags.length) return toast("Couldn't find any hashtags in there", "error");
+    const name = await promptDialog("Name this bundle", "e.g. Captured from that one post");
+    if(!name) return;
+    if(state.bundles[name]) return toast("A bundle with that name already exists", "error");
+    state.bundles[name] = { tags: [...new Set(tags)], favorite:false, updatedAt: Date.now() };
+    persist();
+    $("#captureInput").value = "";
+    renderLibrary();
+    toast(`Captured ${tags.length} tags into "${name}"`);
+  });
+
+  /* ---------------- init ---------------- */
+  updateCounter();
+  renderLibrary();
+  renderCombined();
+})();
+</script>
+</body>
+</html>
