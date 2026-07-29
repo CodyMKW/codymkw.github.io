@@ -501,6 +501,7 @@
       if(k === "style" && typeof props[k] === "object") Object.assign(e.style, props[k]);
       else if(k === "html") e.innerHTML = props[k];
       else if(k === "className") e.className = props[k];
+      else if(k === "textContent") e.textContent = props[k];
       else if(k.startsWith("on")) e.addEventListener(k.slice(2), props[k]);
       else e.setAttribute(k, props[k]);
     }
