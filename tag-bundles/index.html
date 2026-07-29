@@ -446,12 +446,37 @@
   const PLATFORM_LIMITS = { x: 280, bsky: 300 };
 
   /* ---------------- state ---------------- */
+  // Accepts either the new shape ({tags:[], favorite, updatedAt}) or a
+  // bare array of tags (older/imported formats) and normalizes it.
+  function normalizeBundleEntry(v){
+    if(Array.isArray(v)) return { tags: v.filter(Boolean), favorite:false, updatedAt: Date.now() };
+    if(v && Array.isArray(v.tags)) return { tags: v.tags.filter(Boolean), favorite: !!v.favorite, updatedAt: v.updatedAt || Date.now() };
+    return { tags: [], favorite:false, updatedAt: Date.now() };
+  }
+  function normalizeBundles(obj){
+    const out = {};
+    for(const name in (obj || {})) out[name] = normalizeBundleEntry(obj[name]);
+    return out;
+  }
+  function normalizeCombined(obj){
+    const out = {};
+    for(const id in (obj || {})){
+      const c = obj[id] || {};
+      out[id] = {
+        label: c.label || id,
+        sources: Array.isArray(c.sources) ? c.sources : [],
+        tags: Array.isArray(c.tags) ? c.tags.filter(Boolean) : [],
+        createdAt: c.createdAt || Date.now(),
+      };
+    }
+    return out;
+  }
   function loadState(){
     try{
       const raw = JSON.parse(localStorage.getItem(STORE_KEY) || "{}");
       return {
-        bundles: raw.bundles || {},
-        combined: raw.combined || {},
+        bundles: normalizeBundles(raw.bundles),
+        combined: normalizeCombined(raw.combined),
         draft: raw.draft || "",
         platform: raw.platform || "x",
       };
@@ -852,8 +877,8 @@
     reader.onload = (ev) => {
       try{
         const parsed = JSON.parse(ev.target.result);
-        state.bundles = { ...state.bundles, ...(parsed.bundles || {}) };
-        state.combined = { ...state.combined, ...(parsed.combined || {}) };
+        state.bundles = { ...state.bundles, ...normalizeBundles(parsed.bundles) };
+        state.combined = { ...state.combined, ...normalizeCombined(parsed.combined) };
         persist(); renderLibrary(); renderCombined();
         toast("Import successful");
       }catch{
