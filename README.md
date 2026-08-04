@@ -1,5 +1,5 @@
 # CodyMKW // My Hub
-![Switch Status]([https://widgets.codymkw.workers.dev/badge/presence.svg?nsaId=644cd5195d154bd5)) | ![Splatoon 3 rotation]([https://widgets.codymkw.workers.dev/badge/splatoon3.svg?mode=anarchyOpen)) | ![Splatoon 2 rotation]([https://widgets.codymkw.workers.dev/badge/splatoon2.svg?mode=ranked)) | ![Amiibo of the day]([https://myoctocat.com/assets/images/base-octocat.svg](https://widgets.codymkw.workers.dev/badge/amiibo.svg))
+![Switch Status](https://widgets.codymkw.workers.dev/badge/presence.svg?nsaId=644cd5195d154bd5) | ![Splatoon 3 rotation](https://widgets.codymkw.workers.dev/badge/splatoon3.svg?mode=anarchyOpen) | ![Splatoon 2 rotation](https://widgets.codymkw.workers.dev/badge/splatoon2.svg?mode=ranked) | ![Amiibo of the day](https://widgets.codymkw.workers.dev/badge/amiibo.svg)
 
 A real-time personal dashboard aggregating live gaming activity, coding milestones, and media tracking into one sleek, glassmorphic interface. Serves as a central hub for my digital presence, pulling from multiple API streams to display live stats dynamically — with zero build steps or external dependencies.
 
