@@ -93,11 +93,13 @@
   /* ---------- conversation ---------- */
   #conversation{flex:1;display:flex;flex-direction:column;min-width:0;background:var(--bg);}
   #empty-state{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--muted);gap:14px;}
+  #empty-state[hidden]{display:none;}
   #empty-state svg{width:52px;height:52px;opacity:.35;}
   #empty-state .headline{font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--fg);}
   #empty-state .sub{font-size:13px;}
 
   #thread{flex:1;display:flex;flex-direction:column;min-height:0;}
+  #thread[hidden]{display:none;}
   #thread-header{display:flex;align-items:center;gap:12px;padding:16px 22px;border-bottom:1px solid var(--border);background:var(--panel);}
   #thread-header .info{min-width:0;flex:1;}
   #thread-header strong{font-family:var(--font-display);font-size:15px;display:block;}
