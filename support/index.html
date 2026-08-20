@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Support Inbox</title>
+<meta name="robots" content="noindex" />
+<style>
+  :root{
+    --accent:#4f6bff;
+    --bg:#f6f7fb; --panel:#ffffff; --fg:#1a1d23; --muted:#6b7280; --border:#e6e7eb;
+    --bubble-in-bg:#f1f2f6; --bubble-in-fg:#1a1d23; --input-bg:#f6f7f9;
+    --danger:#ef4444; --unread:#ef4444;
+  }
+  [data-theme="dark"]{
+    --bg:#111318; --panel:#181b21; --fg:#edeff2; --muted:#9aa1ad; --border:#2a2e37;
+    --bubble-in-bg:#242832; --bubble-in-fg:#edeff2; --input-bg:#1f232b;
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;margin:0;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg); color:var(--fg);
+  }
+  #app{display:flex;height:100vh;overflow:hidden;}
+
+  /* sidebar */
+  #sidebar{width:300px;flex-shrink:0;background:var(--panel);border-right:1px solid var(--border);display:flex;flex-direction:column;}
+  #sidebar-header{display:flex;align-items:center;justify-content:space-between;padding:16px;border-bottom:1px solid var(--border);}
+  #sidebar-header h1{font-size:16px;margin:0;font-weight:700;}
+  #sidebar-header .actions{display:flex;gap:6px;}
+  .icon-btn{border:none;background:none;color:var(--muted);cursor:pointer;width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;}
+  .icon-btn:hover{background:var(--input-bg);color:var(--fg);}
+  #session-list{flex:1;overflow-y:auto;}
+  .session-row{display:flex;flex-direction:column;gap:2px;padding:12px 16px;border-bottom:1px solid var(--border);cursor:pointer;position:relative;}
+  .session-row:hover{background:var(--input-bg);}
+  .session-row.active{background:var(--input-bg);box-shadow:inset 3px 0 0 var(--accent);}
+  .session-row .row-top{display:flex;align-items:center;justify-content:space-between;gap:8px;}
+  .session-row .site{font-weight:600;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .session-row .time{font-size:11px;color:var(--muted);flex-shrink:0;}
+  .session-row .preview{font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .unread-dot{width:8px;height:8px;border-radius:50%;background:var(--unread);flex-shrink:0;}
+  .empty-list{padding:24px 16px;color:var(--muted);font-size:13px;text-align:center;}
+
+  /* conversation */
+  #conversation{flex:1;display:flex;flex-direction:column;min-width:0;}
+  #empty-state{flex:1;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:14px;}
+  #thread{flex:1;display:flex;flex-direction:column;min-height:0;}
+  #thread-header{padding:16px 20px;border-bottom:1px solid var(--border);background:var(--panel);}
+  #thread-header strong{font-size:15px;}
+  #thread-header .sub{font-size:12px;color:var(--muted);display:block;margin-top:2px;}
+  #thread-messages{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:10px;}
+  .msg{max-width:60%;padding:9px 13px;border-radius:14px;font-size:13.5px;line-height:1.45;white-space:pre-wrap;word-break:break-word;}
+  .msg.from-visitor{align-self:flex-start;background:var(--bubble-in-bg);color:var(--bubble-in-fg);border-bottom-left-radius:4px;}
+  .msg.from-support{align-self:flex-end;background:var(--accent);color:#fff;border-bottom-right-radius:4px;}
+  .msg-time{font-size:10.5px;color:var(--muted);margin-top:-4px;}
+  #reply-form{display:flex;gap:10px;padding:14px 20px;border-top:1px solid var(--border);background:var(--panel);}
+  #reply-input{flex:1;resize:none;min-height:40px;max-height:120px;border:1px solid var(--border);background:var(--input-bg);color:var(--fg);border-radius:10px;padding:9px 12px;font:inherit;font-size:13.5px;outline:none;}
+  #reply-input:focus{border-color:var(--accent);}
+  #reply-form button{border:none;background:var(--accent);color:#fff;padding:0 20px;border-radius:10px;font-size:13.5px;font-weight:600;cursor:pointer;}
+  #reply-form button:disabled{opacity:.5;cursor:not-allowed;}
+
+  /* settings modal */
+  #settings-modal{position:fixed;inset:0;background:rgba(10,12,16,.5);display:flex;align-items:center;justify-content:center;z-index:10;}
+  #settings-modal[hidden]{display:none;}
+  .modal-card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:24px;width:340px;max-width:90vw;}
+  .modal-card h2{margin:0 0 4px;font-size:16px;}
+  .modal-card p{margin:0 0 16px;font-size:12.5px;color:var(--muted);}
+  .modal-card label{display:block;font-size:12.5px;color:var(--muted);margin-bottom:14px;}
+  .modal-card input{display:block;width:100%;margin-top:6px;padding:9px 10px;border:1px solid var(--border);background:var(--input-bg);color:var(--fg);border-radius:8px;font:inherit;font-size:13px;}
+  .modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:6px;}
+  .modal-actions button{border:none;padding:9px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;}
+  #cfg-save{background:var(--accent);color:#fff;}
+  #cfg-cancel{background:var(--input-bg);color:var(--fg);}
+  .status-line{font-size:11.5px;color:var(--danger);margin-top:8px;min-height:14px;}
+
+  @media (max-width:720px){
+    #sidebar{position:fixed;inset:0;z-index:5;transform:translateX(-100%);transition:transform .18s ease;width:100%;}
+    #sidebar.mobile-open{transform:translateX(0);}
+    #conversation{width:100%;}
+    #back-btn{display:inline-flex !important;}
+  }
+</style>
+</head>
+<body>
+<div id="app">
+  <aside id="sidebar">
+    <div id="sidebar-header">
+      <h1>Support Inbox</h1>
+      <div class="actions">
+        <button class="icon-btn" id="theme-toggle" title="Toggle theme">◐</button>
+        <button class="icon-btn" id="settings-btn" title="Settings">⚙</button>
+      </div>
+    </div>
+    <div id="session-list"><div class="empty-list">Loading…</div></div>
+  </aside>
+  <main id="conversation">
+    <div id="empty-state">Pick a conversation on the left.</div>
+    <div id="thread" hidden>
+      <header id="thread-header">
+        <button class="icon-btn" id="back-btn" style="display:none;float:left;margin-right:8px;">←</button>
+        <strong id="thread-site"></strong>
+        <span class="sub" id="thread-sub"></span>
+      </header>
+      <div id="thread-messages"></div>
+      <form id="reply-form">
+        <textarea id="reply-input" rows="1" placeholder="Type a reply…" maxlength="2000"></textarea>
+        <button type="submit" id="reply-send">Send</button>
+      </form>
+    </div>
+  </main>
+</div>
+
+<div id="settings-modal">
+  <div class="modal-card">
+    <h2>Connect your worker</h2>
+    <p>Paste your Cloudflare Worker URL and the admin token you set as a secret.</p>
+    <label>Worker URL
+      <input id="cfg-worker" placeholder="https://support-chat.you.workers.dev" autocomplete="off" />
+    </label>
+    <label>Admin token
+      <input id="cfg-token" type="password" placeholder="ADMIN_TOKEN" autocomplete="off" />
+    </label>
+    <div class="status-line" id="cfg-status"></div>
+    <div class="modal-actions">
+      <button id="cfg-cancel" type="button">Cancel</button>
+      <button id="cfg-save" type="button">Save & connect</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var LS_WORKER = 'scw_admin_worker';
+  var LS_TOKEN = 'scw_admin_token';
+  var LS_THEME = 'scw_admin_theme';
+
+  var WORKER = localStorage.getItem(LS_WORKER) || '';
+  var TOKEN = localStorage.getItem(LS_TOKEN) || '';
+
+  var sessions = [];
+  var currentId = null;
+  var currentRendered = 0;
+  var sessionsTimer = null;
+  var threadTimer = null;
+
+  var el = {
+    list: document.getElementById('session-list'),
+    emptyState: document.getElementById('empty-state'),
+    thread: document.getElementById('thread'),
+    threadSite: document.getElementById('thread-site'),
+    threadSub: document.getElementById('thread-sub'),
+    threadMessages: document.getElementById('thread-messages'),
+    replyForm: document.getElementById('reply-form'),
+    replyInput: document.getElementById('reply-input'),
+    replySend: document.getElementById('reply-send'),
+    settingsModal: document.getElementById('settings-modal'),
+    cfgWorker: document.getElementById('cfg-worker'),
+    cfgToken: document.getElementById('cfg-token'),
+    cfgStatus: document.getElementById('cfg-status'),
+    cfgSave: document.getElementById('cfg-save'),
+    cfgCancel: document.getElementById('cfg-cancel'),
+    settingsBtn: document.getElementById('settings-btn'),
+    themeToggle: document.getElementById('theme-toggle'),
+    backBtn: document.getElementById('back-btn'),
+    sidebar: document.getElementById('sidebar'),
+  };
+
+  // ---------- theme ----------
+  function applyTheme(t){
+    document.documentElement.setAttribute('data-theme', t);
+    localStorage.setItem(LS_THEME, t);
+  }
+  var savedTheme = localStorage.getItem(LS_THEME);
+  applyTheme(savedTheme || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
+  el.themeToggle.addEventListener('click', function(){
+    applyTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+  });
+
+  // ---------- settings ----------
+  function configured(){ return !!(WORKER && TOKEN); }
+  function openSettings(prefill){
+    el.cfgWorker.value = WORKER;
+    el.cfgToken.value = TOKEN;
+    el.cfgStatus.textContent = '';
+    el.cfgCancel.style.display = configured() ? 'inline-block' : 'none';
+    el.settingsModal.hidden = false;
+  }
+  function closeSettings(){ el.settingsModal.hidden = true; }
+  el.settingsBtn.addEventListener('click', function(){ openSettings(); });
+  el.cfgCancel.addEventListener('click', closeSettings);
+  el.cfgSave.addEventListener('click', function(){
+    var w = el.cfgWorker.value.trim().replace(/\/$/, '');
+    var t = el.cfgToken.value.trim();
+    if(!w || !t){ el.cfgStatus.textContent = 'Both fields are required.'; return; }
+    WORKER = w; TOKEN = t;
+    localStorage.setItem(LS_WORKER, WORKER);
+    localStorage.setItem(LS_TOKEN, TOKEN);
+    closeSettings();
+    startPolling();
+  });
+
+  // ---------- api ----------
+  function api(path, opts){
+    opts = opts || {};
+    opts.headers = Object.assign({ 'X-Admin-Token': TOKEN }, opts.headers || {});
+    return fetch(WORKER + path, opts).then(function(r){
+      if(r.status === 401){ throw new Error('unauthorized'); }
+      if(!r.ok){ throw new Error('request failed: ' + r.status); }
+      return r.json();
+    });
+  }
+
+  // ---------- time formatting ----------
+  function relTime(ts){
+    var diff = Date.now() - ts;
+    var m = Math.round(diff / 60000);
+    if(m < 1) return 'just now';
+    if(m < 60) return m + 'm ago';
+    var h = Math.round(m / 60);
+    if(h < 24) return h + 'h ago';
+    var d = Math.round(h / 24);
+    if(d < 7) return d + 'd ago';
+    return new Date(ts).toLocaleDateString();
+  }
+
+  // ---------- session list ----------
+  function renderSessions(){
+    if(!sessions.length){
+      el.list.innerHTML = '<div class="empty-list">No conversations yet.</div>';
+      return;
+    }
+    el.list.innerHTML = '';
+    sessions.forEach(function(s){
+      var row = document.createElement('div');
+      row.className = 'session-row' + (s.id === currentId ? ' active' : '');
+      row.innerHTML =
+        '<div class="row-top"><span class="site"></span><span class="time"></span></div>' +
+        '<div class="preview"></div>';
+      row.querySelector('.site').textContent = s.site || 'Unknown site';
+      row.querySelector('.time').textContent = relTime(s.lastMessageAt);
+      var preview = (s.lastMessageFrom === 'support' ? 'You: ' : '') + (s.lastMessageText || '');
+      row.querySelector('.preview').textContent = preview;
+      if(s.unreadSupport && s.id !== currentId){
+        var dot = document.createElement('span');
+        dot.className = 'unread-dot';
+        row.querySelector('.row-top').appendChild(dot);
+      }
+      row.addEventListener('click', function(){ selectSession(s.id, s.site); });
+      el.list.appendChild(row);
+    });
+  }
+
+  function fetchSessions(){
+    if(!configured()) return;
+    api('/api/sessions')
+      .then(function(data){
+        sessions = data.sessions || [];
+        renderSessions();
+      })
+      .catch(function(e){
+        if(e.message === 'unauthorized'){
+          el.list.innerHTML = '<div class="empty-list">Token rejected — check Settings.</div>';
+        }
+      });
+  }
+
+  // ---------- thread ----------
+  function addBubble(from, text, ts){
+    var wrap = document.createElement('div');
+    var b = document.createElement('div');
+    b.className = 'msg ' + (from === 'support' ? 'from-support' : 'from-visitor');
+    b.textContent = text;
+    wrap.appendChild(b);
+    el.threadMessages.appendChild(wrap);
+  }
+  function scrollThreadToBottom(){
+    el.threadMessages.scrollTop = el.threadMessages.scrollHeight;
+  }
+
+  function selectSession(id, site){
+    currentId = id;
+    currentRendered = 0;
+    el.threadMessages.innerHTML = '';
+    el.threadSite.textContent = site || 'Unknown site';
+    el.threadSub.textContent = '';
+    el.emptyState.hidden = true;
+    el.thread.hidden = false;
+    el.sidebar.classList.remove('mobile-open');
+    el.backBtn.style.display = 'inline-flex';
+    renderSessions();
+    pollThread(true);
+  }
+
+  function pollThread(scroll){
+    if(!currentId || !configured()) return;
+    api('/api/messages?sessionId=' + encodeURIComponent(currentId) + '&after=' + currentRendered + '&as=support')
+      .then(function(data){
+        if(data.messages && data.messages.length){
+          data.messages.forEach(function(m){ addBubble(m.from, m.text, m.ts); });
+          currentRendered += data.messages.length;
+          if(scroll) scrollThreadToBottom();
+        }
+        fetchSessions();
+      })
+      .catch(function(){ /* retry next tick */ });
+  }
+
+  function autoGrow(){
+    el.replyInput.style.height = 'auto';
+    el.replyInput.style.height = Math.min(el.replyInput.scrollHeight, 120) + 'px';
+  }
+  el.replyInput.addEventListener('input', autoGrow);
+  el.replyInput.addEventListener('keydown', function(e){
+    if(e.key === 'Enter' && !e.shiftKey){
+      e.preventDefault();
+      el.replyForm.requestSubmit ? el.replyForm.requestSubmit() : sendReply();
+    }
+  });
+
+  function sendReply(){
+    var text = el.replyInput.value.trim();
+    if(!text || !currentId) return;
+    el.replySend.disabled = true;
+    addBubble('support', text);
+    currentRendered += 1;
+    scrollThreadToBottom();
+    el.replyInput.value = '';
+    autoGrow();
+    api('/api/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sessionId: currentId, from: 'support', text: text })
+    })
+      .catch(function(){ alert('Could not send — check the worker URL/token in Settings.'); })
+      .then(function(){ el.replySend.disabled = false; fetchSessions(); });
+  }
+  el.replyForm.addEventListener('submit', function(e){ e.preventDefault(); sendReply(); });
+
+  el.backBtn.addEventListener('click', function(){
+    el.sidebar.classList.add('mobile-open');
+  });
+
+  // ---------- polling ----------
+  function startPolling(){
+    clearInterval(sessionsTimer);
+    clearInterval(threadTimer);
+    fetchSessions();
+    sessionsTimer = setInterval(fetchSessions, 6000);
+    threadTimer = setInterval(function(){ pollThread(false); }, 3000);
+  }
+
+  if(!configured()){
+    openSettings();
+  } else {
+    startPolling();
+  }
+})();
+</script>
+</body>
+</html>
