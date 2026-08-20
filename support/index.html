@@ -59,6 +59,13 @@
   .presence-pill.live .pulse-ring{position:absolute;inset:-4px;border-radius:50%;background:var(--online);opacity:.5;animation:pulse-ring 1.8s ease-out infinite;}
   @keyframes pulse-ring{0%{transform:scale(.5);opacity:.55;}100%{transform:scale(2.2);opacity:0;}}
 
+  .filter-tabs{display:flex;gap:4px;margin-top:12px;background:var(--input-bg);border-radius:10px;padding:3px;}
+  .filter-tab{flex:1;border:none;background:none;color:var(--muted);font-size:12px;font-weight:600;font-family:var(--font-display);padding:6px 0;border-radius:8px;cursor:pointer;transition:background .12s ease, color .12s ease;}
+  .filter-tab.active{background:var(--panel);color:var(--fg);box-shadow:var(--shadow-sm);}
+  .search-input{width:100%;margin-top:10px;padding:8px 11px;border:1px solid var(--border);background:var(--input-bg);color:var(--fg);border-radius:9px;font:inherit;font-size:12.5px;outline:none;transition:border-color .12s ease;}
+  .search-input:focus{border-color:var(--accent-a);}
+  .closed-chip{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:var(--muted);background:var(--input-bg);border:1px solid var(--border);padding:1px 6px;border-radius:6px;flex-shrink:0;}
+
   #session-list{flex:1;overflow-y:auto;padding:8px;}
   .session-row{display:flex;gap:11px;padding:11px 10px;border-radius:12px;cursor:pointer;position:relative;transition:background .12s ease;}
   .session-row:hover{background:var(--input-bg);}
@@ -92,9 +99,11 @@
 
   #thread{flex:1;display:flex;flex-direction:column;min-height:0;}
   #thread-header{display:flex;align-items:center;gap:12px;padding:16px 22px;border-bottom:1px solid var(--border);background:var(--panel);}
-  #thread-header .info{min-width:0;}
+  #thread-header .info{min-width:0;flex:1;}
   #thread-header strong{font-family:var(--font-display);font-size:15px;display:block;}
   #thread-header .sub{font-size:12px;color:var(--muted);}
+  .thread-actions{display:flex;gap:4px;flex-shrink:0;}
+  .icon-btn.danger:hover{background:rgba(239,68,68,.12);color:var(--danger);}
 
   #thread-messages{flex:1;overflow-y:auto;padding:24px;display:flex;flex-direction:column;gap:10px;}
   .msg-row{display:flex;animation:msg-in .18s ease both;}
@@ -158,6 +167,12 @@
         <span class="pulse-wrap"><span class="pulse-ring" id="pulse-ring"></span><span class="pulse-dot"></span></span>
         <span id="presence-label">Connecting…</span>
       </span>
+      <div class="filter-tabs" id="filter-tabs">
+        <button class="filter-tab active" type="button" data-filter="open">Open</button>
+        <button class="filter-tab" type="button" data-filter="closed">Closed</button>
+        <button class="filter-tab" type="button" data-filter="all">All</button>
+      </div>
+      <input class="search-input" id="search-input" type="text" placeholder="Search name or site…" autocomplete="off" />
     </div>
     <div id="session-list"><div class="empty-list">Loading…</div></div>
   </aside>
@@ -174,6 +189,10 @@
         <div class="info">
           <strong id="thread-site"></strong>
           <span class="sub" id="thread-sub">Conversation</span>
+        </div>
+        <div class="thread-actions">
+          <button class="icon-btn" id="toggle-status-btn" type="button" title="Close conversation">✓</button>
+          <button class="icon-btn danger" id="delete-btn" type="button" title="Delete conversation">🗑</button>
         </div>
       </header>
       <div id="thread-messages"></div>
@@ -219,6 +238,9 @@
   var sessions = [];
   var currentId = null;
   var currentRendered = 0;
+  var currentStatus = 'open';
+  var currentFilter = 'open';
+  var currentSearch = '';
   var sessionsTimer = null;
   var threadTimer = null;
   var heartbeatTimer = null;
@@ -246,6 +268,10 @@
     sidebar: document.getElementById('sidebar'),
     presencePill: document.getElementById('presence-pill'),
     presenceLabel: document.getElementById('presence-label'),
+    filterTabs: document.getElementById('filter-tabs'),
+    searchInput: document.getElementById('search-input'),
+    toggleStatusBtn: document.getElementById('toggle-status-btn'),
+    deleteBtn: document.getElementById('delete-btn'),
   };
 
   // ---------- avatar helpers ----------
@@ -303,6 +329,21 @@
     startPolling();
   });
 
+  // ---------- filters ----------
+  el.filterTabs.addEventListener('click', function(e){
+    var btn = e.target.closest('.filter-tab');
+    if(!btn) return;
+    currentFilter = btn.dataset.filter;
+    Array.prototype.forEach.call(el.filterTabs.querySelectorAll('.filter-tab'), function(b){
+      b.classList.toggle('active', b === btn);
+    });
+    renderSessions();
+  });
+  el.searchInput.addEventListener('input', function(){
+    currentSearch = el.searchInput.value.trim().toLowerCase();
+    renderSessions();
+  });
+
   // ---------- api ----------
   function api(path, opts){
     opts = opts || {};
@@ -342,18 +383,34 @@
   }
 
   // ---------- session list ----------
+  function getFilteredSessions(){
+    return sessions.filter(function(s){
+      var status = s.status || 'open';
+      if(currentFilter !== 'all' && status !== currentFilter) return false;
+      if(currentSearch){
+        var hay = ((s.name || '') + ' ' + (s.site || '')).toLowerCase();
+        if(hay.indexOf(currentSearch) === -1) return false;
+      }
+      return true;
+    });
+  }
+
   function renderSessions(){
-    if(!sessions.length){
-      el.list.innerHTML = '<div class="empty-list">No conversations yet — once someone messages you from the widget, they\'ll show up here.</div>';
+    var visible = getFilteredSessions();
+    if(!visible.length){
+      el.list.innerHTML = sessions.length
+        ? '<div class="empty-list">Nothing matches here.</div>'
+        : '<div class="empty-list">No conversations yet — once someone messages you from the widget, they\'ll show up here.</div>';
       return;
     }
     el.list.innerHTML = '';
-    sessions.forEach(function(s){
+    visible.forEach(function(s){
+      var identity = s.name || s.site || 'Unknown';
       var row = document.createElement('div');
       row.className = 'session-row' + (s.id === currentId ? ' active' : '');
       var avatar = document.createElement('div');
       avatar.className = 'avatar';
-      paintAvatar(avatar, s.site);
+      paintAvatar(avatar, identity);
       row.appendChild(avatar);
 
       var body = document.createElement('div');
@@ -361,9 +418,16 @@
       body.innerHTML =
         '<div class="row-top"><span class="site"></span><span class="time"></span></div>' +
         '<div class="preview"></div>';
-      body.querySelector('.site').textContent = s.site || 'Unknown site';
-      body.querySelector('.time').textContent = relTime(s.lastMessageAt);
-      var preview = (s.lastMessageFrom === 'support' ? 'You: ' : '') + (s.lastMessageText || '');
+      body.querySelector('.site').textContent = identity;
+      var timeCell = body.querySelector('.time');
+      if(currentFilter === 'all' && (s.status || 'open') === 'closed'){
+        var chip = document.createElement('span');
+        chip.className = 'closed-chip';
+        chip.textContent = 'Closed';
+        timeCell.parentNode.insertBefore(chip, timeCell);
+      }
+      timeCell.textContent = relTime(s.lastMessageAt);
+      var preview = (s.site ? s.site + ' · ' : '') + (s.lastMessageFrom === 'support' ? 'You: ' : '') + (s.lastMessageText || '');
       body.querySelector('.preview').textContent = preview;
       row.appendChild(body);
 
@@ -373,7 +437,7 @@
         badge.textContent = s.unreadSupportCount > 9 ? '9+' : String(s.unreadSupportCount);
         row.appendChild(badge);
       }
-      row.addEventListener('click', function(){ selectSession(s.id, s.site); });
+      row.addEventListener('click', function(){ selectSession(s.id, s.site, s.name, s.status || 'open'); });
       el.list.appendChild(row);
     });
   }
@@ -384,6 +448,8 @@
       .then(function(data){
         sessions = data.sessions || [];
         renderSessions();
+        var totalUnread = sessions.reduce(function(sum, s){ return sum + (s.unreadSupportCount || 0); }, 0);
+        document.title = (totalUnread > 0 ? '(' + (totalUnread > 99 ? '99+' : totalUnread) + ') ' : '') + 'Support Inbox';
       })
       .catch(function(e){
         if(e.message === 'unauthorized'){
@@ -406,19 +472,69 @@
     el.threadMessages.scrollTop = el.threadMessages.scrollHeight;
   }
 
-  function selectSession(id, site){
+  function selectSession(id, site, name, status){
     currentId = id;
     currentRendered = 0;
+    currentStatus = status || 'open';
     el.threadMessages.innerHTML = '';
-    paintAvatar(el.threadAvatar, site);
-    el.threadSite.textContent = site || 'Unknown site';
-    el.threadSub.textContent = 'Conversation';
+    var identity = name || site || 'Unknown';
+    paintAvatar(el.threadAvatar, identity);
+    el.threadSite.textContent = identity;
+    el.threadSub.textContent = (site || 'Unknown site') + (currentStatus === 'closed' ? ' · Closed' : '');
     el.emptyState.hidden = true;
     el.thread.hidden = false;
     el.sidebar.classList.remove('mobile-open');
+    updateThreadActionLabels();
     renderSessions();
     pollThread(true);
   }
+
+  function updateThreadActionLabels(){
+    if(currentStatus === 'closed'){
+      el.toggleStatusBtn.textContent = '↺';
+      el.toggleStatusBtn.title = 'Reopen conversation';
+    } else {
+      el.toggleStatusBtn.textContent = '✓';
+      el.toggleStatusBtn.title = 'Close conversation';
+    }
+  }
+
+  el.toggleStatusBtn.addEventListener('click', function(){
+    if(!currentId) return;
+    var newStatus = currentStatus === 'closed' ? 'open' : 'closed';
+    api('/api/session/status', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sessionId: currentId, status: newStatus })
+    })
+      .then(function(){
+        currentStatus = newStatus;
+        var subBase = el.threadSub.textContent.replace(' · Closed', '');
+        el.threadSub.textContent = subBase + (newStatus === 'closed' ? ' · Closed' : '');
+        updateThreadActionLabels();
+        fetchSessions();
+      })
+      .catch(function(){ alert('Could not update — check the worker URL/token in Settings.'); });
+  });
+
+  el.deleteBtn.addEventListener('click', function(){
+    if(!currentId) return;
+    if(!confirm('Delete this conversation? This cannot be undone.')) return;
+    var idToDelete = currentId;
+    api('/api/session/delete', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sessionId: idToDelete })
+    })
+      .then(function(){
+        currentId = null;
+        el.thread.hidden = true;
+        el.emptyState.hidden = false;
+        sessions = sessions.filter(function(s){ return s.id !== idToDelete; });
+        renderSessions();
+      })
+      .catch(function(){ alert('Could not delete — check the worker URL/token in Settings.'); });
+  });
 
   function pollThread(scroll){
     if(!currentId || !configured()) return;
