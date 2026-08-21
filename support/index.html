@@ -287,10 +287,6 @@
     <label>Admin token
       <input id="cfg-token" type="password" placeholder="ADMIN_TOKEN" autocomplete="off" />
     </label>
-    <div class="toggle-row">
-      <span>Desktop notifications when a message arrives</span>
-      <input type="checkbox" id="cfg-notify" />
-    </div>
     <div class="status-line" id="cfg-status"></div>
     <div class="modal-actions">
       <button class="btn-secondary" id="cfg-cancel" type="button">Cancel</button>
@@ -316,7 +312,6 @@
   var LS_WORKER = 'scw_admin_worker';
   var LS_TOKEN = 'scw_admin_token';
   var LS_THEME = 'scw_admin_theme';
-  var LS_NOTIFY = 'scw_admin_notify';
   var LS_QUICK_REPLIES = 'scw_admin_quick_replies';
 
   var WORKER = localStorage.getItem(LS_WORKER) || '';
@@ -341,7 +336,6 @@
   var currentStatus = 'open';
   var currentFilter = 'open';
   var currentSearch = '';
-  var lastKnownUnread = 0;
   var quickReplies = loadQuickReplies();
   var sessionsTimer = null;
   var threadTimer = null;
@@ -361,7 +355,6 @@
     settingsModal: document.getElementById('settings-modal'),
     cfgWorker: document.getElementById('cfg-worker'),
     cfgToken: document.getElementById('cfg-token'),
-    cfgNotify: document.getElementById('cfg-notify'),
     cfgStatus: document.getElementById('cfg-status'),
     cfgSave: document.getElementById('cfg-save'),
     cfgCancel: document.getElementById('cfg-cancel'),
@@ -422,11 +415,9 @@
 
   // ---------- settings ----------
   function configured(){ return !!(WORKER && TOKEN); }
-  function notifyEnabled(){ return localStorage.getItem(LS_NOTIFY) === '1'; }
   function openSettings(){
     el.cfgWorker.value = WORKER;
     el.cfgToken.value = TOKEN;
-    el.cfgNotify.checked = notifyEnabled();
     el.cfgStatus.textContent = '';
     el.cfgCancel.style.display = configured() ? 'inline-block' : 'none';
     el.settingsModal.hidden = false;
@@ -441,11 +432,6 @@
     WORKER = w; TOKEN = t;
     localStorage.setItem(LS_WORKER, WORKER);
     localStorage.setItem(LS_TOKEN, TOKEN);
-    var wantsNotify = el.cfgNotify.checked;
-    localStorage.setItem(LS_NOTIFY, wantsNotify ? '1' : '0');
-    if(wantsNotify && typeof Notification !== 'undefined' && Notification.permission === 'default'){
-      Notification.requestPermission();
-    }
     closeSettings();
     startPolling();
   });
@@ -571,28 +557,12 @@
         renderSessions();
         var totalUnread = sessions.reduce(function(sum, s){ return sum + (s.unreadSupportCount || 0); }, 0);
         document.title = (totalUnread > 0 ? '(' + (totalUnread > 99 ? '99+' : totalUnread) + ') ' : '') + 'Support Inbox';
-        maybeNotify(totalUnread);
-        lastKnownUnread = totalUnread;
       })
       .catch(function(e){
         if(e.message === 'unauthorized'){
           el.list.innerHTML = '<div class="empty-list">Token rejected — check Settings.</div>';
         }
       });
-  }
-
-  function maybeNotify(totalUnread){
-    if(!notifyEnabled()) return;
-    if(typeof Notification === 'undefined' || Notification.permission !== 'granted') return;
-    if(!document.hidden) return;
-    if(totalUnread <= lastKnownUnread) return;
-    var diff = totalUnread - lastKnownUnread;
-    try{
-      var n = new Notification(diff > 1 ? diff + ' new messages' : 'New support message', {
-        body: 'You have unread messages in your support inbox.'
-      });
-      n.onclick = function(){ window.focus(); n.close(); };
-    }catch(e){ /* ignore */ }
   }
 
   // ---------- thread ----------
