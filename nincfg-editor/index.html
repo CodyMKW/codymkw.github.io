@@ -339,7 +339,8 @@
           </div>
           <div class="divider"></div>
           <div class="check-grid">
-            <label class="check-row"><input type="checkbox" id="vid_PROG"><span class="ct"><span class="name">Force progressive scan</span><span class="desc">480p output where supported</span></span></label>
+            <label class="check-row"><input type="checkbox" id="vid_PROG"><span class="ct"><span class="name">Force progressive scan (VideoMode)</span><span class="desc">480p output where supported — prevents blackscreens on some setups</span></span></label>
+            <label class="check-row"><input type="checkbox" id="cfg_FORCE_PROG"><span class="ct"><span class="name">Force progressive (Config flag)</span><span class="desc">Separate legacy progressive-scan bit in the main Config field, distinct from the VideoMode flag above</span></span></label>
             <label class="check-row"><input type="checkbox" id="vid_PATCH_PAL50"><span class="ct"><span class="name">PAL50 patch</span><span class="desc">Alternate patch behavior for 50Hz-only titles</span></span></label>
             <label class="check-row"><input type="checkbox" id="cfg_FORCE_WIDE"><span class="ct"><span class="name">Force widescreen (16:9)</span><span class="desc">Anamorphic patch for the game itself</span></span></label>
             <label class="check-row"><input type="checkbox" id="cfg_WIIU_WIDE"><span class="ct"><span class="name">Wii U GamePad widescreen</span><span class="desc">vWii output patch, Wii U only</span></span></label>
@@ -379,7 +380,7 @@
           <p class="section-title">Storage & system</p>
           <div class="check-grid">
             <label class="check-row"><input type="checkbox" id="cfg_USB"><span class="ct"><span class="name">Use USB storage</span><span class="desc">Read the game from USB instead of SD</span></span></label>
-            <label class="check-row"><input type="checkbox" id="cfg_HID"><span class="ct"><span class="name">HID / remote limit</span><span class="desc">USB HID controller support (older builds) / remote limit (newer)</span></span></label>
+            <label class="check-row"><input type="checkbox" id="cfg_HID"><span class="ct"><span class="name">Unlock read speed</span><span class="desc">Removes the disc-speed limit that mimics the original GC drive — faster loads, but can break games sensitive to disc timing. (Older Nintendont builds used this same bit for USB HID controller support instead.)</span></span></label>
             <label class="check-row"><input type="checkbox" id="cfg_NATIVE_SI"><span class="ct"><span class="name">Native SI (Wii only)</span><span class="desc">Use real GameCube controller ports directly</span></span></label>
             <label class="check-row"><input type="checkbox" id="cfg_BBA_EMU"><span class="ct"><span class="name">Broadband Adapter emulation</span><span class="desc">Emulate the GameCube network adapter</span></span></label>
             <label class="check-row"><input type="checkbox" id="cfg_CC_RUMBLE"><span class="ct"><span class="name">Classic Controller rumble</span><span class="desc">Rumble through a Wii Classic Controller</span></span></label>
