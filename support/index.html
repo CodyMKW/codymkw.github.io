@@ -131,6 +131,9 @@
   .msg-row.support{justify-content:flex-end;}
   .msg.from-visitor{background:var(--bubble-in-bg);color:var(--bubble-in-fg);border-bottom-left-radius:5px;}
   .msg.from-support{background:linear-gradient(135deg,var(--accent-a),var(--accent-b));color:var(--on-accent);border-bottom-right-radius:5px;}
+  .bot-wrap{align-self:flex-start;max-width:58%;display:flex;flex-direction:column;gap:3px;}
+  .bot-label{font-size:10.5px;font-weight:700;color:var(--muted);padding-left:3px;text-transform:uppercase;letter-spacing:.02em;}
+  .msg.from-bot{background:var(--bubble-in-bg);color:var(--bubble-in-fg);border:1px dashed var(--border);border-bottom-left-radius:5px;}
 
   #reply-form{display:flex;align-items:flex-end;gap:8px;padding:14px 20px;border-top:1px solid var(--border);background:var(--panel);position:relative;}
   .quick-reply-wrap{position:relative;flex-shrink:0;}
@@ -185,6 +188,17 @@
   .qr-add-btn{width:100%;border:1.5px dashed var(--border);background:none;color:var(--muted);padding:10px;border-radius:10px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:var(--font-display);margin-top:2px;transition:color .12s ease, border-color .12s ease;}
   .qr-add-btn:hover{color:var(--fg);border-color:var(--accent-a);}
 
+  .faq-row{border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:10px;}
+  .faq-row-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
+  .faq-enabled{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--fg);cursor:pointer;}
+  .faq-enabled input{accent-color:var(--accent-a);}
+  .faq-reorder{display:flex;gap:2px;}
+  .faq-reorder .icon-btn{width:26px;height:26px;}
+  .faq-reorder .icon-btn svg{width:14px;height:14px;}
+  .field-label{font-size:11px;font-weight:600;color:var(--muted);margin:8px 0 4px;display:block;}
+  .faq-keywords-input,.faq-reply-input{width:100%;padding:8px 10px;border:1px solid var(--border);background:var(--input-bg);color:var(--fg);border-radius:8px;font:inherit;font-size:12.5px;outline:none;resize:vertical;transition:border-color .12s ease;}
+  .faq-keywords-input:focus,.faq-reply-input:focus{border-color:var(--accent-a);}
+
   #back-btn{display:none;}
   @media (max-width:720px){
     #sidebar{position:fixed;inset:0;z-index:5;transform:translateX(-100%);transition:transform .18s ease;width:100%;}
@@ -207,6 +221,9 @@
         </div>
         <div class="actions">
           <button class="icon-btn" id="theme-toggle" type="button" title="Toggle theme"></button>
+          <button class="icon-btn" id="faq-btn" type="button" title="Manage FAQ bot">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="8" width="16" height="12" rx="3" stroke="currentColor" stroke-width="1.7"/><path d="M12 8V4m-3 0h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><circle cx="9" cy="14" r="1.3" fill="currentColor"/><circle cx="15" cy="14" r="1.3" fill="currentColor"/></svg>
+          </button>
           <button class="icon-btn" id="settings-btn" type="button" title="Settings">
             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z" stroke="currentColor" stroke-width="1.7"/><path d="M19.4 13.5a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V19.5a2 2 0 11-4 0v-.09a1.65 1.65 0 00-1.08-1.51 1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H2.5a2 2 0 110-4h.09A1.65 1.65 0 004.1 8.9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H8.5a1.65 1.65 0 001-1.51V2.5a2 2 0 114 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V8.5a1.65 1.65 0 001.51 1h.09a2 2 0 110 4h-.09a1.65 1.65 0 00-1.51 1z" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
@@ -307,6 +324,20 @@
   </div>
 </div>
 
+<div class="modal-overlay" id="faq-modal" hidden>
+  <div class="modal-card wide">
+    <h2>FAQ bot</h2>
+    <p>Answers common questions instantly, before you ever see the message. A rule matches when <strong>every</strong> line below appears in the visitor's message — use <code>|</code> for alternatives on a line. Rules are checked top to bottom; the first match wins. Shared across every site using this widget.</p>
+    <div id="faq-edit-list"></div>
+    <button type="button" class="qr-add-btn" id="faq-add-btn">+ Add rule</button>
+    <div class="status-line" id="faq-status"></div>
+    <div class="modal-actions">
+      <button class="btn-secondary" id="faq-close-btn" type="button">Close</button>
+      <button class="btn-primary" id="faq-save-btn" type="button">Save changes</button>
+    </div>
+  </div>
+</div>
+
 <script>
 (function(){
   var LS_WORKER = 'scw_admin_worker';
@@ -377,6 +408,13 @@
     qrEditList: document.getElementById('qr-edit-list'),
     qrAddBtn: document.getElementById('qr-add-btn'),
     qrCloseBtn: document.getElementById('qr-close-btn'),
+    faqBtn: document.getElementById('faq-btn'),
+    faqModal: document.getElementById('faq-modal'),
+    faqEditList: document.getElementById('faq-edit-list'),
+    faqAddBtn: document.getElementById('faq-add-btn'),
+    faqSaveBtn: document.getElementById('faq-save-btn'),
+    faqCloseBtn: document.getElementById('faq-close-btn'),
+    faqStatus: document.getElementById('faq-status'),
   };
 
   // ---------- avatar helpers ----------
@@ -534,7 +572,8 @@
         timeCell.parentNode.insertBefore(chip, timeCell);
       }
       timeCell.textContent = relTime(s.lastMessageAt);
-      var preview = (s.site ? s.site + ' · ' : '') + (s.lastMessageFrom === 'support' ? 'You: ' : '') + (s.lastMessageText || '');
+      var prefix = s.lastMessageFrom === 'support' ? 'You: ' : s.lastMessageFrom === 'bot' ? 'Bot: ' : '';
+      var preview = (s.site ? s.site + ' · ' : '') + prefix + (s.lastMessageText || '');
       body.querySelector('.preview').textContent = preview;
       row.appendChild(body);
 
@@ -567,6 +606,23 @@
 
   // ---------- thread ----------
   function addBubble(from, text){
+    if(from === 'bot'){
+      var row = document.createElement('div');
+      row.className = 'msg-row visitor';
+      var wrap = document.createElement('div');
+      wrap.className = 'bot-wrap';
+      var label = document.createElement('div');
+      label.className = 'bot-label';
+      label.textContent = '\ud83e\udd16 Auto-reply';
+      wrap.appendChild(label);
+      var bb = document.createElement('div');
+      bb.className = 'msg from-bot';
+      bb.textContent = text;
+      wrap.appendChild(bb);
+      row.appendChild(wrap);
+      el.threadMessages.appendChild(row);
+      return;
+    }
     var row = document.createElement('div');
     row.className = 'msg-row ' + (from === 'support' ? 'support' : 'visitor');
     var b = document.createElement('div');
@@ -804,6 +860,100 @@
     if(inputs.length) inputs[inputs.length - 1].focus();
   });
 
+  // ---------- FAQ bot manager ----------
+  var faqRules = [];
+  function openFaqModal(){
+    el.faqModal.hidden = false;
+    el.faqStatus.textContent = 'Loading…';
+    el.faqEditList.innerHTML = '';
+    api('/api/faq')
+      .then(function(data){
+        faqRules = data.rules || [];
+        el.faqStatus.textContent = '';
+        renderFaqEditList();
+      })
+      .catch(function(){ el.faqStatus.textContent = 'Could not load rules — check Settings.'; });
+  }
+  function closeFaqModal(){ el.faqModal.hidden = true; }
+  el.faqBtn.addEventListener('click', openFaqModal);
+  el.faqCloseBtn.addEventListener('click', closeFaqModal);
+
+  function renderFaqEditList(){
+    el.faqEditList.innerHTML = '';
+    if(!faqRules.length){
+      el.faqEditList.innerHTML = '<div class="qr-empty">No rules yet — add one below.</div>';
+      return;
+    }
+    faqRules.forEach(function(rule, idx){
+      var row = document.createElement('div');
+      row.className = 'faq-row';
+      row.innerHTML =
+        '<div class="faq-row-top">' +
+          '<label class="faq-enabled"><input type="checkbox" class="faq-enabled-input" /> Enabled</label>' +
+          '<div class="faq-reorder">' +
+            '<button type="button" class="icon-btn faq-up" title="Move up"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 19V5M5 12l7-7 7 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>' +
+            '<button type="button" class="icon-btn faq-down" title="Move down"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 5v14M5 12l7 7 7-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>' +
+            '<button type="button" class="qr-remove faq-remove" title="Remove"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>' +
+          '</div>' +
+        '</div>' +
+        '<span class="field-label">Match ALL of these (one per line — use | for alternatives)</span>' +
+        '<textarea class="faq-keywords-input" rows="2" placeholder="3ds' + String.fromCharCode(10) + 'friend code|fc|add me"></textarea>' +
+        '<span class="field-label">Reply</span>' +
+        '<textarea class="faq-reply-input" rows="3" placeholder="Reply text…"></textarea>';
+
+      row.querySelector('.faq-enabled-input').checked = rule.enabled !== false;
+      row.querySelector('.faq-keywords-input').value = (rule.keywords || []).join('\n');
+      row.querySelector('.faq-reply-input').value = rule.reply || '';
+
+      row.querySelector('.faq-enabled-input').addEventListener('change', function(){
+        faqRules[idx].enabled = this.checked;
+      });
+      row.querySelector('.faq-keywords-input').addEventListener('input', function(){
+        faqRules[idx].keywords = this.value.split('\n').map(function(s){ return s.trim(); }).filter(Boolean);
+      });
+      row.querySelector('.faq-reply-input').addEventListener('input', function(){
+        faqRules[idx].reply = this.value;
+      });
+      row.querySelector('.faq-up').addEventListener('click', function(){
+        if(idx === 0) return;
+        var tmp = faqRules[idx - 1]; faqRules[idx - 1] = faqRules[idx]; faqRules[idx] = tmp;
+        renderFaqEditList();
+      });
+      row.querySelector('.faq-down').addEventListener('click', function(){
+        if(idx === faqRules.length - 1) return;
+        var tmp = faqRules[idx + 1]; faqRules[idx + 1] = faqRules[idx]; faqRules[idx] = tmp;
+        renderFaqEditList();
+      });
+      row.querySelector('.faq-remove').addEventListener('click', function(){
+        faqRules.splice(idx, 1);
+        renderFaqEditList();
+      });
+
+      el.faqEditList.appendChild(row);
+    });
+  }
+  el.faqAddBtn.addEventListener('click', function(){
+    faqRules.push({ keywords: [], reply: '', enabled: true });
+    renderFaqEditList();
+    var inputs = el.faqEditList.querySelectorAll('.faq-keywords-input');
+    if(inputs.length) inputs[inputs.length - 1].focus();
+  });
+  el.faqSaveBtn.addEventListener('click', function(){
+    el.faqStatus.textContent = 'Saving…';
+    api('/api/faq', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ rules: faqRules })
+    })
+      .then(function(data){
+        faqRules = data.rules || faqRules;
+        renderFaqEditList();
+        el.faqStatus.textContent = 'Saved.';
+        setTimeout(function(){ if(el.faqStatus.textContent === 'Saved.') el.faqStatus.textContent = ''; }, 2500);
+      })
+      .catch(function(){ el.faqStatus.textContent = 'Could not save — check the worker URL/token in Settings.'; });
+  });
+
   // ---------- keyboard shortcuts ----------
   document.addEventListener('keydown', function(e){
     if((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k'){
@@ -815,6 +965,7 @@
     if(e.key === 'Escape'){
       if(!el.qrMenu.hidden){ closeQuickReplyMenu(); return; }
       if(!el.qrModal.hidden){ closeQrModal(); return; }
+      if(!el.faqModal.hidden){ closeFaqModal(); return; }
       if(!el.settingsModal.hidden && configured()){ closeSettings(); return; }
     }
   });
