@@ -9,13 +9,18 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
 <style>
+  /*
+    Brand colors: light theme uses #007acc (blue), dark theme uses #00c900 (green).
+    Text placed directly on the accent color uses --on-accent, which switches
+    to a near-black tone in dark mode since white-on-#00c900 doesn't have
+    enough contrast to read comfortably.
+  */
   :root{
-    --accent-a:#4f6bff; --accent-b:#8b5cf6;
-    --accent: var(--accent-a);
+    --accent-a:#007acc; --accent-b:#1e9be0; --on-accent:#ffffff;
     --bg:#f3f4fa; --panel:#ffffff; --panel-2:#fafaff; --fg:#14161b; --muted:#70758a; --border:#e7e8f1;
     --bubble-in-bg:#f1f2f7; --bubble-in-fg:#14161b; --input-bg:#f6f7fb;
     --danger:#ef4444; --online:#22c55e;
-    --shadow-sm:0 1px 2px rgba(20,22,40,.04);
+    --shadow-sm:0 1px 2px rgba(20,22,40,.05);
     --shadow-md:0 10px 30px rgba(20,22,40,.10);
     --shadow-lg:0 24px 60px rgba(20,22,40,.22);
     --radius:16px;
@@ -23,6 +28,7 @@
     --font-body:'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   }
   [data-theme="dark"]{
+    --accent-a:#00c900; --accent-b:#2fe62f; --on-accent:#07230a;
     --bg:#0d0f15; --panel:#161922; --panel-2:#12141b; --fg:#edeff4; --muted:#8b91a3; --border:#262a37;
     --bubble-in-bg:#20232d; --bubble-in-fg:#edeff4; --input-bg:#1b1e28;
     --shadow-sm:0 1px 2px rgba(0,0,0,.3);
@@ -36,20 +42,27 @@
     background:var(--bg); color:var(--fg);
     -webkit-font-smoothing:antialiased;
   }
+  svg{display:block;}
   #app{display:flex;height:100vh;overflow:hidden;}
 
   /* ---------- sidebar ---------- */
-  #sidebar{width:308px;flex-shrink:0;background:var(--panel);border-right:1px solid var(--border);display:flex;flex-direction:column;}
-  #sidebar-header{padding:18px 18px 14px;border-bottom:1px solid var(--border);}
+  #sidebar{width:312px;flex-shrink:0;background:var(--panel);border-right:1px solid var(--border);display:flex;flex-direction:column;}
+  #sidebar-header{padding:20px 18px 16px;border-bottom:1px solid var(--border);}
   #sidebar-header .row-1{display:flex;align-items:center;justify-content:space-between;}
-  #sidebar-header h1{font-family:var(--font-display);font-size:17px;margin:0;font-weight:800;letter-spacing:-.01em;}
-  #sidebar-header .actions{display:flex;gap:4px;}
-  .icon-btn{border:none;background:none;color:var(--muted);cursor:pointer;width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;transition:background .12s ease, color .12s ease;}
+  .brand{display:flex;align-items:center;gap:9px;}
+  .brand-mark{width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,var(--accent-a),var(--accent-b));display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:var(--shadow-sm);}
+  .brand-mark svg{width:14px;height:14px;color:var(--on-accent);}
+  #sidebar-header h1{font-family:var(--font-display);font-size:16.5px;margin:0;font-weight:800;letter-spacing:-.01em;}
+  #sidebar-header .actions{display:flex;gap:2px;}
+  .icon-btn{border:none;background:none;color:var(--muted);cursor:pointer;width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;transition:background .12s ease, color .12s ease, transform .08s ease;}
+  .icon-btn svg{width:17px;height:17px;}
   .icon-btn:hover{background:var(--input-bg);color:var(--fg);}
+  .icon-btn:active{transform:scale(.92);}
+  .icon-btn.danger:hover{background:rgba(239,68,68,.12);color:var(--danger);}
 
   .presence-pill{
-    margin-top:12px;display:inline-flex;align-items:center;gap:7px;
-    padding:6px 11px 6px 9px;border-radius:999px;
+    margin-top:14px;display:inline-flex;align-items:center;gap:7px;
+    padding:6px 12px 6px 9px;border-radius:999px;
     background:var(--input-bg);border:1px solid var(--border);
     font-size:11.5px;font-weight:600;color:var(--muted);
   }
@@ -59,17 +72,20 @@
   .presence-pill.live .pulse-ring{position:absolute;inset:-4px;border-radius:50%;background:var(--online);opacity:.5;animation:pulse-ring 1.8s ease-out infinite;}
   @keyframes pulse-ring{0%{transform:scale(.5);opacity:.55;}100%{transform:scale(2.2);opacity:0;}}
 
-  .filter-tabs{display:flex;gap:4px;margin-top:12px;background:var(--input-bg);border-radius:10px;padding:3px;}
+  .filter-tabs{display:flex;gap:4px;margin-top:14px;background:var(--input-bg);border-radius:10px;padding:3px;}
   .filter-tab{flex:1;border:none;background:none;color:var(--muted);font-size:12px;font-weight:600;font-family:var(--font-display);padding:6px 0;border-radius:8px;cursor:pointer;transition:background .12s ease, color .12s ease;}
   .filter-tab.active{background:var(--panel);color:var(--fg);box-shadow:var(--shadow-sm);}
-  .search-input{width:100%;margin-top:10px;padding:8px 11px;border:1px solid var(--border);background:var(--input-bg);color:var(--fg);border-radius:9px;font:inherit;font-size:12.5px;outline:none;transition:border-color .12s ease;}
+
+  .search-wrap{position:relative;margin-top:10px;}
+  .search-wrap svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);width:14px;height:14px;color:var(--muted);pointer-events:none;}
+  .search-input{width:100%;padding:8px 11px 8px 30px;border:1px solid var(--border);background:var(--input-bg);color:var(--fg);border-radius:9px;font:inherit;font-size:12.5px;outline:none;transition:border-color .12s ease;}
   .search-input:focus{border-color:var(--accent-a);}
-  .closed-chip{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:var(--muted);background:var(--input-bg);border:1px solid var(--border);padding:1px 6px;border-radius:6px;flex-shrink:0;}
+  .search-kbd{position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:10px;color:var(--muted);background:var(--panel);border:1px solid var(--border);border-radius:5px;padding:1px 5px;pointer-events:none;}
 
   #session-list{flex:1;overflow-y:auto;padding:8px;}
   .session-row{display:flex;gap:11px;padding:11px 10px;border-radius:12px;cursor:pointer;position:relative;transition:background .12s ease;}
   .session-row:hover{background:var(--input-bg);}
-  .session-row.active{background:linear-gradient(180deg, var(--panel-2), var(--input-bg));box-shadow:inset 0 0 0 1px var(--border);}
+  .session-row.active{background:linear-gradient(180deg, var(--panel-2), var(--input-bg));box-shadow:inset 2.5px 0 0 var(--accent-a), inset 0 0 0 1px var(--border);}
   .avatar{
     width:36px;height:36px;border-radius:50%;flex-shrink:0;
     display:flex;align-items:center;justify-content:center;
@@ -85,27 +101,27 @@
     position:absolute;top:9px;right:10px;
     min-width:18px;height:18px;padding:0 5px;border-radius:9px;
     background:linear-gradient(135deg,var(--accent-a),var(--accent-b));
-    color:#fff;font-size:10.5px;font-weight:700;
+    color:var(--on-accent);font-size:10.5px;font-weight:700;
     display:flex;align-items:center;justify-content:center;
   }
   .empty-list{padding:40px 20px;color:var(--muted);font-size:13px;text-align:center;line-height:1.5;}
+  .closed-chip{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:var(--muted);background:var(--input-bg);border:1px solid var(--border);padding:1px 6px;border-radius:6px;flex-shrink:0;}
 
   /* ---------- conversation ---------- */
   #conversation{flex:1;display:flex;flex-direction:column;min-width:0;background:var(--bg);}
   #empty-state{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--muted);gap:14px;}
   #empty-state[hidden]{display:none;}
-  #empty-state svg{width:52px;height:52px;opacity:.35;}
+  #empty-state svg{width:50px;height:50px;opacity:.3;}
   #empty-state .headline{font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--fg);}
   #empty-state .sub{font-size:13px;}
 
   #thread{flex:1;display:flex;flex-direction:column;min-height:0;}
   #thread[hidden]{display:none;}
-  #thread-header{display:flex;align-items:center;gap:12px;padding:16px 22px;border-bottom:1px solid var(--border);background:var(--panel);}
+  #thread-header{display:flex;align-items:center;gap:12px;padding:15px 20px;border-bottom:1px solid var(--border);background:var(--panel);}
   #thread-header .info{min-width:0;flex:1;}
   #thread-header strong{font-family:var(--font-display);font-size:15px;display:block;}
   #thread-header .sub{font-size:12px;color:var(--muted);}
-  .thread-actions{display:flex;gap:4px;flex-shrink:0;}
-  .icon-btn.danger:hover{background:rgba(239,68,68,.12);color:var(--danger);}
+  .thread-actions{display:flex;gap:2px;flex-shrink:0;}
 
   #thread-messages{flex:1;overflow-y:auto;padding:24px;display:flex;flex-direction:column;gap:10px;}
   .msg-row{display:flex;animation:msg-in .18s ease both;}
@@ -114,35 +130,60 @@
   .msg-row.visitor{justify-content:flex-start;}
   .msg-row.support{justify-content:flex-end;}
   .msg.from-visitor{background:var(--bubble-in-bg);color:var(--bubble-in-fg);border-bottom-left-radius:5px;}
-  .msg.from-support{background:linear-gradient(135deg,var(--accent-a),var(--accent-b));color:#fff;border-bottom-right-radius:5px;}
+  .msg.from-support{background:linear-gradient(135deg,var(--accent-a),var(--accent-b));color:var(--on-accent);border-bottom-right-radius:5px;}
 
-  #reply-form{display:flex;align-items:flex-end;gap:10px;padding:16px 22px;border-top:1px solid var(--border);background:var(--panel);}
-  #reply-input{flex:1;resize:none;min-height:42px;max-height:130px;border:1px solid var(--border);background:var(--input-bg);color:var(--fg);border-radius:12px;padding:10px 13px;font:inherit;font-size:13.5px;outline:none;transition:border-color .12s ease;}
+  #reply-form{display:flex;align-items:flex-end;gap:8px;padding:14px 20px;border-top:1px solid var(--border);background:var(--panel);position:relative;}
+  .quick-reply-wrap{position:relative;flex-shrink:0;}
+  .quick-reply-menu{position:absolute;bottom:46px;left:0;width:270px;max-height:300px;overflow-y:auto;background:var(--panel);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow-lg);padding:6px;z-index:20;}
+  .quick-reply-menu[hidden]{display:none;}
+  .qr-item{display:block;width:100%;text-align:left;background:none;border:none;padding:9px 10px;border-radius:8px;cursor:pointer;}
+  .qr-item:hover{background:var(--input-bg);}
+  .qr-item .qr-label{font-weight:700;font-family:var(--font-display);font-size:12px;display:block;margin-bottom:2px;color:var(--fg);}
+  .qr-item .qr-preview{color:var(--muted);font-size:11.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;}
+  .qr-manage{width:100%;text-align:center;background:none;border:none;border-top:1px solid var(--border);margin-top:4px;padding:9px 0 4px;font-size:11.5px;font-weight:700;color:var(--accent-a);cursor:pointer;font-family:var(--font-display);}
+  .qr-empty{padding:16px 10px;color:var(--muted);font-size:12px;text-align:center;}
+
+  #reply-input{flex:1;resize:none;min-height:40px;max-height:130px;border:1px solid var(--border);background:var(--input-bg);color:var(--fg);border-radius:12px;padding:10px 13px;font:inherit;font-size:13.5px;outline:none;transition:border-color .12s ease;}
   #reply-input:focus{border-color:var(--accent-a);}
   #reply-send{
     border:none;background:linear-gradient(135deg,var(--accent-a),var(--accent-b));
-    color:#fff;width:42px;height:42px;border-radius:12px;flex-shrink:0;
+    color:var(--on-accent);width:40px;height:40px;border-radius:12px;flex-shrink:0;
     display:flex;align-items:center;justify-content:center;cursor:pointer;
     box-shadow:var(--shadow-sm);transition:transform .1s ease, opacity .1s ease;
   }
+  #reply-send svg{width:16px;height:16px;}
   #reply-send:hover{transform:translateY(-1px);}
   #reply-send:disabled{opacity:.5;cursor:not-allowed;transform:none;}
-  #reply-send svg{width:17px;height:17px;}
 
-  /* ---------- settings modal ---------- */
-  #settings-modal{position:fixed;inset:0;background:rgba(10,12,20,.55);backdrop-filter:blur(2px);display:flex;align-items:center;justify-content:center;z-index:10;}
-  #settings-modal[hidden]{display:none;}
-  .modal-card{background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:26px;width:360px;max-width:90vw;box-shadow:var(--shadow-lg);}
+  /* ---------- modals ---------- */
+  .modal-overlay{position:fixed;inset:0;background:rgba(10,12,20,.55);backdrop-filter:blur(2px);display:flex;align-items:center;justify-content:center;z-index:30;}
+  .modal-overlay[hidden]{display:none;}
+  .modal-card{background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:26px;width:380px;max-width:90vw;box-shadow:var(--shadow-lg);}
+  .modal-card.wide{width:440px;}
   .modal-card h2{margin:0 0 4px;font-family:var(--font-display);font-size:17px;font-weight:800;}
   .modal-card p{margin:0 0 18px;font-size:12.5px;color:var(--muted);line-height:1.5;}
   .modal-card label{display:block;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:14px;}
-  .modal-card input{display:block;width:100%;margin-top:6px;padding:10px 12px;border:1px solid var(--border);background:var(--input-bg);color:var(--fg);border-radius:10px;font:inherit;font-size:13px;outline:none;transition:border-color .12s ease;}
+  .modal-card input[type="text"],.modal-card input[type="password"]{display:block;width:100%;margin-top:6px;padding:10px 12px;border:1px solid var(--border);background:var(--input-bg);color:var(--fg);border-radius:10px;font:inherit;font-size:13px;outline:none;transition:border-color .12s ease;}
   .modal-card input:focus{border-color:var(--accent-a);}
+  .toggle-row{display:flex;align-items:center;justify-content:space-between;font-size:12.5px;font-weight:600;color:var(--fg);margin-bottom:16px;}
+  .toggle-row input{width:auto;accent-color:var(--accent-a);}
   .modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:6px;}
   .modal-actions button{border:none;padding:10px 18px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font-display);}
-  #cfg-save{background:linear-gradient(135deg,var(--accent-a),var(--accent-b));color:#fff;}
-  #cfg-cancel{background:var(--input-bg);color:var(--fg);}
+  .btn-primary{background:linear-gradient(135deg,var(--accent-a),var(--accent-b));color:var(--on-accent);}
+  .btn-secondary{background:var(--input-bg);color:var(--fg);}
   .status-line{font-size:11.5px;color:var(--danger);margin-top:-6px;margin-bottom:12px;min-height:14px;}
+
+  #qr-edit-list{max-height:320px;overflow-y:auto;margin-bottom:6px;padding-right:2px;}
+  .qr-row{display:flex;gap:8px;margin-bottom:10px;align-items:flex-start;}
+  .qr-row .qr-fields{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px;}
+  .qr-row input,.qr-row textarea{width:100%;padding:8px 10px;border:1px solid var(--border);background:var(--input-bg);color:var(--fg);border-radius:8px;font:inherit;font-size:12.5px;outline:none;transition:border-color .12s ease;}
+  .qr-row input:focus,.qr-row textarea:focus{border-color:var(--accent-a);}
+  .qr-row textarea{resize:vertical;min-height:46px;}
+  .qr-remove{border:none;background:none;color:var(--muted);cursor:pointer;width:30px;height:30px;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+  .qr-remove:hover{background:rgba(239,68,68,.12);color:var(--danger);}
+  .qr-remove svg{width:14px;height:14px;}
+  .qr-add-btn{width:100%;border:1.5px dashed var(--border);background:none;color:var(--muted);padding:10px;border-radius:10px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:var(--font-display);margin-top:2px;transition:color .12s ease, border-color .12s ease;}
+  .qr-add-btn:hover{color:var(--fg);border-color:var(--accent-a);}
 
   #back-btn{display:none;}
   @media (max-width:720px){
@@ -151,6 +192,7 @@
     #conversation{width:100%;}
     #back-btn{display:inline-flex !important;}
     .msg{max-width:78%;}
+    .search-kbd{display:none;}
   }
 </style>
 </head>
@@ -159,10 +201,15 @@
   <aside id="sidebar">
     <div id="sidebar-header">
       <div class="row-1">
-        <h1>Support Inbox</h1>
+        <div class="brand">
+          <span class="brand-mark"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 12c0-4.42 3.58-8 8-8s8 3.58 8 8-3.58 8-8 8c-1.1 0-2.15-.2-3.11-.58L4 21l1.66-4.6C4.6 15.06 4 13.6 4 12z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <h1>Support Inbox</h1>
+        </div>
         <div class="actions">
-          <button class="icon-btn" id="theme-toggle" title="Toggle theme">◐</button>
-          <button class="icon-btn" id="settings-btn" title="Settings">⚙</button>
+          <button class="icon-btn" id="theme-toggle" type="button" title="Toggle theme"></button>
+          <button class="icon-btn" id="settings-btn" type="button" title="Settings">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z" stroke="currentColor" stroke-width="1.7"/><path d="M19.4 13.5a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V19.5a2 2 0 11-4 0v-.09a1.65 1.65 0 00-1.08-1.51 1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H2.5a2 2 0 110-4h.09A1.65 1.65 0 004.1 8.9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H8.5a1.65 1.65 0 001-1.51V2.5a2 2 0 114 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V8.5a1.65 1.65 0 001.51 1h.09a2 2 0 110 4h-.09a1.65 1.65 0 00-1.51 1z" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
         </div>
       </div>
       <span class="presence-pill" id="presence-pill">
@@ -174,31 +221,53 @@
         <button class="filter-tab" type="button" data-filter="closed">Closed</button>
         <button class="filter-tab" type="button" data-filter="all">All</button>
       </div>
-      <input class="search-input" id="search-input" type="text" placeholder="Search name or site…" autocomplete="off" />
+      <div class="search-wrap">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.8"/><path d="M21 21l-4.3-4.3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <input class="search-input" id="search-input" type="text" placeholder="Search name or site…" autocomplete="off" />
+        <span class="search-kbd">⌘K</span>
+      </div>
     </div>
     <div id="session-list"><div class="empty-list">Loading…</div></div>
   </aside>
   <main id="conversation">
     <div id="empty-state">
-      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 12c0-4.42 3.58-8 8-8s8 3.58 8 8-3.58 8-8 8c-1.1 0-2.15-.2-3.11-.58L4 21l1.66-4.6C4.6 15.06 4 13.6 4 12z" stroke="currentColor" stroke-width="1.6"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 12c0-4.42 3.58-8 8-8s8 3.58 8 8-3.58 8-8 8c-1.1 0-2.15-.2-3.11-.58L4 21l1.66-4.6C4.6 15.06 4 13.6 4 12z" stroke="currentColor" stroke-width="1.5"/></svg>
       <div class="headline">No conversation selected</div>
       <div class="sub">Pick one on the left to start replying.</div>
     </div>
     <div id="thread" hidden>
       <header id="thread-header">
-        <button class="icon-btn" id="back-btn">←</button>
+        <button class="icon-btn" id="back-btn" type="button" title="Back">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
         <div class="avatar" id="thread-avatar"></div>
         <div class="info">
           <strong id="thread-site"></strong>
           <span class="sub" id="thread-sub">Conversation</span>
         </div>
         <div class="thread-actions">
-          <button class="icon-btn" id="toggle-status-btn" type="button" title="Close conversation">✓</button>
-          <button class="icon-btn danger" id="delete-btn" type="button" title="Delete conversation">🗑</button>
+          <button class="icon-btn" id="export-btn" type="button" title="Export conversation">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <button class="icon-btn" id="toggle-status-btn" type="button" title="Close conversation">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <button class="icon-btn danger" id="delete-btn" type="button" title="Delete conversation">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 7h16M9 7V4h6v3m-8 0l1 13h8l1-13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
         </div>
       </header>
       <div id="thread-messages"></div>
       <form id="reply-form">
+        <div class="quick-reply-wrap">
+          <button type="button" class="icon-btn" id="quick-reply-btn" title="Quick replies">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="quick-reply-menu" id="quick-reply-menu" hidden>
+            <div id="qr-list"></div>
+            <button type="button" class="qr-manage" id="qr-manage-btn">Manage quick replies…</button>
+          </div>
+        </div>
         <textarea id="reply-input" rows="1" placeholder="Type a reply…" maxlength="2000"></textarea>
         <button type="submit" id="reply-send" aria-label="Send">
           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 20l16-8L4 4v6l10 2-10 2v6z" fill="currentColor"/></svg>
@@ -208,20 +277,36 @@
   </main>
 </div>
 
-<div id="settings-modal">
+<div class="modal-overlay" id="settings-modal">
   <div class="modal-card">
     <h2>Connect your worker</h2>
     <p>Paste your Cloudflare Worker URL and the admin token you set as a secret.</p>
     <label>Worker URL
-      <input id="cfg-worker" placeholder="https://support-chat.you.workers.dev" autocomplete="off" />
+      <input id="cfg-worker" type="text" placeholder="https://support-chat.you.workers.dev" autocomplete="off" />
     </label>
     <label>Admin token
       <input id="cfg-token" type="password" placeholder="ADMIN_TOKEN" autocomplete="off" />
     </label>
+    <div class="toggle-row">
+      <span>Desktop notifications when a message arrives</span>
+      <input type="checkbox" id="cfg-notify" />
+    </div>
     <div class="status-line" id="cfg-status"></div>
     <div class="modal-actions">
-      <button id="cfg-cancel" type="button">Cancel</button>
-      <button id="cfg-save" type="button">Save & connect</button>
+      <button class="btn-secondary" id="cfg-cancel" type="button">Cancel</button>
+      <button class="btn-primary" id="cfg-save" type="button">Save & connect</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="qr-modal" hidden>
+  <div class="modal-card wide">
+    <h2>Quick replies</h2>
+    <p>Saved snippets you can drop into a reply with one click. Stored in this browser.</p>
+    <div id="qr-edit-list"></div>
+    <button type="button" class="qr-add-btn" id="qr-add-btn">+ Add quick reply</button>
+    <div class="modal-actions">
+      <button class="btn-primary" id="qr-close-btn" type="button">Done</button>
     </div>
   </div>
 </div>
@@ -231,11 +316,24 @@
   var LS_WORKER = 'scw_admin_worker';
   var LS_TOKEN = 'scw_admin_token';
   var LS_THEME = 'scw_admin_theme';
+  var LS_NOTIFY = 'scw_admin_notify';
+  var LS_QUICK_REPLIES = 'scw_admin_quick_replies';
 
   var WORKER = localStorage.getItem(LS_WORKER) || '';
   var TOKEN = localStorage.getItem(LS_TOKEN) || '';
 
-  var AVATAR_COLORS = ['#4f6bff','#8b5cf6','#ec4899','#f97316','#10b981','#06b6d4','#f43f5e','#6366f1'];
+  var AVATAR_COLORS = ['#007acc','#8b5cf6','#ec4899','#f97316','#10b981','#06b6d4','#f43f5e','#6366f1'];
+
+  var DEFAULT_QUICK_REPLIES = [
+    { label: 'Thanks', text: "Thanks for reaching out! I'll take a look and get back to you soon." },
+    { label: 'Need more info', text: 'Could you share a bit more detail (or a screenshot) so I can help?' },
+    { label: 'Fixed', text: "That should be fixed now — let me know if you're still seeing it!" }
+  ];
+
+  var ICON_SUN = '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.7"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>';
+  var ICON_MOON = '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20 14.5A8.5 8.5 0 1110.1 4a6.8 6.8 0 009.9 10.5z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>';
+  var ICON_UNDO = '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 10h9a5 5 0 010 10h-2M4 10l4-4M4 10l4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  var ICON_CHECK = '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
   var sessions = [];
   var currentId = null;
@@ -243,6 +341,8 @@
   var currentStatus = 'open';
   var currentFilter = 'open';
   var currentSearch = '';
+  var lastKnownUnread = 0;
+  var quickReplies = loadQuickReplies();
   var sessionsTimer = null;
   var threadTimer = null;
   var heartbeatTimer = null;
@@ -261,6 +361,7 @@
     settingsModal: document.getElementById('settings-modal'),
     cfgWorker: document.getElementById('cfg-worker'),
     cfgToken: document.getElementById('cfg-token'),
+    cfgNotify: document.getElementById('cfg-notify'),
     cfgStatus: document.getElementById('cfg-status'),
     cfgSave: document.getElementById('cfg-save'),
     cfgCancel: document.getElementById('cfg-cancel'),
@@ -274,6 +375,15 @@
     searchInput: document.getElementById('search-input'),
     toggleStatusBtn: document.getElementById('toggle-status-btn'),
     deleteBtn: document.getElementById('delete-btn'),
+    exportBtn: document.getElementById('export-btn'),
+    qrBtn: document.getElementById('quick-reply-btn'),
+    qrMenu: document.getElementById('quick-reply-menu'),
+    qrList: document.getElementById('qr-list'),
+    qrManageBtn: document.getElementById('qr-manage-btn'),
+    qrModal: document.getElementById('qr-modal'),
+    qrEditList: document.getElementById('qr-edit-list'),
+    qrAddBtn: document.getElementById('qr-add-btn'),
+    qrCloseBtn: document.getElementById('qr-close-btn'),
   };
 
   // ---------- avatar helpers ----------
@@ -301,6 +411,8 @@
   function applyTheme(t){
     document.documentElement.setAttribute('data-theme', t);
     localStorage.setItem(LS_THEME, t);
+    el.themeToggle.innerHTML = t === 'dark' ? ICON_SUN : ICON_MOON;
+    el.themeToggle.title = t === 'dark' ? 'Switch to light' : 'Switch to dark';
   }
   var savedTheme = localStorage.getItem(LS_THEME);
   applyTheme(savedTheme || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
@@ -310,9 +422,11 @@
 
   // ---------- settings ----------
   function configured(){ return !!(WORKER && TOKEN); }
+  function notifyEnabled(){ return localStorage.getItem(LS_NOTIFY) === '1'; }
   function openSettings(){
     el.cfgWorker.value = WORKER;
     el.cfgToken.value = TOKEN;
+    el.cfgNotify.checked = notifyEnabled();
     el.cfgStatus.textContent = '';
     el.cfgCancel.style.display = configured() ? 'inline-block' : 'none';
     el.settingsModal.hidden = false;
@@ -327,6 +441,11 @@
     WORKER = w; TOKEN = t;
     localStorage.setItem(LS_WORKER, WORKER);
     localStorage.setItem(LS_TOKEN, TOKEN);
+    var wantsNotify = el.cfgNotify.checked;
+    localStorage.setItem(LS_NOTIFY, wantsNotify ? '1' : '0');
+    if(wantsNotify && typeof Notification !== 'undefined' && Notification.permission === 'default'){
+      Notification.requestPermission();
+    }
     closeSettings();
     startPolling();
   });
@@ -452,12 +571,28 @@
         renderSessions();
         var totalUnread = sessions.reduce(function(sum, s){ return sum + (s.unreadSupportCount || 0); }, 0);
         document.title = (totalUnread > 0 ? '(' + (totalUnread > 99 ? '99+' : totalUnread) + ') ' : '') + 'Support Inbox';
+        maybeNotify(totalUnread);
+        lastKnownUnread = totalUnread;
       })
       .catch(function(e){
         if(e.message === 'unauthorized'){
           el.list.innerHTML = '<div class="empty-list">Token rejected — check Settings.</div>';
         }
       });
+  }
+
+  function maybeNotify(totalUnread){
+    if(!notifyEnabled()) return;
+    if(typeof Notification === 'undefined' || Notification.permission !== 'granted') return;
+    if(!document.hidden) return;
+    if(totalUnread <= lastKnownUnread) return;
+    var diff = totalUnread - lastKnownUnread;
+    try{
+      var n = new Notification(diff > 1 ? diff + ' new messages' : 'New support message', {
+        body: 'You have unread messages in your support inbox.'
+      });
+      n.onclick = function(){ window.focus(); n.close(); };
+    }catch(e){ /* ignore */ }
   }
 
   // ---------- thread ----------
@@ -493,10 +628,10 @@
 
   function updateThreadActionLabels(){
     if(currentStatus === 'closed'){
-      el.toggleStatusBtn.textContent = '↺';
+      el.toggleStatusBtn.innerHTML = ICON_UNDO;
       el.toggleStatusBtn.title = 'Reopen conversation';
     } else {
-      el.toggleStatusBtn.textContent = '✓';
+      el.toggleStatusBtn.innerHTML = ICON_CHECK;
       el.toggleStatusBtn.title = 'Close conversation';
     }
   }
@@ -536,6 +671,30 @@
         renderSessions();
       })
       .catch(function(){ alert('Could not delete — check the worker URL/token in Settings.'); });
+  });
+
+  el.exportBtn.addEventListener('click', function(){
+    if(!currentId) return;
+    api('/api/messages?sessionId=' + encodeURIComponent(currentId) + '&after=0&as=support')
+      .then(function(data){
+        var who = el.threadSite.textContent || 'Visitor';
+        var lines = ['Conversation with ' + who, 'Exported ' + new Date().toLocaleString(), ''];
+        (data.messages || []).forEach(function(m){
+          var speaker = m.from === 'support' ? 'You' : who;
+          var time = m.ts ? new Date(m.ts).toLocaleString() : '';
+          lines.push('[' + time + '] ' + speaker + ': ' + m.text);
+        });
+        var blob = new Blob([lines.join('\n')], { type: 'text/plain' });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = 'conversation-' + currentId.slice(0, 8) + '.txt';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      })
+      .catch(function(){ alert('Could not export — check the worker URL/token in Settings.'); });
   });
 
   function pollThread(scroll){
@@ -585,6 +744,109 @@
 
   el.backBtn.addEventListener('click', function(){
     el.sidebar.classList.add('mobile-open');
+  });
+
+  // ---------- quick replies ----------
+  function loadQuickReplies(){
+    try{
+      var raw = localStorage.getItem(LS_QUICK_REPLIES);
+      if(!raw) return DEFAULT_QUICK_REPLIES.slice();
+      var parsed = JSON.parse(raw);
+      return Array.isArray(parsed) ? parsed : DEFAULT_QUICK_REPLIES.slice();
+    }catch(e){ return DEFAULT_QUICK_REPLIES.slice(); }
+  }
+  function saveQuickReplies(){
+    localStorage.setItem(LS_QUICK_REPLIES, JSON.stringify(quickReplies));
+  }
+  function insertQuickReply(text){
+    var cur = el.replyInput.value;
+    el.replyInput.value = cur ? (cur.replace(/\s+$/, '') + '\n' + text) : text;
+    autoGrow();
+    el.replyInput.focus();
+    closeQuickReplyMenu();
+  }
+  function renderQuickReplyMenu(){
+    el.qrList.innerHTML = '';
+    if(!quickReplies.length){
+      el.qrList.innerHTML = '<div class="qr-empty">No quick replies yet — add some from Manage.</div>';
+      return;
+    }
+    quickReplies.forEach(function(qr){
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'qr-item';
+      btn.innerHTML = '<span class="qr-label"></span><span class="qr-preview"></span>';
+      btn.querySelector('.qr-label').textContent = qr.label || 'Untitled';
+      btn.querySelector('.qr-preview').textContent = qr.text || '';
+      btn.addEventListener('click', function(){ insertQuickReply(qr.text || ''); });
+      el.qrList.appendChild(btn);
+    });
+  }
+  function openQuickReplyMenu(){ renderQuickReplyMenu(); el.qrMenu.hidden = false; }
+  function closeQuickReplyMenu(){ el.qrMenu.hidden = true; }
+  el.qrBtn.addEventListener('click', function(e){
+    e.stopPropagation();
+    el.qrMenu.hidden ? openQuickReplyMenu() : closeQuickReplyMenu();
+  });
+  document.addEventListener('click', function(e){
+    if(!el.qrMenu.hidden && !el.qrMenu.contains(e.target) && e.target !== el.qrBtn){
+      closeQuickReplyMenu();
+    }
+  });
+
+  function renderQrEditList(){
+    el.qrEditList.innerHTML = '';
+    if(!quickReplies.length){
+      el.qrEditList.innerHTML = '<div class="qr-empty">Nothing here yet — add your first one below.</div>';
+    }
+    quickReplies.forEach(function(qr, idx){
+      var row = document.createElement('div');
+      row.className = 'qr-row';
+      row.innerHTML =
+        '<div class="qr-fields">' +
+          '<input type="text" class="qr-label-input" placeholder="Label (e.g. Thanks)" maxlength="40" />' +
+          '<textarea class="qr-text-input" placeholder="Reply text" maxlength="1000" rows="2"></textarea>' +
+        '</div>' +
+        '<button type="button" class="qr-remove" title="Remove"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>';
+      var labelInput = row.querySelector('.qr-label-input');
+      var textInput = row.querySelector('.qr-text-input');
+      labelInput.value = qr.label || '';
+      textInput.value = qr.text || '';
+      labelInput.addEventListener('input', function(){ quickReplies[idx].label = this.value; saveQuickReplies(); });
+      textInput.addEventListener('input', function(){ quickReplies[idx].text = this.value; saveQuickReplies(); });
+      row.querySelector('.qr-remove').addEventListener('click', function(){
+        quickReplies.splice(idx, 1);
+        saveQuickReplies();
+        renderQrEditList();
+      });
+      el.qrEditList.appendChild(row);
+    });
+  }
+  function openQrModal(){ renderQrEditList(); el.qrModal.hidden = false; }
+  function closeQrModal(){ el.qrModal.hidden = true; }
+  el.qrManageBtn.addEventListener('click', function(){ closeQuickReplyMenu(); openQrModal(); });
+  el.qrCloseBtn.addEventListener('click', closeQrModal);
+  el.qrAddBtn.addEventListener('click', function(){
+    quickReplies.push({ label: '', text: '' });
+    saveQuickReplies();
+    renderQrEditList();
+    var inputs = el.qrEditList.querySelectorAll('.qr-label-input');
+    if(inputs.length) inputs[inputs.length - 1].focus();
+  });
+
+  // ---------- keyboard shortcuts ----------
+  document.addEventListener('keydown', function(e){
+    if((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k'){
+      e.preventDefault();
+      el.searchInput.focus();
+      el.searchInput.select();
+      return;
+    }
+    if(e.key === 'Escape'){
+      if(!el.qrMenu.hidden){ closeQuickReplyMenu(); return; }
+      if(!el.qrModal.hidden){ closeQrModal(); return; }
+      if(!el.settingsModal.hidden && configured()){ closeSettings(); return; }
+    }
   });
 
   // ---------- polling ----------
