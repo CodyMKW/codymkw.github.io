@@ -714,10 +714,10 @@
             <div class="status-node"></div>
         </a>
 
-        <a href="https://anilist.co/user/CodyMKW/" target="_blank" rel="noopener noreferrer" class="feed-row" id="al-container">
+        <a href="https://myanimelist.net/profile/CodyMKW" target="_blank" rel="noopener noreferrer" class="feed-row" id="al-container">
             <div class="feed-media" id="al-icon">📺</div>
             <div class="feed-content">
-                <div class="feed-title pulse" id="al-title">Checking AniList…</div>
+                <div class="feed-title pulse" id="al-title">Checking MyAnimeList…</div>
                 <div class="feed-subtitle" id="al-sub">Finding my last watched episode</div>
             </div>
             <div class="feed-meta">Anime</div>
@@ -906,34 +906,53 @@ fetch('https://3dsrpc.codymkw.workers.dev/?fc=0645-5821-2438&network=nintendo')
         document.getElementById('rpc-sub').innerText = "Couldn't connect to the API";
     });
 
-// ─── AniList ──────────────────────────────────────────────────────────────────
-fetch('https://graphql.anilist.co', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ query: `query{Page(page:1,perPage:1){mediaList(userName:"CodyMKW",sort:UPDATED_TIME_DESC){status progress media{title{english romaji}coverImage{large}siteUrl}}}}` })
-})
-.then(r => r.json())
-.then(data => {
-    const entry = data?.data?.Page?.mediaList?.[0];
-    if (!entry) throw new Error();
-    const anime = entry.media;
-    const title = anime.title.english || anime.title.romaji;
-    const statusMap = { CURRENT:'Watching right now', COMPLETED:'Finished watching', DROPPED:'Dropped', PAUSED:'On hold', PLANNING:'Planning to watch' };
-    let sub = statusMap[entry.status] || entry.status;
-    if (entry.status === 'CURRENT' && entry.progress) sub += ` • Ep ${entry.progress}`;
+// ─── MyAnimeList ──────────────────────────────────────────────────────────────
+fetch('https://mal.codymkw.workers.dev/v2/users/CodyMKW/animelist?sort=list_updated_at&limit=1&fields=list_status,alternative_titles')
+    .then(r => r.json())
+    .then(data => {
+        const item = data?.data?.[0];
+        if (!item) throw new Error();
 
-    document.getElementById('al-icon').innerHTML = `<img src="${anime.coverImage.large}" alt="">`;
-    document.getElementById('al-title').innerText = title;
-    document.getElementById('al-title').classList.remove('pulse');
-    document.getElementById('al-sub').innerText = sub;
-    document.getElementById('al-container').href = anime.siteUrl;
-    if (entry.status === 'CURRENT') document.getElementById('al-container').classList.add('live-active');
-})
-.catch(() => {
-    document.getElementById('al-title').innerText = "My Anime List";
-    document.getElementById('al-title').classList.remove('pulse');
-    document.getElementById('al-sub').innerText = "Take a look at my watch history";
-});
+        const node = item.node;
+        const status = item.list_status;
+        const title = node.alternative_titles?.en || node.title;
+
+        const statusMap = {
+            watching: 'Watching right now',
+            completed: 'Finished watching',
+            on_hold: 'On hold',
+            dropped: 'Dropped',
+            plan_to_watch: 'Planning to watch'
+        };
+
+        let sub = statusMap[status.status] || status.status;
+
+        if (status.is_rewatching) {
+            sub += ' • Rewatching';
+        }
+
+        if (status.num_episodes_watched > 0) {
+            sub += ` • Ep ${status.num_episodes_watched}`;
+        }
+
+        if (node.main_picture?.large || node.main_picture?.medium) {
+            document.getElementById('al-icon').innerHTML = `<img src="${node.main_picture.large || node.main_picture.medium}" alt="">`;
+        }
+
+        document.getElementById('al-title').innerText = title;
+        document.getElementById('al-title').classList.remove('pulse');
+        document.getElementById('al-sub').innerText = sub;
+        document.getElementById('al-container').href = `https://myanimelist.net/anime/${node.id}`;
+
+        if (status.status === 'watching') {
+            document.getElementById('al-container').classList.add('live-active');
+        }
+    })
+    .catch(() => {
+        document.getElementById('al-title').innerText = "MyAnimeList Profile";
+        document.getElementById('al-title').classList.remove('pulse');
+        document.getElementById('al-sub').innerText = "Check out my watch list";
+    });
 
 // ─── Last.fm ──────────────────────────────────────────────────────────────────
 fetch('https://lastfm-last-played.biancarosa.com.br/CodyMKW/latest-song')
