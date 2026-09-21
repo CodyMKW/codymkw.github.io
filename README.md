@@ -1,102 +1,50 @@
-# CodyMKW // My Hub
-![Switch Status](https://widgets.codymkw.workers.dev/badge/presence.svg?nsaId=644cd5195d154bd5) | ![Splatoon 3 rotation](https://widgets.codymkw.workers.dev/badge/splatoon3.svg?mode=anarchyOpen) | ![Splatoon 2 rotation](https://widgets.codymkw.workers.dev/badge/splatoon2.svg?mode=ranked) | ![Amiibo of the day](https://widgets.codymkw.workers.dev/badge/amiibo.svg)
+# codymkw.github.io
 
-A real-time personal dashboard aggregating live gaming activity, coding milestones, and media tracking into one sleek, glassmorphic interface. Serves as a central hub for my digital presence, pulling from multiple API streams to display live stats dynamically — with zero build steps or external dependencies.
+My personal little corner of the internet — a single-page dashboard that pulls together what I'm currently playing, watching, listening to, and coding into one page. No frameworks, no build step, no backend beyond a couple of tiny Cloudflare Workers. Just one HTML file doing its thing.
 
----
+## What is this exactly
 
-## ✨ Features
+Basically I got tired of having my "presence" scattered across GitHub, Switch, 3DS, MyAnimeList, Last.fm, and Ultra Rumble with no single place to actually show any of it off. So this page just fetches from all of those on load and lays it out like a little live status board. If you land on it, you can see in about two seconds whether I'm currently playing something, what I last watched, what's stuck in my head music-wise, and what I've been coding lately.
 
-- **Dynamic Level Badge** — Automatically computes my current "Lv." from my real birthdate, no manual updates needed.
-- **Time-Aware Greeting** — Detects the visitor's local time to display distinct morning, afternoon, or evening messages.
-- **Live Operational Glow** — Nintendo Switch and 3DS cards pulse green and highlight when the console is actively online.
-- **Skeleton Shimmer Loading** — All feed rows display an animated shimmer while data is in-flight, then snap into place.
-- **Real Ping Measurement** — Lightweight Gravatar fetch used to display a live latency reading.
-- **Copy Page Link** — Clipboard button with a legacy `execCommand` fallback for older browsers.
-- **Responsive Layout** — Two-column on desktop, single-column on mobile (≤820px breakpoint).
-- **Curated Interest Tags** — Micro-badges for Splatoon, Animal Crossing, Ultra Rumble, and Web Dev.
+Everything is client-side — the page hits each API directly in the browser, no server rendering, no database, nothing to maintain besides the two Workers that proxy the 3DS and Ultra Rumble stuff (since those don't have public browser-friendly APIs on their own).
 
----
+## What's actually on it
 
-## 📡 Live Data Feeds
+- **A profile card** with an auto-calculated age (does the math off my real birthday so I never have to remember to update it) and a greeting that changes depending on what time it is for whoever's visiting
+- **A "what I'm up to" feed** that live-pulls:
+  - My latest GitHub activity (commit, repo, what kind of action it was)
+  - Whether I'm online on Switch right now, and what I'm playing
+  - Same deal but for 3DS, via a friend-code lookup
+  - My most recently watched anime on MyAnimeList
+  - Whatever I last had playing on Last.fm
+  - Current Ultra Rumble map rotation and season info
+  - A little status.cafe blurb if I've set one
+- **Green glow + pulsing dot** on the Switch/3DS cards specifically when I'm actually online right now, so you can tell "live" apart from "last seen"
+- **Shimmer/skeleton loading** on every row while it's fetching, so it doesn't just look broken for a second
+- **A grid of links** to a bunch of the other random web tools and projects I've built (converters, editors, little games, whatever)
+- Everything fails gracefully — if any one API is down or rate-limited, that row just falls back to a generic "check out my profile" link instead of looking broken
 
-| Feed | Source | Details |
-|------|--------|---------|
-| **GitHub** | `api.github.com/users/CodyMKW/events/public` | Fetches the most recent public event — commit, repo name, and action type |
-| **Nintendo Switch** | `nxapi-presence.fancy.org.uk` | Displays current game title and lifetime hours via nxapi |
-| **Nintendo 3DS** | `3dsrpc.codymkw.workers.dev` *(custom Worker)* | Broadcasts active game, Mii assets, and online state via 3DSRPC |
-| **AniList** | `graphql.anilist.co` *(GraphQL)* | Pulls watch status, episode progress, and cover art |
-| **Last.fm** | `lastfm-last-played.biancarosa.com.br` | Shows last listened track, artist, and album art |
-| **Ultra Rumble** | `ultrarumble-api.codymkw.workers.dev` *(custom Worker)* | Checks Ranked vs. Casual map split, rotation timer, and active season |
+## How it's built
 
-All fetches are client-side. Every feed degrades gracefully — if an API call fails, a static fallback message is shown instead.
+Plain HTML/CSS/JS, no dependencies, no bundler. All the live data comes from:
 
----
+| What | Where from |
+|---|---|
+| GitHub activity | GitHub's public events API |
+| Switch presence | [nxapi](https://github.com/samuelthomas2774/nxapi) |
+| 3DS presence | a Worker I run that talks to 3DSRPC |
+| Anime | MyAnimeList's API (via a Worker to dodge CORS) |
+| Music | Last.fm, through a public last-played proxy |
+| Ultra Rumble | a Worker I run that scrapes/caches map rotation data |
+| Status | status.cafe |
 
-## 🛠️ Tech Stack
+The two Workers exist purely because those two APIs won't play nice with being called directly from a browser (CORS, auth, etc.) — everything else just gets fetched straight from the client.
 
-- **Frontend** — Vanilla HTML5, CSS3 custom properties, and async JavaScript (Fetch API). No frameworks, no build tools.
-- **Backend** — Two custom Cloudflare Workers powering the 3DS and Ultra Rumble feeds.
-- **Hosting** — Single static file, deployable to any static host.
+## Tweaking it for yourself
 
----
+If you want to fork this for your own hub, basically everything you'd want to change lives right at the top of the relevant `fetch()` calls in the `<script>` — swap out usernames/friend codes/worker URLs and you're most of the way there. The birthday used for the level badge is just a plain `Date` near the top of the script too.
 
-## ⚙️ Customization
+## Heads up
 
-### Birthday / Level Badge
-```js
-const birthday = new Date('1991-01-17T00:00:00');
-```
-
-### Nintendo Switch Friend ID
-```js
-fetch('https://nxapi-presence.fancy.org.uk/api/presence/644cd5195d154bd5?include-splatoon3=1')
-```
-
-### Nintendo 3DS Friend Code
-```js
-fetch('https://3dsrpc.codymkw.workers.dev/?fc=0645-5821-2438&network=nintendo')
-```
-
-### AniList / Last.fm Username
-Replace `CodyMKW` in the AniList GraphQL query body and the Last.fm fetch URL.
-
-### Interest Badges
-Edit the four `.matrix-badge` elements in the HTML:
-```html
-<div class="matrix-badge"><span>🐙</span> Splatoon</div>
-```
-
-### Hub Status Label
-```html
-<div class="widget-value" style="color:var(--accent-green)">CHILLIN</div>
-```
-
-### Main Site Link
-```html
-<a href="https://codymkw.nekoweb.org" class="btn-prime">Visit My Main Site</a>
-```
-
----
-
-## 🎨 Design Tokens
-
-| Token | Value | Usage |
-|-------|-------|-------|
-| `--bg-main` | `#060913` | Page background |
-| `--bg-card` | `rgba(10,15,30,0.75)` | Card backgrounds |
-| `--accent-green` | `#00ff87` | Primary accent, live indicators |
-| `--accent-cyan` | `#60efff` | Secondary accent, clock & ping |
-| `--text-primary` | `#f0f4f8` | Main text |
-| `--text-muted` | `#7e8c9a` | Labels and subtitles |
-
----
-
-## 🔗 Links & Credits
-
-- **Main Site** — [codymkw.nekoweb.org](https://codymkw.nekoweb.org)
-- **Switch Presence** — Powered by [samuelthomas2774/nxapi](https://github.com/samuelthomas2774/nxapi)
-- **3DS Presence** — Powered by [3DSRPC](https://3dsrpc.com)
-- **Ultra Rumble Data** — Connected to [ultrarumble.com](https://ultrarumble.com)
-- **AniList** — [anilist.co/user/CodyMKW](https://anilist.co/user/CodyMKW/)
-- **Last.fm** — [last.fm/user/CodyMKW](https://www.last.fm/user/CodyMKW)
+- The 3DS and Ultra Rumble Workers are mine specifically, so if you're forking this you'll need to stand up your own or point at different data sources for those two
+- No dependencies means no dependency hell, but also means if an upstream API changes its response shape, that one card just breaks quietly instead of loudly — check the console if something's not showing up right
