@@ -60,6 +60,8 @@
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
             z-index: 20;
             flex-shrink: 0;
+            overflow-y: auto;
+            max-height: 100vh;
         }
 
         .sidebar-header {
@@ -318,7 +320,7 @@
             position: sticky; top: 0; background: rgba(43, 43, 43, 0.95);
             backdrop-filter: blur(8px); z-index: 10;
         }
-        .group-title-wrapper { display: flex; align-items: center; gap: 0.75rem; }
+        .group-title-wrapper { display: flex; align-items: center; gap: 0.5rem; }
         .group-title { font-size: 1.125rem; font-weight: 700; color: white; letter-spacing: 0.025em; }
         .btn-edit-game { padding: 0.375rem; color: var(--switch-muted); background: transparent; border: none; border-radius: 0.25rem; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center;}
         .btn-edit-game:hover { color: var(--switch-cyan); background: rgba(77, 77, 77, 0.2); }
@@ -366,7 +368,7 @@
 
         /* Modals (Rename, P2P, Settings) */
         .custom-modal { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.8); z-index: 60; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); transition: opacity 0.2s; }
-        .modal-card { background: var(--switch-darker); border: 1px solid rgba(77, 77, 77, 0.3); border-radius: 0.75rem; padding: 1.5rem; width: 400px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); transition: transform 0.2s; }
+        .modal-card { background: var(--switch-darker); border: 1px solid rgba(77, 77, 77, 0.3); border-radius: 0.75rem; padding: 1.5rem; width: 420px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); transition: transform 0.2s; }
         .modal-title { font-size: 1.25rem; font-weight: 700; color: white; margin-bottom: 1rem; }
         .modal-desc { font-size: 0.875rem; color: var(--switch-muted); margin-bottom: 1rem; }
         
@@ -580,7 +582,7 @@
     <div id="settings-modal" class="custom-modal hidden opacity-0">
         <div class="modal-card scale-95" id="settings-modal-content">
             <h3 class="modal-title">App Settings</h3>
-            <p class="modal-desc" style="margin-bottom: 1.25rem;">Customize your profile to share with connected peers.</p>
+            <p class="modal-desc" style="margin-bottom: 1.25rem;">Customize your profile and manage spoiler settings for connected peers.</p>
             <div class="input-group">
                 <label class="input-label cyan">Your Display Name</label>
                 <input type="text" id="setting-name" class="input-field active" value="Cody" placeholder="Your name...">
@@ -589,10 +591,18 @@
                 <label class="input-label muted">Favorite Game (Shown to Peer)</label>
                 <input type="text" id="setting-game" class="input-field" placeholder="e.g. Splatoon 3, Animal Crossing">
             </div>
-            <div class="input-group" style="margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between;">
+            <div class="input-group" style="display: flex; align-items: center; justify-content: space-between;">
                 <label class="input-label muted" style="margin-bottom: 0;">Request High-Res Thumbnails</label>
                 <input type="checkbox" id="setting-hires" style="width: 1.2rem; height: 1.2rem; accent-color: var(--switch-cyan);">
             </div>
+            
+            <div class="input-group" style="margin-top: 1.25rem; margin-bottom: 1.5rem;">
+                <label class="input-label cyan" style="color: var(--switch-red);">Spoilered Games (Hidden from Peer)</label>
+                <div id="settings-spoiler-list" style="max-height: 120px; overflow-y: auto; background: var(--switch-dark); border: 1px solid rgba(77, 77, 77, 0.2); border-radius: 0.25rem; padding: 0.5rem; display: flex; flex-direction: column; gap: 0.5rem;">
+                    <!-- Injected via JS -->
+                </div>
+            </div>
+
             <div class="modal-actions">
                 <button id="btn-close-settings" class="btn-save">Done</button>
             </div>
@@ -609,6 +619,7 @@
         let currentLightboxIndex = 0;
         let activeMediaList = []; 
         let hashToGameMap = {};
+        let spoilerGamesMap = {}; // Tracks game hashes marked as spoilers
 
         // Profile State
         let userProfile = {
@@ -634,6 +645,9 @@
             
             const savedProfile = localStorage.getItem('switch_gallery_profile');
             if (savedProfile) userProfile = { ...userProfile, ...JSON.parse(savedProfile) };
+
+            const savedSpoilers = localStorage.getItem('switch_gallery_spoilers');
+            if (savedSpoilers) spoilerGamesMap = JSON.parse(savedSpoilers);
         } catch (e) {
             console.warn("Failed to load local storage data");
         }
@@ -645,6 +659,10 @@
 
         function saveGameMap() {
             localStorage.setItem('switch_gallery_games', JSON.stringify(hashToGameMap));
+        }
+
+        function saveSpoilerMap() {
+            localStorage.setItem('switch_gallery_spoilers', JSON.stringify(spoilerGamesMap));
         }
 
         const btnSelectFolder = document.getElementById('btn-select-folder');
@@ -682,7 +700,41 @@
         const btnOpenSettings = document.getElementById('btn-open-settings');
         const btnCloseSettings = document.getElementById('btn-close-settings');
 
+        function renderSettingsSpoilerList() {
+            const container = document.getElementById('settings-spoiler-list');
+            if (!container) return;
+            container.innerHTML = '';
+
+            const spoiledHashes = Object.keys(spoilerGamesMap).filter(h => spoilerGamesMap[h]);
+            if (spoiledHashes.length === 0) {
+                container.innerHTML = `<span style="font-size: 0.8rem; color: var(--switch-muted);">No games marked as spoiler.</span>`;
+                return;
+            }
+
+            spoiledHashes.forEach(hash => {
+                const name = hashToGameMap[hash] || hash;
+                const row = document.createElement('div');
+                row.style.cssText = "display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem;";
+                row.innerHTML = `
+                    <span style="color: white; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 220px;" title="${name}">${name}</span>
+                    <button class="btn-cancel" style="padding: 0.2rem 0.5rem; font-size: 0.75rem; color: var(--switch-red); border: 1px solid var(--switch-red);" data-hash="${hash}">Unspoil</button>
+                `;
+                row.querySelector('button').addEventListener('click', (e) => {
+                    const h = e.target.getAttribute('data-hash');
+                    spoilerGamesMap[h] = false;
+                    saveSpoilerMap();
+                    renderSettingsSpoilerList();
+                    renderView();
+                    if (p2pConnection && p2pConnection.open) {
+                        syncGallery(p2pConnection);
+                    }
+                });
+                container.appendChild(row);
+            });
+        }
+
         btnOpenSettings.addEventListener('click', () => {
+            renderSettingsSpoilerList();
             settingsModal.classList.remove('hidden');
             requestAnimationFrame(() => {
                 settingsModal.classList.remove('opacity-0');
@@ -856,6 +908,11 @@
                 currentSource = 'local';
                 document.querySelector('#nav-sources .nav-item[data-source="local"]').click(); // Reset to SD view
 
+                // Automatically send updated gallery if peer is connected
+                if (p2pConnection && p2pConnection.open) {
+                    syncGallery(p2pConnection);
+                }
+
             } catch (error) {
                 console.error(error);
                 if (error.name !== 'AbortError') {
@@ -999,6 +1056,34 @@
                             editBtn.innerHTML = `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>`;
                             editBtn.onclick = () => openRenameModal(media.hash);
                             titleWrapper.appendChild(editBtn);
+
+                            if (currentSource === 'local') {
+                                const isSpoilered = !!spoilerGamesMap[media.hash];
+                                const spoilerBtn = document.createElement('button');
+                                spoilerBtn.className = 'btn-edit-game';
+                                spoilerBtn.title = isSpoilered ? "Unmark as Spoiler" : "Mark as Spoiler (Hide from Connected Peer)";
+                                spoilerBtn.style.color = isSpoilered ? 'var(--switch-red)' : 'var(--switch-muted)';
+                                spoilerBtn.innerHTML = isSpoilered
+                                    ? `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24M1 1l22 22"></path></svg>`
+                                    : `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>`;
+
+                                spoilerBtn.onclick = () => {
+                                    spoilerGamesMap[media.hash] = !spoilerGamesMap[media.hash];
+                                    saveSpoilerMap();
+                                    renderView();
+                                    if (p2pConnection && p2pConnection.open) {
+                                        syncGallery(p2pConnection);
+                                    }
+                                };
+                                titleWrapper.appendChild(spoilerBtn);
+
+                                if (isSpoilered) {
+                                    const tag = document.createElement('span');
+                                    tag.style.cssText = "font-size: 0.65rem; font-weight: 700; color: var(--switch-red); background: rgba(230,0,18,0.15); border: 1px solid var(--switch-red); padding: 0.1rem 0.4rem; border-radius: 0.25rem; letter-spacing: 0.05em; margin-left: 0.25rem;";
+                                    tag.textContent = "SPOILER (HIDDEN FROM PEER)";
+                                    titleWrapper.appendChild(tag);
+                                }
+                            }
                         }
 
                         headerContainer.appendChild(titleWrapper);
@@ -1341,13 +1426,17 @@
         async function syncGallery(conn) {
             if (allMediaFiles.length === 0) return;
             
-            const lightweightFiles = await Promise.all(allMediaFiles.map(async (m, index) => {
+            // Exclude games marked as spoiler from sync
+            const allowedFiles = allMediaFiles.filter(m => !spoilerGamesMap[m.hash]);
+
+            const lightweightFiles = await Promise.all(allowedFiles.map(async (m) => {
+                const origIdx = allMediaFiles.indexOf(m);
                 let thumbDataUrl = '';
                 if (m.type === 'image') {
                     thumbDataUrl = await createThumbnail(m.file);
                 }
                 return {
-                    originalIndex: index,
+                    originalIndex: origIdx,
                     type: m.type,
                     dateStr: m.dateStr,
                     hash: m.hash,
@@ -1391,10 +1480,8 @@
 
         async function handleFileRequest(conn, index) {
             const media = allMediaFiles[index];
-            if (!media) return;
+            if (!media || spoilerGamesMap[media.hash]) return; // Refuse if spoiler
             
-            // For large videos, we'd need chunks. This relies on PeerJS raw file support.
-            // PeerJS can send Blobs/Files directly up to certain limits in modern browsers.
             try {
                 conn.send({
                     type: 'file_response',
