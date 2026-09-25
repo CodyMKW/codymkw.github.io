@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cody's Switch Gallery</title>
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
-    <script src="https://u.widget.st/ar.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
         
@@ -435,7 +434,7 @@
     </style>
 </head>
 <body>
-    <ws-widget type="cursor" iid="15966" embed="script"></ws-widget>
+
     <aside class="sidebar">
         <div class="sidebar-header">
             <img src="https://codymkw.github.io/switch/switchjoyconlogo.png" alt="Switch Logo" class="sidebar-logo">
@@ -496,6 +495,7 @@
             <div id="peer-activity-box" class="stats-box hidden">
                 <p style="color: #a855f7; font-weight: 700; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.35rem;">Peer Activity</p>
                 <p id="peer-activity-text" style="color: var(--switch-muted); font-size: 0.8rem; line-height: 1.4;">Not connected.</p>
+                <button id="btn-jump-peer-viewing" style="display:none; margin-top: 0.5rem; width: 100%; padding: 0.35rem 0.6rem; border: 1px solid #a855f7; color: #a855f7; background: rgba(168,85,247,0.08); border-radius: 0.25rem; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.03em; cursor: pointer; transition: background 0.2s;">▶ Jump to what they're viewing</button>
             </div>
         </div>
 
@@ -705,6 +705,7 @@
             name: 'Peer',
             favoriteGame: ''
         };
+        let peerViewingTarget = null; // {hash, timestamp} of what the peer is currently looking at, if known
 
         // Pagination Variables
         let currentPage = 1;
@@ -1100,6 +1101,22 @@
             paginationControls.classList.remove('flex');
 
             let sourceList = currentSource === 'local' ? allMediaFiles : remoteMediaFiles;
+
+            // The big "No Media Loaded" placard is only relevant while
+            // viewing your own (unloaded) SD card. It previously stayed
+            // visible forever until YOU loaded a folder, even while you were
+            // actively browsing a connected peer's gallery - so their media
+            // rendered underneath/alongside your own empty-state message.
+            // Toggle it based on what's actually being viewed right now.
+            if (currentSource === 'local' && allMediaFiles.length === 0) {
+                emptyState.classList.remove('hidden');
+                emptyState.querySelector('svg').classList.remove('hidden');
+                emptyState.querySelector('h2').classList.remove('hidden');
+                emptyState.querySelector('p').classList.remove('hidden');
+                mediaGrid.classList.add('hidden');
+            } else {
+                emptyState.classList.add('hidden');
+            }
 
             // Handle Header Title
             let sourcePrefix = currentSource === 'local' ? 'SD Card' : `${peerProfile.name}'s Gallery`;
@@ -1563,6 +1580,8 @@
                 document.getElementById('lightbox-reactions').style.display = 'none';
                 document.getElementById('btn-star-media').style.display = 'none';
                 document.getElementById('peer-activity-box').classList.add('hidden');
+                document.getElementById('btn-jump-peer-viewing').style.display = 'none';
+                peerViewingTarget = null;
                 if (currentSource === 'remote') {
                     document.querySelector('#nav-sources .nav-item[data-source="local"]').click();
                 }
@@ -1578,7 +1597,7 @@
             let viewing = null;
             if (!lightbox.classList.contains('hidden') && activeMediaList[currentLightboxIndex]) {
                 const m = activeMediaList[currentLightboxIndex];
-                viewing = { game: hashToGameMap[m.hash] || m.hash, type: m.type };
+                viewing = { game: hashToGameMap[m.hash] || m.hash, type: m.type, hash: m.hash, timestamp: m.timestamp };
             }
             p2pConnection.send({ type: 'presence', source: currentSource, sort: currentSort, viewing });
         }
@@ -1586,15 +1605,47 @@
         function updatePeerActivityDisplay(data) {
             const box = document.getElementById('peer-activity-box');
             const text = document.getElementById('peer-activity-text');
+            const jumpBtn = document.getElementById('btn-jump-peer-viewing');
             box.classList.remove('hidden');
             if (data.viewing) {
                 text.innerHTML = `👀 Looking at a ${data.viewing.type} from <strong style="color:white;">${data.viewing.game}</strong>`;
-                return;
+                peerViewingTarget = { hash: data.viewing.hash, timestamp: data.viewing.timestamp };
+                jumpBtn.style.display = 'block';
+                jumpBtn.textContent = "▶ Jump to what they're viewing";
+            } else {
+                const src = data.source === 'local' ? `their own SD Card` : `your shared gallery`;
+                const sortTxt = data.sort === 'all' ? 'all media' : (data.sort === 'date' ? 'sorted by date' : 'sorted by game');
+                text.textContent = `Browsing ${src} • ${sortTxt}`;
+                peerViewingTarget = null;
+                jumpBtn.style.display = 'none';
             }
-            const src = data.source === 'local' ? `their own SD Card` : `your shared gallery`;
-            const sortTxt = data.sort === 'all' ? 'all media' : (data.sort === 'date' ? 'sorted by date' : 'sorted by game');
-            text.textContent = `Browsing ${src} • ${sortTxt}`;
         }
+
+        function jumpToPeerViewing() {
+            if (!peerViewingTarget) return;
+            const jumpBtn = document.getElementById('btn-jump-peer-viewing');
+
+            const openInList = () => {
+                const idx = remoteMediaFiles.findIndex(m => m.hash === peerViewingTarget.hash && m.timestamp === peerViewingTarget.timestamp);
+                if (idx === -1) {
+                    jumpBtn.textContent = "Not available in your synced copy";
+                    setTimeout(() => { jumpBtn.textContent = "▶ Jump to what they're viewing"; }, 1800);
+                    return;
+                }
+                triggerLightbox(idx, remoteMediaFiles);
+            };
+
+            // What the peer is looking at lives in their own gallery, which
+            // is what shows up on your "remote" source - switch to it first.
+            if (currentSource !== 'remote') {
+                document.querySelector('#nav-sources .nav-item[data-source="remote"]').click();
+                // renderView from the click above is synchronous, so the
+                // freshly-populated remoteMediaFiles is ready immediately.
+            }
+            openInList();
+        }
+
+        document.getElementById('btn-jump-peer-viewing').addEventListener('click', jumpToPeerViewing);
 
         function spawnFloatingReaction(emoji) {
             const host = document.querySelector('.lightbox-content');
