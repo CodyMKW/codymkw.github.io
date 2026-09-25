@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cody's Switch Gallery</title>
+    
+    <!-- PeerJS for WebRTC Peer-to-Peer Connections -->
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        
+        :root {
+            --switch-dark: #2b2b2b;
+            --switch-darker: #1f1f1f;
+            --switch-light: #4d4d4d;
+            --switch-red: #E60012;
+            --switch-cyan: #00c3e3;
+            --switch-text: #ebebeb;
+            --switch-muted: #9a9a9a;
+            --switch-green: #4ade80;
+            --switch-orange: #f59e0b;
+        }
+
+        /* Base Resets & Typography */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+            background-color: var(--switch-dark);
+            color: var(--switch-text);
+            display: flex;
+            height: 100vh;
+            width: 100vw;
+            user-select: none;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Utility Classes for JS Toggles */
+        .hidden { display: none !important; }
+        .flex { display: flex !important; }
+        .flex-col { display: flex !important; flex-direction: column !important; }
+        .opacity-0 { opacity: 0 !important; }
+        .scale-95 { transform: scale(0.95) !important; }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--switch-darker); }
+        ::-webkit-scrollbar-thumb { background: var(--switch-light); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--switch-muted); }
+
+        /* Layout Structure */
+        .sidebar {
+            width: 18rem; background-color: var(--switch-darker);
+            display: flex; flex-direction: column;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            z-index: 20; flex-shrink: 0;
+        }
+        .sidebar-header {
+            padding: 1.5rem; display: flex; align-items: center; gap: 0.75rem;
+            border-bottom: 1px solid rgba(43, 43, 43, 0.5);
+        }
+        .sidebar-logo { width: 2rem; height: 2rem; filter: drop-shadow(0 4px 3px rgba(0,0,0,0.1)); }
+        .sidebar-title { font-size: 1.25rem; font-weight: 700; letter-spacing: 0.025em; }
+
+        .main-area { flex: 1; position: relative; display: flex; flex-direction: column; background-color: var(--switch-dark); }
+        .top-bar {
+            height: 3.5rem; display: flex; justify-content: space-between; align-items: center;
+            padding: 0 1.5rem; color: var(--switch-muted); font-size: 0.875rem;
+            flex-shrink: 0; border-bottom: 1px solid rgba(31, 31, 31, 0.8);
+            background-color: rgba(43, 43, 43, 0.95); backdrop-filter: blur(4px);
+            z-index: 10; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+
+        /* Buttons & Navigation */
+        .btn-load {
+            width: 100%; background-color: var(--switch-light); color: white;
+            font-weight: 600; padding: 0.75rem 1rem; border-radius: 0.5rem;
+            display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+            border: none; cursor: pointer; transition: all 0.2s;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        .btn-load:hover { background-color: white; color: black; }
+        .btn-load:hover svg { color: var(--switch-red); }
+        .btn-load svg { width: 1.25rem; height: 1.25rem; transition: color 0.2s; }
+
+        .nav-container { flex: 1; overflow-y: auto; margin-top: 0.5rem; padding: 0 0.75rem; display: flex; flex-direction: column; gap: 0.5rem; }
+        .nav-item {
+            width: 100%; text-align: left; padding: 0.75rem 1rem; border-radius: 0.25rem;
+            color: var(--switch-muted); background: transparent; border: none;
+            border-left: 4px solid transparent; font-size: 0.875rem; font-weight: 500;
+            cursor: pointer; display: flex; align-items: center; gap: 0.75rem;
+            transition: color 0.2s, background-color 0.2s;
+        }
+        .nav-item:hover { color: white; }
+        .nav-item.active { background-color: var(--switch-light); border-left-color: var(--switch-red); color: white; }
+        .nav-item.p2p-active { border-left-color: var(--switch-orange); color: white; }
+        .nav-item svg { width: 1.25rem; height: 1.25rem; }
+
+        /* Stats Box */
+        .stats-box {
+            margin-top: auto; margin-bottom: 1rem; padding: 1rem 1.5rem;
+            background-color: rgba(31, 31, 31, 0.5); border-radius: 0.5rem;
+            margin-left: 0.75rem; margin-right: 0.75rem; font-size: 0.875rem;
+            color: var(--switch-muted); border: 1px solid rgba(77, 77, 77, 0.2);
+        }
+        .stat-row { display: flex; justify-content: space-between; }
+        .stat-row + .stat-row { margin-top: 0.5rem; }
+
+        /* Network Status Bubble */
+        .network-badge {
+            display: inline-flex; align-items: center; gap: 0.375rem;
+            background: rgba(0,0,0,0.3); padding: 0.25rem 0.5rem;
+            border-radius: 9999px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+        }
+        .status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--switch-muted); }
+        .status-dot.online { background: var(--switch-green); box-shadow: 0 0 8px var(--switch-green); }
+        .status-dot.connecting { background: var(--switch-orange); animation: pulse 1s infinite; }
+
+        /* Gallery Area */
+        .gallery-container {
+            flex: 1; overflow-y: auto; padding: 1.5rem; padding-bottom: 6rem;
+            position: relative; scroll-behavior: smooth;
+        }
+
+        .empty-state { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 1.5rem; }
+        .empty-icon { width: 6rem; height: 6rem; color: var(--switch-light); margin-bottom: 1.5rem; filter: drop-shadow(0 10px 8px rgba(0,0,0,0.04)); }
+
+        .loading-box {
+            display: flex; flex-direction: column; align-items: center; margin-top: 2.5rem;
+            padding: 1.5rem; background-color: var(--switch-darker); border-radius: 0.75rem;
+            border: 1px solid rgba(77, 77, 77, 0.2); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.1); width: 40px; height: 40px;
+            border-radius: 50%; border-left-color: var(--switch-red); animation: spin 1s linear infinite; margin-bottom: 1rem;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+        /* Grid System */
+        .media-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+        @media (min-width: 768px) { .media-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+        @media (min-width: 1024px) { .media-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+        @media (min-width: 1280px) { .media-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
+
+        /* Media Item & Hover Effects */
+        .media-item {
+            position: relative; aspect-ratio: 16 / 9; background-color: var(--switch-darker);
+            border-radius: 0.25rem; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            cursor: pointer; border: 3px solid transparent; transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.15s ease;
+        }
+        .media-item:hover {
+            transform: scale(1.05); border-color: var(--switch-cyan);
+            box-shadow: 0 0 0 2px var(--switch-dark), 0 0 12px 4px rgba(0, 195, 227, 0.5); z-index: 10;
+        }
+        .media-item.remote-placeholder {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            border: 1px dashed rgba(255,255,255,0.2); background: rgba(31,31,31,0.5);
+        }
+        .media-item.remote-placeholder:hover { border-color: var(--switch-orange); box-shadow: 0 0 0 2px var(--switch-dark), 0 0 12px 4px rgba(245, 158, 11, 0.5); }
+        
+        .media-item video, .media-item img { width: 100%; height: 100%; object-fit: cover; }
+
+        .media-badge {
+            position: absolute; top: 0.5rem; right: 0.5rem; padding: 0.125rem 0.375rem;
+            background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); border-radius: 0.25rem;
+            font-size: 10px; font-weight: 700; color: white; opacity: 0; transition: opacity 0.2s;
+            pointer-events: none; letter-spacing: 0.05em;
+        }
+        .media-item:hover .media-badge { opacity: 1; }
+
+        .thumbnail-overlay {
+            position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+            background: rgba(0,0,0,0.1); transition: background 0.2s; pointer-events: none;
+        }
+        .media-item:hover .thumbnail-overlay { background: transparent; }
+        
+        .thumbnail-icon-wrapper {
+            background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); border-radius: 9999px;
+            padding: 0.625rem; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); transition: transform 0.2s;
+        }
+        .media-item:hover .thumbnail-icon-wrapper { transform: scale(0.9); }
+        .thumbnail-icon-wrapper svg { width: 1.5rem; height: 1.5rem; color: white; margin-left: 0.125rem; }
+
+        /* Dynamic Group Headers */
+        .group-header {
+            display: flex; align-items: center; justify-content: space-between;
+            border-bottom: 2px solid rgba(77, 77, 77, 0.3); padding-bottom: 0.5rem; padding-top: 0.5rem; margin-bottom: 1rem; margin-top: 2rem;
+            position: sticky; top: 0; background: rgba(43, 43, 43, 0.95); backdrop-filter: blur(8px); z-index: 10;
+        }
+        .group-title-wrapper { display: flex; align-items: center; gap: 0.75rem; }
+        .group-title { font-size: 1.125rem; font-weight: 700; color: white; letter-spacing: 0.025em; }
+        .btn-edit-game { padding: 0.375rem; color: var(--switch-muted); background: transparent; border: none; border-radius: 0.25rem; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center;}
+        .btn-edit-game:hover { color: var(--switch-cyan); background: rgba(77, 77, 77, 0.2); }
+        .btn-edit-game svg { width: 1rem; height: 1rem; }
+        .group-count { font-size: 0.75rem; font-weight: 700; background: var(--switch-light); color: white; padding: 0.25rem 0.5rem; border-radius: 9999px; }
+
+        /* Lightbox Modal */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.95); z-index: 50; display: flex; flex-direction: column; backdrop-filter: blur(8px); transition: opacity 0.3s; }
+        .lightbox-toolbar { height: 4rem; display: flex; justify-content: space-between; align-items: center; padding: 0 1.5rem; flex-shrink: 0; background: linear-gradient(to bottom, black, transparent); }
+        .lightbox-info { font-size: 0.875rem; font-weight: 500; color: rgba(255, 255, 255, 0.7); letter-spacing: 0.025em; text-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        
+        .btn-icon { color: white; background: rgba(255,255,255,0.1); border: none; border-radius: 9999px; padding: 0.5rem; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
+        .btn-icon:hover { color: var(--switch-red); background: rgba(255,255,255,0.2); transform: rotate(90deg); }
+        
+        .lightbox-content { flex: 1; display: flex; align-items: center; justify-content: center; padding: 1.5rem; position: relative; overflow: hidden; }
+        
+        .nav-arrow { position: absolute; padding: 1rem; color: rgba(255,255,255,0.5); background: rgba(0,0,0,0.4); border: none; border-radius: 9999px; cursor: pointer; transition: all 0.2s; z-index: 20; opacity: 0; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+        .lightbox-content:hover .nav-arrow { opacity: 1; }
+        .nav-arrow:hover { color: white; background: rgba(0,0,0,0.8); transform: scale(1.1); }
+        .arrow-left { left: 1.5rem; }
+        .arrow-right { right: 1.5rem; }
+        
+        .lightbox-media-wrapper { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; position: relative; flex-direction: column; gap: 1rem; }
+        .lightbox-media-wrapper video, .lightbox-media-wrapper img { max-width: 100%; max-height: 85vh; border-radius: 0.25rem; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); z-index: 10; position: relative; }
+        .lightbox-media-wrapper video { background: black; }
+        .lightbox-media-wrapper img { object-fit: contain; background: rgba(0,0,0,0.5); }
+
+        /* Modals */
+        .modal-base { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.8); z-index: 60; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); transition: opacity 0.2s; }
+        .modal-card { background: var(--switch-darker); border: 1px solid rgba(77, 77, 77, 0.3); border-radius: 0.75rem; padding: 1.5rem; width: 400px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); transition: transform 0.2s; }
+        .modal-title { font-size: 1.25rem; font-weight: 700; color: white; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
+        
+        .input-group { margin-bottom: 1.25rem; }
+        .input-label { display: block; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; color: var(--switch-muted); }
+        .input-label.cyan { color: var(--switch-cyan); }
+        
+        .input-field { width: 100%; background: var(--switch-dark); border-radius: 0.25rem; padding: 0.75rem; color: white; font-size: 1rem; border: 1px solid rgba(77, 77, 77, 0.2); outline: none; }
+        .input-field:disabled { color: var(--switch-muted); cursor: not-allowed; }
+        .input-field:focus { box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06), 0 0 0 2px var(--switch-cyan); border-color: transparent;}
+        
+        .input-field-wrapper { display: flex; gap: 0.5rem; }
+        .btn-copy { background: var(--switch-light); border: none; color: white; padding: 0 1rem; border-radius: 0.25rem; cursor: pointer; font-weight: 600; transition: 0.2s; }
+        .btn-copy:hover { background: var(--switch-cyan); }
+
+        .modal-actions { display: flex; justify-content: flex-end; gap: 0.75rem; }
+        .btn-cancel { padding: 0.5rem 1.25rem; border-radius: 0.25rem; font-weight: 600; color: var(--switch-text); background: transparent; border: none; cursor: pointer; transition: background 0.2s; }
+        .btn-cancel:hover { background: var(--switch-light); }
+        .btn-save { padding: 0.5rem 1.25rem; border-radius: 0.25rem; font-weight: 700; color: white; background: var(--switch-red); border: none; cursor: pointer; transition: background 0.2s; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+        .btn-save:hover { background: #ff3344; }
+        .btn-connect-p2p { background: var(--switch-orange); }
+        .btn-connect-p2p:hover { background: #fbbf24; }
+
+        .view-indicator { width: 0.5rem; height: 0.5rem; border-radius: 9999px; background: var(--switch-cyan); display: block; }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <img src="https://codymkw.github.io/switch/switchjoyconlogo.png" alt="Switch Logo" class="sidebar-logo">
+            <h1 class="sidebar-title">Album Gallery</h1>
+        </div>
+
+        <div style="padding: 1rem;">
+            <button id="btn-select-folder" class="btn-load">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 19a2 2 0 01-2-2V7a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1M5 19h14a2 2 0 002-2v-5a2 2 0 00-2-2H9a2 2 0 00-2 2v5a2 2 0 01-2 2z"></path></svg>
+                Load SD Card Folder
+            </button>
+        </div>
+
+        <nav class="nav-container" id="nav-filters">
+            <button class="nav-item active" data-view="all">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+                All Media
+            </button>
+            <button class="nav-item" data-view="date">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                Sort by Date
+            </button>
+            <button class="nav-item" data-view="game">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                Sort by Game
+            </button>
+
+            <!-- Peer 2 Peer Features -->
+            <div style="margin: 1rem 0 0.5rem 0; border-top: 1px solid rgba(77,77,77,0.3); padding-top: 1rem;">
+                <button class="nav-item" id="btn-open-network" style="color: var(--switch-orange);">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
+                    Local Wireless (P2P)
+                </button>
+                <button class="nav-item hidden" id="nav-remote-gallery" data-view="remote">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                    Remote Gallery
+                </button>
+            </div>
+            
+            <div id="stats-container" class="stats-box hidden">
+                <p class="stat-row"><span>Media:</span> <span id="stat-count" style="color: white; font-weight: 700;">0</span></p>
+                <p class="stat-row"><span>Status:</span> <span id="stat-status" style="color: var(--switch-cyan); font-weight: 500;">Ready</span></p>
+            </div>
+        </nav>
+    </aside>
+
+    <main class="main-area">
+        <header class="top-bar">
+            <div id="current-view-title" style="font-weight: 700; color: white; letter-spacing: 0.05em; text-transform: uppercase; font-size: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
+                <span class="view-indicator"></span> All Media
+            </div>
+            <div style="display: flex; align-items: center; gap: 1.5rem;">
+                <div id="p2p-status-indicator" class="network-badge">
+                    <span class="status-dot" id="p2p-dot"></span> <span id="p2p-label">Offline</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 0.25rem; font-size: 0.75rem; font-weight: 500;">
+                    <svg style="width: 1rem; height: 1rem;" fill="currentColor" viewBox="0 0 24 24"><path d="M17 4h-3V2h-4v2H7c-1.103 0-2 .897-2 2v14c0 1.103.897 2 2 2h10c1.103 0 2-.897 2-2V6c0-1.103-.897-2-2-2zM7 20V6h10l.002 14H7z"></path></svg>
+                    SD
+                </div>
+                <span id="clock" style="font-weight: 700; letter-spacing: 0.025em;">12:00 AM</span>
+            </div>
+        </header>
+
+        <div id="gallery-container" class="gallery-container">
+            <!-- Empty/Initial State -->
+            <div id="empty-state" class="empty-state">
+                <svg class="empty-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                <h2 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.75rem; color: white;">No Media Loaded</h2>
+                <p style="color: var(--switch-muted); max-width: 28rem; line-height: 1.625;">Click "Load SD Card Folder" and select the <strong>Nintendo/Album</strong> folder on your drive to preview screenshots and clips.</p>
+                
+                <div id="loading-state" class="loading-box hidden">
+                    <div class="spinner"></div>
+                    <p style="color: var(--switch-cyan); font-weight: 700; letter-spacing: 0.025em;">Scanning Album...</p>
+                    <p id="loading-count" style="font-size: 0.75rem; color: var(--switch-muted); margin-top: 0.5rem;">Found: 0 files</p>
+                </div>
+            </div>
+
+            <div id="media-grid" class="flex-col hidden" style="gap: 2rem;"></div>
+        </div>
+    </main>
+
+    <!-- Lightbox Modal -->
+    <div id="lightbox" class="modal-base hidden opacity-0">
+        <div class="lightbox-toolbar">
+            <div id="lightbox-info" class="lightbox-info"></div>
+            <button id="btn-close-lightbox" class="btn-icon">
+                <svg style="width: 1.5rem; height: 1.5rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+
+        <div class="lightbox-content">
+            <button id="btn-prev" class="nav-arrow arrow-left">
+                <svg style="width: 2rem; height: 2rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
+            </button>
+
+            <div id="lightbox-media-container" class="lightbox-media-wrapper">
+                <!-- Media injected here -->
+            </div>
+
+            <button id="btn-next" class="nav-arrow arrow-right">
+                <svg style="width: 2rem; height: 2rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Rename Game Modal -->
+    <div id="rename-modal" class="modal-base hidden opacity-0">
+        <div class="modal-card scale-95" id="rename-modal-content">
+            <h3 class="modal-title">Edit Game Name</h3>
+            <p style="font-size: 0.875rem; color: var(--switch-muted); margin-bottom: 1rem;">Map this game hash to its actual title.</p>
+            <div class="input-group">
+                <label class="input-label">Hash ID</label>
+                <input type="text" id="rename-hash-display" class="input-field" disabled>
+            </div>
+            <div class="input-group" style="margin-bottom: 1.5rem;">
+                <label class="input-label cyan">Game Title</label>
+                <input type="text" id="rename-input" class="input-field" placeholder="Enter game name...">
+            </div>
+            <div class="modal-actions">
+                <button id="btn-cancel-rename" class="btn-cancel">Cancel</button>
+                <button id="btn-save-rename" class="btn-save">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Network P2P Modal -->
+    <div id="network-modal" class="modal-base hidden opacity-0">
+        <div class="modal-card scale-95" id="network-modal-content">
+            <h3 class="modal-title" style="color: var(--switch-orange);">
+                <svg style="width: 1.5rem; height: 1.5rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
+                Local Wireless setup
+            </h3>
+            <p style="font-size: 0.875rem; color: var(--switch-muted); margin-bottom: 1rem;">Connect directly to a friend's browser to share galleries. No servers required.</p>
+            
+            <div class="input-group">
+                <label class="input-label">Your Connection ID</label>
+                <div class="input-field-wrapper">
+                    <input type="text" id="my-peer-id" class="input-field" value="Generating..." disabled>
+                    <button class="btn-copy" id="btn-copy-id">Copy</button>
+                </div>
+            </div>
+            
+            <div class="input-group" style="margin-bottom: 1.5rem;">
+                <label class="input-label cyan" style="color: var(--switch-orange);">Connect to Friend's ID</label>
+                <input type="text" id="target-peer-id" class="input-field" placeholder="Paste their ID here...">
+            </div>
+            
+            <div class="modal-actions">
+                <button id="btn-cancel-network" class="btn-cancel">Close</button>
+                <button id="btn-connect-peer" class="btn-save btn-connect-p2p">Connect</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let allMediaFiles = [];
+        let currentView = 'all';
+        let currentLightboxIndex = 0;
+        let activeMediaList = []; 
+        let hashToGameMap = {};
+
+        // P2P Variables
+        let peer = null;
+        let p2pConnection = null;
+        let myPeerId = null;
+        let remoteManifest = [];
+        let requestedFileCache = {};
+
+        // Load mappings
+        try {
+            const savedMap = localStorage.getItem('switch_gallery_games');
+            if (savedMap) hashToGameMap = JSON.parse(savedMap);
+        } catch (e) { console.warn("Failed to load game map from local storage"); }
+        function saveGameMap() { localStorage.setItem('switch_gallery_games', JSON.stringify(hashToGameMap)); }
+
+        // DOM Elements
+        const btnSelectFolder = document.getElementById('btn-select-folder');
+        const emptyState = document.getElementById('empty-state');
+        const loadingState = document.getElementById('loading-state');
+        const loadingCount = document.getElementById('loading-count');
+        const mediaGrid = document.getElementById('media-grid');
+        const navItems = document.querySelectorAll('.nav-item');
+        const statCount = document.getElementById('stat-count');
+        const statStatus = document.getElementById('stat-status');
+        const statsContainer = document.getElementById('stats-container');
+        const currentViewTitle = document.getElementById('current-view-title');
+        
+        // Lightbox
+        const lightbox = document.getElementById('lightbox');
+        const lightboxMediaContainer = document.getElementById('lightbox-media-container');
+        const lightboxInfo = document.getElementById('lightbox-info');
+        const btnCloseLightbox = document.getElementById('btn-close-lightbox');
+        const btnPrev = document.getElementById('btn-prev');
+        const btnNext = document.getElementById('btn-next');
+
+        // Rename Modal
+        const renameModal = document.getElementById('rename-modal');
+        const renameModalContent = document.getElementById('rename-modal-content');
+        const renameHashDisplay = document.getElementById('rename-hash-display');
+        const renameInput = document.getElementById('rename-input');
+        const btnCancelRename = document.getElementById('btn-cancel-rename');
+        const btnSaveRename = document.getElementById('btn-save-rename');
+        let currentEditingHash = null;
+
+        // Network Modal
+        const networkModal = document.getElementById('network-modal');
+        const networkModalContent = document.getElementById('network-modal-content');
+        const btnOpenNetwork = document.getElementById('btn-open-network');
+        const btnCancelNetwork = document.getElementById('btn-cancel-network');
+        const btnConnectPeer = document.getElementById('btn-connect-peer');
+        const myPeerIdInput = document.getElementById('my-peer-id');
+        const targetPeerIdInput = document.getElementById('target-peer-id');
+        const btnCopyId = document.getElementById('btn-copy-id');
+        const navRemoteGallery = document.getElementById('nav-remote-gallery');
+        const p2pDot = document.getElementById('p2p-dot');
+        const p2pLabel = document.getElementById('p2p-label');
+
+        if (!window.showDirectoryPicker) {
+            emptyState.innerHTML = `
+                <div style="color: var(--switch-red); margin-bottom: 1rem;">
+                    <svg style="width: 4rem; height: 4rem; margin: 0 auto;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                </div>
+                <h2 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; color: white;">Browser Not Supported</h2>
+                <p style="color: var(--switch-muted); max-width: 28rem;">Your browser does not support the File System Access API required to read local folders directly. Please use Google Chrome, Edge, or Opera on a desktop.</p>
+            `;
+            btnSelectFolder.disabled = true;
+            btnSelectFolder.style.opacity = '0.5';
+        }
+
+        // ==========================================
+        // P2P LOGIC (WebRTC via PeerJS)
+        // ==========================================
+        function initPeerJS() {
+            if (peer) return;
+            peer = new Peer({ debug: 2 });
+            
+            peer.on('open', (id) => {
+                myPeerId = id;
+                myPeerIdInput.value = id;
+            });
+
+            // When someone connects to US
+            peer.on('connection', (conn) => {
+                setupConnection(conn);
+            });
+
+            peer.on('error', (err) => {
+                console.error("PeerJS Error:", err);
+                alert("Network Error: " + err.type);
+                p2pDot.className = 'status-dot';
+                p2pLabel.textContent = 'Offline';
+            });
+        }
+
+        function setupConnection(conn) {
+            p2pConnection = conn;
+            
+            conn.on('open', () => {
+                console.log("Connected to: ", conn.peer);
+                p2pDot.className = 'status-dot online';
+                p2pLabel.textContent = 'Connected';
+                closeNetworkModal();
+                
+                // If we have files loaded, send the manifest immediately
+                if (allMediaFiles.length > 0) {
+                    sendLocalManifest();
+                }
+            });
+
+            conn.on('data', async (data) => {
+                if (data.type === 'MANIFEST') {
+                    console.log("Received remote manifest:", data.files.length, "files");
+                    remoteManifest = data.files;
+                    navRemoteGallery.classList.remove('hidden');
+                    
+                    // Auto-switch view if empty locally
+                    if (allMediaFiles.length === 0) {
+                        document.querySelector('[data-view="remote"]').click();
+                    }
+                }
+                
+                if (data.type === 'REQUEST_FILE') {
+                    // Remote user wants a file. Send it back!
+                    const fileObj = allMediaFiles[data.index].file;
+                    const blob = await fileObj.arrayBuffer(); // Send as array buffer for WebRTC
+                    conn.send({
+                        type: 'FILE_RESPONSE',
+                        index: data.index,
+                        blob: blob,
+                        fileType: fileObj.type
+                    });
+                }
+
+                if (data.type === 'FILE_RESPONSE') {
+                    // We received a file we requested!
+                    const receivedBlob = new Blob([data.blob], { type: data.fileType });
+                    const url = URL.createObjectURL(receivedBlob);
+                    requestedFileCache[data.index] = url;
+                    
+                    // If this is currently active in the lightbox, render it!
+                    if (currentLightboxIndex === data.index && currentView === 'remote') {
+                        renderLightboxMedia(url, remoteManifest[data.index].type);
+                    }
+                }
+            });
+
+            conn.on('close', () => {
+                p2pConnection = null;
+                p2pDot.className = 'status-dot';
+                p2pLabel.textContent = 'Offline';
+                navRemoteGallery.classList.add('hidden');
+                if(currentView === 'remote') document.querySelector('[data-view="all"]').click();
+            });
+        }
+
+        function sendLocalManifest() {
+            if (!p2pConnection || !p2pConnection.open) return;
+            // Send only metadata, not the heavy File objects
+            const manifest = allMediaFiles.map((m, index) => ({
+                index: index,
+                type: m.type,
+                dateStr: m.dateStr,
+                hash: m.hash,
+                timestamp: m.timestamp
+            }));
+            p2pConnection.send({ type: 'MANIFEST', files: manifest });
+        }
+
+        btnOpenNetwork.addEventListener('click', () => {
+            initPeerJS();
+            networkModal.classList.remove('hidden');
+            requestAnimationFrame(() => {
+                networkModal.classList.remove('opacity-0');
+                networkModalContent.classList.remove('scale-95');
+            });
+        });
+
+        function closeNetworkModal() {
+            networkModal.classList.add('opacity-0');
+            networkModalContent.classList.add('scale-95');
+            setTimeout(() => networkModal.classList.add('hidden'), 200);
+        }
+
+        btnCancelNetwork.addEventListener('click', closeNetworkModal);
+        
+        btnCopyId.addEventListener('click', () => {
+            navigator.clipboard.writeText(myPeerIdInput.value);
+            btnCopyId.textContent = 'Copied!';
+            setTimeout(() => btnCopyId.textContent = 'Copy', 2000);
+        });
+
+        btnConnectPeer.addEventListener('click', () => {
+            const targetId = targetPeerIdInput.value.trim();
+            if (!targetId || !peer) return;
+            
+            p2pDot.className = 'status-dot connecting';
+            p2pLabel.textContent = 'Connecting...';
+            btnConnectPeer.textContent = 'Connecting...';
+            
+            const conn = peer.connect(targetId, { reliable: true });
+            setupConnection(conn);
+            
+            setTimeout(() => { btnConnectPeer.textContent = 'Connect'; }, 1000);
+        });
+
+
+        // ==========================================
+        // FILE SYSTEM LOGIC
+        // ==========================================
+        function parseFileName(file) {
+            const name = file.name;
+            const ext = name.split('.').pop().toLowerCase();
+            const hashMatch = name.match(/-([A-Fa-f0-9]{32})\.(jpg|mp4)$/i);
+            const dateMatch = name.match(/^(\d{4})(\d{2})(\d{2})/);
+
+            let hash = 'UNKNOWN';
+            if (hashMatch) hash = hashMatch[1].toUpperCase();
+
+            let dateStr = 'Unknown Date';
+            if (dateMatch) {
+                dateStr = `${dateMatch[1]}-${dateMatch[2]}-${dateMatch[3]}`;
+            } else {
+                const d = new Date(file.lastModified);
+                dateStr = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+            }
+            
+            return {
+                file: file,
+                url: URL.createObjectURL(file),
+                type: ext === 'mp4' ? 'video' : 'image',
+                dateStr: dateStr,
+                hash: hash,
+                timestamp: file.lastModified,
+                isLocal: true
+            };
+        }
+
+        async function* getFilesRecursively(entry) {
+            if (entry.kind === 'file') {
+                const file = await entry.getFile();
+                const ext = file.name.split('.').pop().toLowerCase();
+                if (ext === 'jpg' || ext === 'mp4') yield file;
+            } else if (entry.kind === 'directory') {
+                for await (const handle of entry.values()) {
+                    yield* getFilesRecursively(handle);
+                }
+            }
+        }
+
+        function cleanupUrls() {
+            allMediaFiles.forEach(media => { if(media.url) URL.revokeObjectURL(media.url); });
+            allMediaFiles = [];
+        }
+
+        btnSelectFolder.addEventListener('click', async () => {
+            try {
+                const dirHandle = await window.showDirectoryPicker({ mode: 'read' });
+
+                cleanupUrls();
+                emptyState.querySelector('svg').classList.add('hidden');
+                emptyState.querySelector('h2').classList.add('hidden');
+                emptyState.querySelector('p').classList.add('hidden');
+                loadingState.classList.remove('hidden');
+                loadingState.classList.add('flex');
+                mediaGrid.innerHTML = '';
+                statsContainer.classList.remove('hidden');
+                statStatus.textContent = 'Scanning...';
+                statStatus.style.color = 'var(--switch-cyan)';
+
+                let count = 0;
+                for await (const file of getFilesRecursively(dirHandle)) {
+                    allMediaFiles.push(parseFileName(file));
+                    count++;
+                    if (count % 50 === 0) { loadingCount.textContent = `Found: ${count} files`; statCount.textContent = count; }
+                }
+
+                allMediaFiles.sort((a, b) => b.timestamp - a.timestamp);
+                
+                statCount.textContent = allMediaFiles.length;
+                statStatus.textContent = 'Loaded';
+                statStatus.style.color = '#4ade80';
+                loadingState.classList.add('hidden');
+                emptyState.classList.add('hidden');
+                mediaGrid.classList.remove('hidden');
+
+                if (allMediaFiles.length === 0) {
+                    emptyState.classList.remove('hidden');
+                    emptyState.innerHTML = '<h2 style="font-size: 1.25rem; font-weight: 700; color: white;">No Screenshots or Videos Found.</h2><p style="color: var(--switch-muted); margin-top: 0.5rem;">Make sure you selected the correct Album folder.</p>';
+                    return;
+                }
+
+                // If P2P is connected, automatically send the new manifest to friends
+                sendLocalManifest();
+
+                if (currentView !== 'remote') renderView();
+
+            } catch (error) {
+                console.error(error);
+                if (error.name !== 'AbortError') {
+                    emptyState.innerHTML = `
+                        <div style="color: var(--switch-red); margin-bottom: 1rem;">
+                            <svg style="width: 4rem; height: 4rem; margin: 0 auto;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                        </div>
+                        <h2 style="font-size: 1.25rem; font-weight: 700; color: white;">Access Error</h2>
+                        <p style="color: var(--switch-muted); margin-top: 0.5rem;">${error.message}</p>
+                    `;
+                }
+                loadingState.classList.add('hidden');
+            }
+        });
+
+        // ==========================================
+        // RENDER LOGIC
+        // ==========================================
+        function createMediaItem(media, index, globalList) {
+            const container = document.createElement('div');
+            container.className = 'media-item';
+            
+            if (media.isLocal) {
+                if (media.type === 'video') {
+                    container.innerHTML = `
+                        <video src="${media.url}#t=0.001" preload="metadata" muted loop onmouseover="this.play()" onmouseout="this.pause()"></video>
+                        <div class="thumbnail-overlay">
+                            <div class="thumbnail-icon-wrapper"><svg fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+                        </div>
+                    `;
+                } else {
+                    container.innerHTML = `<img src="${media.url}" loading="lazy" alt="Screenshot" />`;
+                }
+            } else {
+                // Remote item placeholder
+                container.classList.add('remote-placeholder');
+                container.innerHTML = `
+                    <svg style="width: 2.5rem; height: 2.5rem; color: var(--switch-muted); margin-bottom: 0.5rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        ${media.type === 'video' 
+                            ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>' 
+                            : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>'}
+                    </svg>
+                    <span style="font-size: 0.75rem; color: white; font-weight: 500;">Click to Load</span>
+                `;
+            }
+            
+            const badge = document.createElement('div');
+            badge.className = 'media-badge';
+            badge.textContent = media.type === 'video' ? 'MP4' : 'JPG';
+            container.appendChild(badge);
+
+            container.addEventListener('click', () => openLightbox(index, globalList));
+            return container;
+        }
+
+        function renderGroupedGrid(groups, mode) {
+            mediaGrid.innerHTML = '';
+            for (const [groupKey, files] of Object.entries(groups)) {
+                const headerContainer = document.createElement('div');
+                headerContainer.className = 'group-header';
+                
+                const titleWrapper = document.createElement('div');
+                titleWrapper.className = 'group-title-wrapper';
+                
+                const header = document.createElement('h3');
+                header.className = 'group-title';
+                
+                if (mode === 'game') {
+                    const gameName = hashToGameMap[groupKey] || groupKey;
+                    header.textContent = gameName;
+                    
+                    const editBtn = document.createElement('button');
+                    editBtn.className = 'btn-edit-game';
+                    editBtn.title = "Edit Game Name";
+                    editBtn.innerHTML = `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>`;
+                    editBtn.onclick = () => openRenameModal(groupKey);
+                    
+                    titleWrapper.appendChild(header);
+                    titleWrapper.appendChild(editBtn);
+                } else {
+                    header.textContent = groupKey;
+                    titleWrapper.appendChild(header);
+                }
+
+                const countBadge = document.createElement('span');
+                countBadge.className = 'group-count';
+                countBadge.textContent = files.length;
+
+                headerContainer.appendChild(titleWrapper);
+                headerContainer.appendChild(countBadge);
+                mediaGrid.appendChild(headerContainer);
+
+                const grid = document.createElement('div');
+                grid.className = 'media-grid';
+                
+                files.forEach(media => {
+                    grid.appendChild(createMediaItem(media, media.index || media.originalIndex, files));
+                });
+                
+                mediaGrid.appendChild(grid);
+            }
+        }
+
+        function renderView() {
+            mediaGrid.innerHTML = '';
+            emptyState.classList.add('hidden');
+            
+            if (currentView === 'remote') {
+                if (remoteManifest.length === 0) {
+                    emptyState.classList.remove('hidden');
+                    return;
+                }
+                currentViewTitle.innerHTML = '<span class="view-indicator" style="background: var(--switch-orange);"></span> Remote Gallery';
+                const grid = document.createElement('div');
+                grid.className = 'media-grid';
+                grid.style.marginTop = '1rem';
+                remoteManifest.forEach((media, idx) => {
+                    // Injecting original index for accurate referencing
+                    media.isLocal = false;
+                    media.originalIndex = idx; 
+                    grid.appendChild(createMediaItem(media, idx, remoteManifest));
+                });
+                mediaGrid.appendChild(grid);
+                return;
+            }
+
+            if (allMediaFiles.length === 0) {
+                emptyState.classList.remove('hidden');
+                return;
+            }
+            
+            if (currentView === 'all') {
+                currentViewTitle.innerHTML = '<span class="view-indicator"></span> All Media';
+                const grid = document.createElement('div');
+                grid.className = 'media-grid';
+                grid.style.marginTop = '1rem';
+                allMediaFiles.forEach((media, idx) => {
+                    grid.appendChild(createMediaItem(media, idx, allMediaFiles));
+                });
+                mediaGrid.appendChild(grid);
+            } 
+            else if (currentView === 'date' || currentView === 'game') {
+                currentViewTitle.innerHTML = `<span class="view-indicator"></span> Sorted by ${currentView === 'date' ? 'Date' : 'Game'}`;
+                const groups = {};
+                allMediaFiles.forEach((m, idx) => {
+                    const key = currentView === 'date' ? m.dateStr : m.hash;
+                    if(!groups[key]) groups[key] = [];
+                    // Keep original index for lightbox mapping
+                    const mappedMedia = {...m, originalIndex: idx};
+                    groups[key].push(mappedMedia);
+                });
+                
+                let sortedKeys;
+                if (currentView === 'date') {
+                    sortedKeys = Object.keys(groups).sort((a, b) => b.localeCompare(a));
+                } else {
+                    sortedKeys = Object.keys(groups).sort((a, b) => (hashToGameMap[a]||a).localeCompare(hashToGameMap[b]||b));
+                }
+                
+                const sortedGroups = sortedKeys.reduce((obj, key) => { obj[key] = groups[key]; return obj; }, {});
+                renderGroupedGrid(sortedGroups, currentView);
+            }
+        }
+
+        navItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                navItems.forEach(nav => {
+                    nav.classList.remove('active');
+                    nav.classList.remove('p2p-active');
+                });
+                
+                currentView = e.currentTarget.dataset.view;
+                if (currentView === 'remote') {
+                    e.currentTarget.classList.add('p2p-active');
+                } else if (currentView) {
+                    e.currentTarget.classList.add('active');
+                }
+                
+                if(currentView) {
+                    renderView();
+                    document.getElementById('gallery-container').scrollTo(0,0);
+                }
+            });
+        });
+
+        // ==========================================
+        // MODALS (Rename & Lightbox)
+        // ==========================================
+        function openRenameModal(hash) {
+            currentEditingHash = hash;
+            renameHashDisplay.value = hash;
+            renameInput.value = hashToGameMap[hash] || '';
+            renameModal.classList.remove('hidden');
+            requestAnimationFrame(() => {
+                renameModal.classList.remove('opacity-0');
+                renameModalContent.classList.remove('scale-95');
+                renameInput.focus();
+            });
+        }
+
+        function closeRenameModal() {
+            renameModal.classList.add('opacity-0');
+            renameModalContent.classList.add('scale-95');
+            setTimeout(() => { renameModal.classList.add('hidden'); currentEditingHash = null; }, 200);
+        }
+
+        btnCancelRename.addEventListener('click', closeRenameModal);
+        btnSaveRename.addEventListener('click', () => {
+            if (currentEditingHash) {
+                const newName = renameInput.value.trim();
+                if (newName) hashToGameMap[currentEditingHash] = newName;
+                else delete hashToGameMap[currentEditingHash];
+                saveGameMap();
+                closeRenameModal();
+                if (currentView === 'game') renderView();
+            }
+        });
+        renameInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') btnSaveRename.click(); });
+
+        function openLightbox(index, list) {
+            activeMediaList = list;
+            updateLightboxContent(index);
+            lightbox.classList.remove('hidden');
+            requestAnimationFrame(() => lightbox.classList.remove('opacity-0'));
+        }
+
+        function closeLightbox() {
+            lightbox.classList.add('opacity-0');
+            setTimeout(() => {
+                lightbox.classList.add('hidden');
+                lightboxMediaContainer.innerHTML = '';
+                // Pause any remote video to save memory
+                requestedFileCache = {}; 
+            }, 300);
+        }
+
+        function renderLightboxMedia(url, type) {
+            lightboxMediaContainer.innerHTML = ''; 
+            let mediaElement;
+            if (type === 'video') {
+                mediaElement = document.createElement('video');
+                mediaElement.controls = true;
+                mediaElement.autoplay = true;
+                mediaElement.src = url;
+            } else {
+                mediaElement = document.createElement('img');
+                mediaElement.src = url;
+            }
+            lightboxMediaContainer.appendChild(mediaElement);
+        }
+
+        function updateLightboxContent(index) {
+            currentLightboxIndex = index;
+            const media = activeMediaList[index];
+            lightboxMediaContainer.innerHTML = ''; 
+            
+            if (currentView === 'remote') {
+                // Check if we already fetched it
+                if (requestedFileCache[media.index]) {
+                    renderLightboxMedia(requestedFileCache[media.index], media.type);
+                } else {
+                    // Show Loading State & Request from peer
+                    lightboxMediaContainer.innerHTML = `
+                        <div class="spinner"></div>
+                        <p style="color: var(--switch-orange); font-weight: 700;">Fetching from peer...</p>
+                        <p style="font-size: 0.75rem; color: var(--switch-muted); margin-top: 0.5rem;">Large MP4s may take a moment.</p>
+                    `;
+                    p2pConnection.send({ type: 'REQUEST_FILE', index: media.index });
+                }
+            } else {
+                renderLightboxMedia(media.url, media.type);
+            }
+            
+            const gameName = hashToGameMap[media.hash] || media.hash;
+            lightboxInfo.innerHTML = `
+                <span style="color: white; font-weight: 700;">${index + 1} / ${activeMediaList.length}</span>
+                <span style="margin: 0 0.75rem; border-left: 1px solid rgba(77, 77, 77, 0.5); height: 1rem; display: inline-block; vertical-align: middle;"></span>
+                <span>Date: ${media.dateStr}</span>
+                <span style="margin: 0 0.75rem; border-left: 1px solid rgba(77, 77, 77, 0.5); height: 1rem; display: inline-block; vertical-align: middle;"></span>
+                <span style="color: var(--switch-cyan);">${gameName}</span>
+            `;
+
+            btnPrev.style.visibility = index > 0 ? 'visible' : 'hidden';
+            btnNext.style.visibility = index < activeMediaList.length - 1 ? 'visible' : 'hidden';
+        }
+
+        btnCloseLightbox.addEventListener('click', closeLightbox);
+        
+        btnPrev.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (currentLightboxIndex > 0) updateLightboxContent(currentLightboxIndex - 1);
+        });
+
+        btnNext.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (currentLightboxIndex < activeMediaList.length - 1) updateLightboxContent(currentLightboxIndex + 1);
+        });
+
+        lightboxMediaContainer.addEventListener('click', (e) => {
+            if (e.target === lightboxMediaContainer) closeLightbox();
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (!lightbox.classList.contains('hidden')) {
+                if (e.key === 'Escape') closeLightbox();
+                if (e.key === 'ArrowLeft' && currentLightboxIndex > 0) updateLightboxContent(currentLightboxIndex - 1);
+                if (e.key === 'ArrowRight' && currentLightboxIndex < activeMediaList.length - 1) updateLightboxContent(currentLightboxIndex + 1);
+            }
+            else if (!renameModal.classList.contains('hidden')) {
+                if (e.key === 'Escape') closeRenameModal();
+            }
+            else if (!networkModal.classList.contains('hidden')) {
+                if (e.key === 'Escape') closeNetworkModal();
+            }
+        });
+
+        setInterval(() => {
+            const now = new Date();
+            document.getElementById('clock').textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }, 1000);
+
+    </script>
+</body>
+</html>
