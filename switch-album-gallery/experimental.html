@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cody's Switch Gallery</title>
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+    <script src="https://u.widget.st/ar.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
         
@@ -389,10 +390,52 @@
         .btn-save:hover { background: #ff3344; }
 
         .view-indicator { width: 0.5rem; height: 0.5rem; border-radius: 9999px; background: var(--switch-cyan); display: block; }
+
+        /* Spoiler locking (local view) */
+        .media-item.spoiler-locked img,
+        .media-item.spoiler-locked video { filter: blur(18px) brightness(0.55); }
+        .spoiler-lock-badge {
+            position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            gap: 0.25rem; color: white; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+            text-shadow: 0 2px 6px rgba(0,0,0,0.8); pointer-events: none; z-index: 2;
+        }
+        .spoiler-lock-badge svg { width: 1.5rem; height: 1.5rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6)); }
+
+        /* Star badge (peer favorited this of yours) */
+        .star-badge {
+            position: absolute; top: 0.5rem; left: 0.5rem; background: rgba(0,0,0,0.65); backdrop-filter: blur(4px);
+            border-radius: 9999px; width: 1.6rem; height: 1.6rem; display: flex; align-items: center; justify-content: center;
+            font-size: 0.8rem; z-index: 3; box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+        }
+
+        /* Peer activity box */
+        #peer-activity-box { border-color: rgba(168, 85, 247, 0.35) !important; }
+
+        /* Lightbox reactions */
+        .reaction-bar { display: none; align-items: center; gap: 0.35rem; margin-right: 0.5rem; }
+        .reaction-btn {
+            background: rgba(255,255,255,0.1); border: none; border-radius: 9999px; width: 2.15rem; height: 2.15rem;
+            font-size: 1.05rem; cursor: pointer; transition: transform 0.15s ease, background 0.15s ease;
+            display: flex; align-items: center; justify-content: center; line-height: 1;
+        }
+        .reaction-btn:hover { background: rgba(255,255,255,0.25); transform: scale(1.2); }
+
+        .floating-reaction {
+            position: absolute; bottom: 4.5rem; font-size: 2.25rem; pointer-events: none;
+            animation: floatUpReaction 1.8s ease-out forwards; z-index: 70; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.4));
+        }
+        @keyframes floatUpReaction {
+            0% { transform: translateY(0) scale(0.4) rotate(-8deg); opacity: 0; }
+            15% { opacity: 1; transform: translateY(-10px) scale(1.25) rotate(4deg); }
+            100% { transform: translateY(-200px) scale(1) rotate(-4deg); opacity: 0; }
+        }
+
+        .btn-star-media { color: #facc15; }
+        .btn-star-media:hover { color: #facc15 !important; background: rgba(250, 204, 21, 0.2) !important; }
     </style>
 </head>
 <body>
-
+    <ws-widget type="cursor" iid="15966" embed="script"></ws-widget>
     <aside class="sidebar">
         <div class="sidebar-header">
             <img src="https://codymkw.github.io/switch/switchjoyconlogo.png" alt="Switch Logo" class="sidebar-logo">
@@ -449,6 +492,10 @@
                 <p class="stat-row"><span>Media:</span> <span id="stat-count" style="color: white; font-weight: 700;">0</span></p>
                 <p class="stat-row"><span>Status:</span> <span id="stat-status" style="color: var(--switch-cyan); font-weight: 500;">Ready</span></p>
                 <p class="stat-row"><span>P2P:</span> <span id="stat-p2p" style="color: var(--switch-muted); font-weight: 500;">Offline</span></p>
+            </div>
+            <div id="peer-activity-box" class="stats-box hidden">
+                <p style="color: #a855f7; font-weight: 700; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.35rem;">Peer Activity</p>
+                <p id="peer-activity-text" style="color: var(--switch-muted); font-size: 0.8rem; line-height: 1.4;">Not connected.</p>
             </div>
         </div>
 
@@ -513,7 +560,15 @@
     <div id="lightbox" class="modal-overlay hidden opacity-0">
         <div class="lightbox-toolbar">
             <div id="lightbox-info" class="lightbox-info"></div>
-            <div style="display: flex; gap: 0.5rem;">
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <div id="lightbox-reactions" class="reaction-bar">
+                    <button class="reaction-btn" data-emoji="❤️" title="React">❤️</button>
+                    <button class="reaction-btn" data-emoji="😂" title="React">😂</button>
+                    <button class="reaction-btn" data-emoji="😮" title="React">😮</button>
+                    <button class="reaction-btn" data-emoji="🔥" title="React">🔥</button>
+                    <button class="reaction-btn" data-emoji="👍" title="React">👍</button>
+                </div>
+                <button id="btn-star-media" class="btn-icon btn-star-media" style="display:none;" title="Star this for your peer">⭐</button>
                 <button id="btn-close-lightbox" class="btn-icon">
                     <svg style="width: 1.5rem; height: 1.5rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
@@ -619,7 +674,24 @@
         let currentLightboxIndex = 0;
         let activeMediaList = []; 
         let hashToGameMap = {};
-        let spoilerGamesMap = {}; // Tracks game hashes marked as spoilers
+        let spoilerGamesMap = {}; // Tracks spoilers, keyed by game IDENTITY (see gameKey())
+        let receivedStars = {}; // Screenshots of YOURS a peer has starred, keyed by "hash|timestamp"
+
+        // A single "identity" for a piece of media's game: if you've renamed
+        // a hash to a friendly name, everything sharing that name is treated
+        // as the same game (handy since a game update can change its hash).
+        // Grouping, sorting AND spoiler status all key off this consistently
+        // so marking a game as spoiler actually covers every screenshot
+        // shown under that game's header, not just one hash.
+        function gameKey(hash) {
+            return hashToGameMap[hash] || hash;
+        }
+        function isGameSpoiled(hash) {
+            const key = gameKey(hash);
+            // Also check the raw hash for spoiler flags saved before this
+            // migration, so old settings aren't silently lost.
+            return !!(spoilerGamesMap[key] || spoilerGamesMap[hash]);
+        }
 
         // Profile State
         let userProfile = {
@@ -648,6 +720,9 @@
 
             const savedSpoilers = localStorage.getItem('switch_gallery_spoilers');
             if (savedSpoilers) spoilerGamesMap = JSON.parse(savedSpoilers);
+
+            const savedStars = localStorage.getItem('switch_gallery_received_stars');
+            if (savedStars) receivedStars = JSON.parse(savedStars);
         } catch (e) {
             console.warn("Failed to load local storage data");
         }
@@ -663,6 +738,10 @@
 
         function saveSpoilerMap() {
             localStorage.setItem('switch_gallery_spoilers', JSON.stringify(spoilerGamesMap));
+        }
+
+        function saveReceivedStars() {
+            localStorage.setItem('switch_gallery_received_stars', JSON.stringify(receivedStars));
         }
 
         const btnSelectFolder = document.getElementById('btn-select-folder');
@@ -822,12 +901,29 @@
         function parseFileName(file) {
             const name = file.name;
             const ext = name.split('.').pop().toLowerCase();
-            const hashMatch = name.match(/-([A-Fa-f0-9]{32})\.(jpg|mp4)$/i);
+            // Real captures look like TIMESTAMP-HASH.jpg, but files that have
+            // passed through a phone, cloud sync, or a "Save As" often gain a
+            // " (1)" / "-copy" suffix before the extension, and the hash can
+            // be 16 or 32 hex chars depending on firmware. Match loosely,
+            // then normalize case/whitespace so lookups stay consistent.
+            const hashMatch = name.match(/-([A-Fa-f0-9]{16}(?:[A-Fa-f0-9]{16})?)(?:\s*[\s(_-]*\d+\)?)?\.(jpg|mp4)$/i);
             const dateMatch = name.match(/^(\d{4})(\d{2})(\d{2})/);
 
-            let hash = 'UNKNOWN';
+            let hash;
             if (hashMatch) {
-                hash = hashMatch[1].toUpperCase();
+                hash = hashMatch[1].trim().toUpperCase();
+            } else {
+                // No parseable game hash - fall back to a key unique to this
+                // file's own base name rather than one shared "UNKNOWN"
+                // bucket. Previously every unmatched file (regardless of
+                // which game it actually came from) collapsed into a single
+                // group, which is why unrelated games appeared "combined" -
+                // most often on a peer's gallery, since remote screenshots
+                // are more likely to have passed through an app that touches
+                // filenames. Files whose names are genuinely identical still
+                // collapse together on purpose; different names don't.
+                const stem = name.replace(/\.[^.]+$/, '').replace(/^\d{8,}[-_]?/, '').replace(/\s*\(\d+\)\s*$/, '').trim().toUpperCase();
+                hash = `UNSORTED-${stem || name.toUpperCase()}`;
             }
 
             let dateStr = 'Unknown Date';
@@ -971,6 +1067,26 @@
             badge.textContent = media.type === 'video' ? 'MP4' : 'JPG';
             container.appendChild(badge);
 
+            // Actually visually hide spoiler-marked media in YOUR OWN grid too
+            // (blurred, badged) - not just exclude it from the peer sync -
+            // so a screen-share glance doesn't spoil it for you either.
+            if (!media.isRemote && isGameSpoiled(media.hash)) {
+                container.classList.add('spoiler-locked');
+                const lockBadge = document.createElement('div');
+                lockBadge.className = 'spoiler-lock-badge';
+                lockBadge.innerHTML = `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg><span>Spoiler</span>`;
+                container.appendChild(lockBadge);
+            }
+
+            // Show a star badge if a connected peer favorited this of yours
+            if (!media.isRemote && receivedStars[`${media.hash}|${media.timestamp}`]) {
+                const star = document.createElement('div');
+                star.className = 'star-badge';
+                star.title = 'A connected peer starred this';
+                star.textContent = '⭐';
+                container.appendChild(star);
+            }
+
             container.addEventListener('click', () => triggerLightbox(index, globalList));
 
             return container;
@@ -1058,7 +1174,7 @@
                             titleWrapper.appendChild(editBtn);
 
                             if (currentSource === 'local') {
-                                const isSpoilered = !!spoilerGamesMap[media.hash];
+                                const isSpoilered = isGameSpoiled(media.hash);
                                 const spoilerBtn = document.createElement('button');
                                 spoilerBtn.className = 'btn-edit-game';
                                 spoilerBtn.title = isSpoilered ? "Unmark as Spoiler" : "Mark as Spoiler (Hide from Connected Peer)";
@@ -1068,7 +1184,12 @@
                                     : `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>`;
 
                                 spoilerBtn.onclick = () => {
-                                    spoilerGamesMap[media.hash] = !spoilerGamesMap[media.hash];
+                                    const key = gameKey(media.hash);
+                                    const newState = !isGameSpoiled(media.hash);
+                                    spoilerGamesMap[key] = newState;
+                                    // Clean up a legacy entry keyed by the raw hash if it
+                                    // differs from the resolved name, so status doesn't drift.
+                                    if (key !== media.hash) delete spoilerGamesMap[media.hash];
                                     saveSpoilerMap();
                                     renderView();
                                     if (p2pConnection && p2pConnection.open) {
@@ -1147,6 +1268,7 @@
             currentPage = 1;
             renderView();
             document.getElementById('gallery-container').scrollTo(0,0);
+            sendPresence();
         });
 
         document.getElementById('nav-filters').addEventListener('click', (e) => {
@@ -1159,6 +1281,7 @@
             currentPage = 1;
             renderView();
             document.getElementById('gallery-container').scrollTo(0,0);
+            sendPresence();
         });
 
         // Rename Logic
@@ -1201,6 +1324,7 @@
             updateLightboxContent();
             lightbox.classList.remove('hidden');
             requestAnimationFrame(() => lightbox.classList.remove('opacity-0'));
+            sendPresence();
         }
 
         function closeLightbox() {
@@ -1209,6 +1333,7 @@
                 lightbox.classList.add('hidden');
                 lightboxMediaContainer.innerHTML = '';
             }, 300);
+            sendPresence();
         }
 
         function updateLightboxContent() {
@@ -1216,6 +1341,10 @@
             if (!media) return;
 
             lightboxMediaContainer.innerHTML = '';
+
+            const starBtn = document.getElementById('btn-star-media');
+            starBtn.style.display = (currentSource === 'remote' && p2pConnection && p2pConnection.open) ? 'flex' : 'none';
+            starBtn.textContent = '⭐';
             
             const reqHiRes = currentSource === 'local' || userProfile.requestHiRes;
 
@@ -1264,6 +1393,7 @@
             if (currentLightboxIndex > 0) {
                 currentLightboxIndex--;
                 updateLightboxContent();
+                sendPresence();
             }
         });
         
@@ -1272,6 +1402,7 @@
             if (currentLightboxIndex < activeMediaList.length - 1) {
                 currentLightboxIndex++;
                 updateLightboxContent();
+                sendPresence();
             }
         });
 
@@ -1407,7 +1538,19 @@
                     handleFileRequest(conn, data.originalIndex);
                 }
                 else if (data.type === 'file_response') {
-                    handleFileResponse(data.file, data.fileType);
+                    handleFileResponse(data.file, data.fileType, data.originalIndex);
+                }
+                else if (data.type === 'presence') {
+                    updatePeerActivityDisplay(data);
+                }
+                else if (data.type === 'reaction') {
+                    spawnFloatingReaction(data.emoji);
+                }
+                else if (data.type === 'star') {
+                    const key = `${data.hash}|${data.timestamp}`;
+                    receivedStars[key] = true;
+                    saveReceivedStars();
+                    renderView();
                 }
             });
 
@@ -1417,17 +1560,77 @@
                 navRemote.classList.add('hidden');
                 remoteSourceName.textContent = "Remote Peer";
                 remoteMediaFiles = [];
+                document.getElementById('lightbox-reactions').style.display = 'none';
+                document.getElementById('btn-star-media').style.display = 'none';
+                document.getElementById('peer-activity-box').classList.add('hidden');
                 if (currentSource === 'remote') {
                     document.querySelector('#nav-sources .nav-item[data-source="local"]').click();
                 }
             });
+
+            document.getElementById('lightbox-reactions').style.display = 'flex';
+            sendPresence();
         }
+
+        // --- Live Peer Interactions: presence, reactions, stars ---
+        function sendPresence() {
+            if (!(p2pConnection && p2pConnection.open)) return;
+            let viewing = null;
+            if (!lightbox.classList.contains('hidden') && activeMediaList[currentLightboxIndex]) {
+                const m = activeMediaList[currentLightboxIndex];
+                viewing = { game: hashToGameMap[m.hash] || m.hash, type: m.type };
+            }
+            p2pConnection.send({ type: 'presence', source: currentSource, sort: currentSort, viewing });
+        }
+
+        function updatePeerActivityDisplay(data) {
+            const box = document.getElementById('peer-activity-box');
+            const text = document.getElementById('peer-activity-text');
+            box.classList.remove('hidden');
+            if (data.viewing) {
+                text.innerHTML = `👀 Looking at a ${data.viewing.type} from <strong style="color:white;">${data.viewing.game}</strong>`;
+                return;
+            }
+            const src = data.source === 'local' ? `their own SD Card` : `your shared gallery`;
+            const sortTxt = data.sort === 'all' ? 'all media' : (data.sort === 'date' ? 'sorted by date' : 'sorted by game');
+            text.textContent = `Browsing ${src} • ${sortTxt}`;
+        }
+
+        function spawnFloatingReaction(emoji) {
+            const host = document.querySelector('.lightbox-content');
+            if (!host) return;
+            const el = document.createElement('div');
+            el.className = 'floating-reaction';
+            el.textContent = emoji;
+            el.style.left = (42 + Math.random() * 16) + '%';
+            host.appendChild(el);
+            setTimeout(() => el.remove(), 1800);
+        }
+
+        document.querySelectorAll('.reaction-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const emoji = btn.dataset.emoji;
+                spawnFloatingReaction(emoji);
+                if (p2pConnection && p2pConnection.open) {
+                    p2pConnection.send({ type: 'reaction', emoji });
+                }
+            });
+        });
+
+        document.getElementById('btn-star-media').addEventListener('click', () => {
+            const media = activeMediaList[currentLightboxIndex];
+            if (!media || !media.isRemote || !(p2pConnection && p2pConnection.open)) return;
+            p2pConnection.send({ type: 'star', hash: media.hash, timestamp: media.timestamp });
+            const btn = document.getElementById('btn-star-media');
+            btn.textContent = '✓';
+            setTimeout(() => { btn.textContent = '⭐'; }, 1200);
+        });
 
         async function syncGallery(conn) {
             if (allMediaFiles.length === 0) return;
             
             // Exclude games marked as spoiler from sync
-            const allowedFiles = allMediaFiles.filter(m => !spoilerGamesMap[m.hash]);
+            const allowedFiles = allMediaFiles.filter(m => !isGameSpoiled(m.hash));
 
             const lightweightFiles = await Promise.all(allowedFiles.map(async (m) => {
                 const origIdx = allMediaFiles.indexOf(m);
@@ -1480,11 +1683,12 @@
 
         async function handleFileRequest(conn, index) {
             const media = allMediaFiles[index];
-            if (!media || spoilerGamesMap[media.hash]) return; // Refuse if spoiler
+            if (!media || isGameSpoiled(media.hash)) return; // Refuse if spoiler
             
             try {
                 conn.send({
                     type: 'file_response',
+                    originalIndex: index,
                     file: media.file,
                     fileType: media.type
                 });
@@ -1493,10 +1697,14 @@
             }
         }
 
-        function handleFileResponse(fileBlob, fileType) {
+        function handleFileResponse(fileBlob, fileType, originalIndex) {
+            // Guard against a race: if the user navigated the lightbox while
+            // a large file was still in transit, an older response could
+            // otherwise land on top of whatever is now showing.
+            const mediaObj = activeMediaList[currentLightboxIndex];
+            if (!mediaObj || (originalIndex !== undefined && mediaObj.originalIndex !== originalIndex)) return;
             const blob = new Blob([fileBlob]); // Wrap the incoming ArrayBuffer in a Blob
             const url = URL.createObjectURL(blob);
-            const mediaObj = activeMediaList[currentLightboxIndex];
             renderLoadedLightbox(mediaObj, url);
         }
 
