@@ -86,6 +86,10 @@
         .btn-load:hover svg { color: var(--switch-red); }
         .btn-load svg { width: 1.25rem; height: 1.25rem; transition: color 0.2s; }
 
+        .btn-usb { background-color: transparent; border: 1px solid rgba(77, 77, 77, 0.5); color: var(--switch-muted); box-shadow: none; }
+        .btn-usb:hover { border-color: var(--switch-cyan); color: white; background: rgba(0, 195, 227, 0.1); }
+        .btn-usb:hover svg { color: var(--switch-cyan); }
+
         .nav-container { flex: 1; overflow-y: auto; margin-top: 0.5rem; padding: 0 0.75rem; display: flex; flex-direction: column; gap: 0.5rem; }
         .nav-item {
             width: 100%; text-align: left; padding: 0.75rem 1rem; border-radius: 0.25rem;
@@ -256,10 +260,14 @@
             <h1 class="sidebar-title">Album Gallery</h1>
         </div>
 
-        <div style="padding: 1rem;">
+        <div style="padding: 1rem; display: flex; flex-direction: column; gap: 0.75rem;">
             <button id="btn-select-folder" class="btn-load">
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 19a2 2 0 01-2-2V7a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1M5 19h14a2 2 0 002-2v-5a2 2 0 00-2-2H9a2 2 0 00-2 2v5a2 2 0 01-2 2z"></path></svg>
                 Load SD Card Folder
+            </button>
+            <button id="btn-connect-usb" class="btn-load btn-usb">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                Connect via USB
             </button>
         </div>
 
@@ -318,7 +326,7 @@
             <div id="empty-state" class="empty-state">
                 <svg class="empty-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                 <h2 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.75rem; color: white;">No Media Loaded</h2>
-                <p style="color: var(--switch-muted); max-width: 28rem; line-height: 1.625;">Click "Load SD Card Folder" and select the <strong>Nintendo/Album</strong> folder on your drive to preview screenshots and clips.</p>
+                <p style="color: var(--switch-muted); max-width: 28rem; line-height: 1.625;">Click "Load SD Card Folder" and select the <strong>Nintendo/Album</strong> folder on your drive, or "Connect via USB" to preview your captures.</p>
                 
                 <div id="loading-state" class="loading-box hidden">
                     <div class="spinner"></div>
@@ -427,6 +435,7 @@
 
         // DOM Elements
         const btnSelectFolder = document.getElementById('btn-select-folder');
+        const btnConnectUsb = document.getElementById('btn-connect-usb');
         const emptyState = document.getElementById('empty-state');
         const loadingState = document.getElementById('loading-state');
         const loadingCount = document.getElementById('loading-count');
@@ -478,6 +487,78 @@
             btnSelectFolder.disabled = true;
             btnSelectFolder.style.opacity = '0.5';
         }
+
+        // ==========================================
+        // USB DETECTION LOGIC (WebUSB)
+        // ==========================================
+        if (navigator.usb) {
+            btnConnectUsb.addEventListener('click', async () => {
+                try {
+                    // Filter for Nintendo Switch (Vendor ID: 0x057E)
+                    const device = await navigator.usb.requestDevice({ 
+                        filters: [{ vendorId: 0x057e }] 
+                    });
+                    
+                    await device.open();
+                    
+                    statsContainer.classList.remove('hidden');
+                    statStatus.textContent = 'USB Connected';
+                    statStatus.style.color = 'var(--switch-cyan)';
+                    
+                    // Update UI to show successful connection
+                    emptyState.innerHTML = `
+                        <svg class="empty-icon" style="color: var(--switch-cyan);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                        <h2 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.75rem; color: white;">USB Device Connected</h2>
+                        <p style="color: var(--switch-muted); max-width: 28rem; line-height: 1.625;">Successfully connected to ${device.productName || 'Nintendo Switch'}.<br><br><span style="font-size: 0.85em;">(Note: Full MTP file reading in browser requires specific WebUSB driver setups or a local intermediary proxy.)</span></p>
+                    `;
+                    
+                    emptyState.classList.remove('hidden');
+                    mediaGrid.classList.add('hidden');
+                    
+                } catch (error) {
+                    console.error("USB Connection Error:", error);
+                    if (error.name !== 'NotFoundError') {
+                        emptyState.innerHTML = `
+                            <div style="color: var(--switch-orange); margin-bottom: 1rem;">
+                                <svg style="width: 4rem; height: 4rem; margin: 0 auto;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                            </div>
+                            <h2 style="font-size: 1.25rem; font-weight: 700; color: white;">USB Access Error</h2>
+                            <p style="color: var(--switch-muted); margin-top: 0.5rem;">${error.message}</p>
+                        `;
+                        emptyState.classList.remove('hidden');
+                    }
+                }
+            });
+
+            // Listen for hot-plug events
+            navigator.usb.addEventListener('connect', event => {
+                if (event.device.vendorId === 0x057e) {
+                    statsContainer.classList.remove('hidden');
+                    statStatus.textContent = 'Switch Plugged In';
+                    statStatus.style.color = 'var(--switch-orange)';
+                }
+            });
+
+            navigator.usb.addEventListener('disconnect', event => {
+                if (event.device.vendorId === 0x057e) {
+                    statStatus.textContent = 'Ready';
+                    statStatus.style.color = 'var(--switch-cyan)';
+                    if(document.querySelector('.empty-icon')?.style.color === 'var(--switch-cyan)') {
+                        // Reset if we were showing the connected state without files
+                        document.querySelector('[data-view="all"]').click();
+                        emptyState.innerHTML = `
+                            <svg class="empty-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                            <h2 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.75rem; color: white;">No Media Loaded</h2>
+                            <p style="color: var(--switch-muted); max-width: 28rem; line-height: 1.625;">Click "Load SD Card Folder" and select the <strong>Nintendo/Album</strong> folder on your drive, or "Connect via USB" to preview your captures.</p>
+                        `;
+                    }
+                }
+            });
+        } else {
+            btnConnectUsb.classList.add('hidden');
+            console.warn('WebUSB API not supported in this browser.');
+        }
+
 
         // ==========================================
         // P2P LOGIC (WebRTC via PeerJS)
