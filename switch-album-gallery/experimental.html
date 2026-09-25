@@ -410,15 +410,15 @@
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 Sort by Game
             </button>
+            <button class="nav-item hidden" id="nav-remote" data-view="remote" style="color: #a855f7;">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                Remote Gallery
+            </button>
             
             <div id="stats-container" class="stats-box hidden">
                 <p class="stat-row"><span>Media:</span> <span id="stat-count" style="color: white; font-weight: 700;">0</span></p>
                 <p class="stat-row"><span>Status:</span> <span id="stat-status" style="color: var(--switch-cyan); font-weight: 500;">Ready</span></p>
                 <p class="stat-row"><span>P2P:</span> <span id="stat-p2p" style="color: var(--switch-muted); font-weight: 500;">Offline</span></p>
-                <button id="btn-share-gallery" class="btn-load hidden" style="margin-top: 1rem; background-color: #a855f7; border: none; padding: 0.5rem; font-size: 0.75rem; box-shadow: 0 0 10px rgba(168, 85, 247, 0.3);">
-                    <svg style="width: 1rem; height: 1rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
-                    Share Full Gallery
-                </button>
             </div>
         </nav>
     </aside>
@@ -536,6 +536,7 @@
 
     <script>
         let allMediaFiles = [];
+        let remoteMediaFiles = [];
         let currentView = 'all';
         let currentLightboxIndex = 0;
         let activeMediaList = []; 
@@ -559,7 +560,7 @@
         const loadingState = document.getElementById('loading-state');
         const loadingCount = document.getElementById('loading-count');
         const mediaGrid = document.getElementById('media-grid');
-        const navItems = document.querySelectorAll('.nav-item');
+        const navRemote = document.getElementById('nav-remote');
         const statCount = document.getElementById('stat-count');
         const statStatus = document.getElementById('stat-status');
         const statsContainer = document.getElementById('stats-container');
@@ -852,10 +853,24 @@
         }
 
         function renderView() {
-            if (allMediaFiles.length === 0) return;
             mediaGrid.innerHTML = '';
-            
-            if (currentView === 'all') {
+
+            if (currentView === 'remote') {
+                currentViewTitle.innerHTML = '<span class="view-indicator" style="background: #a855f7;"></span> Remote Gallery';
+                if (remoteMediaFiles.length === 0) {
+                    mediaGrid.innerHTML = '<div style="color: var(--switch-muted); padding: 2rem; text-align: center;">No remote media available.</div>';
+                    return;
+                }
+                const grid = document.createElement('div');
+                grid.className = 'media-grid';
+                grid.style.marginTop = '1rem';
+                remoteMediaFiles.forEach((media, idx) => {
+                    grid.appendChild(createMediaItem(media, idx, remoteMediaFiles));
+                });
+                mediaGrid.appendChild(grid);
+            } 
+            else if (currentView === 'all') {
+                if (allMediaFiles.length === 0) return;
                 currentViewTitle.innerHTML = '<span class="view-indicator"></span> All Media';
                 const grid = document.createElement('div');
                 grid.className = 'media-grid';
@@ -866,6 +881,7 @@
                 mediaGrid.appendChild(grid);
             } 
             else if (currentView === 'date') {
+                if (allMediaFiles.length === 0) return;
                 currentViewTitle.innerHTML = '<span class="view-indicator"></span> Sorted by Date';
                 const groups = {};
                 allMediaFiles.forEach(m => {
@@ -879,6 +895,7 @@
                 renderGroupedGrid(sortedGroups, 'date');
             }
             else if (currentView === 'game') {
+                if (allMediaFiles.length === 0) return;
                 currentViewTitle.innerHTML = '<span class="view-indicator"></span> Sorted by Game';
                 const groups = {};
                 allMediaFiles.forEach(m => {
@@ -900,14 +917,16 @@
             }
         }
 
-        navItems.forEach(item => {
-            item.addEventListener('click', (e) => {
-                navItems.forEach(nav => nav.classList.remove('active'));
-                e.currentTarget.classList.add('active');
-                currentView = e.currentTarget.dataset.view;
-                renderView();
-                document.getElementById('gallery-container').scrollTo(0,0);
-            });
+        // Dynamically get all nav items including the remote one
+        document.getElementById('nav-filters').addEventListener('click', (e) => {
+            const btn = e.target.closest('.nav-item');
+            if (!btn) return;
+            
+            document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+            btn.classList.add('active');
+            currentView = btn.dataset.view;
+            renderView();
+            document.getElementById('gallery-container').scrollTo(0,0);
         });
 
         function openRenameModal(hash) {
@@ -1114,7 +1133,47 @@
         const btnConnectP2P = document.getElementById('btn-connect-p2p');
         const btnCopyId = document.getElementById('btn-copy-id');
         const statP2p = document.getElementById('stat-p2p');
-        const btnShareGallery = document.getElementById('btn-share-gallery');
+
+        async function syncGallery() {
+            if (!p2pConnection || !p2pConnection.open) return;
+            if (allMediaFiles.length === 0) return;
+            
+            showP2pLoading('Generating Gallery Data for Peer...');
+            
+            const galleryPayload = [];
+            for (let i = 0; i < allMediaFiles.length; i++) {
+                const media = allMediaFiles[i];
+                let thumbData = null;
+                if (media.type === 'image' && !media.isRemote) {
+                    thumbData = await generateThumbnail(media.url);
+                }
+                galleryPayload.push({
+                    id: i,
+                    type: media.type,
+                    dateStr: media.dateStr,
+                    hash: media.hash,
+                    thumb: thumbData
+                });
+                
+                if (i % 10 === 0) {
+                    p2pLoadingText.textContent = `Processing ${i}/${allMediaFiles.length}...`;
+                }
+            }
+            
+            p2pLoadingText.textContent = 'Sending to Peer...';
+            
+            try {
+                p2pConnection.send({
+                    type: 'gallery_sync',
+                    items: galleryPayload
+                });
+                hideP2pLoading();
+            } catch(e) {
+                console.error(e);
+                p2pLoadingText.textContent = 'Failed to send!';
+                setTimeout(hideP2pLoading, 2000);
+            }
+        }
 
         function initPeer() {
             if (peer) return;
@@ -1139,17 +1198,16 @@
             conn.on('open', () => {
                 statP2p.textContent = 'Connected';
                 statP2p.style.color = 'var(--cody-green)';
-                btnShareGallery.classList.remove('hidden');
                 btnP2P.style.borderColor = 'var(--cody-green)';
                 btnP2P.style.color = 'var(--cody-green)';
                 closeP2PModal();
+                syncGallery();
             });
             conn.on('data', (data) => {
                 if (data.type === 'gallery_sync') {
-                    cleanupUrls();
                     window.remoteGalleryMap = {};
                     
-                    allMediaFiles = data.items.map((item, idx) => {
+                    remoteMediaFiles = data.items.map((item, idx) => {
                         const mediaObj = {
                             isRemote: true,
                             remoteId: item.id,
@@ -1165,11 +1223,12 @@
                         return mediaObj;
                     });
                     
-                    currentView = 'all';
-                    renderView();
+                    navRemote.classList.remove('hidden');
+                    statP2p.textContent = `Peer Shared`;
+                    
                     emptyState.classList.add('hidden');
                     mediaGrid.classList.remove('hidden');
-                    statCount.textContent = allMediaFiles.length;
+                    navRemote.click();
                 }
                 else if (data.type === 'request_media') {
                     const media = allMediaFiles[data.id];
@@ -1208,10 +1267,13 @@
             conn.on('close', () => {
                 statP2p.textContent = 'Ready';
                 statP2p.style.color = 'var(--switch-cyan)';
-                btnShareGallery.classList.add('hidden');
                 btnP2P.style.borderColor = '';
                 btnP2P.style.color = '';
                 p2pConnection = null;
+                navRemote.classList.add('hidden');
+                if (currentView === 'remote') {
+                    document.querySelector('.nav-item[data-view="all"]').click();
+                }
             });
         }
 
@@ -1248,45 +1310,6 @@
             navigator.clipboard.writeText(p2pMyId.value);
             btnCopyId.textContent = "Copied!";
             setTimeout(() => btnCopyId.textContent = "Copy", 2000);
-        });
-
-        btnShareGallery.addEventListener('click', async () => {
-            if (!p2pConnection || !p2pConnection.open) return;
-            showP2pLoading('Generating Gallery Data...');
-            
-            const galleryPayload = [];
-            for (let i = 0; i < allMediaFiles.length; i++) {
-                const media = allMediaFiles[i];
-                let thumbData = null;
-                if (media.type === 'image' && !media.isRemote) {
-                    thumbData = await generateThumbnail(media.url);
-                }
-                galleryPayload.push({
-                    id: i,
-                    type: media.type,
-                    dateStr: media.dateStr,
-                    hash: media.hash,
-                    thumb: thumbData
-                });
-                
-                if (i % 10 === 0) {
-                    p2pLoadingText.textContent = `Processing ${i}/${allMediaFiles.length}...`;
-                }
-            }
-            
-            p2pLoadingText.textContent = 'Sending to Peer...';
-            
-            try {
-                p2pConnection.send({
-                    type: 'gallery_sync',
-                    items: galleryPayload
-                });
-                hideP2pLoading();
-            } catch(e) {
-                console.error(e);
-                p2pLoadingText.textContent = 'Failed to send!';
-                setTimeout(hideP2pLoading, 2000);
-            }
         });
 
         setInterval(() => {
