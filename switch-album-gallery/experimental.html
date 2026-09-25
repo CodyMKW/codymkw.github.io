@@ -123,9 +123,10 @@
             transition: all 0.2s;
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
         }
-        .btn-load:hover { background-color: white; color: black; }
-        .btn-load:hover svg { color: var(--switch-red); }
+        .btn-load:hover:not(:disabled) { background-color: white; color: black; }
+        .btn-load:hover:not(:disabled) svg { color: var(--switch-red); }
         .btn-load svg { width: 1.25rem; height: 1.25rem; transition: color 0.2s; }
+        .btn-load:disabled { opacity: 0.5; cursor: not-allowed; }
 
         .btn-usb {
             background-color: transparent;
@@ -133,11 +134,11 @@
             color: var(--switch-muted);
             box-shadow: none;
         }
-        .btn-usb:hover {
+        .btn-usb:hover:not(:disabled) {
             background-color: rgba(255,255,255,0.05);
             color: white;
         }
-        .btn-usb:hover svg { color: var(--cody-green); }
+        .btn-usb:hover:not(:disabled) svg { color: var(--cody-green); }
 
         .nav-container {
             flex: 1;
@@ -454,6 +455,17 @@
 
             <!-- Grid container injected by JS -->
             <div id="media-grid" class="flex-col hidden" style="gap: 2rem;"></div>
+
+            <!-- Pagination Controls -->
+            <div id="pagination-controls" class="hidden" style="justify-content: center; align-items: center; gap: 1rem; margin-top: 2rem; padding-bottom: 1rem;">
+                <button id="btn-page-prev" class="btn-load" style="width: auto; padding: 0.5rem 1.5rem;">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin-right: 0.25rem;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg> Prev
+                </button>
+                <span id="page-info" style="color: var(--switch-muted); font-weight: 600; font-size: 0.875rem;">Page 1 of 1</span>
+                <button id="btn-page-next" class="btn-load" style="width: auto; padding: 0.5rem 1.5rem;">
+                    Next <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin-left: 0.25rem;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                </button>
+            </div>
         </div>
     </main>
 
@@ -495,7 +507,7 @@
     <div id="rename-modal" class="rename-modal hidden opacity-0">
         <div class="rename-card scale-95" id="rename-modal-content">
             <h3 class="rename-title">Edit Game Name</h3>
-            <p class="rename-desc">Map this game hash to its actual title (e.g., "Animal Crossing: New Horizons").</p>
+            <p class="rename-desc">Map this game hash to its actual title (e.g., "Animal Crossing: New Horizons" or "Splatoon 3").</p>
             <div class="input-group">
                 <label class="input-label muted">Hash ID</label>
                 <input type="text" id="rename-hash-display" class="input-field" disabled>
@@ -541,6 +553,11 @@
         let currentLightboxIndex = 0;
         let activeMediaList = []; 
         let hashToGameMap = {};
+
+        // Pagination Variables
+        let currentPage = 1;
+        const ITEMS_PER_PAGE = 60; // Render 60 items at a time to prevent lag
+        let currentSortedList = []; 
 
         try {
             const savedMap = localStorage.getItem('switch_gallery_games');
@@ -730,14 +747,8 @@
                 statStatus.style.animation = 'none';
                 loadingState.classList.add('hidden');
                 emptyState.classList.add('hidden');
-                mediaGrid.classList.remove('hidden');
-
-                if (allMediaFiles.length === 0) {
-                    emptyState.classList.remove('hidden');
-                    emptyState.innerHTML = '<h2 style="font-size: 1.25rem; font-weight: 700; color: white;">No Screenshots or Videos Found.</h2><p style="color: var(--switch-muted); margin-top: 0.5rem;">Make sure you selected the correct Album folder.</p>';
-                    return;
-                }
-
+                
+                currentPage = 1; // Reset to page 1 on load
                 renderView();
 
             } catch (error) {
@@ -803,121 +814,140 @@
             return container;
         }
 
-        function renderGroupedGrid(groups, mode) {
-            mediaGrid.innerHTML = '';
-            
-            for (const [groupKey, files] of Object.entries(groups)) {
-                const headerContainer = document.createElement('div');
-                headerContainer.className = 'group-header';
-                
-                const titleWrapper = document.createElement('div');
-                titleWrapper.className = 'group-title-wrapper';
-                
-                const header = document.createElement('h3');
-                header.className = 'group-title';
-                
-                if (mode === 'game') {
-                    const gameName = hashToGameMap[groupKey] || groupKey;
-                    header.textContent = gameName;
-                    
-                    const editBtn = document.createElement('button');
-                    editBtn.className = 'btn-edit-game';
-                    editBtn.title = "Edit Game Name";
-                    editBtn.innerHTML = `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>`;
-                    editBtn.onclick = () => openRenameModal(groupKey);
-                    
-                    titleWrapper.appendChild(header);
-                    titleWrapper.appendChild(editBtn);
-                } else {
-                    header.textContent = groupKey;
-                    titleWrapper.appendChild(header);
-                }
-
-                const countBadge = document.createElement('span');
-                countBadge.className = 'group-count';
-                countBadge.textContent = files.length;
-
-                headerContainer.appendChild(titleWrapper);
-                headerContainer.appendChild(countBadge);
-                mediaGrid.appendChild(headerContainer);
-
-                const grid = document.createElement('div');
-                grid.className = 'media-grid';
-                
-                files.forEach((media, idx) => {
-                    grid.appendChild(createMediaItem(media, idx, files));
-                });
-                
-                mediaGrid.appendChild(grid);
-            }
-        }
-
+        // --- Core Pagination & Rendering Engine ---
         function renderView() {
             mediaGrid.innerHTML = '';
+            const paginationControls = document.getElementById('pagination-controls');
+            paginationControls.classList.add('hidden');
+            paginationControls.classList.remove('flex');
 
-            if (currentView === 'remote') {
-                currentViewTitle.innerHTML = '<span class="view-indicator" style="background: #a855f7;"></span> Remote Gallery';
-                if (remoteMediaFiles.length === 0) {
+            let sourceList = currentView === 'remote' ? remoteMediaFiles : allMediaFiles;
+
+            if (sourceList.length === 0) {
+                if (currentView === 'remote') {
+                    currentViewTitle.innerHTML = '<span class="view-indicator" style="background: #a855f7;"></span> Remote Gallery';
                     mediaGrid.innerHTML = '<div style="color: var(--switch-muted); padding: 2rem; text-align: center;">No remote media available.</div>';
-                    return;
+                    mediaGrid.classList.remove('hidden');
                 }
-                const grid = document.createElement('div');
-                grid.className = 'media-grid';
-                grid.style.marginTop = '1rem';
-                remoteMediaFiles.forEach((media, idx) => {
-                    grid.appendChild(createMediaItem(media, idx, remoteMediaFiles));
-                });
-                mediaGrid.appendChild(grid);
-            } 
-            else if (currentView === 'all') {
-                if (allMediaFiles.length === 0) return;
-                currentViewTitle.innerHTML = '<span class="view-indicator"></span> All Media';
-                const grid = document.createElement('div');
-                grid.className = 'media-grid';
-                grid.style.marginTop = '1rem';
-                allMediaFiles.forEach((media, idx) => {
-                    grid.appendChild(createMediaItem(media, idx, allMediaFiles));
-                });
-                mediaGrid.appendChild(grid);
-            } 
-            else if (currentView === 'date') {
-                if (allMediaFiles.length === 0) return;
-                currentViewTitle.innerHTML = '<span class="view-indicator"></span> Sorted by Date';
-                const groups = {};
-                allMediaFiles.forEach(m => {
-                    if(!groups[m.dateStr]) groups[m.dateStr] = [];
-                    groups[m.dateStr].push(m);
-                });
-                const sortedGroups = Object.keys(groups).sort((a, b) => b.localeCompare(a)).reduce((obj, key) => {
-                    obj[key] = groups[key];
-                    return obj;
-                }, {});
-                renderGroupedGrid(sortedGroups, 'date');
+                return;
             }
-            else if (currentView === 'game') {
-                if (allMediaFiles.length === 0) return;
+
+            // Clone to avoid mutating original arrays
+            currentSortedList = [...sourceList]; 
+
+            // Handle Sorting based on View
+            if (currentView === 'date') {
+                currentViewTitle.innerHTML = '<span class="view-indicator"></span> Sorted by Date';
+                currentSortedList.sort((a, b) => b.dateStr.localeCompare(a.dateStr));
+            } else if (currentView === 'game') {
                 currentViewTitle.innerHTML = '<span class="view-indicator"></span> Sorted by Game';
-                const groups = {};
-                allMediaFiles.forEach(m => {
-                    if(!groups[m.hash]) groups[m.hash] = [];
-                    groups[m.hash].push(m);
-                });
-                
-                const sortedKeys = Object.keys(groups).sort((a, b) => {
-                    const nameA = hashToGameMap[a] || a;
-                    const nameB = hashToGameMap[b] || b;
+                currentSortedList.sort((a, b) => {
+                    const nameA = hashToGameMap[a.hash] || a.hash;
+                    const nameB = hashToGameMap[b.hash] || b.hash;
                     return nameA.localeCompare(nameB);
                 });
-                const sortedGroups = sortedKeys.reduce((obj, key) => {
-                    obj[key] = groups[key];
-                    return obj;
-                }, {});
+            } else if (currentView === 'remote') {
+                currentViewTitle.innerHTML = '<span class="view-indicator" style="background: #a855f7;"></span> Remote Gallery';
+            } else {
+                currentViewTitle.innerHTML = '<span class="view-indicator"></span> All Media';
+            }
 
-                renderGroupedGrid(sortedGroups, 'game');
+            // Calculate Pagination Bounds
+            const totalItems = currentSortedList.length;
+            const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+            if (currentPage > totalPages) currentPage = totalPages;
+            if (currentPage < 1) currentPage = 1;
+
+            const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+            const endIndex = Math.min(startIndex + ITEMS_PER_PAGE, totalItems);
+            const pagedItems = currentSortedList.slice(startIndex, endIndex);
+
+            // Render Items and Inject Group Headers Dynamically
+            let currentGroupTracker = null;
+            let currentGridElement = null;
+
+            pagedItems.forEach((media, indexInPage) => {
+                const globalIndex = startIndex + indexInPage;
+                
+                let targetGroup = null;
+                if (currentView === 'date') targetGroup = media.dateStr;
+                else if (currentView === 'game') targetGroup = hashToGameMap[media.hash] || media.hash;
+
+                // Whenever the group changes, inject a new header and grid section
+                if (targetGroup !== currentGroupTracker || !currentGridElement) {
+                    currentGroupTracker = targetGroup;
+                    
+                    if (targetGroup !== null) {
+                        const headerContainer = document.createElement('div');
+                        headerContainer.className = 'group-header';
+                        
+                        const titleWrapper = document.createElement('div');
+                        titleWrapper.className = 'group-title-wrapper';
+                        
+                        const header = document.createElement('h3');
+                        header.className = 'group-title';
+                        header.textContent = targetGroup;
+                        titleWrapper.appendChild(header);
+
+                        if (currentView === 'game') {
+                            const editBtn = document.createElement('button');
+                            editBtn.className = 'btn-edit-game';
+                            editBtn.title = "Edit Game Name";
+                            editBtn.innerHTML = `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>`;
+                            editBtn.onclick = () => openRenameModal(media.hash);
+                            titleWrapper.appendChild(editBtn);
+                        }
+                        
+                        headerContainer.appendChild(titleWrapper);
+                        
+                        const totalInEntireGroup = currentSortedList.filter(m => 
+                            currentView === 'date' ? m.dateStr === targetGroup : (hashToGameMap[m.hash] || m.hash) === targetGroup
+                        ).length;
+                        
+                        const countBadge = document.createElement('span');
+                        countBadge.className = 'group-count';
+                        countBadge.textContent = totalInEntireGroup;
+
+                        headerContainer.appendChild(countBadge);
+                        mediaGrid.appendChild(headerContainer);
+                    }
+
+                    currentGridElement = document.createElement('div');
+                    currentGridElement.className = 'media-grid';
+                    if (!targetGroup) currentGridElement.style.marginTop = '1rem';
+                    mediaGrid.appendChild(currentGridElement);
+                }
+
+                currentGridElement.appendChild(createMediaItem(media, globalIndex, currentSortedList));
+            });
+
+            mediaGrid.classList.remove('hidden');
+
+            // Show Pagination UI if needed
+            if (totalPages > 1) {
+                paginationControls.classList.remove('hidden');
+                paginationControls.classList.add('flex');
+                document.getElementById('page-info').textContent = `Page ${currentPage} of ${totalPages}`;
+                document.getElementById('btn-page-prev').disabled = currentPage === 1;
+                document.getElementById('btn-page-next').disabled = currentPage === totalPages;
             }
         }
 
-        // Dynamically get all nav items including the remote one
+        // Pagination Listeners
+        document.getElementById('btn-page-prev').addEventListener('click', () => {
+            if (currentPage > 1) {
+                currentPage--;
+                renderView();
+                document.getElementById('gallery-container').scrollTo(0, 0);
+            }
+        });
+
+        document.getElementById('btn-page-next').addEventListener('click', () => {
+            currentPage++;
+            renderView();
+            document.getElementById('gallery-container').scrollTo(0, 0);
+        });
+
         document.getElementById('nav-filters').addEventListener('click', (e) => {
             const btn = e.target.closest('.nav-item');
             if (!btn) return;
@@ -925,6 +955,7 @@
             document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
             btn.classList.add('active');
             currentView = btn.dataset.view;
+            currentPage = 1; // Reset to page 1 when switching views
             renderView();
             document.getElementById('gallery-container').scrollTo(0,0);
         });
