@@ -15,6 +15,7 @@
             --switch-cyan: #00c3e3;
             --switch-text: #ebebeb;
             --switch-muted: #9a9a9a;
+            --cody-green: #4ade80;
         }
 
         /* Base Resets & Typography */
@@ -124,6 +125,18 @@
         .btn-load:hover { background-color: white; color: black; }
         .btn-load:hover svg { color: var(--switch-red); }
         .btn-load svg { width: 1.25rem; height: 1.25rem; transition: color 0.2s; }
+
+        .btn-usb {
+            background-color: transparent;
+            border: 1px solid var(--switch-light);
+            color: var(--switch-muted);
+            box-shadow: none;
+        }
+        .btn-usb:hover {
+            background-color: rgba(255,255,255,0.05);
+            color: white;
+        }
+        .btn-usb:hover svg { color: var(--cody-green); }
 
         .nav-container {
             flex: 1;
@@ -368,10 +381,14 @@
             <h1 class="sidebar-title">Album Gallery</h1>
         </div>
 
-        <div style="padding: 1rem;">
+        <div style="padding: 1rem; display: flex; flex-direction: column; gap: 0.5rem;">
             <button id="btn-select-folder" class="btn-load">
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 19a2 2 0 01-2-2V7a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1M5 19h14a2 2 0 002-2v-5a2 2 0 00-2-2H9a2 2 0 00-2 2v5a2 2 0 01-2 2z"></path></svg>
                 Load SD Card Folder
+            </button>
+            <button id="btn-usb-connect" class="btn-load btn-usb">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                Detect USB Switch
             </button>
         </div>
 
@@ -520,6 +537,65 @@
         const btnSaveRename = document.getElementById('btn-save-rename');
         let currentEditingHash = null;
 
+        // --- WebUSB Integration ---
+        const btnUsbConnect = document.getElementById('btn-usb-connect');
+        const NINTENDO_VENDOR_ID = 0x057e;
+
+        function updateUsbStatus(isConnected) {
+            if (isConnected) {
+                statsContainer.classList.remove('hidden');
+                statStatus.textContent = 'Switch USB Detected';
+                statStatus.style.color = 'var(--cody-green)';
+                btnUsbConnect.innerHTML = `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Switch Connected`;
+                btnUsbConnect.style.borderColor = 'var(--cody-green)';
+                btnUsbConnect.style.color = 'var(--cody-green)';
+            } else {
+                statStatus.textContent = 'Ready';
+                statStatus.style.color = 'var(--switch-cyan)';
+                btnUsbConnect.innerHTML = `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg> Detect USB Switch`;
+                btnUsbConnect.style.borderColor = 'var(--switch-light)';
+                btnUsbConnect.style.color = 'var(--switch-muted)';
+            }
+        }
+
+        if (navigator.usb) {
+            // Check if already paired
+            navigator.usb.getDevices().then(devices => {
+                if (devices.find(d => d.vendorId === NINTENDO_VENDOR_ID)) updateUsbStatus(true);
+            });
+
+            // Listen for hot-plug events
+            navigator.usb.addEventListener('connect', event => {
+                if (event.device.vendorId === NINTENDO_VENDOR_ID) updateUsbStatus(true);
+            });
+
+            navigator.usb.addEventListener('disconnect', event => {
+                if (event.device.vendorId === NINTENDO_VENDOR_ID) updateUsbStatus(false);
+            });
+
+            btnUsbConnect.addEventListener('click', async () => {
+                try {
+                    const device = await navigator.usb.requestDevice({
+                        filters: [{ vendorId: NINTENDO_VENDOR_ID }] 
+                    });
+                    
+                    if (device) {
+                        updateUsbStatus(true);
+                        // Trigger directory picker using the current transient activation context
+                        try {
+                            btnSelectFolder.click();
+                        } catch(e) {
+                            console.warn("Manual folder selection required after USB pairing.");
+                        }
+                    }
+                } catch (err) {
+                    console.log("USB request canceled or failed:", err);
+                }
+            });
+        } else {
+            btnUsbConnect.style.display = 'none';
+        }
+
         if (!window.showDirectoryPicker) {
             emptyState.innerHTML = `
                 <div style="color: var(--switch-red); margin-bottom: 1rem;">
@@ -613,7 +689,7 @@
                 
                 statCount.textContent = allMediaFiles.length;
                 statStatus.textContent = 'Loaded';
-                statStatus.style.color = '#4ade80';
+                statStatus.style.color = 'var(--cody-green)';
                 statStatus.style.animation = 'none';
                 loadingState.classList.add('hidden');
                 emptyState.classList.add('hidden');
