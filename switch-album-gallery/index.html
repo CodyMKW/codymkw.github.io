@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cody's Switch Gallery</title>
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
         
@@ -59,6 +60,8 @@
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
             z-index: 20;
             flex-shrink: 0;
+            overflow-y: auto;
+            max-height: 100vh;
         }
 
         .sidebar-header {
@@ -122,9 +125,10 @@
             transition: all 0.2s;
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
         }
-        .btn-load:hover { background-color: white; color: black; }
-        .btn-load:hover svg { color: var(--switch-red); }
+        .btn-load:hover:not(:disabled) { background-color: white; color: black; }
+        .btn-load:hover:not(:disabled) svg { color: var(--switch-red); }
         .btn-load svg { width: 1.25rem; height: 1.25rem; transition: color 0.2s; }
+        .btn-load:disabled { opacity: 0.5; cursor: not-allowed; }
 
         .btn-usb {
             background-color: transparent;
@@ -132,20 +136,28 @@
             color: var(--switch-muted);
             box-shadow: none;
         }
-        .btn-usb:hover {
+        .btn-usb:hover:not(:disabled) {
             background-color: rgba(255,255,255,0.05);
             color: white;
         }
-        .btn-usb:hover svg { color: var(--cody-green); }
+        .btn-usb:hover:not(:disabled) svg { color: var(--cody-green); }
+
+        .nav-section-title {
+            padding: 0 1.5rem;
+            margin-top: 1.25rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--switch-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
 
         .nav-container {
-            flex: 1;
-            overflow-y: auto;
-            margin-top: 0.5rem;
             padding: 0 0.75rem;
             display: flex;
             flex-direction: column;
-            gap: 0.5rem;
+            gap: 0.25rem;
         }
 
         .nav-item {
@@ -173,9 +185,15 @@
         }
         .nav-item svg { width: 1.25rem; height: 1.25rem; }
 
+        .settings-btn-container {
+            margin-top: auto;
+            padding: 1rem;
+            border-top: 1px solid rgba(43,43,43,0.5);
+        }
+
         /* Stats Box */
         .stats-box {
-            margin-top: 2rem;
+            margin-top: 1rem;
             padding: 1rem 1.5rem;
             background-color: rgba(31, 31, 31, 0.5);
             border-radius: 0.5rem;
@@ -302,7 +320,7 @@
             position: sticky; top: 0; background: rgba(43, 43, 43, 0.95);
             backdrop-filter: blur(8px); z-index: 10;
         }
-        .group-title-wrapper { display: flex; align-items: center; gap: 0.75rem; }
+        .group-title-wrapper { display: flex; align-items: center; gap: 0.5rem; }
         .group-title { font-size: 1.125rem; font-weight: 700; color: white; letter-spacing: 0.025em; }
         .btn-edit-game { padding: 0.375rem; color: var(--switch-muted); background: transparent; border: none; border-radius: 0.25rem; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center;}
         .btn-edit-game:hover { color: var(--switch-cyan); background: rgba(77, 77, 77, 0.2); }
@@ -319,7 +337,7 @@
             height: 4rem; display: flex; justify-content: space-between; align-items: center;
             padding: 0 1.5rem; flex-shrink: 0; background: linear-gradient(to bottom, black, transparent);
         }
-        .lightbox-info { font-size: 0.875rem; font-weight: 500; color: rgba(255, 255, 255, 0.7); letter-spacing: 0.025em; text-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .lightbox-info { font-size: 0.875rem; font-weight: 500; color: rgba(255, 255, 255, 0.7); letter-spacing: 0.025em; text-shadow: 0 4px 6px rgba(0,0,0,0.1); display: flex; align-items: center; }
         
         .btn-icon {
             color: white; background: rgba(255,255,255,0.1); border: none;
@@ -348,11 +366,11 @@
         .lightbox-media-wrapper video { background: black; }
         .lightbox-media-wrapper img { object-fit: contain; background: rgba(0,0,0,0.5); }
 
-        /* Rename Modal */
-        .rename-modal { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.8); z-index: 60; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); transition: opacity 0.2s; }
-        .rename-card { background: var(--switch-darker); border: 1px solid rgba(77, 77, 77, 0.3); border-radius: 0.75rem; padding: 1.5rem; width: 400px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); transition: transform 0.2s; }
-        .rename-title { font-size: 1.25rem; font-weight: 700; color: white; margin-bottom: 1rem; }
-        .rename-desc { font-size: 0.875rem; color: var(--switch-muted); margin-bottom: 1rem; }
+        /* Modals (Rename, P2P, Settings) */
+        .custom-modal { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.8); z-index: 60; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); transition: opacity 0.2s; }
+        .modal-card { background: var(--switch-darker); border: 1px solid rgba(77, 77, 77, 0.3); border-radius: 0.75rem; padding: 1.5rem; width: 420px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); transition: transform 0.2s; }
+        .modal-title { font-size: 1.25rem; font-weight: 700; color: white; margin-bottom: 1rem; }
+        .modal-desc { font-size: 0.875rem; color: var(--switch-muted); margin-bottom: 1rem; }
         
         .input-group { margin-bottom: 1.25rem; }
         .input-label { display: block; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
@@ -361,7 +379,7 @@
         
         .input-field { width: 100%; background: var(--switch-dark); border-radius: 0.25rem; padding: 0.5rem 0.75rem; color: var(--switch-muted); font-size: 0.875rem; border: 1px solid rgba(77, 77, 77, 0.2); }
         .input-field:disabled { cursor: not-allowed; }
-        .input-field.active { border-color: var(--switch-cyan); color: white; font-size: 1rem; padding: 0.75rem; box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06); outline: none; }
+        .input-field.active { border-color: var(--switch-cyan); color: white; font-size: 1rem; padding: 0.75rem; box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06); outline: none; transition: border-color 0.2s; }
         .input-field.active:focus { box-shadow: 0 0 0 2px var(--switch-cyan); }
 
         .modal-actions { display: flex; justify-content: flex-end; gap: 0.75rem; }
@@ -371,6 +389,48 @@
         .btn-save:hover { background: #ff3344; }
 
         .view-indicator { width: 0.5rem; height: 0.5rem; border-radius: 9999px; background: var(--switch-cyan); display: block; }
+
+        /* Spoiler locking (local view) */
+        .media-item.spoiler-locked img,
+        .media-item.spoiler-locked video { filter: blur(18px) brightness(0.55); }
+        .spoiler-lock-badge {
+            position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            gap: 0.25rem; color: white; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+            text-shadow: 0 2px 6px rgba(0,0,0,0.8); pointer-events: none; z-index: 2;
+        }
+        .spoiler-lock-badge svg { width: 1.5rem; height: 1.5rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6)); }
+
+        /* Star badge (peer favorited this of yours) */
+        .star-badge {
+            position: absolute; top: 0.5rem; left: 0.5rem; background: rgba(0,0,0,0.65); backdrop-filter: blur(4px);
+            border-radius: 9999px; width: 1.6rem; height: 1.6rem; display: flex; align-items: center; justify-content: center;
+            font-size: 0.8rem; z-index: 3; box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+        }
+
+        /* Peer activity box */
+        #peer-activity-box { border-color: rgba(168, 85, 247, 0.35) !important; }
+
+        /* Lightbox reactions */
+        .reaction-bar { display: none; align-items: center; gap: 0.35rem; margin-right: 0.5rem; }
+        .reaction-btn {
+            background: rgba(255,255,255,0.1); border: none; border-radius: 9999px; width: 2.15rem; height: 2.15rem;
+            font-size: 1.05rem; cursor: pointer; transition: transform 0.15s ease, background 0.15s ease;
+            display: flex; align-items: center; justify-content: center; line-height: 1;
+        }
+        .reaction-btn:hover { background: rgba(255,255,255,0.25); transform: scale(1.2); }
+
+        .floating-reaction {
+            position: absolute; bottom: 4.5rem; font-size: 2.25rem; pointer-events: none;
+            animation: floatUpReaction 1.8s ease-out forwards; z-index: 70; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.4));
+        }
+        @keyframes floatUpReaction {
+            0% { transform: translateY(0) scale(0.4) rotate(-8deg); opacity: 0; }
+            15% { opacity: 1; transform: translateY(-10px) scale(1.25) rotate(4deg); }
+            100% { transform: translateY(-200px) scale(1) rotate(-4deg); opacity: 0; }
+        }
+
+        .btn-star-media { color: #facc15; }
+        .btn-star-media:hover { color: #facc15 !important; background: rgba(250, 204, 21, 0.2) !important; }
     </style>
 </head>
 <body>
@@ -390,40 +450,70 @@
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
                 Detect USB Switch
             </button>
+            <button id="btn-p2p" class="btn-load btn-usb">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
+                P2P Network
+            </button>
         </div>
 
+        <!-- SOURCE SELECTION -->
+        <div class="nav-section-title">Gallery Source</div>
+        <nav class="nav-container" id="nav-sources">
+            <button class="nav-item active" data-source="local">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                My SD Card
+            </button>
+            <button class="nav-item hidden" id="nav-remote" data-source="remote" style="color: #a855f7;">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <span id="remote-source-name">Remote Peer</span>
+            </button>
+        </nav>
+
+        <!-- FILTER/SORT SELECTION -->
+        <div class="nav-section-title">Sort By</div>
         <nav class="nav-container" id="nav-filters">
-            <button class="nav-item active" data-view="all">
+            <button class="nav-item active" data-sort="all">
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
                 All Media
             </button>
-            <button class="nav-item" data-view="date">
+            <button class="nav-item" data-sort="date">
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                 Sort by Date
             </button>
-            <button class="nav-item" data-view="game">
+            <button class="nav-item" data-sort="game">
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 Sort by Game
             </button>
-            
+        </nav>
+
+        <div style="padding: 0 0.75rem;">
             <div id="stats-container" class="stats-box hidden">
                 <p class="stat-row"><span>Media:</span> <span id="stat-count" style="color: white; font-weight: 700;">0</span></p>
                 <p class="stat-row"><span>Status:</span> <span id="stat-status" style="color: var(--switch-cyan); font-weight: 500;">Ready</span></p>
+                <p class="stat-row"><span>P2P:</span> <span id="stat-p2p" style="color: var(--switch-muted); font-weight: 500;">Offline</span></p>
             </div>
-        </nav>
+            <div id="peer-activity-box" class="stats-box hidden">
+                <p style="color: #a855f7; font-weight: 700; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.35rem;">Peer Activity</p>
+                <p id="peer-activity-text" style="color: var(--switch-muted); font-size: 0.8rem; line-height: 1.4;">Not connected.</p>
+                <button id="btn-jump-peer-viewing" style="display:none; margin-top: 0.5rem; width: 100%; padding: 0.35rem 0.6rem; border: 1px solid #a855f7; color: #a855f7; background: rgba(168,85,247,0.08); border-radius: 0.25rem; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.03em; cursor: pointer; transition: background 0.2s;">▶ Jump to what they're viewing</button>
+            </div>
+        </div>
+
+        <div class="settings-btn-container">
+            <button id="btn-open-settings" class="nav-item" style="justify-content: center; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1);">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                App Settings
+            </button>
+        </div>
     </aside>
 
     <main class="main-area">
         <header class="top-bar">
             <div id="current-view-title" style="font-weight: 700; color: white; letter-spacing: 0.05em; text-transform: uppercase; font-size: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
-                <span class="view-indicator"></span> All Media
+                <span class="view-indicator"></span> SD Card &bull; All Media
             </div>
             <div style="display: flex; align-items: center; gap: 1.5rem;">
-                <div style="display: flex; align-items: center; gap: 0.25rem; font-size: 0.75rem; font-weight: 500;">
-                    <svg style="width: 1rem; height: 1rem;" fill="currentColor" viewBox="0 0 24 24"><path d="M17 4h-3V2h-4v2H7c-1.103 0-2 .897-2 2v14c0 1.103.897 2 2 2h10c1.103 0 2-.897 2-2V6c0-1.103-.897-2-2-2zM7 20V6h10l.002 14H7z"></path></svg>
-                    SD
-                </div>
-                <span id="clock" style="font-weight: 700; letter-spacing: 0.025em;">12:00 AM</span>
+                <span id="clock" style="font-weight: 700; letter-spacing: 0.025em; color: white;">12:00 AM</span>
             </div>
         </header>
 
@@ -444,16 +534,45 @@
 
             <!-- Grid container injected by JS -->
             <div id="media-grid" class="flex-col hidden" style="gap: 2rem;"></div>
+
+            <!-- Pagination Controls -->
+            <div id="pagination-controls" class="hidden" style="justify-content: center; align-items: center; gap: 1rem; margin-top: 2rem; padding-bottom: 1rem;">
+                <button id="btn-page-prev" class="btn-load" style="width: auto; padding: 0.5rem 1.5rem;">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin-right: 0.25rem;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg> Prev
+                </button>
+                <span id="page-info" style="color: var(--switch-muted); font-weight: 600; font-size: 0.875rem;">Page 1 of 1</span>
+                <button id="btn-page-next" class="btn-load" style="width: auto; padding: 0.5rem 1.5rem;">
+                    Next <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin-left: 0.25rem;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                </button>
+            </div>
         </div>
     </main>
+
+    <!-- Global Loading Overlay for P2P Interactions -->
+    <div id="p2p-loading-overlay" class="modal-overlay hidden opacity-0" style="z-index: 100; justify-content: center; align-items: center;">
+        <div class="loading-box" style="background: rgba(31,31,31,0.95); backdrop-filter: blur(10px);">
+            <div class="spinner"></div>
+            <p id="p2p-loading-text" style="color: var(--switch-cyan); font-weight: 700;">Processing...</p>
+        </div>
+    </div>
 
     <!-- Lightbox Modal -->
     <div id="lightbox" class="modal-overlay hidden opacity-0">
         <div class="lightbox-toolbar">
             <div id="lightbox-info" class="lightbox-info"></div>
-            <button id="btn-close-lightbox" class="btn-icon">
-                <svg style="width: 1.5rem; height: 1.5rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
-            </button>
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <div id="lightbox-reactions" class="reaction-bar">
+                    <button class="reaction-btn" data-emoji="❤️" title="React">❤️</button>
+                    <button class="reaction-btn" data-emoji="😂" title="React">😂</button>
+                    <button class="reaction-btn" data-emoji="😮" title="React">😮</button>
+                    <button class="reaction-btn" data-emoji="🔥" title="React">🔥</button>
+                    <button class="reaction-btn" data-emoji="👍" title="React">👍</button>
+                </div>
+                <button id="btn-star-media" class="btn-icon btn-star-media" style="display:none;" title="Star this for your peer">⭐</button>
+                <button id="btn-close-lightbox" class="btn-icon">
+                    <svg style="width: 1.5rem; height: 1.5rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
         </div>
 
         <div class="lightbox-content">
@@ -472,10 +591,10 @@
     </div>
 
     <!-- Rename Game Modal -->
-    <div id="rename-modal" class="rename-modal hidden opacity-0">
-        <div class="rename-card scale-95" id="rename-modal-content">
-            <h3 class="rename-title">Edit Game Name</h3>
-            <p class="rename-desc">Map this game hash to its actual title (e.g., "Animal Crossing: New Horizons").</p>
+    <div id="rename-modal" class="custom-modal hidden opacity-0">
+        <div class="modal-card scale-95" id="rename-modal-content">
+            <h3 class="modal-title">Edit Game Name</h3>
+            <p class="modal-desc">Map this game hash to its actual title (e.g., "Animal Crossing: New Horizons" or "Splatoon 3").</p>
             <div class="input-group">
                 <label class="input-label muted">Hash ID</label>
                 <input type="text" id="rename-hash-display" class="input-field" disabled>
@@ -491,24 +610,139 @@
         </div>
     </div>
 
+    <!-- P2P Modal -->
+    <div id="p2p-modal" class="custom-modal hidden opacity-0">
+        <div class="modal-card scale-95" id="p2p-modal-content">
+            <h3 class="modal-title">Peer-to-Peer Connection</h3>
+            <p class="modal-desc">Connect directly to a friend to share your media.</p>
+            <div class="input-group">
+                <label class="input-label muted">Your Peer ID</label>
+                <div style="display:flex; gap: 0.5rem;">
+                    <input type="text" id="p2p-my-id" class="input-field" readonly placeholder="Generating...">
+                    <button id="btn-copy-id" class="btn-save" style="padding: 0.5rem;">Copy</button>
+                </div>
+            </div>
+            <div class="input-group" style="margin-bottom: 1.5rem;">
+                <label class="input-label cyan" style="color: #a855f7;">Connect to Peer ID</label>
+                <input type="text" id="p2p-target-id" class="input-field active" style="border-color: #a855f7;" placeholder="Enter peer ID (e.g. Joseph's ID)...">
+            </div>
+            <div class="modal-actions">
+                <button id="btn-close-p2p" class="btn-cancel">Cancel</button>
+                <button id="btn-connect-p2p" class="btn-save" style="background: #a855f7; box-shadow: 0 10px 15px -3px rgba(168, 85, 247, 0.2);">Connect</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="custom-modal hidden opacity-0">
+        <div class="modal-card scale-95" id="settings-modal-content">
+            <h3 class="modal-title">App Settings</h3>
+            <p class="modal-desc" style="margin-bottom: 1.25rem;">Customize your profile and manage spoiler settings for connected peers.</p>
+            <div class="input-group">
+                <label class="input-label cyan">Your Display Name</label>
+                <input type="text" id="setting-name" class="input-field active" value="Cody" placeholder="Your name...">
+            </div>
+            <div class="input-group">
+                <label class="input-label muted">Favorite Game (Shown to Peer)</label>
+                <input type="text" id="setting-game" class="input-field" placeholder="e.g. Splatoon 3, Animal Crossing">
+            </div>
+            <div class="input-group" style="display: flex; align-items: center; justify-content: space-between;">
+                <label class="input-label muted" style="margin-bottom: 0;">Request High-Res Thumbnails</label>
+                <input type="checkbox" id="setting-hires" style="width: 1.2rem; height: 1.2rem; accent-color: var(--switch-cyan);">
+            </div>
+            
+            <div class="input-group" style="margin-top: 1.25rem; margin-bottom: 1.5rem;">
+                <label class="input-label cyan" style="color: var(--switch-red);">Spoilered Games (Hidden from Peer)</label>
+                <div id="settings-spoiler-list" style="max-height: 120px; overflow-y: auto; background: var(--switch-dark); border: 1px solid rgba(77, 77, 77, 0.2); border-radius: 0.25rem; padding: 0.5rem; display: flex; flex-direction: column; gap: 0.5rem;">
+                    <!-- Injected via JS -->
+                </div>
+            </div>
+
+            <div class="modal-actions">
+                <button id="btn-close-settings" class="btn-save">Done</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         let allMediaFiles = [];
-        let currentView = 'all';
+        let remoteMediaFiles = [];
+        
+        let currentSource = 'local'; // 'local' or 'remote'
+        let currentSort = 'all'; // 'all', 'date', or 'game'
+        
         let currentLightboxIndex = 0;
         let activeMediaList = []; 
         let hashToGameMap = {};
+        let spoilerGamesMap = {}; // Tracks spoilers, keyed by game IDENTITY (see gameKey())
+        let receivedStars = {}; // Screenshots of YOURS a peer has starred, keyed by "hash|timestamp"
+
+        // A single "identity" for a piece of media's game: if you've renamed
+        // a hash to a friendly name, everything sharing that name is treated
+        // as the same game (handy since a game update can change its hash).
+        // Grouping, sorting AND spoiler status all key off this consistently
+        // so marking a game as spoiler actually covers every screenshot
+        // shown under that game's header, not just one hash.
+        function gameKey(hash) {
+            return hashToGameMap[hash] || hash;
+        }
+        function isGameSpoiled(hash) {
+            const key = gameKey(hash);
+            // Also check the raw hash for spoiler flags saved before this
+            // migration, so old settings aren't silently lost.
+            return !!(spoilerGamesMap[key] || spoilerGamesMap[hash]);
+        }
+
+        // Profile State
+        let userProfile = {
+            name: 'Cody',
+            favoriteGame: '',
+            requestHiRes: true
+        };
+
+        // Peer State
+        let peerProfile = {
+            name: 'Peer',
+            favoriteGame: ''
+        };
+        let peerViewingTarget = null; // {hash, timestamp} of what the peer is currently looking at, if known
+
+        // Pagination Variables
+        let currentPage = 1;
+        const ITEMS_PER_PAGE = 60; // Render 60 items at a time to prevent lag
+        let currentSortedList = []; 
 
         try {
             const savedMap = localStorage.getItem('switch_gallery_games');
-            if (savedMap) {
-                hashToGameMap = JSON.parse(savedMap);
-            }
+            if (savedMap) hashToGameMap = JSON.parse(savedMap);
+            
+            const savedProfile = localStorage.getItem('switch_gallery_profile');
+            if (savedProfile) userProfile = { ...userProfile, ...JSON.parse(savedProfile) };
+
+            const savedSpoilers = localStorage.getItem('switch_gallery_spoilers');
+            if (savedSpoilers) spoilerGamesMap = JSON.parse(savedSpoilers);
+
+            const savedStars = localStorage.getItem('switch_gallery_received_stars');
+            if (savedStars) receivedStars = JSON.parse(savedStars);
         } catch (e) {
-            console.warn("Failed to load game map from local storage");
+            console.warn("Failed to load local storage data");
         }
+
+        // Apply profile to inputs
+        document.getElementById('setting-name').value = userProfile.name;
+        document.getElementById('setting-game').value = userProfile.favoriteGame;
+        document.getElementById('setting-hires').checked = userProfile.requestHiRes;
 
         function saveGameMap() {
             localStorage.setItem('switch_gallery_games', JSON.stringify(hashToGameMap));
+        }
+
+        function saveSpoilerMap() {
+            localStorage.setItem('switch_gallery_spoilers', JSON.stringify(spoilerGamesMap));
+        }
+
+        function saveReceivedStars() {
+            localStorage.setItem('switch_gallery_received_stars', JSON.stringify(receivedStars));
         }
 
         const btnSelectFolder = document.getElementById('btn-select-folder');
@@ -516,7 +750,10 @@
         const loadingState = document.getElementById('loading-state');
         const loadingCount = document.getElementById('loading-count');
         const mediaGrid = document.getElementById('media-grid');
-        const navItems = document.querySelectorAll('.nav-item');
+        
+        const navRemote = document.getElementById('nav-remote');
+        const remoteSourceName = document.getElementById('remote-source-name');
+        
         const statCount = document.getElementById('stat-count');
         const statStatus = document.getElementById('stat-status');
         const statsContainer = document.getElementById('stats-container');
@@ -536,6 +773,67 @@
         const btnCancelRename = document.getElementById('btn-cancel-rename');
         const btnSaveRename = document.getElementById('btn-save-rename');
         let currentEditingHash = null;
+
+        // Settings Modal
+        const settingsModal = document.getElementById('settings-modal');
+        const settingsModalContent = document.getElementById('settings-modal-content');
+        const btnOpenSettings = document.getElementById('btn-open-settings');
+        const btnCloseSettings = document.getElementById('btn-close-settings');
+
+        function renderSettingsSpoilerList() {
+            const container = document.getElementById('settings-spoiler-list');
+            if (!container) return;
+            container.innerHTML = '';
+
+            const spoiledHashes = Object.keys(spoilerGamesMap).filter(h => spoilerGamesMap[h]);
+            if (spoiledHashes.length === 0) {
+                container.innerHTML = `<span style="font-size: 0.8rem; color: var(--switch-muted);">No games marked as spoiler.</span>`;
+                return;
+            }
+
+            spoiledHashes.forEach(hash => {
+                const name = hashToGameMap[hash] || hash;
+                const row = document.createElement('div');
+                row.style.cssText = "display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem;";
+                row.innerHTML = `
+                    <span style="color: white; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 220px;" title="${name}">${name}</span>
+                    <button class="btn-cancel" style="padding: 0.2rem 0.5rem; font-size: 0.75rem; color: var(--switch-red); border: 1px solid var(--switch-red);" data-hash="${hash}">Unspoil</button>
+                `;
+                row.querySelector('button').addEventListener('click', (e) => {
+                    const h = e.target.getAttribute('data-hash');
+                    spoilerGamesMap[h] = false;
+                    saveSpoilerMap();
+                    renderSettingsSpoilerList();
+                    renderView();
+                    if (p2pConnection && p2pConnection.open) {
+                        syncGallery(p2pConnection);
+                    }
+                });
+                container.appendChild(row);
+            });
+        }
+
+        btnOpenSettings.addEventListener('click', () => {
+            renderSettingsSpoilerList();
+            settingsModal.classList.remove('hidden');
+            requestAnimationFrame(() => {
+                settingsModal.classList.remove('opacity-0');
+                settingsModalContent.classList.remove('scale-95');
+            });
+        });
+
+        btnCloseSettings.addEventListener('click', () => {
+            userProfile.name = document.getElementById('setting-name').value.trim() || 'User';
+            userProfile.favoriteGame = document.getElementById('setting-game').value.trim();
+            userProfile.requestHiRes = document.getElementById('setting-hires').checked;
+            localStorage.setItem('switch_gallery_profile', JSON.stringify(userProfile));
+            
+            sendIdentity(); // Sync settings with peer immediately if connected
+
+            settingsModal.classList.add('opacity-0');
+            settingsModalContent.classList.add('scale-95');
+            setTimeout(() => settingsModal.classList.add('hidden'), 200);
+        });
 
         // --- WebUSB Integration ---
         const btnUsbConnect = document.getElementById('btn-usb-connect');
@@ -559,12 +857,10 @@
         }
 
         if (navigator.usb) {
-            // Check if already paired
             navigator.usb.getDevices().then(devices => {
                 if (devices.find(d => d.vendorId === NINTENDO_VENDOR_ID)) updateUsbStatus(true);
             });
 
-            // Listen for hot-plug events
             navigator.usb.addEventListener('connect', event => {
                 if (event.device.vendorId === NINTENDO_VENDOR_ID) updateUsbStatus(true);
             });
@@ -578,15 +874,9 @@
                     const device = await navigator.usb.requestDevice({
                         filters: [{ vendorId: NINTENDO_VENDOR_ID }] 
                     });
-                    
                     if (device) {
                         updateUsbStatus(true);
-                        // Trigger directory picker using the current transient activation context
-                        try {
-                            btnSelectFolder.click();
-                        } catch(e) {
-                            console.warn("Manual folder selection required after USB pairing.");
-                        }
+                        try { btnSelectFolder.click(); } catch(e) {}
                     }
                 } catch (err) {
                     console.log("USB request canceled or failed:", err);
@@ -612,12 +902,29 @@
         function parseFileName(file) {
             const name = file.name;
             const ext = name.split('.').pop().toLowerCase();
-            const hashMatch = name.match(/-([A-Fa-f0-9]{32})\.(jpg|mp4)$/i);
+            // Real captures look like TIMESTAMP-HASH.jpg, but files that have
+            // passed through a phone, cloud sync, or a "Save As" often gain a
+            // " (1)" / "-copy" suffix before the extension, and the hash can
+            // be 16 or 32 hex chars depending on firmware. Match loosely,
+            // then normalize case/whitespace so lookups stay consistent.
+            const hashMatch = name.match(/-([A-Fa-f0-9]{16}(?:[A-Fa-f0-9]{16})?)(?:\s*[\s(_-]*\d+\)?)?\.(jpg|mp4)$/i);
             const dateMatch = name.match(/^(\d{4})(\d{2})(\d{2})/);
 
-            let hash = 'UNKNOWN';
+            let hash;
             if (hashMatch) {
-                hash = hashMatch[1].toUpperCase();
+                hash = hashMatch[1].trim().toUpperCase();
+            } else {
+                // No parseable game hash - fall back to a key unique to this
+                // file's own base name rather than one shared "UNKNOWN"
+                // bucket. Previously every unmatched file (regardless of
+                // which game it actually came from) collapsed into a single
+                // group, which is why unrelated games appeared "combined" -
+                // most often on a peer's gallery, since remote screenshots
+                // are more likely to have passed through an app that touches
+                // filenames. Files whose names are genuinely identical still
+                // collapse together on purpose; different names don't.
+                const stem = name.replace(/\.[^.]+$/, '').replace(/^\d{8,}[-_]?/, '').replace(/\s*\(\d+\)\s*$/, '').trim().toUpperCase();
+                hash = `UNSORTED-${stem || name.toUpperCase()}`;
             }
 
             let dateStr = 'Unknown Date';
@@ -634,7 +941,8 @@
                 type: ext === 'mp4' ? 'video' : 'image',
                 dateStr: dateStr,
                 hash: hash,
-                timestamp: file.lastModified
+                timestamp: file.lastModified,
+                isRemote: false
             };
         }
 
@@ -654,7 +962,7 @@
 
         function cleanupUrls() {
             allMediaFiles.forEach(media => {
-                if(media.url) URL.revokeObjectURL(media.url);
+                if(media.url && media.url.startsWith('blob:')) URL.revokeObjectURL(media.url);
             });
             allMediaFiles = [];
         }
@@ -693,15 +1001,14 @@
                 statStatus.style.animation = 'none';
                 loadingState.classList.add('hidden');
                 emptyState.classList.add('hidden');
-                mediaGrid.classList.remove('hidden');
+                
+                currentSource = 'local';
+                document.querySelector('#nav-sources .nav-item[data-source="local"]').click(); // Reset to SD view
 
-                if (allMediaFiles.length === 0) {
-                    emptyState.classList.remove('hidden');
-                    emptyState.innerHTML = '<h2 style="font-size: 1.25rem; font-weight: 700; color: white;">No Screenshots or Videos Found.</h2><p style="color: var(--switch-muted); margin-top: 0.5rem;">Make sure you selected the correct Album folder.</p>';
-                    return;
+                // Automatically send updated gallery if peer is connected
+                if (p2pConnection && p2pConnection.open) {
+                    syncGallery(p2pConnection);
                 }
-
-                renderView();
 
             } catch (error) {
                 console.error(error);
@@ -723,24 +1030,37 @@
             const container = document.createElement('div');
             container.className = 'media-item';
             
-            if (media.type === 'video') {
-                container.innerHTML = `
-                    <video 
-                        src="${media.url}#t=0.001" 
-                        preload="metadata" 
-                        muted 
-                        loop 
-                        onmouseover="this.play()" 
-                        onmouseout="this.pause()"
-                    ></video>
-                    <div class="thumbnail-overlay">
-                        <div class="thumbnail-icon-wrapper">
-                            <svg fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            if (media.isRemote) {
+                if (media.type === 'video') {
+                    container.innerHTML = `
+                        <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #000; color: white; font-weight: bold; flex-direction: column; gap: 0.5rem; text-align: center;">
+                            <svg style="width: 2.5rem; height: 2.5rem; color: var(--switch-cyan);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            <span style="font-size: 0.875rem; letter-spacing: 0.05em;">Click to View</span>
                         </div>
-                    </div>
-                `;
+                    `;
+                } else {
+                    container.innerHTML = `<img src="${media.thumb}" loading="lazy" alt="Screenshot" />`;
+                }
             } else {
-                container.innerHTML = `<img src="${media.url}" loading="lazy" alt="Screenshot" />`;
+                if (media.type === 'video') {
+                    container.innerHTML = `
+                        <video 
+                            src="${media.url}#t=0.001" 
+                            preload="metadata" 
+                            muted 
+                            loop 
+                            onmouseover="this.play()" 
+                            onmouseout="this.pause()"
+                        ></video>
+                        <div class="thumbnail-overlay">
+                            <div class="thumbnail-icon-wrapper">
+                                <svg fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    container.innerHTML = `<img src="${media.url}" loading="lazy" alt="Screenshot" />`;
+                }
             }
             
             const badge = document.createElement('div');
@@ -748,119 +1068,240 @@
             badge.textContent = media.type === 'video' ? 'MP4' : 'JPG';
             container.appendChild(badge);
 
-            container.addEventListener('click', () => openLightbox(index, globalList));
+            // Actually visually hide spoiler-marked media in YOUR OWN grid too
+            // (blurred, badged) - not just exclude it from the peer sync -
+            // so a screen-share glance doesn't spoil it for you either.
+            if (!media.isRemote && isGameSpoiled(media.hash)) {
+                container.classList.add('spoiler-locked');
+                const lockBadge = document.createElement('div');
+                lockBadge.className = 'spoiler-lock-badge';
+                lockBadge.innerHTML = `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg><span>Spoiler</span>`;
+                container.appendChild(lockBadge);
+            }
+
+            // Show a star badge if a connected peer favorited this of yours
+            if (!media.isRemote && receivedStars[`${media.hash}|${media.timestamp}`]) {
+                const star = document.createElement('div');
+                star.className = 'star-badge';
+                star.title = 'A connected peer starred this';
+                star.textContent = '⭐';
+                container.appendChild(star);
+            }
+
+            container.addEventListener('click', () => triggerLightbox(index, globalList));
 
             return container;
         }
 
-        function renderGroupedGrid(groups, mode) {
-            mediaGrid.innerHTML = '';
-            
-            for (const [groupKey, files] of Object.entries(groups)) {
-                const headerContainer = document.createElement('div');
-                headerContainer.className = 'group-header';
-                
-                const titleWrapper = document.createElement('div');
-                titleWrapper.className = 'group-title-wrapper';
-                
-                const header = document.createElement('h3');
-                header.className = 'group-title';
-                
-                if (mode === 'game') {
-                    const gameName = hashToGameMap[groupKey] || groupKey;
-                    header.textContent = gameName;
-                    
-                    const editBtn = document.createElement('button');
-                    editBtn.className = 'btn-edit-game';
-                    editBtn.title = "Edit Game Name";
-                    editBtn.innerHTML = `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>`;
-                    editBtn.onclick = () => openRenameModal(groupKey);
-                    
-                    titleWrapper.appendChild(header);
-                    titleWrapper.appendChild(editBtn);
-                } else {
-                    header.textContent = groupKey;
-                    titleWrapper.appendChild(header);
-                }
-
-                const countBadge = document.createElement('span');
-                countBadge.className = 'group-count';
-                countBadge.textContent = files.length;
-
-                headerContainer.appendChild(titleWrapper);
-                headerContainer.appendChild(countBadge);
-                mediaGrid.appendChild(headerContainer);
-
-                const grid = document.createElement('div');
-                grid.className = 'media-grid';
-                
-                files.forEach((media, idx) => {
-                    grid.appendChild(createMediaItem(media, idx, files));
-                });
-                
-                mediaGrid.appendChild(grid);
-            }
-        }
-
+        // --- Core Pagination & Rendering Engine ---
         function renderView() {
-            if (allMediaFiles.length === 0) return;
             mediaGrid.innerHTML = '';
-            
-            if (currentView === 'all') {
-                currentViewTitle.innerHTML = '<span class="view-indicator"></span> All Media';
-                const grid = document.createElement('div');
-                grid.className = 'media-grid';
-                grid.style.marginTop = '1rem';
-                allMediaFiles.forEach((media, idx) => {
-                    grid.appendChild(createMediaItem(media, idx, allMediaFiles));
-                });
-                mediaGrid.appendChild(grid);
-            } 
-            else if (currentView === 'date') {
-                currentViewTitle.innerHTML = '<span class="view-indicator"></span> Sorted by Date';
-                const groups = {};
-                allMediaFiles.forEach(m => {
-                    if(!groups[m.dateStr]) groups[m.dateStr] = [];
-                    groups[m.dateStr].push(m);
-                });
-                const sortedGroups = Object.keys(groups).sort((a, b) => b.localeCompare(a)).reduce((obj, key) => {
-                    obj[key] = groups[key];
-                    return obj;
-                }, {});
-                renderGroupedGrid(sortedGroups, 'date');
+            const paginationControls = document.getElementById('pagination-controls');
+            paginationControls.classList.add('hidden');
+            paginationControls.classList.remove('flex');
+
+            let sourceList = currentSource === 'local' ? allMediaFiles : remoteMediaFiles;
+
+            // The big "No Media Loaded" placard is only relevant while
+            // viewing your own (unloaded) SD card. It previously stayed
+            // visible forever until YOU loaded a folder, even while you were
+            // actively browsing a connected peer's gallery - so their media
+            // rendered underneath/alongside your own empty-state message.
+            // Toggle it based on what's actually being viewed right now.
+            if (currentSource === 'local' && allMediaFiles.length === 0) {
+                emptyState.classList.remove('hidden');
+                emptyState.querySelector('svg').classList.remove('hidden');
+                emptyState.querySelector('h2').classList.remove('hidden');
+                emptyState.querySelector('p').classList.remove('hidden');
+                mediaGrid.classList.add('hidden');
+            } else {
+                emptyState.classList.add('hidden');
             }
-            else if (currentView === 'game') {
-                currentViewTitle.innerHTML = '<span class="view-indicator"></span> Sorted by Game';
-                const groups = {};
-                allMediaFiles.forEach(m => {
-                    if(!groups[m.hash]) groups[m.hash] = [];
-                    groups[m.hash].push(m);
-                });
-                
-                const sortedKeys = Object.keys(groups).sort((a, b) => {
-                    const nameA = hashToGameMap[a] || a;
-                    const nameB = hashToGameMap[b] || b;
+
+            // Handle Header Title
+            let sourcePrefix = currentSource === 'local' ? 'SD Card' : `${peerProfile.name}'s Gallery`;
+            let sortSuffix = currentSort === 'all' ? 'All Media' : (currentSort === 'date' ? 'Sorted by Date' : 'Sorted by Game');
+            currentViewTitle.innerHTML = `<span class="view-indicator" style="${currentSource === 'remote' ? 'background: #a855f7;' : ''}"></span> ${sourcePrefix} &bull; ${sortSuffix}`;
+
+            if (sourceList.length === 0) {
+                if (currentSource === 'remote') {
+                    mediaGrid.innerHTML = `<div style="color: var(--switch-muted); padding: 2rem; text-align: center; grid-column: 1/-1;">No remote media available from ${peerProfile.name}.</div>`;
+                    mediaGrid.classList.remove('hidden');
+                }
+                return;
+            }
+
+            // Clone to avoid mutating original arrays
+            currentSortedList = [...sourceList]; 
+
+            // Handle Sorting based on View
+            if (currentSort === 'date') {
+                currentSortedList.sort((a, b) => b.dateStr.localeCompare(a.dateStr));
+            } else if (currentSort === 'game') {
+                currentSortedList.sort((a, b) => {
+                    const nameA = hashToGameMap[a.hash] || a.hash;
+                    const nameB = hashToGameMap[b.hash] || b.hash;
                     return nameA.localeCompare(nameB);
                 });
-                const sortedGroups = sortedKeys.reduce((obj, key) => {
-                    obj[key] = groups[key];
-                    return obj;
-                }, {});
+            }
 
-                renderGroupedGrid(sortedGroups, 'game');
+            // Calculate Pagination Bounds
+            const totalItems = currentSortedList.length;
+            const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+            if (currentPage > totalPages) currentPage = totalPages;
+            if (currentPage < 1) currentPage = 1;
+
+            const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+            const endIndex = Math.min(startIndex + ITEMS_PER_PAGE, totalItems);
+            const pagedItems = currentSortedList.slice(startIndex, endIndex);
+
+            // Render Items and Inject Group Headers Dynamically
+            let currentGroupTracker = null;
+            let currentGridElement = null;
+
+            pagedItems.forEach((media, indexInPage) => {
+                const globalIndex = startIndex + indexInPage;
+                
+                let targetGroup = null;
+                if (currentSort === 'date') targetGroup = media.dateStr;
+                else if (currentSort === 'game') targetGroup = hashToGameMap[media.hash] || media.hash;
+
+                // Whenever the group changes, inject a new header and grid section
+                if (targetGroup !== currentGroupTracker || !currentGridElement) {
+                    currentGroupTracker = targetGroup;
+                    
+                    if (targetGroup !== null) {
+                        const headerContainer = document.createElement('div');
+                        headerContainer.className = 'group-header';
+                        
+                        const titleWrapper = document.createElement('div');
+                        titleWrapper.className = 'group-title-wrapper';
+                        
+                        const header = document.createElement('h3');
+                        header.className = 'group-title';
+                        header.textContent = targetGroup;
+                        titleWrapper.appendChild(header);
+
+                        if (currentSort === 'game') {
+                            const editBtn = document.createElement('button');
+                            editBtn.className = 'btn-edit-game';
+                            editBtn.title = "Edit Game Name";
+                            editBtn.innerHTML = `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>`;
+                            editBtn.onclick = () => openRenameModal(media.hash);
+                            titleWrapper.appendChild(editBtn);
+
+                            if (currentSource === 'local') {
+                                const isSpoilered = isGameSpoiled(media.hash);
+                                const spoilerBtn = document.createElement('button');
+                                spoilerBtn.className = 'btn-edit-game';
+                                spoilerBtn.title = isSpoilered ? "Unmark as Spoiler" : "Mark as Spoiler (Hide from Connected Peer)";
+                                spoilerBtn.style.color = isSpoilered ? 'var(--switch-red)' : 'var(--switch-muted)';
+                                spoilerBtn.innerHTML = isSpoilered
+                                    ? `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24M1 1l22 22"></path></svg>`
+                                    : `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>`;
+
+                                spoilerBtn.onclick = () => {
+                                    const key = gameKey(media.hash);
+                                    const newState = !isGameSpoiled(media.hash);
+                                    spoilerGamesMap[key] = newState;
+                                    // Clean up a legacy entry keyed by the raw hash if it
+                                    // differs from the resolved name, so status doesn't drift.
+                                    if (key !== media.hash) delete spoilerGamesMap[media.hash];
+                                    saveSpoilerMap();
+                                    renderView();
+                                    if (p2pConnection && p2pConnection.open) {
+                                        syncGallery(p2pConnection);
+                                    }
+                                };
+                                titleWrapper.appendChild(spoilerBtn);
+
+                                if (isSpoilered) {
+                                    const tag = document.createElement('span');
+                                    tag.style.cssText = "font-size: 0.65rem; font-weight: 700; color: var(--switch-red); background: rgba(230,0,18,0.15); border: 1px solid var(--switch-red); padding: 0.1rem 0.4rem; border-radius: 0.25rem; letter-spacing: 0.05em; margin-left: 0.25rem;";
+                                    tag.textContent = "SPOILER (HIDDEN FROM PEER)";
+                                    titleWrapper.appendChild(tag);
+                                }
+                            }
+                        }
+
+                        headerContainer.appendChild(titleWrapper);
+
+                        const countBadge = document.createElement('span');
+                        countBadge.className = 'group-count';
+                        const groupCount = currentSortedList.filter(m => {
+                            if (currentSort === 'date') return m.dateStr === targetGroup;
+                            return (hashToGameMap[m.hash] || m.hash) === targetGroup;
+                        }).length;
+                        countBadge.textContent = groupCount;
+                        headerContainer.appendChild(countBadge);
+
+                        mediaGrid.appendChild(headerContainer);
+                    }
+
+                    currentGridElement = document.createElement('div');
+                    currentGridElement.className = 'media-grid';
+                    mediaGrid.appendChild(currentGridElement);
+                }
+
+                currentGridElement.appendChild(createMediaItem(media, globalIndex, currentSortedList));
+            });
+
+            mediaGrid.classList.remove('hidden');
+
+            if (totalPages > 1) {
+                document.getElementById('page-info').textContent = `Page ${currentPage} of ${totalPages} (${totalItems} items)`;
+                document.getElementById('btn-page-prev').disabled = currentPage === 1;
+                document.getElementById('btn-page-next').disabled = currentPage === totalPages;
+                paginationControls.classList.remove('hidden');
+                paginationControls.classList.add('flex');
             }
         }
 
-        navItems.forEach(item => {
-            item.addEventListener('click', (e) => {
-                navItems.forEach(nav => nav.classList.remove('active'));
-                e.currentTarget.classList.add('active');
-                currentView = e.currentTarget.dataset.view;
+        // Pagination Events
+        document.getElementById('btn-page-prev').addEventListener('click', () => {
+            if (currentPage > 1) {
+                currentPage--;
                 renderView();
-                document.getElementById('gallery-container').scrollTo(0,0);
-            });
+                document.getElementById('gallery-container').scrollTo(0, 0);
+            }
+        });
+        document.getElementById('btn-page-next').addEventListener('click', () => {
+            const totalPages = Math.ceil(currentSortedList.length / ITEMS_PER_PAGE);
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderView();
+                document.getElementById('gallery-container').scrollTo(0, 0);
+            }
         });
 
+        // Navigation Setup (Sources & Sorts separated)
+        document.getElementById('nav-sources').addEventListener('click', (e) => {
+            const btn = e.target.closest('.nav-item');
+            if (!btn) return;
+            document.querySelectorAll('#nav-sources .nav-item').forEach(nav => nav.classList.remove('active'));
+            btn.classList.add('active');
+            
+            currentSource = btn.dataset.source;
+            currentPage = 1;
+            renderView();
+            document.getElementById('gallery-container').scrollTo(0,0);
+            sendPresence();
+        });
+
+        document.getElementById('nav-filters').addEventListener('click', (e) => {
+            const btn = e.target.closest('.nav-item');
+            if (!btn) return;
+            document.querySelectorAll('#nav-filters .nav-item').forEach(nav => nav.classList.remove('active'));
+            btn.classList.add('active');
+            
+            currentSort = btn.dataset.sort;
+            currentPage = 1;
+            renderView();
+            document.getElementById('gallery-container').scrollTo(0,0);
+            sendPresence();
+        });
+
+        // Rename Logic
         function openRenameModal(hash) {
             currentEditingHash = hash;
             renameHashDisplay.value = hash;
@@ -877,42 +1318,30 @@
         function closeRenameModal() {
             renameModal.classList.add('opacity-0');
             renameModalContent.classList.add('scale-95');
-            setTimeout(() => {
-                renameModal.classList.add('hidden');
-                currentEditingHash = null;
-            }, 200);
+            setTimeout(() => renameModal.classList.add('hidden'), 200);
         }
 
         btnCancelRename.addEventListener('click', closeRenameModal);
-        
         btnSaveRename.addEventListener('click', () => {
-            if (currentEditingHash) {
-                const newName = renameInput.value.trim();
-                if (newName) {
-                    hashToGameMap[currentEditingHash] = newName;
-                } else {
-                    delete hashToGameMap[currentEditingHash];
-                }
-                saveGameMap();
-                closeRenameModal();
-                if (currentView === 'game') {
-                    renderView();
-                }
+            const val = renameInput.value.trim();
+            if (val === '') {
+                delete hashToGameMap[currentEditingHash];
+            } else {
+                hashToGameMap[currentEditingHash] = val;
             }
+            saveGameMap();
+            closeRenameModal();
+            renderView(); // Re-render to show updated title
         });
 
-        renameInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') btnSaveRename.click();
-        });
-
-        function openLightbox(index, list) {
-            activeMediaList = list;
-            updateLightboxContent(index);
-            
+        // --- Lightbox Logic ---
+        function triggerLightbox(index, globalList) {
+            currentLightboxIndex = index;
+            activeMediaList = globalList;
+            updateLightboxContent();
             lightbox.classList.remove('hidden');
-            requestAnimationFrame(() => {
-                lightbox.classList.remove('opacity-0');
-            });
+            requestAnimationFrame(() => lightbox.classList.remove('opacity-0'));
+            sendPresence();
         }
 
         function closeLightbox() {
@@ -921,70 +1350,414 @@
                 lightbox.classList.add('hidden');
                 lightboxMediaContainer.innerHTML = '';
             }, 300);
+            sendPresence();
         }
 
-        function updateLightboxContent(index) {
-            currentLightboxIndex = index;
-            const media = activeMediaList[index];
-            lightboxMediaContainer.innerHTML = ''; 
+        function updateLightboxContent() {
+            const media = activeMediaList[currentLightboxIndex];
+            if (!media) return;
+
+            lightboxMediaContainer.innerHTML = '';
+
+            const starBtn = document.getElementById('btn-star-media');
+            starBtn.style.display = (currentSource === 'remote' && p2pConnection && p2pConnection.open) ? 'flex' : 'none';
+            starBtn.textContent = '⭐';
             
-            let mediaElement;
-            if (media.type === 'video') {
-                mediaElement = document.createElement('video');
-                mediaElement.controls = true;
-                mediaElement.autoplay = true;
-                mediaElement.src = media.url;
-            } else {
-                mediaElement = document.createElement('img');
-                mediaElement.src = media.url;
+            const reqHiRes = currentSource === 'local' || userProfile.requestHiRes;
+
+            let sourceUrl = media.url;
+            if (media.isRemote) {
+                // If it's remote, we only have thumbnails. We must request the high-res file if desired.
+                if (reqHiRes) {
+                    lightboxMediaContainer.innerHTML = `<div class="spinner"></div><div style="color: white; margin-top: 1rem;">Loading full file from ${peerProfile.name}...</div>`;
+                    requestRemoteFile(media.originalIndex);
+                } else {
+                    sourceUrl = media.thumb;
+                    if (media.type === 'video') {
+                         lightboxMediaContainer.innerHTML = `<div style="color:white;text-align:center;">Can't play remote video in low-res mode. Enable High-Res in settings.</div>`;
+                         return;
+                    }
+                }
             }
 
-            lightboxMediaContainer.appendChild(mediaElement);
-            
-            const gameName = hashToGameMap[media.hash] || media.hash;
-            lightboxInfo.innerHTML = `
-                <span style="color: white; font-weight: 700;">${index + 1} / ${activeMediaList.length}</span>
-                <span style="margin: 0 0.75rem; border-left: 1px solid rgba(77, 77, 77, 0.5); height: 1rem; display: inline-block; vertical-align: middle;"></span>
-                <span>Date: ${media.dateStr}</span>
-                <span style="margin: 0 0.75rem; border-left: 1px solid rgba(77, 77, 77, 0.5); height: 1rem; display: inline-block; vertical-align: middle;"></span>
-                <span style="color: var(--switch-cyan);">${gameName}</span>
-            `;
+            if (!media.isRemote || (media.isRemote && !reqHiRes && media.type !== 'video')) {
+                renderLoadedLightbox(media, sourceUrl);
+            }
+        }
 
-            btnPrev.style.visibility = index > 0 ? 'visible' : 'hidden';
-            btnNext.style.visibility = index < activeMediaList.length - 1 ? 'visible' : 'hidden';
+        function renderLoadedLightbox(media, srcUrl) {
+            lightboxMediaContainer.innerHTML = '';
+            const gameName = hashToGameMap[media.hash] || media.hash;
+            lightboxInfo.innerHTML = `<span style="opacity: 0.6; margin-right: 0.5rem;">${media.dateStr}</span> <span style="margin-right:0.5rem;">&bull;</span> <strong style="color: var(--switch-cyan);">${gameName}</strong>`;
+            
+            if (media.type === 'video') {
+                const video = document.createElement('video');
+                video.src = srcUrl;
+                video.controls = true;
+                video.autoplay = true;
+                lightboxMediaContainer.appendChild(video);
+            } else {
+                const img = document.createElement('img');
+                img.src = srcUrl;
+                lightboxMediaContainer.appendChild(img);
+            }
         }
 
         btnCloseLightbox.addEventListener('click', closeLightbox);
         
         btnPrev.addEventListener('click', (e) => {
             e.stopPropagation();
-            if (currentLightboxIndex > 0) updateLightboxContent(currentLightboxIndex - 1);
+            if (currentLightboxIndex > 0) {
+                currentLightboxIndex--;
+                updateLightboxContent();
+                sendPresence();
+            }
         });
-
+        
         btnNext.addEventListener('click', (e) => {
             e.stopPropagation();
-            if (currentLightboxIndex < activeMediaList.length - 1) updateLightboxContent(currentLightboxIndex + 1);
-        });
-
-        lightboxMediaContainer.addEventListener('click', (e) => {
-            if (e.target === lightboxMediaContainer) closeLightbox();
+            if (currentLightboxIndex < activeMediaList.length - 1) {
+                currentLightboxIndex++;
+                updateLightboxContent();
+                sendPresence();
+            }
         });
 
         document.addEventListener('keydown', (e) => {
             if (!lightbox.classList.contains('hidden')) {
                 if (e.key === 'Escape') closeLightbox();
-                if (e.key === 'ArrowLeft' && currentLightboxIndex > 0) updateLightboxContent(currentLightboxIndex - 1);
-                if (e.key === 'ArrowRight' && currentLightboxIndex < activeMediaList.length - 1) updateLightboxContent(currentLightboxIndex + 1);
-            }
-            else if (!renameModal.classList.contains('hidden')) {
-                if (e.key === 'Escape') closeRenameModal();
+                if (e.key === 'ArrowLeft') btnPrev.click();
+                if (e.key === 'ArrowRight') btnNext.click();
             }
         });
 
-        setInterval(() => {
+        // Setup Clock Display
+        function updateClock() {
             const now = new Date();
-            document.getElementById('clock').textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        }, 1000);
+            let hours = now.getHours();
+            let minutes = now.getMinutes();
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12;
+            hours = hours ? hours : 12;
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+            document.getElementById('clock').textContent = hours + ':' + minutes + ' ' + ampm;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // --- P2P Network Logic ---
+        let peer = null;
+        let p2pConnection = null;
+        const btnP2p = document.getElementById('btn-p2p');
+        const p2pModal = document.getElementById('p2p-modal');
+        const p2pModalContent = document.getElementById('p2p-modal-content');
+        const p2pMyId = document.getElementById('p2p-my-id');
+        const p2pTargetId = document.getElementById('p2p-target-id');
+        const statP2p = document.getElementById('stat-p2p');
+        const p2pLoadingOverlay = document.getElementById('p2p-loading-overlay');
+        const p2pLoadingText = document.getElementById('p2p-loading-text');
+
+        function sendIdentity() {
+            if (p2pConnection && p2pConnection.open) {
+                p2pConnection.send({ type: 'identity', profile: userProfile });
+            }
+        }
+
+        function initPeer() {
+            peer = new Peer();
+            peer.on('open', (id) => {
+                p2pMyId.value = id;
+            });
+            peer.on('connection', (conn) => {
+                p2pConnection = conn;
+                setupConnection(conn);
+                statP2p.textContent = 'Connected (Incoming)';
+                statP2p.style.color = 'var(--cody-green)';
+            });
+        }
+
+        btnP2p.addEventListener('click', () => {
+            if (!peer) initPeer();
+            p2pModal.classList.remove('hidden');
+            requestAnimationFrame(() => {
+                p2pModal.classList.remove('opacity-0');
+                p2pModalContent.classList.remove('scale-95');
+            });
+        });
+
+        document.getElementById('btn-close-p2p').addEventListener('click', () => {
+            p2pModal.classList.add('opacity-0');
+            p2pModalContent.classList.add('scale-95');
+            setTimeout(() => p2pModal.classList.add('hidden'), 200);
+        });
+
+        document.getElementById('btn-copy-id').addEventListener('click', () => {
+            navigator.clipboard.writeText(p2pMyId.value);
+            const originalText = document.getElementById('btn-copy-id').textContent;
+            document.getElementById('btn-copy-id').textContent = 'Copied!';
+            setTimeout(() => { document.getElementById('btn-copy-id').textContent = originalText; }, 2000);
+        });
+
+        document.getElementById('btn-connect-p2p').addEventListener('click', () => {
+            const targetId = p2pTargetId.value.trim();
+            if (!targetId || !peer) return;
+            
+            document.getElementById('btn-close-p2p').click();
+            p2pLoadingText.textContent = "Connecting to peer...";
+            p2pLoadingOverlay.classList.remove('hidden');
+            requestAnimationFrame(() => p2pLoadingOverlay.classList.remove('opacity-0'));
+
+            p2pConnection = peer.connect(targetId);
+            p2pConnection.on('open', () => {
+                setupConnection(p2pConnection);
+                statP2p.textContent = 'Connected (Outgoing)';
+                statP2p.style.color = 'var(--cody-green)';
+                hideLoadingOverlay();
+            });
+            
+            p2pConnection.on('error', (err) => {
+                alert("Connection failed: " + err);
+                hideLoadingOverlay();
+            });
+            
+            setTimeout(() => { hideLoadingOverlay(); }, 10000); // 10s timeout
+        });
+
+        function hideLoadingOverlay() {
+            p2pLoadingOverlay.classList.add('opacity-0');
+            setTimeout(() => p2pLoadingOverlay.classList.add('hidden'), 300);
+        }
+
+        function setupConnection(conn) {
+            sendIdentity(); // Sync settings upon open
+            syncGallery(conn);
+
+            conn.on('data', (data) => {
+                if (data.type === 'identity') {
+                    peerProfile = data.profile;
+                    remoteSourceName.textContent = `${peerProfile.name}'s Gallery`;
+                    if (peerProfile.favoriteGame) {
+                        statP2p.textContent = `Connected (${peerProfile.name} - ${peerProfile.favoriteGame})`;
+                    } else {
+                        statP2p.textContent = `Connected to ${peerProfile.name}`;
+                    }
+                }
+                else if (data.type === 'gallery_sync') {
+                    // Receive lightweight array mapped with index trackers
+                    remoteMediaFiles = data.files.map(f => ({
+                        ...f,
+                        isRemote: true
+                    }));
+                    navRemote.classList.remove('hidden');
+                    document.querySelector('#nav-sources .nav-item[data-source="remote"]').click();
+                } 
+                else if (data.type === 'file_request') {
+                    handleFileRequest(conn, data.originalIndex);
+                }
+                else if (data.type === 'file_response') {
+                    handleFileResponse(data.file, data.fileType, data.originalIndex);
+                }
+                else if (data.type === 'presence') {
+                    updatePeerActivityDisplay(data);
+                }
+                else if (data.type === 'reaction') {
+                    spawnFloatingReaction(data.emoji);
+                }
+                else if (data.type === 'star') {
+                    const key = `${data.hash}|${data.timestamp}`;
+                    receivedStars[key] = true;
+                    saveReceivedStars();
+                    renderView();
+                }
+            });
+
+            conn.on('close', () => {
+                statP2p.textContent = 'Offline';
+                statP2p.style.color = 'var(--switch-muted)';
+                navRemote.classList.add('hidden');
+                remoteSourceName.textContent = "Remote Peer";
+                remoteMediaFiles = [];
+                document.getElementById('lightbox-reactions').style.display = 'none';
+                document.getElementById('btn-star-media').style.display = 'none';
+                document.getElementById('peer-activity-box').classList.add('hidden');
+                document.getElementById('btn-jump-peer-viewing').style.display = 'none';
+                peerViewingTarget = null;
+                if (currentSource === 'remote') {
+                    document.querySelector('#nav-sources .nav-item[data-source="local"]').click();
+                }
+            });
+
+            document.getElementById('lightbox-reactions').style.display = 'flex';
+            sendPresence();
+        }
+
+        // --- Live Peer Interactions: presence, reactions, stars ---
+        function sendPresence() {
+            if (!(p2pConnection && p2pConnection.open)) return;
+            let viewing = null;
+            if (!lightbox.classList.contains('hidden') && activeMediaList[currentLightboxIndex]) {
+                const m = activeMediaList[currentLightboxIndex];
+                viewing = { game: hashToGameMap[m.hash] || m.hash, type: m.type, hash: m.hash, timestamp: m.timestamp };
+            }
+            p2pConnection.send({ type: 'presence', source: currentSource, sort: currentSort, viewing });
+        }
+
+        function updatePeerActivityDisplay(data) {
+            const box = document.getElementById('peer-activity-box');
+            const text = document.getElementById('peer-activity-text');
+            const jumpBtn = document.getElementById('btn-jump-peer-viewing');
+            box.classList.remove('hidden');
+            if (data.viewing) {
+                text.innerHTML = `👀 Looking at a ${data.viewing.type} from <strong style="color:white;">${data.viewing.game}</strong>`;
+                peerViewingTarget = { hash: data.viewing.hash, timestamp: data.viewing.timestamp };
+                jumpBtn.style.display = 'block';
+                jumpBtn.textContent = "▶ Jump to what they're viewing";
+            } else {
+                const src = data.source === 'local' ? `their own SD Card` : `your shared gallery`;
+                const sortTxt = data.sort === 'all' ? 'all media' : (data.sort === 'date' ? 'sorted by date' : 'sorted by game');
+                text.textContent = `Browsing ${src} • ${sortTxt}`;
+                peerViewingTarget = null;
+                jumpBtn.style.display = 'none';
+            }
+        }
+
+        function jumpToPeerViewing() {
+            if (!peerViewingTarget) return;
+            const jumpBtn = document.getElementById('btn-jump-peer-viewing');
+
+            const openInList = () => {
+                const idx = remoteMediaFiles.findIndex(m => m.hash === peerViewingTarget.hash && m.timestamp === peerViewingTarget.timestamp);
+                if (idx === -1) {
+                    jumpBtn.textContent = "Not available in your synced copy";
+                    setTimeout(() => { jumpBtn.textContent = "▶ Jump to what they're viewing"; }, 1800);
+                    return;
+                }
+                triggerLightbox(idx, remoteMediaFiles);
+            };
+
+            // What the peer is looking at lives in their own gallery, which
+            // is what shows up on your "remote" source - switch to it first.
+            if (currentSource !== 'remote') {
+                document.querySelector('#nav-sources .nav-item[data-source="remote"]').click();
+                // renderView from the click above is synchronous, so the
+                // freshly-populated remoteMediaFiles is ready immediately.
+            }
+            openInList();
+        }
+
+        document.getElementById('btn-jump-peer-viewing').addEventListener('click', jumpToPeerViewing);
+
+        function spawnFloatingReaction(emoji) {
+            const host = document.querySelector('.lightbox-content');
+            if (!host) return;
+            const el = document.createElement('div');
+            el.className = 'floating-reaction';
+            el.textContent = emoji;
+            el.style.left = (42 + Math.random() * 16) + '%';
+            host.appendChild(el);
+            setTimeout(() => el.remove(), 1800);
+        }
+
+        document.querySelectorAll('.reaction-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const emoji = btn.dataset.emoji;
+                spawnFloatingReaction(emoji);
+                if (p2pConnection && p2pConnection.open) {
+                    p2pConnection.send({ type: 'reaction', emoji });
+                }
+            });
+        });
+
+        document.getElementById('btn-star-media').addEventListener('click', () => {
+            const media = activeMediaList[currentLightboxIndex];
+            if (!media || !media.isRemote || !(p2pConnection && p2pConnection.open)) return;
+            p2pConnection.send({ type: 'star', hash: media.hash, timestamp: media.timestamp });
+            const btn = document.getElementById('btn-star-media');
+            btn.textContent = '✓';
+            setTimeout(() => { btn.textContent = '⭐'; }, 1200);
+        });
+
+        async function syncGallery(conn) {
+            if (allMediaFiles.length === 0) return;
+            
+            // Exclude games marked as spoiler from sync
+            const allowedFiles = allMediaFiles.filter(m => !isGameSpoiled(m.hash));
+
+            const lightweightFiles = await Promise.all(allowedFiles.map(async (m) => {
+                const origIdx = allMediaFiles.indexOf(m);
+                let thumbDataUrl = '';
+                if (m.type === 'image') {
+                    thumbDataUrl = await createThumbnail(m.file);
+                }
+                return {
+                    originalIndex: origIdx,
+                    type: m.type,
+                    dateStr: m.dateStr,
+                    hash: m.hash,
+                    timestamp: m.timestamp,
+                    thumb: thumbDataUrl
+                };
+            }));
+
+            conn.send({
+                type: 'gallery_sync',
+                files: lightweightFiles
+            });
+        }
+
+        function createThumbnail(file) {
+            return new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        const maxW = 320;
+                        const scale = maxW / img.width;
+                        canvas.width = maxW;
+                        canvas.height = img.height * scale;
+                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                        resolve(canvas.toDataURL('image/jpeg', 0.5));
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function requestRemoteFile(originalIndex) {
+            if (p2pConnection && p2pConnection.open) {
+                p2pConnection.send({ type: 'file_request', originalIndex: originalIndex });
+            }
+        }
+
+        async function handleFileRequest(conn, index) {
+            const media = allMediaFiles[index];
+            if (!media || isGameSpoiled(media.hash)) return; // Refuse if spoiler
+            
+            try {
+                conn.send({
+                    type: 'file_response',
+                    originalIndex: index,
+                    file: media.file,
+                    fileType: media.type
+                });
+            } catch (e) {
+                console.error("Failed to send large file", e);
+            }
+        }
+
+        function handleFileResponse(fileBlob, fileType, originalIndex) {
+            // Guard against a race: if the user navigated the lightbox while
+            // a large file was still in transit, an older response could
+            // otherwise land on top of whatever is now showing.
+            const mediaObj = activeMediaList[currentLightboxIndex];
+            if (!mediaObj || (originalIndex !== undefined && mediaObj.originalIndex !== originalIndex)) return;
+            const blob = new Blob([fileBlob]); // Wrap the incoming ArrayBuffer in a Blob
+            const url = URL.createObjectURL(blob);
+            renderLoadedLightbox(mediaObj, url);
+        }
 
     </script>
 </body>
