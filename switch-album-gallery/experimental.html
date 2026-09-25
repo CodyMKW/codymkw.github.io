@@ -1494,7 +1494,8 @@
         }
 
         function handleFileResponse(fileBlob, fileType) {
-            const url = URL.createObjectURL(fileBlob);
+            const blob = new Blob([fileBlob]); // Wrap the incoming ArrayBuffer in a Blob
+            const url = URL.createObjectURL(blob);
             const mediaObj = activeMediaList[currentLightboxIndex];
             renderLoadedLightbox(mediaObj, url);
         }
