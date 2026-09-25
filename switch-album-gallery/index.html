@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cody's Switch Gallery</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        
+        :root {
+            --switch-dark: #2b2b2b;
+            --switch-darker: #1f1f1f;
+            --switch-light: #4d4d4d;
+            --switch-red: #E60012;
+            --switch-cyan: #00c3e3;
+            --switch-text: #ebebeb;
+            --switch-muted: #9a9a9a;
+        }
+
+        /* Base Resets & Typography */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+            background-color: var(--switch-dark);
+            color: var(--switch-text);
+            display: flex;
+            height: 100vh;
+            width: 100vw;
+            user-select: none;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Utility Classes for JS Toggles */
+        .hidden { display: none !important; }
+        .flex { display: flex !important; }
+        .flex-col { display: flex !important; flex-direction: column !important; }
+        .opacity-0 { opacity: 0 !important; }
+        .scale-95 { transform: scale(0.95) !important; }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--switch-darker); }
+        ::-webkit-scrollbar-thumb { background: var(--switch-light); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--switch-muted); }
+
+        /* Layout Structure */
+        .sidebar {
+            width: 18rem;
+            background-color: var(--switch-darker);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            z-index: 20;
+            flex-shrink: 0;
+        }
+
+        .sidebar-header {
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-bottom: 1px solid rgba(43, 43, 43, 0.5);
+        }
+
+        .sidebar-logo {
+            width: 2rem;
+            height: 2rem;
+            filter: drop-shadow(0 4px 3px rgba(0,0,0,0.1));
+        }
+
+        .sidebar-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            letter-spacing: 0.025em;
+        }
+
+        .main-area {
+            flex: 1;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--switch-dark);
+        }
+
+        .top-bar {
+            height: 3.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 1.5rem;
+            color: var(--switch-muted);
+            font-size: 0.875rem;
+            flex-shrink: 0;
+            border-bottom: 1px solid rgba(31, 31, 31, 0.8);
+            background-color: rgba(43, 43, 43, 0.95);
+            backdrop-filter: blur(4px);
+            z-index: 10;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+
+        /* Buttons & Navigation */
+        .btn-load {
+            width: 100%;
+            background-color: var(--switch-light);
+            color: white;
+            font-weight: 600;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        .btn-load:hover { background-color: white; color: black; }
+        .btn-load:hover svg { color: var(--switch-red); }
+        .btn-load svg { width: 1.25rem; height: 1.25rem; transition: color 0.2s; }
+
+        .nav-container {
+            flex: 1;
+            overflow-y: auto;
+            margin-top: 0.5rem;
+            padding: 0 0.75rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .nav-item {
+            width: 100%;
+            text-align: left;
+            padding: 0.75rem 1rem;
+            border-radius: 0.25rem;
+            color: var(--switch-muted);
+            background: transparent;
+            border: none;
+            border-left: 4px solid transparent;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transition: color 0.2s, background-color 0.2s;
+        }
+        .nav-item:hover { color: white; }
+        .nav-item.active {
+            background-color: var(--switch-light);
+            border-left-color: var(--switch-red);
+            color: white;
+        }
+        .nav-item svg { width: 1.25rem; height: 1.25rem; }
+
+        /* Stats Box */
+        .stats-box {
+            margin-top: 2rem;
+            padding: 1rem 1.5rem;
+            background-color: rgba(31, 31, 31, 0.5);
+            border-radius: 0.5rem;
+            margin-left: 0.75rem;
+            margin-right: 0.75rem;
+            font-size: 0.875rem;
+            color: var(--switch-muted);
+            border: 1px solid rgba(77, 77, 77, 0.2);
+        }
+        .stat-row { display: flex; justify-content: space-between; }
+        .stat-row + .stat-row { margin-top: 0.5rem; }
+
+        /* Gallery Area */
+        .gallery-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.5rem;
+            padding-bottom: 6rem;
+            position: relative;
+            scroll-behavior: smooth;
+        }
+
+        .empty-state {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 1.5rem;
+        }
+        .empty-icon { width: 6rem; height: 6rem; color: var(--switch-light); margin-bottom: 1.5rem; filter: drop-shadow(0 10px 8px rgba(0,0,0,0.04)); }
+
+        .loading-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 2.5rem;
+            padding: 1.5rem;
+            background-color: var(--switch-darker);
+            border-radius: 0.75rem;
+            border: 1px solid rgba(77, 77, 77, 0.2);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border-left-color: var(--switch-red);
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Grid System */
+        .media-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1rem;
+        }
+        @media (min-width: 768px) { .media-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+        @media (min-width: 1024px) { .media-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+        @media (min-width: 1280px) { .media-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
+
+        /* Media Item & Hover Effects */
+        .media-item {
+            position: relative;
+            aspect-ratio: 16 / 9;
+            background-color: var(--switch-darker);
+            border-radius: 0.25rem;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.15s ease;
+        }
+        .media-item:hover {
+            transform: scale(1.05);
+            border-color: var(--switch-cyan);
+            box-shadow: 0 0 0 2px var(--switch-dark), 0 0 12px 4px rgba(0, 195, 227, 0.5);
+            z-index: 10;
+        }
+        .media-item video, .media-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .media-badge {
+            position: absolute; top: 0.5rem; right: 0.5rem;
+            padding: 0.125rem 0.375rem;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(4px);
+            border-radius: 0.25rem;
+            font-size: 10px; font-weight: 700;
+            color: white; opacity: 0;
+            transition: opacity 0.2s;
+            pointer-events: none;
+            letter-spacing: 0.05em;
+        }
+        .media-item:hover .media-badge { opacity: 1; }
+
+        .thumbnail-overlay {
+            position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+            background: rgba(0,0,0,0.1); transition: background 0.2s; pointer-events: none;
+        }
+        .media-item:hover .thumbnail-overlay { background: transparent; }
+        
+        .thumbnail-icon-wrapper {
+            background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); border-radius: 9999px;
+            padding: 0.625rem; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); transition: transform 0.2s;
+        }
+        .media-item:hover .thumbnail-icon-wrapper { transform: scale(0.9); }
+        .thumbnail-icon-wrapper svg { width: 1.5rem; height: 1.5rem; color: white; margin-left: 0.125rem; }
+
+        /* Dynamic Group Headers */
+        .group-header {
+            display: flex; align-items: center; justify-content: space-between;
+            border-bottom: 2px solid rgba(77, 77, 77, 0.3);
+            padding-bottom: 0.5rem; padding-top: 0.5rem; margin-bottom: 1rem; margin-top: 2rem;
+            position: sticky; top: 0; background: rgba(43, 43, 43, 0.95);
+            backdrop-filter: blur(8px); z-index: 10;
+        }
+        .group-title-wrapper { display: flex; align-items: center; gap: 0.75rem; }
+        .group-title { font-size: 1.125rem; font-weight: 700; color: white; letter-spacing: 0.025em; }
+        .btn-edit-game { padding: 0.375rem; color: var(--switch-muted); background: transparent; border: none; border-radius: 0.25rem; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center;}
+        .btn-edit-game:hover { color: var(--switch-cyan); background: rgba(77, 77, 77, 0.2); }
+        .btn-edit-game svg { width: 1rem; height: 1rem; }
+        .group-count { font-size: 0.75rem; font-weight: 700; background: var(--switch-light); color: white; padding: 0.25rem 0.5rem; border-radius: 9999px; }
+
+        /* Lightbox Modal */
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(0, 0, 0, 0.95);
+            z-index: 50; display: flex; flex-direction: column;
+            backdrop-filter: blur(8px); transition: opacity 0.3s;
+        }
+        .lightbox-toolbar {
+            height: 4rem; display: flex; justify-content: space-between; align-items: center;
+            padding: 0 1.5rem; flex-shrink: 0; background: linear-gradient(to bottom, black, transparent);
+        }
+        .lightbox-info { font-size: 0.875rem; font-weight: 500; color: rgba(255, 255, 255, 0.7); letter-spacing: 0.025em; text-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        
+        .btn-icon {
+            color: white; background: rgba(255,255,255,0.1); border: none;
+            border-radius: 9999px; padding: 0.5rem; cursor: pointer;
+            transition: all 0.2s; display: flex; align-items: center; justify-content: center;
+        }
+        .btn-icon:hover { color: var(--switch-red); background: rgba(255,255,255,0.2); transform: rotate(90deg); }
+        
+        .lightbox-content { flex: 1; display: flex; align-items: center; justify-content: center; padding: 1.5rem; position: relative; overflow: hidden; }
+        
+        .nav-arrow {
+            position: absolute; padding: 1rem; color: rgba(255,255,255,0.5); background: rgba(0,0,0,0.4);
+            border: none; border-radius: 9999px; cursor: pointer; transition: all 0.2s; z-index: 20;
+            opacity: 0; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        .lightbox-content:hover .nav-arrow { opacity: 1; }
+        .nav-arrow:hover { color: white; background: rgba(0,0,0,0.8); transform: scale(1.1); }
+        .arrow-left { left: 1.5rem; }
+        .arrow-right { right: 1.5rem; }
+        
+        .lightbox-media-wrapper { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; position: relative; }
+        .lightbox-media-wrapper video, .lightbox-media-wrapper img {
+            max-width: 100%; max-height: 85vh; border-radius: 0.25rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); z-index: 10; position: relative;
+        }
+        .lightbox-media-wrapper video { background: black; }
+        .lightbox-media-wrapper img { object-fit: contain; background: rgba(0,0,0,0.5); }
+
+        /* Rename Modal */
+        .rename-modal { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.8); z-index: 60; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); transition: opacity 0.2s; }
+        .rename-card { background: var(--switch-darker); border: 1px solid rgba(77, 77, 77, 0.3); border-radius: 0.75rem; padding: 1.5rem; width: 400px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); transition: transform 0.2s; }
+        .rename-title { font-size: 1.25rem; font-weight: 700; color: white; margin-bottom: 1rem; }
+        .rename-desc { font-size: 0.875rem; color: var(--switch-muted); margin-bottom: 1rem; }
+        
+        .input-group { margin-bottom: 1.25rem; }
+        .input-label { display: block; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
+        .input-label.muted { color: var(--switch-muted); }
+        .input-label.cyan { color: var(--switch-cyan); }
+        
+        .input-field { width: 100%; background: var(--switch-dark); border-radius: 0.25rem; padding: 0.5rem 0.75rem; color: var(--switch-muted); font-size: 0.875rem; border: 1px solid rgba(77, 77, 77, 0.2); }
+        .input-field:disabled { cursor: not-allowed; }
+        .input-field.active { border-color: var(--switch-cyan); color: white; font-size: 1rem; padding: 0.75rem; box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06); outline: none; }
+        .input-field.active:focus { box-shadow: 0 0 0 2px var(--switch-cyan); }
+
+        .modal-actions { display: flex; justify-content: flex-end; gap: 0.75rem; }
+        .btn-cancel { padding: 0.5rem 1.25rem; border-radius: 0.25rem; font-weight: 600; color: var(--switch-text); background: transparent; border: none; cursor: pointer; transition: background 0.2s; }
+        .btn-cancel:hover { background: var(--switch-light); }
+        .btn-save { padding: 0.5rem 1.25rem; border-radius: 0.25rem; font-weight: 700; color: white; background: var(--switch-red); border: none; cursor: pointer; transition: background 0.2s; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+        .btn-save:hover { background: #ff3344; }
+
+        .view-indicator { width: 0.5rem; height: 0.5rem; border-radius: 9999px; background: var(--switch-cyan); display: block; }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <img src="https://codymkw.github.io/switch/nintendo_switch_logo.png" alt="Switch Logo" class="sidebar-logo">
+            <h1 class="sidebar-title">Album Gallery</h1>
+        </div>
+
+        <div style="padding: 1rem;">
+            <button id="btn-select-folder" class="btn-load">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 19a2 2 0 01-2-2V7a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1M5 19h14a2 2 0 002-2v-5a2 2 0 00-2-2H9a2 2 0 00-2 2v5a2 2 0 01-2 2z"></path></svg>
+                Load SD Card Folder
+            </button>
+        </div>
+
+        <nav class="nav-container" id="nav-filters">
+            <button class="nav-item active" data-view="all">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+                All Media
+            </button>
+            <button class="nav-item" data-view="date">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                Sort by Date
+            </button>
+            <button class="nav-item" data-view="game">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                Sort by Game
+            </button>
+            
+            <div id="stats-container" class="stats-box hidden">
+                <p class="stat-row"><span>Media:</span> <span id="stat-count" style="color: white; font-weight: 700;">0</span></p>
+                <p class="stat-row"><span>Status:</span> <span id="stat-status" style="color: var(--switch-cyan); font-weight: 500;">Ready</span></p>
+            </div>
+        </nav>
+    </aside>
+
+    <main class="main-area">
+        <header class="top-bar">
+            <div id="current-view-title" style="font-weight: 700; color: white; letter-spacing: 0.05em; text-transform: uppercase; font-size: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
+                <span class="view-indicator"></span> All Media
+            </div>
+            <div style="display: flex; align-items: center; gap: 1.5rem;">
+                <div style="display: flex; align-items: center; gap: 0.25rem; font-size: 0.75rem; font-weight: 500;">
+                    <svg style="width: 1rem; height: 1rem;" fill="currentColor" viewBox="0 0 24 24"><path d="M17 4h-3V2h-4v2H7c-1.103 0-2 .897-2 2v14c0 1.103.897 2 2 2h10c1.103 0 2-.897 2-2V6c0-1.103-.897-2-2-2zM7 20V6h10l.002 14H7z"></path></svg>
+                    SD
+                </div>
+                <span id="clock" style="font-weight: 700; letter-spacing: 0.025em;">12:00 AM</span>
+            </div>
+        </header>
+
+        <div id="gallery-container" class="gallery-container">
+            
+            <!-- Empty/Initial State -->
+            <div id="empty-state" class="empty-state">
+                <svg class="empty-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                <h2 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.75rem; color: white;">No Media Loaded</h2>
+                <p style="color: var(--switch-muted); max-width: 28rem; line-height: 1.625;">Click "Load SD Card Folder" and select the <strong>Nintendo/Album</strong> folder on your drive to preview screenshots and clips.</p>
+                
+                <div id="loading-state" class="loading-box hidden">
+                    <div class="spinner"></div>
+                    <p style="color: var(--switch-cyan); font-weight: 700; letter-spacing: 0.025em;">Scanning Album...</p>
+                    <p id="loading-count" style="font-size: 0.75rem; color: var(--switch-muted); margin-top: 0.5rem;">Found: 0 files</p>
+                </div>
+            </div>
+
+            <!-- Grid container injected by JS -->
+            <div id="media-grid" class="flex-col hidden" style="gap: 2rem;"></div>
+        </div>
+    </main>
+
+    <!-- Lightbox Modal -->
+    <div id="lightbox" class="modal-overlay hidden opacity-0">
+        <div class="lightbox-toolbar">
+            <div id="lightbox-info" class="lightbox-info"></div>
+            <button id="btn-close-lightbox" class="btn-icon">
+                <svg style="width: 1.5rem; height: 1.5rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+
+        <div class="lightbox-content">
+            <button id="btn-prev" class="nav-arrow arrow-left">
+                <svg style="width: 2rem; height: 2rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
+            </button>
+
+            <div id="lightbox-media-container" class="lightbox-media-wrapper">
+                <!-- Media injected here -->
+            </div>
+
+            <button id="btn-next" class="nav-arrow arrow-right">
+                <svg style="width: 2rem; height: 2rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Rename Game Modal -->
+    <div id="rename-modal" class="rename-modal hidden opacity-0">
+        <div class="rename-card scale-95" id="rename-modal-content">
+            <h3 class="rename-title">Edit Game Name</h3>
+            <p class="rename-desc">Map this game hash to its actual title (e.g., "Animal Crossing: New Horizons").</p>
+            <div class="input-group">
+                <label class="input-label muted">Hash ID</label>
+                <input type="text" id="rename-hash-display" class="input-field" disabled>
+            </div>
+            <div class="input-group" style="margin-bottom: 1.5rem;">
+                <label class="input-label cyan">Game Title</label>
+                <input type="text" id="rename-input" class="input-field active" placeholder="Enter game name...">
+            </div>
+            <div class="modal-actions">
+                <button id="btn-cancel-rename" class="btn-cancel">Cancel</button>
+                <button id="btn-save-rename" class="btn-save">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let allMediaFiles = [];
+        let currentView = 'all';
+        let currentLightboxIndex = 0;
+        let activeMediaList = []; 
+        let hashToGameMap = {};
+
+        try {
+            const savedMap = localStorage.getItem('switch_gallery_games');
+            if (savedMap) {
+                hashToGameMap = JSON.parse(savedMap);
+            }
+        } catch (e) {
+            console.warn("Failed to load game map from local storage");
+        }
+
+        function saveGameMap() {
+            localStorage.setItem('switch_gallery_games', JSON.stringify(hashToGameMap));
+        }
+
+        const btnSelectFolder = document.getElementById('btn-select-folder');
+        const emptyState = document.getElementById('empty-state');
+        const loadingState = document.getElementById('loading-state');
+        const loadingCount = document.getElementById('loading-count');
+        const mediaGrid = document.getElementById('media-grid');
+        const navItems = document.querySelectorAll('.nav-item');
+        const statCount = document.getElementById('stat-count');
+        const statStatus = document.getElementById('stat-status');
+        const statsContainer = document.getElementById('stats-container');
+        const currentViewTitle = document.getElementById('current-view-title');
+        
+        const lightbox = document.getElementById('lightbox');
+        const lightboxMediaContainer = document.getElementById('lightbox-media-container');
+        const lightboxInfo = document.getElementById('lightbox-info');
+        const btnCloseLightbox = document.getElementById('btn-close-lightbox');
+        const btnPrev = document.getElementById('btn-prev');
+        const btnNext = document.getElementById('btn-next');
+
+        const renameModal = document.getElementById('rename-modal');
+        const renameModalContent = document.getElementById('rename-modal-content');
+        const renameHashDisplay = document.getElementById('rename-hash-display');
+        const renameInput = document.getElementById('rename-input');
+        const btnCancelRename = document.getElementById('btn-cancel-rename');
+        const btnSaveRename = document.getElementById('btn-save-rename');
+        let currentEditingHash = null;
+
+        if (!window.showDirectoryPicker) {
+            emptyState.innerHTML = `
+                <div style="color: var(--switch-red); margin-bottom: 1rem;">
+                    <svg style="width: 4rem; height: 4rem; margin: 0 auto;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                </div>
+                <h2 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; color: white;">Browser Not Supported</h2>
+                <p style="color: var(--switch-muted); max-width: 28rem;">Your browser does not support the File System Access API required to read local folders directly. Please use Google Chrome, Edge, or Opera on a desktop.</p>
+            `;
+            btnSelectFolder.disabled = true;
+            btnSelectFolder.style.opacity = '0.5';
+            btnSelectFolder.style.cursor = 'not-allowed';
+        }
+
+        function parseFileName(file) {
+            const name = file.name;
+            const ext = name.split('.').pop().toLowerCase();
+            const hashMatch = name.match(/-([A-Fa-f0-9]{32})\.(jpg|mp4)$/i);
+            const dateMatch = name.match(/^(\d{4})(\d{2})(\d{2})/);
+
+            let hash = 'UNKNOWN';
+            if (hashMatch) {
+                hash = hashMatch[1].toUpperCase();
+            }
+
+            let dateStr = 'Unknown Date';
+            if (dateMatch) {
+                dateStr = `${dateMatch[1]}-${dateMatch[2]}-${dateMatch[3]}`;
+            } else {
+                const d = new Date(file.lastModified);
+                dateStr = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+            }
+            
+            return {
+                file: file,
+                url: URL.createObjectURL(file),
+                type: ext === 'mp4' ? 'video' : 'image',
+                dateStr: dateStr,
+                hash: hash,
+                timestamp: file.lastModified
+            };
+        }
+
+        async function* getFilesRecursively(entry) {
+            if (entry.kind === 'file') {
+                const file = await entry.getFile();
+                const ext = file.name.split('.').pop().toLowerCase();
+                if (ext === 'jpg' || ext === 'mp4') {
+                    yield file;
+                }
+            } else if (entry.kind === 'directory') {
+                for await (const handle of entry.values()) {
+                    yield* getFilesRecursively(handle);
+                }
+            }
+        }
+
+        function cleanupUrls() {
+            allMediaFiles.forEach(media => {
+                if(media.url) URL.revokeObjectURL(media.url);
+            });
+            allMediaFiles = [];
+        }
+
+        btnSelectFolder.addEventListener('click', async () => {
+            try {
+                const dirHandle = await window.showDirectoryPicker({ mode: 'read' });
+
+                cleanupUrls();
+                emptyState.querySelector('svg').classList.add('hidden');
+                emptyState.querySelector('h2').classList.add('hidden');
+                emptyState.querySelector('p').classList.add('hidden');
+                loadingState.classList.remove('hidden');
+                loadingState.classList.add('flex');
+                mediaGrid.innerHTML = '';
+                statsContainer.classList.remove('hidden');
+                statStatus.textContent = 'Scanning...';
+                statStatus.style.color = 'var(--switch-cyan)';
+                statStatus.style.animation = 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite';
+
+                let count = 0;
+                for await (const file of getFilesRecursively(dirHandle)) {
+                    allMediaFiles.push(parseFileName(file));
+                    count++;
+                    if (count % 50 === 0) {
+                        loadingCount.textContent = `Found: ${count} files`;
+                        statCount.textContent = count;
+                    }
+                }
+
+                allMediaFiles.sort((a, b) => b.timestamp - a.timestamp);
+                
+                statCount.textContent = allMediaFiles.length;
+                statStatus.textContent = 'Loaded';
+                statStatus.style.color = '#4ade80';
+                statStatus.style.animation = 'none';
+                loadingState.classList.add('hidden');
+                emptyState.classList.add('hidden');
+                mediaGrid.classList.remove('hidden');
+
+                if (allMediaFiles.length === 0) {
+                    emptyState.classList.remove('hidden');
+                    emptyState.innerHTML = '<h2 style="font-size: 1.25rem; font-weight: 700; color: white;">No Screenshots or Videos Found.</h2><p style="color: var(--switch-muted); margin-top: 0.5rem;">Make sure you selected the correct Album folder.</p>';
+                    return;
+                }
+
+                renderView();
+
+            } catch (error) {
+                console.error(error);
+                if (error.name !== 'AbortError') {
+                    emptyState.innerHTML = `
+                        <div style="color: var(--switch-red); margin-bottom: 1rem;">
+                            <svg style="width: 4rem; height: 4rem; margin: 0 auto;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                        </div>
+                        <h2 style="font-size: 1.25rem; font-weight: 700; color: white;">Access Error</h2>
+                        <p style="color: var(--switch-muted); margin-top: 0.5rem;">${error.message}</p>
+                        <button onclick="location.reload()" style="margin-top: 1.5rem; background: var(--switch-light); padding: 0.5rem 1rem; border-radius: 0.25rem; color: white; border: none; cursor: pointer;">Reset</button>
+                    `;
+                }
+                loadingState.classList.add('hidden');
+            }
+        });
+
+        function createMediaItem(media, index, globalList) {
+            const container = document.createElement('div');
+            container.className = 'media-item';
+            
+            if (media.type === 'video') {
+                container.innerHTML = `
+                    <video 
+                        src="${media.url}#t=0.001" 
+                        preload="metadata" 
+                        muted 
+                        loop 
+                        onmouseover="this.play()" 
+                        onmouseout="this.pause()"
+                    ></video>
+                    <div class="thumbnail-overlay">
+                        <div class="thumbnail-icon-wrapper">
+                            <svg fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                        </div>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = `<img src="${media.url}" loading="lazy" alt="Screenshot" />`;
+            }
+            
+            const badge = document.createElement('div');
+            badge.className = 'media-badge';
+            badge.textContent = media.type === 'video' ? 'MP4' : 'JPG';
+            container.appendChild(badge);
+
+            container.addEventListener('click', () => openLightbox(index, globalList));
+
+            return container;
+        }
+
+        function renderGroupedGrid(groups, mode) {
+            mediaGrid.innerHTML = '';
+            
+            for (const [groupKey, files] of Object.entries(groups)) {
+                const headerContainer = document.createElement('div');
+                headerContainer.className = 'group-header';
+                
+                const titleWrapper = document.createElement('div');
+                titleWrapper.className = 'group-title-wrapper';
+                
+                const header = document.createElement('h3');
+                header.className = 'group-title';
+                
+                if (mode === 'game') {
+                    const gameName = hashToGameMap[groupKey] || groupKey;
+                    header.textContent = gameName;
+                    
+                    const editBtn = document.createElement('button');
+                    editBtn.className = 'btn-edit-game';
+                    editBtn.title = "Edit Game Name";
+                    editBtn.innerHTML = `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>`;
+                    editBtn.onclick = () => openRenameModal(groupKey);
+                    
+                    titleWrapper.appendChild(header);
+                    titleWrapper.appendChild(editBtn);
+                } else {
+                    header.textContent = groupKey;
+                    titleWrapper.appendChild(header);
+                }
+
+                const countBadge = document.createElement('span');
+                countBadge.className = 'group-count';
+                countBadge.textContent = files.length;
+
+                headerContainer.appendChild(titleWrapper);
+                headerContainer.appendChild(countBadge);
+                mediaGrid.appendChild(headerContainer);
+
+                const grid = document.createElement('div');
+                grid.className = 'media-grid';
+                
+                files.forEach((media, idx) => {
+                    grid.appendChild(createMediaItem(media, idx, files));
+                });
+                
+                mediaGrid.appendChild(grid);
+            }
+        }
+
+        function renderView() {
+            if (allMediaFiles.length === 0) return;
+            mediaGrid.innerHTML = '';
+            
+            if (currentView === 'all') {
+                currentViewTitle.innerHTML = '<span class="view-indicator"></span> All Media';
+                const grid = document.createElement('div');
+                grid.className = 'media-grid';
+                grid.style.marginTop = '1rem';
+                allMediaFiles.forEach((media, idx) => {
+                    grid.appendChild(createMediaItem(media, idx, allMediaFiles));
+                });
+                mediaGrid.appendChild(grid);
+            } 
+            else if (currentView === 'date') {
+                currentViewTitle.innerHTML = '<span class="view-indicator"></span> Sorted by Date';
+                const groups = {};
+                allMediaFiles.forEach(m => {
+                    if(!groups[m.dateStr]) groups[m.dateStr] = [];
+                    groups[m.dateStr].push(m);
+                });
+                const sortedGroups = Object.keys(groups).sort((a, b) => b.localeCompare(a)).reduce((obj, key) => {
+                    obj[key] = groups[key];
+                    return obj;
+                }, {});
+                renderGroupedGrid(sortedGroups, 'date');
+            }
+            else if (currentView === 'game') {
+                currentViewTitle.innerHTML = '<span class="view-indicator"></span> Sorted by Game';
+                const groups = {};
+                allMediaFiles.forEach(m => {
+                    if(!groups[m.hash]) groups[m.hash] = [];
+                    groups[m.hash].push(m);
+                });
+                
+                const sortedKeys = Object.keys(groups).sort((a, b) => {
+                    const nameA = hashToGameMap[a] || a;
+                    const nameB = hashToGameMap[b] || b;
+                    return nameA.localeCompare(nameB);
+                });
+                const sortedGroups = sortedKeys.reduce((obj, key) => {
+                    obj[key] = groups[key];
+                    return obj;
+                }, {});
+
+                renderGroupedGrid(sortedGroups, 'game');
+            }
+        }
+
+        navItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                navItems.forEach(nav => nav.classList.remove('active'));
+                e.currentTarget.classList.add('active');
+                currentView = e.currentTarget.dataset.view;
+                renderView();
+                document.getElementById('gallery-container').scrollTo(0,0);
+            });
+        });
+
+        function openRenameModal(hash) {
+            currentEditingHash = hash;
+            renameHashDisplay.value = hash;
+            renameInput.value = hashToGameMap[hash] || '';
+            
+            renameModal.classList.remove('hidden');
+            requestAnimationFrame(() => {
+                renameModal.classList.remove('opacity-0');
+                renameModalContent.classList.remove('scale-95');
+                renameInput.focus();
+            });
+        }
+
+        function closeRenameModal() {
+            renameModal.classList.add('opacity-0');
+            renameModalContent.classList.add('scale-95');
+            setTimeout(() => {
+                renameModal.classList.add('hidden');
+                currentEditingHash = null;
+            }, 200);
+        }
+
+        btnCancelRename.addEventListener('click', closeRenameModal);
+        
+        btnSaveRename.addEventListener('click', () => {
+            if (currentEditingHash) {
+                const newName = renameInput.value.trim();
+                if (newName) {
+                    hashToGameMap[currentEditingHash] = newName;
+                } else {
+                    delete hashToGameMap[currentEditingHash];
+                }
+                saveGameMap();
+                closeRenameModal();
+                if (currentView === 'game') {
+                    renderView();
+                }
+            }
+        });
+
+        renameInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') btnSaveRename.click();
+        });
+
+        function openLightbox(index, list) {
+            activeMediaList = list;
+            updateLightboxContent(index);
+            
+            lightbox.classList.remove('hidden');
+            requestAnimationFrame(() => {
+                lightbox.classList.remove('opacity-0');
+            });
+        }
+
+        function closeLightbox() {
+            lightbox.classList.add('opacity-0');
+            setTimeout(() => {
+                lightbox.classList.add('hidden');
+                lightboxMediaContainer.innerHTML = '';
+            }, 300);
+        }
+
+        function updateLightboxContent(index) {
+            currentLightboxIndex = index;
+            const media = activeMediaList[index];
+            lightboxMediaContainer.innerHTML = ''; 
+            
+            let mediaElement;
+            if (media.type === 'video') {
+                mediaElement = document.createElement('video');
+                mediaElement.controls = true;
+                mediaElement.autoplay = true;
+                mediaElement.src = media.url;
+            } else {
+                mediaElement = document.createElement('img');
+                mediaElement.src = media.url;
+            }
+
+            lightboxMediaContainer.appendChild(mediaElement);
+            
+            const gameName = hashToGameMap[media.hash] || media.hash;
+            lightboxInfo.innerHTML = `
+                <span style="color: white; font-weight: 700;">${index + 1} / ${activeMediaList.length}</span>
+                <span style="margin: 0 0.75rem; border-left: 1px solid rgba(77, 77, 77, 0.5); height: 1rem; display: inline-block; vertical-align: middle;"></span>
+                <span>Date: ${media.dateStr}</span>
+                <span style="margin: 0 0.75rem; border-left: 1px solid rgba(77, 77, 77, 0.5); height: 1rem; display: inline-block; vertical-align: middle;"></span>
+                <span style="color: var(--switch-cyan);">${gameName}</span>
+            `;
+
+            btnPrev.style.visibility = index > 0 ? 'visible' : 'hidden';
+            btnNext.style.visibility = index < activeMediaList.length - 1 ? 'visible' : 'hidden';
+        }
+
+        btnCloseLightbox.addEventListener('click', closeLightbox);
+        
+        btnPrev.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (currentLightboxIndex > 0) updateLightboxContent(currentLightboxIndex - 1);
+        });
+
+        btnNext.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (currentLightboxIndex < activeMediaList.length - 1) updateLightboxContent(currentLightboxIndex + 1);
+        });
+
+        lightboxMediaContainer.addEventListener('click', (e) => {
+            if (e.target === lightboxMediaContainer) closeLightbox();
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (!lightbox.classList.contains('hidden')) {
+                if (e.key === 'Escape') closeLightbox();
+                if (e.key === 'ArrowLeft' && currentLightboxIndex > 0) updateLightboxContent(currentLightboxIndex - 1);
+                if (e.key === 'ArrowRight' && currentLightboxIndex < activeMediaList.length - 1) updateLightboxContent(currentLightboxIndex + 1);
+            }
+            else if (!renameModal.classList.contains('hidden')) {
+                if (e.key === 'Escape') closeRenameModal();
+            }
+        });
+
+        setInterval(() => {
+            const now = new Date();
+            document.getElementById('clock').textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }, 1000);
+
+    </script>
+</body>
+</html>
