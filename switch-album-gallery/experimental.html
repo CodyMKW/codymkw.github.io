@@ -155,6 +155,170 @@
         .media-item {
             position: relative; aspect-ratio: 16 / 9; background-color: var(--switch-darker);
             border-radius: 0.25rem; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            cursor: pointer; border: 3px solid transparent; transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.15sThe reason the lightbox was completely messed up is that the `<div id="lightbox">` tag was incorrectly assigned the `modal-base` CSS class instead of the `modal-overlay` class. `modal-base` uses a row-centered flex layout meant for small dialog cards, which caused the lightbox toolbar and content to squash side-by-side. 
+
+I've fixed the HTML class discrepancy, centered the navigation arrows vertically with CSS transforms, added logic to immediately mute/pause videos when closing or switching media to prevent background audio bleeding, and improved the backdrop click-to-close behavior.
+
+Here is your full, corrected `experimental_2.html` file:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cody's Switch Gallery</title>
+    
+    <!-- PeerJS for WebRTC Peer-to-Peer Connections -->
+    <script src="[https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js](https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js)"></script>
+
+    <style>
+        @import url('[https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap](https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap)');
+        
+        :root {
+            --switch-dark: #2b2b2b;
+            --switch-darker: #1f1f1f;
+            --switch-light: #4d4d4d;
+            --switch-red: #E60012;
+            --switch-cyan: #00c3e3;
+            --switch-text: #ebebeb;
+            --switch-muted: #9a9a9a;
+            --switch-green: #4ade80;
+            --switch-orange: #f59e0b;
+        }
+
+        /* Base Resets & Typography */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+            background-color: var(--switch-dark);
+            color: var(--switch-text);
+            display: flex;
+            height: 100vh;
+            width: 100vw;
+            user-select: none;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Utility Classes for JS Toggles */
+        .hidden { display: none !important; }
+        .flex { display: flex !important; }
+        .flex-col { display: flex !important; flex-direction: column !important; }
+        .opacity-0 { opacity: 0 !important; }
+        .scale-95 { transform: scale(0.95) !important; }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--switch-darker); }
+        ::-webkit-scrollbar-thumb { background: var(--switch-light); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--switch-muted); }
+
+        /* Layout Structure */
+        .sidebar {
+            width: 18rem; background-color: var(--switch-darker);
+            display: flex; flex-direction: column;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            z-index: 20; flex-shrink: 0;
+        }
+        .sidebar-header {
+            padding: 1.5rem; display: flex; align-items: center; gap: 0.75rem;
+            border-bottom: 1px solid rgba(43, 43, 43, 0.5);
+        }
+        .sidebar-logo { width: 2rem; height: 2rem; filter: drop-shadow(0 4px 3px rgba(0,0,0,0.1)); }
+        .sidebar-title { font-size: 1.25rem; font-weight: 700; letter-spacing: 0.025em; }
+
+        .main-area { flex: 1; position: relative; display: flex; flex-direction: column; background-color: var(--switch-dark); }
+        .top-bar {
+            height: 3.5rem; display: flex; justify-content: space-between; align-items: center;
+            padding: 0 1.5rem; color: var(--switch-muted); font-size: 0.875rem;
+            flex-shrink: 0; border-bottom: 1px solid rgba(31, 31, 31, 0.8);
+            background-color: rgba(43, 43, 43, 0.95); backdrop-filter: blur(4px);
+            z-index: 10; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+
+        /* Buttons & Navigation */
+        .btn-load {
+            width: 100%; background-color: var(--switch-light); color: white;
+            font-weight: 600; padding: 0.75rem 1rem; border-radius: 0.5rem;
+            display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+            border: none; cursor: pointer; transition: all 0.2s;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        .btn-load:hover { background-color: white; color: black; }
+        .btn-load:hover svg { color: var(--switch-red); }
+        .btn-load svg { width: 1.25rem; height: 1.25rem; transition: color 0.2s; }
+
+        .btn-usb { background-color: transparent; border: 1px solid rgba(77, 77, 77, 0.5); color: var(--switch-muted); box-shadow: none; }
+        .btn-usb:hover { border-color: var(--switch-cyan); color: white; background: rgba(0, 195, 227, 0.1); }
+        .btn-usb:hover svg { color: var(--switch-cyan); }
+
+        .nav-container { flex: 1; overflow-y: auto; margin-top: 0.5rem; padding: 0 0.75rem; display: flex; flex-direction: column; gap: 0.5rem; }
+        .nav-item {
+            width: 100%; text-align: left; padding: 0.75rem 1rem; border-radius: 0.25rem;
+            color: var(--switch-muted); background: transparent; border: none;
+            border-left: 4px solid transparent; font-size: 0.875rem; font-weight: 500;
+            cursor: pointer; display: flex; align-items: center; gap: 0.75rem;
+            transition: color 0.2s, background-color 0.2s;
+        }
+        .nav-item:hover { color: white; }
+        .nav-item.active { background-color: var(--switch-light); border-left-color: var(--switch-red); color: white; }
+        .nav-item.p2p-active { border-left-color: var(--switch-orange); color: white; }
+        .nav-item svg { width: 1.25rem; height: 1.25rem; }
+
+        /* Stats Box */
+        .stats-box {
+            margin-top: auto; margin-bottom: 1rem; padding: 1rem 1.5rem;
+            background-color: rgba(31, 31, 31, 0.5); border-radius: 0.5rem;
+            margin-left: 0.75rem; margin-right: 0.75rem; font-size: 0.875rem;
+            color: var(--switch-muted); border: 1px solid rgba(77, 77, 77, 0.2);
+        }
+        .stat-row { display: flex; justify-content: space-between; }
+        .stat-row + .stat-row { margin-top: 0.5rem; }
+
+        /* Network Status Bubble */
+        .network-badge {
+            display: inline-flex; align-items: center; gap: 0.375rem;
+            background: rgba(0,0,0,0.3); padding: 0.25rem 0.5rem;
+            border-radius: 9999px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+        }
+        .status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--switch-muted); }
+        .status-dot.online { background: var(--switch-green); box-shadow: 0 0 8px var(--switch-green); }
+        .status-dot.connecting { background: var(--switch-orange); animation: pulse 1s infinite; }
+
+        /* Gallery Area */
+        .gallery-container {
+            flex: 1; overflow-y: auto; padding: 1.5rem; padding-bottom: 6rem;
+            position: relative; scroll-behavior: smooth;
+        }
+
+        .empty-state { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 1.5rem; }
+        .empty-icon { width: 6rem; height: 6rem; color: var(--switch-light); margin-bottom: 1.5rem; filter: drop-shadow(0 10px 8px rgba(0,0,0,0.04)); }
+
+        .loading-box {
+            display: flex; flex-direction: column; align-items: center; margin-top: 2.5rem;
+            padding: 1.5rem; background-color: var(--switch-darker); border-radius: 0.75rem;
+            border: 1px solid rgba(77, 77, 77, 0.2); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.1); width: 40px; height: 40px;
+            border-radius: 50%; border-left-color: var(--switch-red); animation: spin 1s linear infinite; margin-bottom: 1rem;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+        /* Grid System */
+        .media-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+        @media (min-width: 768px) { .media-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+        @media (min-width: 1024px) { .media-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+        @media (min-width: 1280px) { .media-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
+
+        /* Media Item & Hover Effects */
+        .media-item {
+            position: relative; aspect-ratio: 16 / 9; background-color: var(--switch-darker);
+            border-radius: 0.25rem; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
             cursor: pointer; border: 3px solid transparent; transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.15s ease;
         }
         .media-item:hover {
@@ -205,7 +369,7 @@
 
         /* Lightbox Modal */
         .modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.95); z-index: 50; display: flex; flex-direction: column; backdrop-filter: blur(8px); transition: opacity 0.3s; }
-        .lightbox-toolbar { height: 4rem; display: flex; justify-content: space-between; align-items: center; padding: 0 1.5rem; flex-shrink: 0; background: linear-gradient(to bottom, black, transparent); }
+        .lightbox-toolbar { height: 4rem; display: flex; justify-content: space-between; align-items: center; padding: 0 1.5rem; flex-shrink: 0; background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent); }
         .lightbox-info { font-size: 0.875rem; font-weight: 500; color: rgba(255, 255, 255, 0.7); letter-spacing: 0.025em; text-shadow: 0 4px 6px rgba(0,0,0,0.1); }
         
         .btn-icon { color: white; background: rgba(255,255,255,0.1); border: none; border-radius: 9999px; padding: 0.5rem; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
@@ -213,14 +377,15 @@
         
         .lightbox-content { flex: 1; display: flex; align-items: center; justify-content: center; padding: 1.5rem; position: relative; overflow: hidden; }
         
-        .nav-arrow { position: absolute; padding: 1rem; color: rgba(255,255,255,0.5); background: rgba(0,0,0,0.4); border: none; border-radius: 9999px; cursor: pointer; transition: all 0.2s; z-index: 20; opacity: 0; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+        /* Fixed Nav Arrow Positioning */
+        .nav-arrow { position: absolute; top: 50%; transform: translateY(-50%); padding: 1rem; color: rgba(255,255,255,0.5); background: rgba(0,0,0,0.4); border: none; border-radius: 9999px; cursor: pointer; transition: all 0.2s; z-index: 20; opacity: 0; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
         .lightbox-content:hover .nav-arrow { opacity: 1; }
-        .nav-arrow:hover { color: white; background: rgba(0,0,0,0.8); transform: scale(1.1); }
+        .nav-arrow:hover { color: white; background: rgba(0,0,0,0.8); transform: translateY(-50%) scale(1.1); }
         .arrow-left { left: 1.5rem; }
         .arrow-right { right: 1.5rem; }
         
         .lightbox-media-wrapper { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; position: relative; flex-direction: column; gap: 1rem; }
-        .lightbox-media-wrapper video, .lightbox-media-wrapper img { max-width: 100%; max-height: 85vh; border-radius: 0.25rem; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); z-index: 10; position: relative; }
+        .lightbox-media-wrapper video, .lightbox-media-wrapper img { max-width: 90vw; max-height: 85vh; border-radius: 0.25rem; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); z-index: 10; position: relative; }
         .lightbox-media-wrapper video { background: black; }
         .lightbox-media-wrapper img { object-fit: contain; background: rgba(0,0,0,0.5); }
 
@@ -256,7 +421,7 @@
 
     <aside class="sidebar">
         <div class="sidebar-header">
-            <img src="https://codymkw.github.io/switch/switchjoyconlogo.png" alt="Switch Logo" class="sidebar-logo">
+            <img src="[https://codymkw.github.io/switch/switchjoyconlogo.png](https://codymkw.github.io/switch/switchjoyconlogo.png)" alt="Switch Logo" class="sidebar-logo">
             <h1 class="sidebar-title">Album Gallery</h1>
         </div>
 
@@ -339,8 +504,8 @@
         </div>
     </main>
 
-    <!-- Lightbox Modal -->
-    <div id="lightbox" class="modal-base hidden opacity-0">
+    <!-- FIXED: Changed modal-base to modal-overlay so it stacks correctly instead of squashing side-by-side -->
+    <div id="lightbox" class="modal-overlay hidden opacity-0">
         <div class="lightbox-toolbar">
             <div id="lightbox-info" class="lightbox-info"></div>
             <button id="btn-close-lightbox" class="btn-icon">
@@ -1015,6 +1180,11 @@
 
         function closeLightbox() {
             lightbox.classList.add('opacity-0');
+            
+            // Stop playing video immediately to prevent background audio bleeding
+            const activeVideo = lightboxMediaContainer.querySelector('video');
+            if (activeVideo) activeVideo.pause();
+
             setTimeout(() => {
                 lightbox.classList.add('hidden');
                 lightboxMediaContainer.innerHTML = '';
@@ -1041,6 +1211,11 @@
         function updateLightboxContent(index) {
             currentLightboxIndex = index;
             const media = activeMediaList[index];
+            
+            // Mute/pause previous video before clearing to avoid lingering audio
+            const currentVideo = lightboxMediaContainer.querySelector('video');
+            if (currentVideo) currentVideo.pause();
+            
             lightboxMediaContainer.innerHTML = ''; 
             
             if (currentView === 'remote') {
@@ -1085,8 +1260,11 @@
             if (currentLightboxIndex < activeMediaList.length - 1) updateLightboxContent(currentLightboxIndex + 1);
         });
 
-        lightboxMediaContainer.addEventListener('click', (e) => {
-            if (e.target === lightboxMediaContainer) closeLightbox();
+        // Better click away to close support covering all empty space
+        document.querySelector('.lightbox-content').addEventListener('click', (e) => {
+            if (e.target.classList.contains('lightbox-content') || e.target === lightboxMediaContainer) {
+                closeLightbox();
+            }
         });
 
         document.addEventListener('keydown', (e) => {
@@ -1107,7 +1285,6 @@
             const now = new Date();
             document.getElementById('clock').textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         }, 1000);
-
     </script>
 </body>
 </html>
