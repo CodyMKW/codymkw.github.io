@@ -415,6 +415,10 @@
                 <p class="stat-row"><span>Media:</span> <span id="stat-count" style="color: white; font-weight: 700;">0</span></p>
                 <p class="stat-row"><span>Status:</span> <span id="stat-status" style="color: var(--switch-cyan); font-weight: 500;">Ready</span></p>
                 <p class="stat-row"><span>P2P:</span> <span id="stat-p2p" style="color: var(--switch-muted); font-weight: 500;">Offline</span></p>
+                <button id="btn-share-gallery" class="btn-load hidden" style="margin-top: 1rem; background-color: #a855f7; border: none; padding: 0.5rem; font-size: 0.75rem; box-shadow: 0 0 10px rgba(168, 85, 247, 0.3);">
+                    <svg style="width: 1rem; height: 1rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+                    Share Full Gallery
+                </button>
             </div>
         </nav>
     </aside>
@@ -453,14 +457,19 @@
         </div>
     </main>
 
+    <!-- Global Loading Overlay for P2P Interactions -->
+    <div id="p2p-loading-overlay" class="modal-overlay hidden opacity-0" style="z-index: 100; justify-content: center; align-items: center;">
+        <div class="loading-box" style="background: rgba(31,31,31,0.95); backdrop-filter: blur(10px);">
+            <div class="spinner"></div>
+            <p id="p2p-loading-text" style="color: var(--switch-cyan); font-weight: 700;">Processing...</p>
+        </div>
+    </div>
+
     <!-- Lightbox Modal -->
     <div id="lightbox" class="modal-overlay hidden opacity-0">
         <div class="lightbox-toolbar">
             <div id="lightbox-info" class="lightbox-info"></div>
             <div style="display: flex; gap: 0.5rem;">
-                <button id="btn-share-p2p" class="btn-icon hidden" title="Send to Connected Peer">
-                    <svg style="width: 1.5rem; height: 1.5rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
-                </button>
                 <button id="btn-close-lightbox" class="btn-icon">
                     <svg style="width: 1.5rem; height: 1.5rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
@@ -593,12 +602,10 @@
         }
 
         if (navigator.usb) {
-            // Check if already paired
             navigator.usb.getDevices().then(devices => {
                 if (devices.find(d => d.vendorId === NINTENDO_VENDOR_ID)) updateUsbStatus(true);
             });
 
-            // Listen for hot-plug events
             navigator.usb.addEventListener('connect', event => {
                 if (event.device.vendorId === NINTENDO_VENDOR_ID) updateUsbStatus(true);
             });
@@ -612,15 +619,9 @@
                     const device = await navigator.usb.requestDevice({
                         filters: [{ vendorId: NINTENDO_VENDOR_ID }] 
                     });
-                    
                     if (device) {
                         updateUsbStatus(true);
-                        // Trigger directory picker using the current transient activation context
-                        try {
-                            btnSelectFolder.click();
-                        } catch(e) {
-                            console.warn("Manual folder selection required after USB pairing.");
-                        }
+                        try { btnSelectFolder.click(); } catch(e) {}
                     }
                 } catch (err) {
                     console.log("USB request canceled or failed:", err);
@@ -668,7 +669,8 @@
                 type: ext === 'mp4' ? 'video' : 'image',
                 dateStr: dateStr,
                 hash: hash,
-                timestamp: file.lastModified
+                timestamp: file.lastModified,
+                isRemote: false
             };
         }
 
@@ -688,7 +690,7 @@
 
         function cleanupUrls() {
             allMediaFiles.forEach(media => {
-                if(media.url) URL.revokeObjectURL(media.url);
+                if(media.url && media.url.startsWith('blob:')) URL.revokeObjectURL(media.url);
             });
             allMediaFiles = [];
         }
@@ -757,24 +759,37 @@
             const container = document.createElement('div');
             container.className = 'media-item';
             
-            if (media.type === 'video') {
-                container.innerHTML = `
-                    <video 
-                        src="${media.url}#t=0.001" 
-                        preload="metadata" 
-                        muted 
-                        loop 
-                        onmouseover="this.play()" 
-                        onmouseout="this.pause()"
-                    ></video>
-                    <div class="thumbnail-overlay">
-                        <div class="thumbnail-icon-wrapper">
-                            <svg fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            if (media.isRemote) {
+                if (media.type === 'video') {
+                    container.innerHTML = `
+                        <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #000; color: white; font-weight: bold; flex-direction: column; gap: 0.5rem; text-align: center;">
+                            <svg style="width: 2.5rem; height: 2.5rem; color: var(--switch-cyan);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            <span style="font-size: 0.875rem; letter-spacing: 0.05em;">Click to View</span>
                         </div>
-                    </div>
-                `;
+                    `;
+                } else {
+                    container.innerHTML = `<img src="${media.thumb}" loading="lazy" alt="Screenshot" />`;
+                }
             } else {
-                container.innerHTML = `<img src="${media.url}" loading="lazy" alt="Screenshot" />`;
+                if (media.type === 'video') {
+                    container.innerHTML = `
+                        <video 
+                            src="${media.url}#t=0.001" 
+                            preload="metadata" 
+                            muted 
+                            loop 
+                            onmouseover="this.play()" 
+                            onmouseout="this.pause()"
+                        ></video>
+                        <div class="thumbnail-overlay">
+                            <div class="thumbnail-icon-wrapper">
+                                <svg fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    container.innerHTML = `<img src="${media.url}" loading="lazy" alt="Screenshot" />`;
+                }
             }
             
             const badge = document.createElement('div');
@@ -782,7 +797,7 @@
             badge.textContent = media.type === 'video' ? 'MP4' : 'JPG';
             container.appendChild(badge);
 
-            container.addEventListener('click', () => openLightbox(index, globalList));
+            container.addEventListener('click', () => triggerLightbox(index, globalList));
 
             return container;
         }
@@ -939,10 +954,24 @@
             if (e.key === 'Enter') btnSaveRename.click();
         });
 
-        function openLightbox(index, list) {
+        window.pendingLightboxIndex = null;
+        window.pendingLightboxList = null;
+
+        function triggerLightbox(index, list) {
+            const media = list[index];
+            if (media.isRemote && !media.fullUrlDownloaded) {
+                showP2pLoading('Fetching Media from Peer...');
+                p2pConnection.send({ type: 'request_media', id: media.remoteId });
+                window.pendingLightboxIndex = index;
+                window.pendingLightboxList = list;
+            } else {
+                openLightboxActual(index, list);
+            }
+        }
+
+        function openLightboxActual(index, list) {
             activeMediaList = list;
             updateLightboxContent(index);
-            
             lightbox.classList.remove('hidden');
             requestAnimationFrame(() => {
                 lightbox.classList.remove('opacity-0');
@@ -992,12 +1021,34 @@
         
         btnPrev.addEventListener('click', (e) => {
             e.stopPropagation();
-            if (currentLightboxIndex > 0) updateLightboxContent(currentLightboxIndex - 1);
+            if (currentLightboxIndex > 0) {
+                const nextIdx = currentLightboxIndex - 1;
+                const nextMedia = activeMediaList[nextIdx];
+                if (nextMedia.isRemote && !nextMedia.fullUrlDownloaded) {
+                    showP2pLoading('Fetching Media...');
+                    p2pConnection.send({ type: 'request_media', id: nextMedia.remoteId });
+                    window.pendingLightboxIndex = nextIdx;
+                    window.pendingLightboxList = activeMediaList;
+                } else {
+                    updateLightboxContent(nextIdx);
+                }
+            }
         });
 
         btnNext.addEventListener('click', (e) => {
             e.stopPropagation();
-            if (currentLightboxIndex < activeMediaList.length - 1) updateLightboxContent(currentLightboxIndex + 1);
+            if (currentLightboxIndex < activeMediaList.length - 1) {
+                const nextIdx = currentLightboxIndex + 1;
+                const nextMedia = activeMediaList[nextIdx];
+                if (nextMedia.isRemote && !nextMedia.fullUrlDownloaded) {
+                    showP2pLoading('Fetching Media...');
+                    p2pConnection.send({ type: 'request_media', id: nextMedia.remoteId });
+                    window.pendingLightboxIndex = nextIdx;
+                    window.pendingLightboxList = activeMediaList;
+                } else {
+                    updateLightboxContent(nextIdx);
+                }
+            }
         });
 
         lightboxMediaContainer.addEventListener('click', (e) => {
@@ -1007,8 +1058,8 @@
         document.addEventListener('keydown', (e) => {
             if (!lightbox.classList.contains('hidden')) {
                 if (e.key === 'Escape') closeLightbox();
-                if (e.key === 'ArrowLeft' && currentLightboxIndex > 0) updateLightboxContent(currentLightboxIndex - 1);
-                if (e.key === 'ArrowRight' && currentLightboxIndex < activeMediaList.length - 1) updateLightboxContent(currentLightboxIndex + 1);
+                if (e.key === 'ArrowLeft' && currentLightboxIndex > 0) btnPrev.click();
+                if (e.key === 'ArrowRight' && currentLightboxIndex < activeMediaList.length - 1) btnNext.click();
             }
             else if (!renameModal.classList.contains('hidden') && !p2pModal.classList.contains('hidden') === false) {
                 if (e.key === 'Escape') closeRenameModal();
@@ -1018,9 +1069,42 @@
             }
         });
 
+        // --- P2P Loading Overlay Handling ---
+        const p2pLoadingOverlay = document.getElementById('p2p-loading-overlay');
+        const p2pLoadingText = document.getElementById('p2p-loading-text');
+
+        function showP2pLoading(text) {
+            p2pLoadingText.textContent = text;
+            p2pLoadingOverlay.classList.remove('hidden');
+            requestAnimationFrame(() => p2pLoadingOverlay.classList.remove('opacity-0'));
+        }
+
+        function hideP2pLoading() {
+            p2pLoadingOverlay.classList.add('opacity-0');
+            setTimeout(() => p2pLoadingOverlay.classList.add('hidden'), 300);
+        }
+
+        function generateThumbnail(url) {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    canvas.width = 320;
+                    canvas.height = 180;
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    resolve(canvas.toDataURL('image/jpeg', 0.5));
+                };
+                img.onerror = () => resolve(null);
+                img.src = url;
+            });
+        }
+
         // --- P2P WebRTC Integration via PeerJS ---
         let peer = null;
         let p2pConnection = null;
+        window.remoteGalleryMap = {};
+
         const btnP2P = document.getElementById('btn-p2p');
         const p2pModal = document.getElementById('p2p-modal');
         const p2pModalContent = document.getElementById('p2p-modal-content');
@@ -1030,7 +1114,7 @@
         const btnConnectP2P = document.getElementById('btn-connect-p2p');
         const btnCopyId = document.getElementById('btn-copy-id');
         const statP2p = document.getElementById('stat-p2p');
-        const btnShareP2p = document.getElementById('btn-share-p2p');
+        const btnShareGallery = document.getElementById('btn-share-gallery');
 
         function initPeer() {
             if (peer) return;
@@ -1055,38 +1139,76 @@
             conn.on('open', () => {
                 statP2p.textContent = 'Connected';
                 statP2p.style.color = 'var(--cody-green)';
-                btnShareP2p.classList.remove('hidden');
+                btnShareGallery.classList.remove('hidden');
                 btnP2P.style.borderColor = 'var(--cody-green)';
                 btnP2P.style.color = 'var(--cody-green)';
                 closeP2PModal();
             });
             conn.on('data', (data) => {
-                if (data.type === 'media') {
+                if (data.type === 'gallery_sync') {
+                    cleanupUrls();
+                    window.remoteGalleryMap = {};
+                    
+                    allMediaFiles = data.items.map((item, idx) => {
+                        const mediaObj = {
+                            isRemote: true,
+                            remoteId: item.id,
+                            type: item.type,
+                            dateStr: item.dateStr,
+                            hash: item.hash,
+                            thumb: item.thumb,
+                            url: null,
+                            fullUrlDownloaded: false,
+                            timestamp: Date.now() - idx 
+                        };
+                        window.remoteGalleryMap[item.id] = mediaObj;
+                        return mediaObj;
+                    });
+                    
+                    currentView = 'all';
+                    renderView();
+                    emptyState.classList.add('hidden');
+                    mediaGrid.classList.remove('hidden');
+                    statCount.textContent = allMediaFiles.length;
+                }
+                else if (data.type === 'request_media') {
+                    const media = allMediaFiles[data.id];
+                    if (media && media.file) {
+                        media.file.arrayBuffer().then(buffer => {
+                            conn.send({
+                                type: 'media_response',
+                                id: data.id,
+                                mime: media.file.type || (media.type === 'video' ? 'video/mp4' : 'image/jpeg'),
+                                fileData: buffer
+                            });
+                        });
+                    }
+                }
+                else if (data.type === 'media_response') {
+                    hideP2pLoading();
                     const blob = new Blob([data.fileData], { type: data.mime });
                     const url = URL.createObjectURL(blob);
-                    const receivedMedia = {
-                        file: blob,
-                        url: url,
-                        type: data.mediaType,
-                        dateStr: 'Shared via P2P',
-                        hash: data.fileName,
-                        timestamp: Date.now()
-                    };
                     
-                    // Temporarily override lightbox list and open
-                    activeMediaList = [receivedMedia];
-                    updateLightboxContent(0);
+                    const mediaItem = window.remoteGalleryMap[data.id];
+                    if (mediaItem) {
+                        mediaItem.url = url;
+                        mediaItem.fullUrlDownloaded = true;
+                    }
                     
-                    lightbox.classList.remove('hidden');
-                    requestAnimationFrame(() => {
-                        lightbox.classList.remove('opacity-0');
-                    });
+                    if (window.pendingLightboxIndex !== null) {
+                        if (!lightbox.classList.contains('hidden')) {
+                            updateLightboxContent(window.pendingLightboxIndex);
+                        } else {
+                            openLightboxActual(window.pendingLightboxIndex, window.pendingLightboxList);
+                        }
+                        window.pendingLightboxIndex = null;
+                    }
                 }
             });
             conn.on('close', () => {
                 statP2p.textContent = 'Ready';
                 statP2p.style.color = 'var(--switch-cyan)';
-                btnShareP2p.classList.add('hidden');
+                btnShareGallery.classList.add('hidden');
                 btnP2P.style.borderColor = '';
                 btnP2P.style.color = '';
                 p2pConnection = null;
@@ -1128,33 +1250,43 @@
             setTimeout(() => btnCopyId.textContent = "Copy", 2000);
         });
 
-        btnShareP2p.addEventListener('click', async () => {
+        btnShareGallery.addEventListener('click', async () => {
             if (!p2pConnection || !p2pConnection.open) return;
+            showP2pLoading('Generating Gallery Data...');
             
-            const media = activeMediaList[currentLightboxIndex];
-            if (!media.file) return;
-
-            btnShareP2p.style.opacity = '0.5';
-            btnShareP2p.style.pointerEvents = 'none';
-            
-            try {
-                const arrayBuffer = await media.file.arrayBuffer();
-                p2pConnection.send({
-                    type: 'media',
-                    fileName: media.hash || 'shared_media',
-                    mediaType: media.type,
-                    mime: media.file.type || (media.type === 'video' ? 'video/mp4' : 'image/jpeg'),
-                    fileData: arrayBuffer
+            const galleryPayload = [];
+            for (let i = 0; i < allMediaFiles.length; i++) {
+                const media = allMediaFiles[i];
+                let thumbData = null;
+                if (media.type === 'image' && !media.isRemote) {
+                    thumbData = await generateThumbnail(media.url);
+                }
+                galleryPayload.push({
+                    id: i,
+                    type: media.type,
+                    dateStr: media.dateStr,
+                    hash: media.hash,
+                    thumb: thumbData
                 });
-            } catch (e) {
-                console.error("Failed to share file", e);
-                alert("Could not read file for sharing.");
+                
+                if (i % 10 === 0) {
+                    p2pLoadingText.textContent = `Processing ${i}/${allMediaFiles.length}...`;
+                }
             }
             
-            setTimeout(() => {
-                btnShareP2p.style.opacity = '1';
-                btnShareP2p.style.pointerEvents = 'auto';
-            }, 1500);
+            p2pLoadingText.textContent = 'Sending to Peer...';
+            
+            try {
+                p2pConnection.send({
+                    type: 'gallery_sync',
+                    items: galleryPayload
+                });
+                hideP2pLoading();
+            } catch(e) {
+                console.error(e);
+                p2pLoadingText.textContent = 'Failed to send!';
+                setTimeout(hideP2pLoading, 2000);
+            }
         });
 
         setInterval(() => {
