@@ -1689,8 +1689,12 @@
             const jumpBtn = document.getElementById('btn-jump-peer-viewing');
             box.classList.remove('hidden');
             if (data.viewing) {
-                text.innerHTML = `👀 Looking at a ${data.viewing.type} from <strong style="color:white;">${data.viewing.game}</strong>`;
-                peerViewingTarget = { hash: data.viewing.hash, timestamp: data.viewing.timestamp };
+                // If the peer's source was 'remote', they were looking at
+                // whatever WE synced to them - i.e. our own local gallery,
+                // not theirs.
+                const galleryLabel = data.source === 'remote' ? 'your gallery' : 'their own gallery';
+                text.innerHTML = `👀 Looking at a ${data.viewing.type} from <strong style="color:white;">${data.viewing.game}</strong> in ${galleryLabel}`;
+                peerViewingTarget = { hash: data.viewing.hash, timestamp: data.viewing.timestamp, source: data.source };
                 jumpBtn.style.display = 'block';
                 jumpBtn.textContent = "▶ Jump to what they're viewing";
             } else {
@@ -1706,22 +1710,28 @@
             if (!peerViewingTarget) return;
             const jumpBtn = document.getElementById('btn-jump-peer-viewing');
 
+            // If the peer's source was 'remote', what they're looking at is
+            // actually YOUR OWN local media (you're the "remote" gallery
+            // from their side). If it was 'local', they're browsing their
+            // own SD card, which - if they've synced it - is what shows up
+            // as your "remote" source.
+            const targetSource = peerViewingTarget.source === 'remote' ? 'local' : 'remote';
+            const targetList = targetSource === 'local' ? allMediaFiles : remoteMediaFiles;
+
             const openInList = () => {
-                const idx = remoteMediaFiles.findIndex(m => m.hash === peerViewingTarget.hash && m.timestamp === peerViewingTarget.timestamp);
+                const idx = targetList.findIndex(m => m.hash === peerViewingTarget.hash && m.timestamp === peerViewingTarget.timestamp);
                 if (idx === -1) {
                     jumpBtn.textContent = "Not available in your synced copy";
                     setTimeout(() => { jumpBtn.textContent = "▶ Jump to what they're viewing"; }, 1800);
                     return;
                 }
-                triggerLightbox(idx, remoteMediaFiles);
+                triggerLightbox(idx, targetList);
             };
 
-            // What the peer is looking at lives in their own gallery, which
-            // is what shows up on your "remote" source - switch to it first.
-            if (currentSource !== 'remote') {
-                document.querySelector('#nav-sources .nav-item[data-source="remote"]').click();
+            if (currentSource !== targetSource) {
+                document.querySelector(`#nav-sources .nav-item[data-source="${targetSource}"]`).click();
                 // renderView from the click above is synchronous, so the
-                // freshly-populated remoteMediaFiles is ready immediately.
+                // relevant list is ready immediately.
             }
             openInList();
         }
