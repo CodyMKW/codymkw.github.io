@@ -588,6 +588,9 @@
             <div id="peer-activity-box" class="stats-box hidden">
                 <p style="color: #a855f7; font-weight: 700; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.35rem;">Peer Activity</p>
                 <p id="peer-activity-text" style="color: var(--switch-muted); font-size: 0.8rem; line-height: 1.4;">Not connected.</p>
+                <div id="peer-loading-bar-wrap" class="hidden" style="margin-top: 0.4rem; height: 4px; background: rgba(255,255,255,0.1); border-radius: 9999px; overflow: hidden;">
+                    <div id="peer-loading-bar" style="height: 100%; width: 0%; background: #a855f7; transition: width 0.2s;"></div>
+                </div>
                 <button id="btn-jump-peer-viewing" style="display:none; margin-top: 0.5rem; width: 100%; padding: 0.35rem 0.6rem; border: 1px solid #a855f7; color: #a855f7; background: rgba(168,85,247,0.08); border-radius: 0.25rem; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.03em; cursor: pointer; transition: background 0.2s;">▶ Jump to what they're viewing</button>
                 <label style="display: flex; align-items: center; gap: 0.4rem; margin-top: 0.6rem; font-size: 0.7rem; color: var(--switch-muted); cursor: pointer;">
                     <input type="checkbox" id="setting-autofollow" style="width: 1rem; height: 1rem; accent-color: #a855f7;">
@@ -1791,7 +1794,13 @@
             if (media.isRemote) {
                 // If it's remote, we only have thumbnails. We must request the high-res file if desired.
                 if (reqHiRes) {
-                    lightboxMediaContainer.innerHTML = `<div class="spinner"></div><div style="color: white; margin-top: 1rem;">Loading full file from ${peerProfile.name}...</div>`;
+                    lightboxMediaContainer.innerHTML = `
+                        <div class="spinner"></div>
+                        <div style="color: white; margin-top: 1rem;">Loading full file from ${peerProfile.name}... <span id="own-loading-percent">0%</span></div>
+                        <div style="width: 220px; height: 6px; background: rgba(255,255,255,0.15); border-radius: 9999px; overflow: hidden; margin-top: 0.75rem;">
+                            <div id="own-loading-bar" style="height: 100%; width: 0%; background: var(--switch-cyan); transition: width 0.2s;"></div>
+                        </div>
+                    `;
                     requestRemoteFile(media.originalIndex);
                 } else {
                     sourceUrl = media.thumb;
@@ -1805,6 +1814,13 @@
             if (!media.isRemote || (media.isRemote && !reqHiRes && media.type !== 'video')) {
                 renderLoadedLightbox(media, sourceUrl);
             }
+        }
+
+        function updateLightboxLoadingProgress(percent) {
+            const pctEl = document.getElementById('own-loading-percent');
+            const barEl = document.getElementById('own-loading-bar');
+            if (pctEl) pctEl.textContent = percent + '%';
+            if (barEl) barEl.style.width = percent + '%';
         }
 
         function renderLoadedLightbox(media, srcUrl) {
@@ -1979,11 +1995,20 @@
                 else if (data.type === 'file_request') {
                     handleFileRequest(conn, data.originalIndex);
                 }
-                else if (data.type === 'file_response') {
-                    handleFileResponse(data.file, data.fileType, data.originalIndex);
+                else if (data.type === 'file_response_start') {
+                    handleFileResponseStart(data);
+                }
+                else if (data.type === 'file_response_chunk') {
+                    handleFileResponseChunk(data);
+                }
+                else if (data.type === 'file_response_end') {
+                    handleFileResponseEnd(data);
                 }
                 else if (data.type === 'presence') {
                     updatePeerActivityDisplay(data);
+                }
+                else if (data.type === 'loading_progress') {
+                    handlePeerLoadingProgress(data);
                 }
                 else if (data.type === 'reaction') {
                     spawnFloatingReaction(data.emoji);
@@ -2026,6 +2051,9 @@
                 document.getElementById('chat-panel').classList.add('hidden');
                 document.getElementById('stat-ping').textContent = '-';
                 peerViewingTarget = null;
+                lastPeerPresence = null;
+                peerLoadingProgress = null;
+                incomingTransfer = null;
                 if (pingIntervalId) { clearInterval(pingIntervalId); pingIntervalId = null; }
                 showToast(`${peerProfile.name} disconnected`);
                 if (currentSource === 'remote') {
@@ -2115,26 +2143,61 @@
         }
 
         function updatePeerActivityDisplay(data) {
-            const box = document.getElementById('peer-activity-box');
-            const text = document.getElementById('peer-activity-text');
+            lastPeerPresence = data;
             const jumpBtn = document.getElementById('btn-jump-peer-viewing');
-            box.classList.remove('hidden');
+            document.getElementById('peer-activity-box').classList.remove('hidden');
+            if (data.viewing) {
+                peerViewingTarget = { hash: data.viewing.hash, timestamp: data.viewing.timestamp, source: data.source };
+                jumpBtn.style.display = 'block';
+                jumpBtn.textContent = "▶ Jump to what they're viewing";
+                if (autoFollowPeer) jumpToPeerViewing();
+            } else {
+                peerViewingTarget = null;
+                jumpBtn.style.display = 'none';
+            }
+            renderPeerActivityText();
+        }
+
+        // A file transfer taking a while (especially video) previously gave
+        // no feedback to the person on the OTHER end - they'd just see
+        // nothing happen until it suddenly finished. The requester reports
+        // their own download progress back over the data channel so it can
+        // be shown here, overriding the normal presence text while it's
+        // in flight.
+        let lastPeerPresence = null;
+        let peerLoadingProgress = null;
+
+        function handlePeerLoadingProgress(data) {
+            peerLoadingProgress = data.percent >= 100 ? null : { game: data.game, mediaType: data.mediaType, percent: data.percent };
+            renderPeerActivityText();
+        }
+
+        function renderPeerActivityText() {
+            const text = document.getElementById('peer-activity-text');
+            const barWrap = document.getElementById('peer-loading-bar-wrap');
+            const bar = document.getElementById('peer-loading-bar');
+
+            if (peerLoadingProgress) {
+                text.innerHTML = `🔄 Loading a ${peerLoadingProgress.mediaType} from <strong style="color:white;">${peerLoadingProgress.game}</strong> — ${peerLoadingProgress.percent}%`;
+                barWrap.classList.remove('hidden');
+                bar.style.width = peerLoadingProgress.percent + '%';
+                return;
+            }
+            barWrap.classList.add('hidden');
+            bar.style.width = '0%';
+
+            const data = lastPeerPresence;
+            if (!data) { text.textContent = 'Not connected.'; return; }
             if (data.viewing) {
                 // If the peer's source was 'remote', they were looking at
                 // whatever WE synced to them - i.e. our own local gallery,
                 // not theirs.
                 const galleryLabel = data.source === 'remote' ? 'your gallery' : 'their own gallery';
                 text.innerHTML = `👀 Looking at a ${data.viewing.type} from <strong style="color:white;">${data.viewing.game}</strong> in ${galleryLabel}`;
-                peerViewingTarget = { hash: data.viewing.hash, timestamp: data.viewing.timestamp, source: data.source };
-                jumpBtn.style.display = 'block';
-                jumpBtn.textContent = "▶ Jump to what they're viewing";
-                if (autoFollowPeer) jumpToPeerViewing();
             } else {
                 const src = data.source === 'local' ? `their own SD Card` : `your shared gallery`;
                 const sortTxt = data.sort === 'all' ? 'all media' : (data.sort === 'date' ? 'sorted by date' : 'sorted by game');
                 text.textContent = `Browsing ${src} • ${sortTxt}`;
-                peerViewingTarget = null;
-                jumpBtn.style.display = 'none';
             }
         }
 
@@ -2266,29 +2329,102 @@
             }
         }
 
+        // Large files (especially video) can take a while over a P2P data
+        // channel with no feedback otherwise, so files are sent in chunks
+        // with progress reported both to your own loading screen and to the
+        // peer's "Peer Activity" panel, instead of one opaque blob transfer.
+        const FILE_CHUNK_SIZE = 64 * 1024; // 64KB
+        function waitForBufferedAmountLow(conn, maxBuffered = 1_000_000) {
+            return new Promise((resolve) => {
+                const check = () => {
+                    if (!conn.dataChannel || conn.dataChannel.bufferedAmount <= maxBuffered) resolve();
+                    else setTimeout(check, 20);
+                };
+                check();
+            });
+        }
+
         async function handleFileRequest(conn, index) {
             const media = allMediaFiles[index];
             if (!media || isGameSpoiled(media.hash)) return; // Refuse if spoiler
-            
+
             try {
-                conn.send({
-                    type: 'file_response',
-                    originalIndex: index,
-                    file: media.file,
-                    fileType: media.type
-                });
+                const buffer = await media.file.arrayBuffer();
+                const totalSize = buffer.byteLength;
+                const totalChunks = Math.max(1, Math.ceil(totalSize / FILE_CHUNK_SIZE));
+
+                conn.send({ type: 'file_response_start', originalIndex: index, fileType: media.type, totalSize, totalChunks });
+
+                for (let i = 0; i < totalChunks; i++) {
+                    await waitForBufferedAmountLow(conn);
+                    const start = i * FILE_CHUNK_SIZE;
+                    const end = Math.min(start + FILE_CHUNK_SIZE, totalSize);
+                    conn.send({ type: 'file_response_chunk', originalIndex: index, chunkIndex: i, data: buffer.slice(start, end) });
+                }
+
+                conn.send({ type: 'file_response_end', originalIndex: index });
             } catch (e) {
                 console.error("Failed to send large file", e);
             }
         }
 
-        function handleFileResponse(fileBlob, fileType, originalIndex) {
+        // Tracks a file currently being received in chunks
+        let incomingTransfer = null;
+
+        function handleFileResponseStart(data) {
+            incomingTransfer = {
+                originalIndex: data.originalIndex,
+                fileType: data.fileType,
+                totalSize: data.totalSize,
+                chunks: new Array(data.totalChunks),
+                receivedBytes: 0,
+                lastReportedPercent: -1
+            };
+            updateLightboxLoadingProgress(0);
+            sendLoadingProgressToPeer(0, data.fileType);
+        }
+
+        function handleFileResponseChunk(data) {
+            if (!incomingTransfer || incomingTransfer.originalIndex !== data.originalIndex) return;
+            incomingTransfer.chunks[data.chunkIndex] = data.data;
+            incomingTransfer.receivedBytes += data.data.byteLength;
+            const percent = Math.min(100, Math.round((incomingTransfer.receivedBytes / incomingTransfer.totalSize) * 100));
+            if (percent >= incomingTransfer.lastReportedPercent + 5) {
+                incomingTransfer.lastReportedPercent = percent;
+                updateLightboxLoadingProgress(percent);
+                sendLoadingProgressToPeer(percent, incomingTransfer.fileType);
+            }
+        }
+
+        function handleFileResponseEnd(data) {
+            if (!incomingTransfer || incomingTransfer.originalIndex !== data.originalIndex) return;
+            const mime = incomingTransfer.fileType === 'video' ? 'video/mp4' : 'image/jpeg';
+            const blob = new Blob(incomingTransfer.chunks, { type: mime });
+            const finishedIndex = incomingTransfer.originalIndex;
+            const finishedType = incomingTransfer.fileType;
+            incomingTransfer = null;
+            sendLoadingProgressToPeer(100, finishedType);
+            handleFileResponse(blob, finishedType, finishedIndex);
+        }
+
+        function sendLoadingProgressToPeer(percent, mediaType) {
+            if (!(p2pConnection && p2pConnection.open)) return;
+            const mediaObj = activeMediaList[currentLightboxIndex];
+            p2pConnection.send({
+                type: 'loading_progress',
+                percent,
+                mediaType: mediaType || (mediaObj ? mediaObj.type : 'image'),
+                game: mediaObj ? gameKey(mediaObj.hash) : ''
+            });
+        }
+
+        function handleFileResponse(fileBlobOrBuffer, fileType, originalIndex) {
             // Guard against a race: if the user navigated the lightbox while
             // a large file was still in transit, an older response could
             // otherwise land on top of whatever is now showing.
             const mediaObj = activeMediaList[currentLightboxIndex];
             if (!mediaObj || (originalIndex !== undefined && mediaObj.originalIndex !== originalIndex)) return;
-            const blob = new Blob([fileBlob]); // Wrap the incoming ArrayBuffer in a Blob
+            const blob = fileBlobOrBuffer instanceof Blob ? fileBlobOrBuffer : new Blob([fileBlobOrBuffer]);
             const url = URL.createObjectURL(blob);
             renderLoadedLightbox(mediaObj, url);
         }
