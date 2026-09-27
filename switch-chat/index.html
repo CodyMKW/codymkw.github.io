@@ -429,7 +429,8 @@
             </div>
             <div class="input-group">
                 <label class="input-label">Your Switch NSA ID (for your own presence)</label>
-                <input type="text" id="setting-nsaid" class="input-field" placeholder="Your NSA ID">
+                <input type="text" id="setting-nsaid" class="input-field" placeholder="Your NSA ID" list="nsaid-list">
+                <datalist id="nsaid-list"></datalist>
             </div>
             <div class="input-group">
                 <label class="input-label cyan">Your Peer ID</label>
@@ -471,12 +472,15 @@
         // ============================================================
         const AVATAR_OPTIONS = ['🐢','🦊','🐧','🦖','🐸','🍄','⭐','🎮','🕹️','👾','🐱','🐶'];
         const REACTION_EMOJIS = ['❤️','😂','😮','😢','👍','🔥'];
+        const NINTENDO_CHARS = ['Mario', 'Luigi', 'Peach', 'Bowser', 'Link', 'Zelda', 'Kirby', 'Samus', 'Yoshi', 'TomNook', 'Isabelle'];
+        const randomChar = NINTENDO_CHARS[Math.floor(Math.random() * NINTENDO_CHARS.length)];
+        const randomId = Math.floor(1000 + Math.random() * 9000);
 
         let myProfile = {
-            name: 'Cody',
+            name: `${randomChar}#${randomId}`,
             status: '',
             avatar: '🐢',
-            nsaId: '644cd5195d154bd5',
+            nsaId: '',
             notifications: false,
             sound: true
         };
@@ -1556,6 +1560,18 @@ function buildAttachmentEl(m) {
         function openSettingsModal() {
             document.getElementById('setting-name').value = myProfile.name;
             document.getElementById('setting-status').value = myProfile.status;
+            
+            const datalist = document.getElementById('nsaid-list');
+            if (datalist) {
+                datalist.innerHTML = '';
+                presenceEntries.forEach(entry => {
+                    const opt = document.createElement('option');
+                    opt.value = entry.nsaId;
+                    opt.textContent = entry.name;
+                    datalist.appendChild(opt);
+                });
+            }
+
             document.getElementById('setting-nsaid').value = myProfile.nsaId;
             document.getElementById('setting-notifications').checked = myProfile.notifications;
             document.getElementById('setting-sound').checked = myProfile.sound;
