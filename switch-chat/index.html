@@ -1187,7 +1187,7 @@ function initPeer() {
             return row;
         }
 
-        function buildAttachmentEl(m) {
+function buildAttachmentEl(m) {
             const a = m.attachment;
             if (a.pending) {
                 const wrap = document.createElement('div');
@@ -1195,6 +1195,14 @@ function initPeer() {
                 wrap.dataset.attachmentId = m.id;
                 wrap.innerHTML = `<span>${a.mime && a.mime.startsWith('image/') ? '🖼️' : '📎'} ${escapeHtml(a.name)} — <span class="pct">${a.progress}%</span></span><div class="mini-bar"><div class="mini-bar-fill" style="width:${a.progress}%;"></div></div>`;
                 return wrap;
+            }
+            // If the URL is gone from a reload, show a clean expired placeholder box
+            if (!a.url) {
+                const expired = document.createElement('div');
+                expired.className = 'msg-attachment-file';
+                expired.style.opacity = '0.65';
+                expired.innerHTML = `🖼️ <span style="font-style: italic;">${escapeHtml(a.name || 'Image')} (Expired)</span>`;
+                return expired;
             }
             if (a.mime && a.mime.startsWith('image/')) {
                 const img = document.createElement('img');
