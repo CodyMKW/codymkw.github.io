@@ -765,10 +765,19 @@
         // ============================================================
         let pingLastRtt = null;
 
-        function initPeer() {
+function initPeer() {
             if (peer) return;
-            peer = new Peer();
+
+            const savedPeerId = localStorage.getItem('switch_chat_my_peer_id');
+
+            if (savedPeerId) {
+                peer = new Peer(savedPeerId);
+            } else {
+                peer = new Peer();
+            }
+
             peer.on('open', (id) => {
+                localStorage.setItem('switch_chat_my_peer_id', id);
                 document.getElementById('my-peer-id-display').value = id;
                 const invitedPeerId = getPeerIdFromUrl();
                 if (invitedPeerId && invitedPeerId !== id) autoConnectFromInvite(invitedPeerId);
