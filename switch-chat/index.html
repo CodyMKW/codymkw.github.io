@@ -331,7 +331,7 @@
 
         <div class="section-title">
             <span>Chat Contacts</span>
-            <button id="btn-add-contact">+ Add</button>
+            <button id="btn-copy-invite-link">🔗 Invite Link</button>
         </div>
         <div class="contact-list" id="contact-list"></div>
         <p class="sidebar-empty-note" id="contacts-empty-note">No contacts yet — add one with their Peer ID, or share yours from Settings.</p>
@@ -348,8 +348,8 @@
         <div id="chat-empty-view" class="chat-empty-state">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
             <h2>No chat open</h2>
-            <p>Add a contact with their Peer ID from the sidebar, or share your own Peer ID with a friend to get started.</p>
-            <button id="btn-empty-add-contact" class="btn-save" style="padding: 0.6rem 1.25rem;">+ Add a Contact</button>
+            <p>Copy your invite link and send it to a friend — when they open it, you'll connect automatically. Or open a link they sent you.</p>
+            <button id="btn-empty-copy-invite" class="btn-save" style="padding: 0.6rem 1.25rem;">📋 Copy My Invite Link</button>
         </div>
 
         <div id="chat-view" class="hidden" style="display: none; flex-direction: column; flex: 1; min-height: 0;">
@@ -390,32 +390,6 @@
             </div>
         </div>
     </main>
-
-    <!-- Add Contact Modal -->
-    <div id="contact-modal" class="custom-modal hidden">
-        <div class="modal-card">
-            <h3 class="modal-title">Add Contact</h3>
-            <p class="modal-desc">Enter a friend's Peer ID to add and connect to them.</p>
-            <div class="input-group">
-                <label class="input-label">Display Name</label>
-                <input type="text" id="contact-name-input" class="input-field" placeholder="e.g. Joseph">
-            </div>
-            <div class="input-group">
-                <label class="input-label cyan">Peer ID</label>
-                <input type="text" id="contact-peerid-input" class="input-field" placeholder="Their Peer ID">
-            </div>
-            <div class="input-group">
-                <label class="input-label">Link to a Switch Presence entry (optional)</label>
-                <select id="contact-presence-link" class="input-field">
-                    <option value="">None</option>
-                </select>
-            </div>
-            <div class="modal-actions">
-                <button id="btn-cancel-contact" class="btn-cancel">Cancel</button>
-                <button id="btn-save-contact" class="btn-save">Add & Connect</button>
-            </div>
-        </div>
-    </div>
 
     <!-- Add Presence Modal -->
     <div id="presence-modal" class="custom-modal hidden">
@@ -464,6 +438,14 @@
                     <button id="btn-copy-peer-id" class="btn-save" style="padding: 0.5rem 0.8rem;">Copy</button>
                 </div>
             </div>
+            <div class="input-group">
+                <label class="input-label">Connect Manually (optional)</label>
+                <p style="color: var(--switch-muted); font-size: 0.72rem; margin-bottom: 0.4rem;">Only needed if you can't just click a friend's invite link.</p>
+                <div style="display:flex; gap:0.5rem;">
+                    <input type="text" id="manual-peer-id-input" class="input-field" placeholder="Paste a friend's Peer ID">
+                    <button id="btn-manual-connect" class="btn-save" style="padding: 0.5rem 0.8rem;">Connect</button>
+                </div>
+            </div>
             <div class="toggle-row">
                 <label>🔔 Desktop notifications</label>
                 <input type="checkbox" id="setting-notifications">
@@ -502,7 +484,7 @@
         let presenceEntries = []; // { id, name, nsaId }
         let presenceCache = {};   // nsaId -> { data, fetchedAt } or { error: true }
 
-        let contacts = [];        // { id, name, peerId, presenceId (optional link) }
+        let contacts = [];        // { id, name, peerId, avatar, status, presenceNsaId (auto-received from their settings) }
         let activeContactId = null;
 
         let messagesByContact = {}; // contactId -> [ {id, mine, text, ts, status, reactions:{mine:[], theirs:[]}, edited, deleted, attachment} ]
@@ -672,15 +654,9 @@
                     presenceEntries = presenceEntries.filter(p => p.id !== entry.id);
                     savePresenceEntries();
                     renderPresenceList();
-                    renderPresenceLinkOptions();
                 });
                 list.appendChild(row);
             });
-        }
-
-        function renderPresenceLinkOptions() {
-            const sel = document.getElementById('contact-presence-link');
-            sel.innerHTML = '<option value="">None</option>' + presenceEntries.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
         }
 
         // ============================================================
@@ -698,17 +674,17 @@
             emptyNote.classList.toggle('hidden', contacts.length > 0);
 
             contacts.forEach(contact => {
-                const linkedPresence = contact.presenceId ? presenceEntries.find(p => p.id === contact.presenceId) : null;
-                const summary = linkedPresence ? presenceSummary(linkedPresence.nsaId) : null;
+                const summary = contact.presenceNsaId ? presenceSummary(contact.presenceNsaId) : null;
                 const isConnected = connectedContactId === contact.id && activeConnection && activeConnection.open;
                 const unread = unreadCount(contact.id);
+                const fallbackAvatar = contact.avatar || '💬';
 
                 const row = document.createElement('div');
                 row.className = 'contact-row' + (activeContactId === contact.id ? ' active' : '');
                 row.innerHTML = `
                     ${summary && summary.icon
                         ? `<img class="game-icon" src="${summary.icon}">`
-                        : `<div class="avatar-circle" style="width:2.25rem;height:2.25rem;font-size:1rem;">💬<span class="presence-dot ${isConnected ? 'online' : ''}"></span></div>`}
+                        : `<div class="avatar-circle" style="width:2.25rem;height:2.25rem;font-size:1rem;">${fallbackAvatar}<span class="presence-dot ${isConnected ? 'online' : ''}"></span></div>`}
                     <div class="row-info">
                         <div class="row-name">${contact.name}</div>
                         <div class="row-sub">${isConnected ? 'Connected' : (summary ? summary.label : 'Not connected')}</div>
@@ -767,16 +743,17 @@
             const statusEl = document.getElementById('chat-topbar-status');
             const dotEl = document.getElementById('chat-presence-dot');
             const avatarEl = document.getElementById('chat-avatar-circle');
-            const linkedPresence = contact.presenceId ? presenceEntries.find(p => p.id === contact.presenceId) : null;
-            const summary = linkedPresence ? presenceSummary(linkedPresence.nsaId) : null;
+            const summary = contact.presenceNsaId ? presenceSummary(contact.presenceNsaId) : null;
+            const fallbackAvatar = contact.avatar || '🎮';
 
-            dotEl.classList.toggle('online', !!isConnected);
-            if (summary && summary.icon) {
-                avatarEl.innerHTML = `<img src="${summary.icon}"><span class="presence-dot ${isConnected ? 'online' : ''}" id="chat-presence-dot"></span>`;
-            }
+            document.getElementById('chat-topbar-name').textContent = contact.name;
+            avatarEl.innerHTML = summary && summary.icon
+                ? `<img src="${summary.icon}"><span class="presence-dot ${isConnected ? 'online' : ''}" id="chat-presence-dot"></span>`
+                : `${fallbackAvatar}<span class="presence-dot ${isConnected ? 'online' : ''}" id="chat-presence-dot"></span>`;
 
             let statusText = isConnected ? 'Connected' : 'Not connected — click to reconnect';
             if (isConnected && summary) statusText += ` • ${summary.label}`;
+            if (isConnected && contact.status) statusText += ` — "${contact.status}"`;
             if (isConnected && pingLastRtt) statusText += ` • ${pingLastRtt}ms`;
             statusEl.textContent = statusText;
             statusEl.style.cursor = isConnected ? 'default' : 'pointer';
@@ -793,16 +770,17 @@
             peer = new Peer();
             peer.on('open', (id) => {
                 document.getElementById('my-peer-id-display').value = id;
+                const invitedPeerId = getPeerIdFromUrl();
+                if (invitedPeerId && invitedPeerId !== id) autoConnectFromInvite(invitedPeerId);
             });
             peer.on('connection', (conn) => {
                 // Incoming connection - match to a known contact by peer id, or
                 // create a placeholder one so the conversation isn't lost.
                 let contact = contacts.find(c => c.peerId === conn.peer);
                 if (!contact) {
-                    contact = { id: uid(), name: 'Unknown Peer', peerId: conn.peer, presenceId: null };
+                    contact = { id: uid(), name: 'New Friend', peerId: conn.peer, avatar: null, status: '', presenceNsaId: null };
                     contacts.push(contact);
                     saveContacts();
-                    showToast(`New incoming connection - saved as "${contact.name}". Rename it from the contact list.`, 'purple');
                 }
                 if (activeConnection) activeConnection.close();
                 activeConnection = conn;
@@ -814,6 +792,57 @@
                 showToast('Connection error: ' + (err && err.type ? err.type : err));
             });
         }
+
+        function getPeerIdFromUrl() {
+            return new URLSearchParams(window.location.search).get('peer');
+        }
+
+        function autoConnectFromInvite(theirPeerId) {
+            let contact = contacts.find(c => c.peerId === theirPeerId);
+            if (!contact) {
+                contact = { id: uid(), name: 'New Friend', peerId: theirPeerId, avatar: null, status: '', presenceNsaId: null };
+                contacts.push(contact);
+                saveContacts();
+            }
+            renderContactList();
+            selectContact(contact.id);
+            showToast('Connecting via invite link…', 'purple');
+            // Clean the invite param out of the URL bar so a refresh or copying
+            // the address later doesn't confuse it for your own invite link.
+            history.replaceState({}, '', window.location.pathname);
+        }
+
+        function getInviteLink() {
+            const myId = document.getElementById('my-peer-id-display').value;
+            const url = new URL(window.location.href);
+            url.search = '';
+            url.searchParams.set('peer', myId);
+            return url.toString();
+        }
+
+        function copyInviteLink() {
+            const myId = document.getElementById('my-peer-id-display').value;
+            if (!myId) { showToast('Still connecting to the network — try again in a second.'); return; }
+            navigator.clipboard.writeText(getInviteLink());
+            showToast('Invite link copied! Send it to a friend.', 'purple');
+        }
+        document.getElementById('btn-copy-invite-link').addEventListener('click', copyInviteLink);
+        document.getElementById('btn-empty-copy-invite').addEventListener('click', copyInviteLink);
+
+        document.getElementById('btn-manual-connect').addEventListener('click', () => {
+            const peerId = document.getElementById('manual-peer-id-input').value.trim();
+            if (!peerId) return;
+            let contact = contacts.find(c => c.peerId === peerId);
+            if (!contact) {
+                contact = { id: uid(), name: 'New Friend', peerId, avatar: null, status: '', presenceNsaId: null };
+                contacts.push(contact);
+                saveContacts();
+            }
+            document.getElementById('manual-peer-id-input').value = '';
+            settingsModal.classList.add('hidden');
+            renderContactList();
+            selectContact(contact.id);
+        });
 
         function connectToContact(contact) {
             if (!peer) initPeer();
@@ -830,8 +859,12 @@
             });
         }
 
+        function myHelloPayload() {
+            return { type: 'hello', profile: { name: myProfile.name, avatar: myProfile.avatar, status: myProfile.status, nsaId: myProfile.nsaId || null } };
+        }
+
         function wireConnection(conn, contact) {
-            sendToConn({ type: 'hello', profile: { name: myProfile.name, avatar: myProfile.avatar, status: myProfile.status } });
+            sendToConn(myHelloPayload());
             startPingLoop();
             renderContactList();
             renderChatTopbarStatus();
@@ -884,8 +917,16 @@
             const thread = ensureThread(contact.id);
 
             if (data.type === 'hello') {
-                if (data.profile && data.profile.name) {
-                    contact.name = contact.name === 'Unknown Peer' ? data.profile.name : contact.name;
+                if (data.profile) {
+                    if (data.profile.name) contact.name = data.profile.name;
+                    contact.avatar = data.profile.avatar || contact.avatar;
+                    contact.status = data.profile.status || '';
+                    if (data.profile.nsaId && data.profile.nsaId !== contact.presenceNsaId) {
+                        contact.presenceNsaId = data.profile.nsaId;
+                        fetchPresence(data.profile.nsaId).then(() => { renderContactList(); renderChatTopbarStatus(); });
+                    } else if (!data.profile.nsaId) {
+                        contact.presenceNsaId = null;
+                    }
                     saveContacts();
                 }
                 renderContactList();
@@ -1456,33 +1497,6 @@
         });
 
         // ============================================================
-        // ADD CONTACT MODAL
-        // ============================================================
-        const contactModal = document.getElementById('contact-modal');
-        function openContactModal() {
-            document.getElementById('contact-name-input').value = '';
-            document.getElementById('contact-peerid-input').value = '';
-            renderPresenceLinkOptions();
-            document.getElementById('contact-presence-link').value = '';
-            contactModal.classList.remove('hidden');
-        }
-        document.getElementById('btn-add-contact').addEventListener('click', openContactModal);
-        document.getElementById('btn-empty-add-contact').addEventListener('click', openContactModal);
-        document.getElementById('btn-cancel-contact').addEventListener('click', () => contactModal.classList.add('hidden'));
-        document.getElementById('btn-save-contact').addEventListener('click', () => {
-            const name = document.getElementById('contact-name-input').value.trim();
-            const peerId = document.getElementById('contact-peerid-input').value.trim();
-            const presenceId = document.getElementById('contact-presence-link').value || null;
-            if (!name || !peerId) { showToast('Enter both a name and a Peer ID.'); return; }
-            const contact = { id: uid(), name, peerId, presenceId };
-            contacts.push(contact);
-            saveContacts();
-            renderContactList();
-            contactModal.classList.add('hidden');
-            selectContact(contact.id);
-        });
-
-        // ============================================================
         // ADD PRESENCE MODAL
         // ============================================================
         const presenceModal = document.getElementById('presence-modal');
@@ -1499,7 +1513,6 @@
             presenceEntries.push({ id: uid(), name, nsaId });
             savePresenceEntries();
             renderPresenceList();
-            renderPresenceLinkOptions();
             presenceModal.classList.add('hidden');
             fetchPresence(nsaId).then(() => { renderPresenceList(); });
         });
@@ -1553,7 +1566,7 @@
             saveProfile();
             renderMyProfileCard();
             settingsModal.classList.add('hidden');
-            if (activeConnection && activeConnection.open) sendToConn({ type: 'hello', profile: { name: myProfile.name, avatar: myProfile.avatar, status: myProfile.status } });
+            if (activeConnection && activeConnection.open) sendToConn(myHelloPayload());
             refreshAllPresence();
         });
         document.getElementById('btn-copy-peer-id').addEventListener('click', () => {
