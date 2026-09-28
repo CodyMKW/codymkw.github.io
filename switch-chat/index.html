@@ -438,6 +438,8 @@
                     <input type="text" id="my-peer-id-display" class="input-field" readonly placeholder="Generating...">
                     <button id="btn-copy-peer-id" class="btn-save" style="padding: 0.5rem 0.8rem;">Copy</button>
                 </div>
+                <p style="color: var(--switch-muted); font-size: 0.72rem; margin-top: 0.4rem; line-height: 1.4;">This stays the same every time you open the chat, so contacts and invite links keep working.</p>
+                <button id="btn-reset-peer-id" class="btn-cancel" style="padding: 0.3rem 0.5rem; font-size: 0.72rem; color: var(--switch-muted); margin-top: 0.2rem;">Reset my ID</button>
             </div>
             <div class="input-group">
                 <label class="input-label">Connect Manually (optional)</label>
@@ -769,22 +771,25 @@
         // ============================================================
         let pingLastRtt = null;
 
-function initPeer() {
+        // Your Peer ID is generated once and kept in localStorage so it's the
+        // same every visit - that's what makes saved contacts keep working
+        // after a reload and what makes an invite link stable to share.
+        let peerIdRetries = 0;
+        function initPeer(useTemporaryId) {
             if (peer) return;
 
-            const savedPeerId = localStorage.getItem('switch_chat_my_peer_id');
-
-            if (savedPeerId) {
-                peer = new Peer(savedPeerId);
-            } else {
-                peer = new Peer();
-            }
+            const savedPeerId = useTemporaryId ? null : localStorage.getItem('switch_chat_my_peer_id');
+            peer = savedPeerId ? new Peer(savedPeerId) : new Peer();
 
             peer.on('open', (id) => {
-                localStorage.setItem('switch_chat_my_peer_id', id);
+                if (!useTemporaryId) localStorage.setItem('switch_chat_my_peer_id', id);
                 document.getElementById('my-peer-id-display').value = id;
+                peerIdRetries = 0;
                 const invitedPeerId = getPeerIdFromUrl();
-                if (invitedPeerId && invitedPeerId !== id) autoConnectFromInvite(invitedPeerId);
+                if (invitedPeerId) {
+                    if (invitedPeerId !== id) autoConnectFromInvite(invitedPeerId);
+                    else history.replaceState({}, '', window.location.pathname); // opened your own link
+                }
             });
             peer.on('connection', (conn) => {
                 // Incoming connection - match to a known contact by peer id, or
@@ -795,14 +800,55 @@ function initPeer() {
                     contacts.push(contact);
                     saveContacts();
                 }
-                if (activeConnection) activeConnection.close();
+                // Replace any existing connection. The reference is cleared first
+                // so the old connection's close handler can tell it was
+                // superseded (matters now that a reconnecting friend keeps the
+                // same ID) instead of tearing down the new connection's state.
+                if (activeConnection && activeConnection !== conn) {
+                    const old = activeConnection;
+                    activeConnection = null;
+                    try { old.close(); } catch (e) {}
+                }
                 activeConnection = conn;
                 connectedContactId = contact.id;
-                wireConnection(conn, contact);
+                // Wait until the data channel is really open before sending our
+                // hello, otherwise the first message can be dropped and the
+                // person who clicked the invite link never sees our name/avatar.
+                const start = () => wireConnection(conn, contact);
+                if (conn.open) start();
+                else conn.on('open', start);
             });
+
+            // If we lose the signaling server, the permanent ID becomes
+            // unreachable until a reload - reconnect quietly instead.
+            peer.on('disconnected', () => {
+                setTimeout(() => {
+                    if (peer && peer.disconnected && !peer.destroyed) peer.reconnect();
+                }, 1500);
+            });
+
             peer.on('error', (err) => {
-                console.error('Peer error', err);
-                showToast('Connection error: ' + (err && err.type ? err.type : err));
+                if (err.type === 'unavailable-id') {
+                    // Still registered - usually the same page open in another
+                    // tab, or the server hasn't noticed a refresh yet.
+                    try { peer.destroy(); } catch (e) {}
+                    peer = null;
+                    if (peerIdRetries < 3) {
+                        peerIdRetries++;
+                        setTimeout(() => initPeer(false), 2000);
+                    } else {
+                        showToast('Your permanent ID is already in use (another tab open?). Using a temporary ID in this tab.');
+                        initPeer(true);
+                    }
+                } else if (err.type === 'peer-unavailable') {
+                    if (!(activeConnection && activeConnection.open)) connectedContactId = null;
+                    renderContactList();
+                    renderChatTopbarStatus();
+                    showToast("Couldn't reach that friend. Are they online with the chat open?");
+                } else {
+                    console.error('Peer error', err);
+                    showToast('Connection error: ' + (err && err.type ? err.type : err));
+                }
             });
         }
 
@@ -1608,6 +1654,11 @@ function buildAttachmentEl(m) {
             const old = btn.textContent;
             btn.textContent = 'Copied!';
             setTimeout(() => btn.textContent = old, 1500);
+        });
+        document.getElementById('btn-reset-peer-id').addEventListener('click', () => {
+            if (!confirm('Generate a new permanent ID? Invite links you already shared, and existing contacts trying to reach you, will stop working.')) return;
+            try { localStorage.removeItem('switch_chat_my_peer_id'); } catch (e) {}
+            location.reload();
         });
 
         // ============================================================
