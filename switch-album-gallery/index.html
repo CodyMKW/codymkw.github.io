@@ -540,6 +540,10 @@
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
                 P2P Network
             </button>
+            <button id="btn-copy-invite" class="btn-load btn-usb" style="border-color: rgba(168,85,247,0.5); color: #a855f7;">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg>
+                Copy Invite Link
+            </button>
         </div>
 
         <!-- SOURCE SELECTION -->
@@ -747,6 +751,11 @@
                 <div style="display:flex; gap: 0.5rem;">
                     <input type="text" id="p2p-my-id" class="input-field" readonly placeholder="Generating...">
                     <button id="btn-copy-id" class="btn-save" style="padding: 0.5rem;">Copy</button>
+                </div>
+                <p style="color: var(--switch-muted); font-size: 0.72rem; margin-top: 0.5rem; line-height: 1.4;">This ID stays the same every time you open the gallery.</p>
+                <div style="display:flex; align-items:center; gap: 0.75rem; margin-top: 0.6rem;">
+                    <button id="btn-copy-invite-modal" class="btn-save" style="background: #a855f7; padding: 0.45rem 0.9rem; font-size: 0.8rem;">🔗 Copy Invite Link</button>
+                    <button id="btn-reset-peer-id" class="btn-cancel" style="padding: 0.3rem 0.5rem; font-size: 0.72rem; color: var(--switch-muted);">Reset my ID</button>
                 </div>
             </div>
             <div class="input-group" style="margin-bottom: 1.5rem;">
@@ -1901,21 +1910,125 @@
             }
         }
 
-        function initPeer() {
-            peer = new Peer();
+        // Your Peer ID is generated once and kept in localStorage so it's the
+        // same every visit - which is what makes a shareable invite link work.
+        // Falls back to a throwaway ID if storage isn't available.
+        function getPersistentPeerId() {
+            try {
+                let id = localStorage.getItem('switch_gallery_peer_id');
+                if (!id) {
+                    const bytes = new Uint8Array(10);
+                    crypto.getRandomValues(bytes);
+                    id = 'sg-' + Array.from(bytes, b => b.toString(36).padStart(2, '0')).join('');
+                    localStorage.setItem('switch_gallery_peer_id', id);
+                }
+                return id;
+            } catch (e) {
+                return null;
+            }
+        }
+
+        function getInvitedPeerId() {
+            return new URLSearchParams(window.location.search).get('peer');
+        }
+
+        function stripInviteFromUrl() {
+            const url = new URL(window.location.href);
+            url.searchParams.delete('peer');
+            history.replaceState({}, '', url.pathname + url.search + url.hash);
+        }
+
+        let peerIdRetries = 0;
+        function initPeer(useTemporaryId) {
+            const persistentId = useTemporaryId ? null : getPersistentPeerId();
+            peer = persistentId ? new Peer(persistentId) : new Peer();
+
             peer.on('open', (id) => {
                 p2pMyId.value = id;
+                peerIdRetries = 0;
+                // Opened via someone's invite link -> connect straight away.
+                const invitedId = getInvitedPeerId();
+                if (invitedId) {
+                    stripInviteFromUrl();
+                    if (invitedId !== id) connectToPeerId(invitedId);
+                }
             });
+
             peer.on('connection', (conn) => {
                 p2pConnection = conn;
-                setupConnection(conn);
+                // Wait for the data channel to actually be open before
+                // sending our identity/gallery, otherwise those first sends
+                // can be dropped on the receiving side of an invite link.
+                if (conn.open) setupConnection(conn);
+                else conn.on('open', () => setupConnection(conn));
                 statP2p.textContent = 'Connected (Incoming)';
                 statP2p.style.color = 'var(--cody-green)';
             });
+
+            // Losing the connection to the signaling server would leave your
+            // permanent ID unreachable until a reload, so reconnect quietly.
+            peer.on('disconnected', () => {
+                setTimeout(() => {
+                    if (peer && peer.disconnected && !peer.destroyed) peer.reconnect();
+                }, 1500);
+            });
+
+            peer.on('error', (err) => {
+                if (err.type === 'unavailable-id') {
+                    // The ID is still registered - usually the same page open in
+                    // another tab, or the server hasn't noticed a refresh yet.
+                    try { peer.destroy(); } catch (e) {}
+                    peer = null;
+                    if (peerIdRetries < 3) {
+                        peerIdRetries++;
+                        setTimeout(() => initPeer(false), 2000);
+                    } else {
+                        showToast('Your permanent ID is already in use (another tab open?). Using a temporary ID in this tab.', 'yellow');
+                        initPeer(true);
+                    }
+                } else if (err.type === 'peer-unavailable') {
+                    hideLoadingOverlay();
+                    showToast("Couldn't reach that peer. Are they online with the gallery open?", 'yellow');
+                } else {
+                    console.error('Peer error', err);
+                    showToast('Connection error: ' + (err.type || err));
+                }
+            });
         }
 
+        // --- Invite link ---
+        function getInviteLink() {
+            const id = (peer && peer.id) || p2pMyId.value;
+            const url = new URL(window.location.href);
+            url.search = '';
+            url.hash = '';
+            url.searchParams.set('peer', id);
+            return url.toString();
+        }
+
+        function copyInviteLink() {
+            const id = (peer && peer.id) || p2pMyId.value;
+            if (!id) { showToast('Still connecting to the network. Try again in a second.'); return; }
+            const link = getInviteLink();
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(link).then(
+                    () => showToast('Invite link copied! Send it to a friend.', 'purple'),
+                    () => window.prompt('Copy your invite link:', link)
+                );
+            } else {
+                window.prompt('Copy your invite link:', link);
+            }
+        }
+        document.getElementById('btn-copy-invite').addEventListener('click', copyInviteLink);
+        document.getElementById('btn-copy-invite-modal').addEventListener('click', copyInviteLink);
+
+        document.getElementById('btn-reset-peer-id').addEventListener('click', () => {
+            if (!confirm('Generate a new permanent ID? Invite links you already shared will stop working.')) return;
+            try { localStorage.removeItem('switch_gallery_peer_id'); } catch (e) {}
+            location.reload();
+        });
+
         btnP2p.addEventListener('click', () => {
-            if (!peer) initPeer();
             p2pModal.classList.remove('hidden');
             requestAnimationFrame(() => {
                 p2pModal.classList.remove('opacity-0');
@@ -1939,8 +2052,13 @@
         document.getElementById('btn-connect-p2p').addEventListener('click', () => {
             const targetId = p2pTargetId.value.trim();
             if (!targetId || !peer) return;
-            
             document.getElementById('btn-close-p2p').click();
+            connectToPeerId(targetId);
+        });
+
+        function connectToPeerId(targetId) {
+            if (!targetId || !peer) return;
+
             p2pLoadingText.textContent = "Connecting to peer...";
             p2pLoadingOverlay.classList.remove('hidden');
             requestAnimationFrame(() => p2pLoadingOverlay.classList.remove('opacity-0'));
@@ -1959,7 +2077,7 @@
             });
             
             setTimeout(() => { hideLoadingOverlay(); }, 10000); // 10s timeout
-        });
+        }
 
         function hideLoadingOverlay() {
             p2pLoadingOverlay.classList.add('opacity-0');
@@ -2428,6 +2546,10 @@
             const url = URL.createObjectURL(blob);
             renderLoadedLightbox(mediaObj, url);
         }
+
+        // Come online right away with your permanent ID so friends can reach
+        // you (and so an invite link in the URL can connect on page load).
+        initPeer();
 
     </script>
 </body>
