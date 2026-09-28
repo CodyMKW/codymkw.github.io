@@ -1230,9 +1230,14 @@
                 dateStr = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
             }
             
+            // Some systems report an empty or unusual MIME type for .mp4 files,
+            // which can make the browser refuse to load the blob. Label video
+            // blobs as video/mp4 explicitly (this wraps the file, it doesn't copy it).
+            const blobForUrl = (ext === 'mp4' && file.type !== 'video/mp4') ? new Blob([file], { type: 'video/mp4' }) : file;
+
             return {
                 file: file,
-                url: URL.createObjectURL(file),
+                url: URL.createObjectURL(blobForUrl),
                 type: ext === 'mp4' ? 'video' : 'image',
                 dateStr: dateStr,
                 hash: hash,
@@ -1321,6 +1326,64 @@
             }
         });
 
+        // --- Unplayable video handling ---
+        // Browsers can only decode certain codecs. If a clip fails, peek at the
+        // file's header/footer for its codec tag so we can say what's wrong
+        // instead of leaving a black box.
+        async function detectVideoCodec(blob) {
+            try {
+                const CHUNK = 512 * 1024;
+                const size = blob.size;
+                const parts = [blob.slice(0, Math.min(CHUNK, size))];
+                if (size > CHUNK) parts.push(blob.slice(Math.max(CHUNK, size - CHUNK), size));
+                const decoder = new TextDecoder('latin1');
+                let text = '';
+                for (const part of parts) text += decoder.decode(await part.arrayBuffer()) + '\n';
+                if (/hvc1|hev1/.test(text)) return 'HEVC (H.265)';
+                if (/av01/.test(text)) return 'AV1';
+                if (/vp09/.test(text)) return 'VP9';
+                if (/avc1|avc3/.test(text)) return 'H.264';
+                return null;
+            } catch (e) {
+                return null;
+            }
+        }
+
+        function describeVideoProblem(size, codec) {
+            if (size === 0) return "This file is empty (0 bytes), so the capture may not have finished saving.";
+            if (codec === 'H.264') return "It's H.264, which normally plays fine, so the file may be damaged or unreadable. If you removed the SD card, try loading the folder again.";
+            if (codec) return `This clip uses ${codec}, which this browser can't decode. You can download it and play it in another app (like VLC).`;
+            return "The format isn't recognised, or the file may be damaged.";
+        }
+
+        function showVideoUnsupportedTile(container, videoEl, media) {
+            if (container.dataset.unsupported) return;
+            container.dataset.unsupported = '1';
+            const err = videoEl.error;
+            console.warn('Video failed to load', {
+                name: media.file && media.file.name,
+                type: media.file && media.file.type,
+                size: media.file && media.file.size,
+                errorCode: err && err.code,
+                errorMessage: err && err.message
+            });
+            videoEl.remove();
+            const overlay = container.querySelector('.thumbnail-overlay');
+            if (overlay) overlay.remove();
+
+            const ph = document.createElement('div');
+            ph.style.cssText = 'position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:0.3rem; background:#111; color:var(--switch-muted); font-size:0.7rem; text-align:center; padding:0.5rem;';
+            ph.innerHTML = '<span style="font-size:1.5rem;">🎞️</span><span class="ph-label">Preview unavailable</span>';
+            container.insertBefore(ph, container.firstChild);
+
+            if (media.file) {
+                detectVideoCodec(media.file).then(codec => {
+                    if (codec && media.file.size > 0) ph.querySelector('.ph-label').textContent = `Preview unavailable (${codec})`;
+                    else if (media.file.size === 0) ph.querySelector('.ph-label').textContent = 'Empty file';
+                });
+            }
+        }
+
         function createMediaItem(media, index, globalList) {
             const container = document.createElement('div');
             container.className = 'media-item';
@@ -1338,21 +1401,30 @@
                 }
             } else {
                 if (media.type === 'video') {
-                    container.innerHTML = `
-                        <video 
-                            src="${media.url}#t=0.001" 
-                            preload="metadata" 
-                            muted 
-                            loop 
-                            onmouseover="this.play()" 
-                            onmouseout="this.pause()"
-                        ></video>
-                        <div class="thumbnail-overlay">
-                            <div class="thumbnail-icon-wrapper">
-                                <svg fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                            </div>
+                    const video = document.createElement('video');
+                    video.src = `${media.url}#t=0.001`;
+                    video.preload = 'metadata';
+                    video.muted = true;
+                    video.loop = true;
+                    // play() returns a promise that rejects if the file can't be
+                    // decoded (or the hover is cancelled by a quick pause), so it
+                    // has to be caught or it surfaces as an uncaught error.
+                    video.addEventListener('mouseover', () => {
+                        const p = video.play();
+                        if (p && p.catch) p.catch(() => {});
+                    });
+                    video.addEventListener('mouseout', () => video.pause());
+                    video.addEventListener('error', () => showVideoUnsupportedTile(container, video, media));
+                    container.appendChild(video);
+
+                    const overlay = document.createElement('div');
+                    overlay.className = 'thumbnail-overlay';
+                    overlay.innerHTML = `
+                        <div class="thumbnail-icon-wrapper">
+                            <svg fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                         </div>
                     `;
+                    container.appendChild(overlay);
                 } else {
                     container.innerHTML = `<img src="${media.url}" loading="lazy" alt="Screenshot" />`;
                 }
@@ -1775,7 +1847,7 @@
             const media = activeMediaList[currentLightboxIndex];
             if (!media) return;
             const el = lightboxMediaContainer.querySelector('img, video');
-            const srcUrl = el ? el.src : media.url;
+            const srcUrl = currentLightboxSrcUrl || (el ? el.src : media.url);
             if (!srcUrl) return;
             const ext = media.type === 'video' ? 'mp4' : 'jpg';
             const safeName = gameKey(media.hash).replace(/[^a-z0-9]+/gi, '_');
@@ -1792,6 +1864,7 @@
             if (!media) return;
 
             lightboxMediaContainer.innerHTML = '';
+            currentLightboxSrcUrl = null; // don't let Download grab the previous item while this one loads
 
             const starBtn = document.getElementById('btn-star-media');
             starBtn.style.display = (currentSource === 'remote' && p2pConnection && p2pConnection.open) ? 'flex' : 'none';
@@ -1832,22 +1905,59 @@
             if (barEl) barEl.style.width = percent + '%';
         }
 
+        let currentLightboxSrcUrl = null; // what the lightbox is currently showing (used by Download)
+
         function renderLoadedLightbox(media, srcUrl) {
             lightboxMediaContainer.innerHTML = '';
+            currentLightboxSrcUrl = srcUrl;
             const gameName = gameKey(media.hash);
             lightboxInfo.innerHTML = `<span style="opacity: 0.6; margin-right: 0.5rem;">${media.dateStr}</span> <span style="margin-right:0.5rem;">&bull;</span> <strong style="color: var(--switch-cyan);">${gameName}</strong>`;
             
             if (media.type === 'video') {
                 const video = document.createElement('video');
-                video.src = srcUrl;
                 video.controls = true;
                 video.autoplay = true;
+                video.addEventListener('error', () => showLightboxVideoError(media, srcUrl, video));
+                video.src = srcUrl;
                 lightboxMediaContainer.appendChild(video);
             } else {
                 const img = document.createElement('img');
                 img.src = srcUrl;
                 lightboxMediaContainer.appendChild(img);
             }
+        }
+
+        async function showLightboxVideoError(media, srcUrl, videoEl) {
+            if (currentLightboxSrcUrl !== srcUrl) return; // user already moved on
+            const err = videoEl.error;
+            console.warn('Video failed to play', {
+                name: media.file && media.file.name,
+                type: media.file && media.file.type,
+                size: media.file && media.file.size,
+                errorCode: err && err.code,
+                errorMessage: err && err.message
+            });
+
+            lightboxMediaContainer.innerHTML = `
+                <div style="color: white; text-align: center; max-width: 26rem; line-height: 1.5; padding: 1rem;">
+                    <div style="font-size: 2.5rem;">🎞️</div>
+                    <div style="font-weight: 700; margin: 0.5rem 0;">This video can't be played here</div>
+                    <div id="video-error-detail" style="color: var(--switch-muted); font-size: 0.85rem; margin-bottom: 1rem;">Checking the file…</div>
+                    <button id="btn-video-error-download" class="btn-save" style="padding: 0.5rem 1.25rem;">⬇ Download instead</button>
+                </div>
+            `;
+            document.getElementById('btn-video-error-download').addEventListener('click', () => {
+                document.getElementById('btn-download-media').click();
+            });
+
+            let blob = media.file || null;
+            if (!blob) {
+                try { blob = await (await fetch(srcUrl)).blob(); } catch (e) { /* unreadable */ }
+            }
+            let detail = "The file couldn't be read.";
+            if (blob) detail = describeVideoProblem(blob.size, await detectVideoCodec(blob));
+            const detailEl = document.getElementById('video-error-detail');
+            if (detailEl && currentLightboxSrcUrl === srcUrl) detailEl.textContent = detail;
         }
 
         btnCloseLightbox.addEventListener('click', closeLightbox);
