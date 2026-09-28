@@ -1901,19 +1901,28 @@
             }
         }
 
-        function initPeer() {
-            peer = new Peer();
-            peer.on('open', (id) => {
-                p2pMyId.value = id;
-            });
-            peer.on('connection', (conn) => {
-                p2pConnection = conn;
-                setupConnection(conn);
-                statP2p.textContent = 'Connected (Incoming)';
-                statP2p.style.color = 'var(--cody-green)';
-            });
-        }
+function initPeer() {
+    // 1. Get existing ID or create a new 8-character one
+    let storedPeerId = localStorage.getItem('switchGalleryPeerId');
+    if (!storedPeerId) {
+        storedPeerId = Math.random().toString(36).substring(2, 10);
+        localStorage.setItem('switchGalleryPeerId', storedPeerId);
+    }
 
+    // 2. Pass the saved ID into PeerJS
+    peer = new Peer(storedPeerId);
+
+    peer.on('open', (id) => {
+        p2pMyId.value = id;
+    });
+    peer.on('connection', (conn) => {
+        p2pConnection = conn;
+        setupConnection(conn);
+        statP2p.textContent = 'Connected (Incoming)';
+        statP2p.style.color = 'var(--cody-green)';
+    });
+}
+        
         btnP2p.addEventListener('click', () => {
             if (!peer) initPeer();
             p2pModal.classList.remove('hidden');
@@ -1929,12 +1938,19 @@
             setTimeout(() => p2pModal.classList.add('hidden'), 200);
         });
 
-        document.getElementById('btn-copy-id').addEventListener('click', () => {
-            navigator.clipboard.writeText(p2pMyId.value);
-            const originalText = document.getElementById('btn-copy-id').textContent;
-            document.getElementById('btn-copy-id').textContent = 'Copied!';
-            setTimeout(() => { document.getElementById('btn-copy-id').textContent = originalText; }, 2000);
-        });
+document.getElementById('btn-copy-id').addEventListener('click', () => {
+    // Builds a full URL with ?peer=YOUR_ID on the end
+    const inviteLink = `${window.location.origin}${window.location.pathname}?peer=${peer.id}`;
+    
+    // Copy the link to clipboard
+    navigator.clipboard.writeText(inviteLink).then(() => {
+        const copyBtn = document.getElementById('btn-copy-id');
+        copyBtn.innerText = "Link Copied!";
+        
+        // Reset button text after 2 seconds
+        setTimeout(() => { copyBtn.innerText = "Copy Share Link"; }, 2000);
+    });
+});
 
         document.getElementById('btn-connect-p2p').addEventListener('click', () => {
             const targetId = p2pTargetId.value.trim();
@@ -2428,6 +2444,26 @@
             const url = URL.createObjectURL(blob);
             renderLoadedLightbox(mediaObj, url);
         }
+
+window.addEventListener('DOMContentLoaded', () => {
+    // Look at the address bar for "?peer="
+    const urlParams = new URLSearchParams(window.location.search);
+    const peerInviteId = urlParams.get('peer');
+    
+    // If the link has an ID in it...
+    if (peerInviteId) {
+        // Paste the ID into the target input box
+        document.getElementById('p2p-target-id').value = peerInviteId;
+        
+        // Show the connection modal automatically
+        const p2pModal = document.getElementById('p2p-modal');
+        p2pModal.classList.remove('hidden');
+        setTimeout(() => p2pModal.classList.remove('opacity-0'), 10);
+        
+        // Clean up the URL bar so the "?peer=" text disappears cleanly
+        window.history.replaceState({}, document.title, window.location.pathname);
+    }
+});
 
     </script>
 </body>
