@@ -699,6 +699,7 @@
                 </div>
                 <button id="btn-slideshow" class="btn-icon" title="Start Slideshow">▶</button>
                 <button id="btn-download-media" class="btn-icon" title="Download">⬇</button>
+                <button id="btn-send-to-chat" class="btn-icon" title="Send to Switch Chat" style="color: var(--switch-cyan);">💬</button>
                 <button id="btn-star-media" class="btn-icon btn-star-media" style="display:none;" title="Star this for your peer">⭐</button>
                 <button id="btn-close-lightbox" class="btn-icon">
                     <svg style="width: 1.5rem; height: 1.5rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
@@ -2653,9 +2654,71 @@
             const mediaObj = activeMediaList[currentLightboxIndex];
             if (!mediaObj || (originalIndex !== undefined && mediaObj.originalIndex !== originalIndex)) return;
             const blob = fileBlobOrBuffer instanceof Blob ? fileBlobOrBuffer : new Blob([fileBlobOrBuffer]);
+            mediaObj._loadedBlob = blob; // cached so re-viewing or "Send to Chat" doesn't need to re-download
             const url = URL.createObjectURL(blob);
             renderLoadedLightbox(mediaObj, url);
         }
+
+        // ============================================================
+        // CHAT BRIDGE - hand the currently viewed screenshot/video over to
+        // an open Switch Chat tab via BroadcastChannel. This is a same-
+        // device, same-origin handoff, not a network connection - both
+        // apps just need to be open as tabs from the same site.
+        // ============================================================
+        let chatBridgeAckTimeout = null;
+        try {
+            var chatBridge = new BroadcastChannel('switch-apps-bridge');
+            chatBridge.onmessage = (event) => {
+                if (event.data && event.data.type === 'chat-ack') {
+                    clearTimeout(chatBridgeAckTimeout);
+                    showToast('Sent to Chat! 💬', 'purple');
+                }
+            };
+        } catch (e) {
+            console.warn('BroadcastChannel not available - Chat handoff disabled', e);
+        }
+
+        async function getShareableBlob(media) {
+            if (!media.isRemote) return media.file || null;
+            if (media._loadedBlob) return media._loadedBlob;
+            if (media.type === 'image' && media.thumb) {
+                // No hi-res loaded yet - fall back to the low-res thumbnail
+                // rather than blocking the share entirely.
+                try { return await (await fetch(media.thumb)).blob(); } catch (e) { return null; }
+            }
+            return null;
+        }
+
+        document.getElementById('btn-send-to-chat').addEventListener('click', async () => {
+            if (typeof chatBridge === 'undefined') { showToast("This browser doesn't support the Chat handoff."); return; }
+            const media = activeMediaList[currentLightboxIndex];
+            if (!media) return;
+
+            const blob = await getShareableBlob(media);
+            if (!blob) {
+                showToast(media.type === 'video' ? "Still loading the full video - wait for it to finish, then try again." : "Couldn't read this file.");
+                return;
+            }
+
+            const game = gameKey(media.hash);
+            const ext = media.type === 'video' ? 'mp4' : 'jpg';
+            const safeName = `${game.replace(/[^a-z0-9]+/gi, '_')}_${media.dateStr}.${ext}`;
+
+            chatBridge.postMessage({
+                type: 'gallery-share',
+                id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
+                blob,
+                name: safeName,
+                mime: media.type === 'video' ? 'video/mp4' : 'image/jpeg',
+                game,
+                dateStr: media.dateStr
+            });
+            showToast('Sending to Chat…');
+            clearTimeout(chatBridgeAckTimeout);
+            chatBridgeAckTimeout = setTimeout(() => {
+                showToast('No Chat tab detected — open Switch Chat first.', 'yellow');
+            }, 800);
+        });
 
         // Come online right away with your permanent ID so friends can reach
         // you (and so an invite link in the URL can connect on page load).
