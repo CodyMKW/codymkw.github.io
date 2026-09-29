@@ -247,6 +247,16 @@
         @keyframes typingBounce { 0%, 60%, 100% { transform: translateY(0); opacity: 0.5; } 30% { transform: translateY(-4px); opacity: 1; } }
 
         .composer-area { padding: 1rem 1.5rem 1.25rem; border-top: 1px solid rgba(31,31,31,0.8); flex-shrink: 0; position: relative; }
+        #composer-attachment-preview {
+            display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem 0.75rem; margin-bottom: 0.6rem;
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(77,77,77,0.4); border-radius: 0.6rem;
+        }
+        #composer-attachment-preview img { width: 2.4rem; height: 2.4rem; object-fit: cover; border-radius: 0.4rem; flex-shrink: 0; }
+        #composer-attachment-preview .att-icon { font-size: 1.3rem; flex-shrink: 0; }
+        #composer-attachment-preview button {
+            background: transparent; border: none; color: var(--switch-muted); cursor: pointer; font-size: 0.9rem; padding: 0.2rem; flex-shrink: 0;
+        }
+        #composer-attachment-preview button:hover { color: var(--switch-red); }
         .composer-row { display: flex; align-items: flex-end; gap: 0.6rem; }
         .composer-input {
             flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(77,77,77,0.4); border-radius: 1rem;
@@ -1038,7 +1048,7 @@
             }
             else if (data.type === 'file_start') {
                 incomingFileTransfer = { id: data.id, name: data.name, mime: data.mime, size: data.size, chunks: new Array(data.totalChunks), receivedBytes: 0, contactId: contact.id };
-                thread.push({ id: data.id, mine: false, text: '', ts: data.ts, status: 'delivered', reactions: { mine: [], theirs: [] }, edited: false, deleted: false, attachment: { name: data.name, mime: data.mime, pending: true, progress: 0 } });
+                thread.push({ id: data.id, mine: false, text: data.caption || '', ts: data.ts, status: 'delivered', reactions: { mine: [], theirs: [] }, edited: false, deleted: false, attachment: { name: data.name, mime: data.mime, pending: true, progress: 0 } });
                 if (activeContactId === contact.id) renderMessages();
             }
             else if (data.type === 'file_chunk') {
@@ -1382,8 +1392,51 @@ function buildAttachmentEl(m) {
         const composerInput = document.getElementById('composer-input');
         const btnSend = document.getElementById('btn-send');
 
+        // A staged attachment (from the file picker, a drag-and-drop, or handed
+        // over from the Gallery app) waits here so you can add a caption before
+        // it actually sends, instead of firing the moment it's picked.
+        let pendingAttachment = null; // { file, previewUrl, isImage, sourceLabel }
+
+        function stageAttachment(file, sourceLabel) {
+            if (pendingAttachment && pendingAttachment.previewUrl) URL.revokeObjectURL(pendingAttachment.previewUrl);
+            const isImage = (file.type || '').startsWith('image/');
+            pendingAttachment = { file, previewUrl: URL.createObjectURL(file), isImage, sourceLabel: sourceLabel || null };
+            renderPendingAttachmentPreview();
+            updateSendButtonState();
+            composerInput.focus();
+        }
+
+        function clearPendingAttachment() {
+            if (pendingAttachment && pendingAttachment.previewUrl) URL.revokeObjectURL(pendingAttachment.previewUrl);
+            pendingAttachment = null;
+            renderPendingAttachmentPreview();
+            updateSendButtonState();
+        }
+
+        function renderPendingAttachmentPreview() {
+            let bar = document.getElementById('composer-attachment-preview');
+            if (!pendingAttachment) {
+                if (bar) bar.remove();
+                return;
+            }
+            if (!bar) {
+                bar = document.createElement('div');
+                bar.id = 'composer-attachment-preview';
+                document.querySelector('.composer-area').insertBefore(bar, document.querySelector('.composer-row'));
+            }
+            bar.innerHTML = `
+                ${pendingAttachment.isImage ? `<img src="${pendingAttachment.previewUrl}">` : `<span class="att-icon">📎</span>`}
+                <div style="flex:1; min-width:0;">
+                    <div style="font-size:0.8rem; color:white; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${escapeHtml(pendingAttachment.file.name)}</div>
+                    ${pendingAttachment.sourceLabel ? `<div style="font-size:0.7rem; color:var(--switch-muted);">${escapeHtml(pendingAttachment.sourceLabel)}</div>` : ''}
+                </div>
+                <button id="btn-remove-pending-attachment" title="Remove">✕</button>
+            `;
+            document.getElementById('btn-remove-pending-attachment').addEventListener('click', clearPendingAttachment);
+        }
+
         function updateSendButtonState() {
-            btnSend.disabled = composerInput.value.trim().length === 0;
+            btnSend.disabled = composerInput.value.trim().length === 0 && !pendingAttachment;
         }
         composerInput.addEventListener('input', () => {
             updateSendButtonState();
@@ -1405,8 +1458,21 @@ function buildAttachmentEl(m) {
         });
 
         function sendMessage() {
+            if (!activeContactId) return;
             const text = composerInput.value.trim();
-            if (!text || !activeContactId) return;
+
+            if (pendingAttachment) {
+                const file = pendingAttachment.file;
+                clearPendingAttachment();
+                sendFile(file, text);
+                composerInput.value = '';
+                composerInput.style.height = 'auto';
+                sendToConn({ type: 'typing', isTyping: false });
+                updateSendButtonState();
+                return;
+            }
+
+            if (!text) return;
             const thread = ensureThread(activeContactId);
             const msg = { id: uid(), mine: true, text, ts: Date.now(), status: 'sent', reactions: { mine: [], theirs: [] }, edited: false, deleted: false };
             thread.push(msg);
@@ -1454,14 +1520,12 @@ function buildAttachmentEl(m) {
         // ============================================================
         const attachInput = document.getElementById('attach-input');
         document.getElementById('btn-attach').addEventListener('click', () => attachInput.click());
-        attachInput.addEventListener('change', async (e) => {
+        attachInput.addEventListener('change', (e) => {
             const file = e.target.files[0];
             attachInput.value = '';
-            if (!file || !activeContactId || !(activeConnection && activeConnection.open)) {
-                if (file) showToast("You're not connected to this contact right now.");
-                return;
-            }
-            await sendFile(file);
+            if (!file) return;
+            if (!activeContactId) { showToast('Select a contact first.'); return; }
+            stageAttachment(file);
         });
 
         function waitForBufferedAmountLow(conn, maxBuffered = 1_000_000) {
@@ -1474,12 +1538,13 @@ function buildAttachmentEl(m) {
             });
         }
 
-        async function sendFile(file) {
+        async function sendFile(file, caption) {
+            caption = caption || '';
             const thread = ensureThread(activeContactId);
             const id = uid();
             const localUrl = URL.createObjectURL(file);
             const msg = {
-                id, mine: true, text: '', ts: Date.now(), status: 'sent', reactions: { mine: [], theirs: [] }, edited: false, deleted: false,
+                id, mine: true, text: caption, ts: Date.now(), status: 'sent', reactions: { mine: [], theirs: [] }, edited: false, deleted: false,
                 attachment: { name: file.name, mime: file.type || 'application/octet-stream', url: localUrl, pending: false, progress: 100 }
             };
             thread.push(msg);
@@ -1491,7 +1556,7 @@ function buildAttachmentEl(m) {
             const totalChunks = Math.max(1, Math.ceil(totalSize / FILE_CHUNK_SIZE));
             const conn = activeConnection;
 
-            sendToConn({ type: 'file_start', id, name: file.name, mime: file.type || 'application/octet-stream', size: totalSize, totalChunks, ts: msg.ts });
+            sendToConn({ type: 'file_start', id, name: file.name, mime: file.type || 'application/octet-stream', size: totalSize, totalChunks, ts: msg.ts, caption });
             for (let i = 0; i < totalChunks; i++) {
                 if (!conn.open) return;
                 await waitForBufferedAmountLow(conn);
@@ -1509,9 +1574,34 @@ function buildAttachmentEl(m) {
         messagesAreaEl.addEventListener('drop', (e) => {
             e.preventDefault();
             const file = e.dataTransfer.files[0];
-            if (file && activeContactId && activeConnection && activeConnection.open) sendFile(file);
-            else if (file) showToast("You're not connected to this contact right now.");
+            if (!file) return;
+            if (!activeContactId) { showToast('Select a contact first.'); return; }
+            stageAttachment(file);
         });
+
+        // ============================================================
+        // GALLERY BRIDGE - receive a screenshot handed over from the
+        // Switch Gallery app (same browser, via BroadcastChannel). Not a
+        // real network connection - just a same-device, same-origin handoff.
+        // ============================================================
+        try {
+            const appsBridge = new BroadcastChannel('switch-apps-bridge');
+            appsBridge.onmessage = (event) => {
+                const msg = event.data;
+                if (!msg || msg.type !== 'gallery-share' || !msg.blob) return;
+                appsBridge.postMessage({ type: 'chat-ack', id: msg.id });
+                const file = new File([msg.blob], msg.name || 'screenshot.jpg', { type: msg.mime || 'image/jpeg' });
+                const label = msg.game ? `From Gallery — ${msg.game}${msg.dateStr ? ' · ' + msg.dateStr : ''}` : 'From Gallery';
+                stageAttachment(file, label);
+                if (activeContactId) {
+                    showToast('📷 Screenshot ready — add a note and hit send!', 'purple');
+                } else {
+                    showToast('📷 Received a screenshot — pick a contact to send it to.', 'purple');
+                }
+            };
+        } catch (e) {
+            console.warn('BroadcastChannel not available - Gallery handoff disabled', e);
+        }
 
         // ============================================================
         // SEARCH / EXPORT / CLEAR
