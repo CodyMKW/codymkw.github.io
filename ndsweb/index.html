@@ -1056,19 +1056,19 @@
                                 <ul class="tips-list">
                                     <li>
                                         <span class="tip-dot tip-dot-red"></span>
-                                        <span><strong style="color:#f87171;">Important:</strong> In-game save features (like in-game menus) <strong>will not persist</strong> between sessions. Use the <strong>Save State</strong> option in the EmulatorJS menu — this is saved automatically when you quit.</span>
+                                        <span><strong style="color:#34d399;">Real saves work now:</strong> use the game's own save menu as normal. NDSWeb mirrors the game's save data (<code>.sav</code>) into your browser every few seconds and restores it the next time you launch the game.</span>
                                     </li>
                                     <li>
                                         <span class="tip-dot"></span>
-                                        <span>To export a raw <code>.sav</code> or <code>.srm</code> file, first trigger the game's native save, then use <strong>Export Save</strong> in the EmulatorJS menu to get the latest data.</span>
+                                        <span>Use the <strong>download</strong> / <strong>upload</strong> buttons in the play toolbar to export or import a raw <code>.sav</code> file (handy for moving saves to a real console or another browser).</span>
                                     </li>
                                     <li>
                                         <span class="tip-dot"></span>
-                                        <span>Games with <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:text-bottom;margin:0 2px;" class="accent-text"><path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"/><path d="M7 3v4a1 1 0 0 0 1 1h7"/></svg> have a save state that loads automatically.</span>
+                                        <span>Games with <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:text-bottom;margin:0 2px;" class="accent-text"><path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"/><path d="M7 3v4a1 1 0 0 0 1 1h7"/></svg> have save data stored in your browser. If a game has no in-game save yet but has an old save state, that state is loaded instead.</span>
                                     </li>
                                     <li>
                                         <span class="tip-dot"></span>
-                                        <span>Games launched from your <strong>Library</strong> automatically save and restore state on quit.</span>
+                                        <span>The toolbar <strong>save</strong> / <strong>rewind</strong> buttons make and load a quick save state. States are optional extras; your in-game save is the main one.</span>
                                     </li>
                                     <li>
                                         <span class="tip-dot"></span>
@@ -1121,6 +1121,16 @@
             <button id="btn-save-state" title="Save state now" class="toolbar-icon-btn">
                 <i data-lucide="save"></i>
             </button>
+            <button id="btn-load-state" title="Load saved state" class="toolbar-icon-btn">
+                <i data-lucide="rotate-ccw"></i>
+            </button>
+            <button id="btn-download-sav" title="Download game save (.sav)" class="toolbar-icon-btn">
+                <i data-lucide="download"></i>
+            </button>
+            <button id="btn-upload-sav" title="Import game save (.sav)" class="toolbar-icon-btn">
+                <i data-lucide="upload"></i>
+            </button>
+            <input type="file" id="sav-file-input" accept=".sav,.srm,.dsv,.bin" class="hidden" style="display:none">
             <button id="btn-pin-toolbar" title="Pin toolbar" class="toolbar-icon-btn" onclick="toggleToolbarPin()">
                 <i data-lucide="pin"></i>
             </button>
@@ -1434,6 +1444,11 @@ const getAllSaveKeys = () => new Promise((resolve, reject) => {
 
 const saveGameSave = (name, data) => saveToDB(STORE_SAVES, { name, data, timestamp: Date.now() });
 
+// Real game saves (.sav / SRAM / flash) live under "sav:<rom name>".
+// Quick save states keep the legacy key "<rom name>" so old data still works.
+const SAV_PREFIX = 'sav:';
+const hasAnySave = (keys, romName) => keys.includes(romName) || keys.includes(SAV_PREFIX + romName);
+
 const updateLastPlayed = async (name) => {
     try {
         const rom = await getROM(name);
@@ -1461,22 +1476,224 @@ const clearDB = () => new Promise((resolve, reject) => {
 });
 
 // ─────────────────────────────────────────────────────────────
-// SAVE STATE PERSISTENCE (for toolbar button)
+// SAVE ENGINE
+//  * Game saves (.sav / SRAM / flash) are read from the emulator's virtual
+//    filesystem every few seconds, mirrored into IndexedDB when they change,
+//    flushed when the tab is hidden/closed or you quit, and written back
+//    (then the core is reset so the game re-reads them) on launch.
+//  * Quick save states are separate and optional.
 // ─────────────────────────────────────────────────────────────
-async function triggerManualSave() {
-    if (!_lastSaveData || !_currentGameName) {
-        showToast('No save data yet — play a bit first!', 'warn');
-        return;
-    }
+const SAV_SYNC_MS = 4000;
+let _savTimer    = null;
+let _savHash     = null;
+let _savStarted  = false;
+let _savGame     = null;
+
+function toU8(data) {
+    if (!data) return null;
+    if (data instanceof Uint8Array) return data;
+    if (data instanceof ArrayBuffer) return new Uint8Array(data);
+    if (ArrayBuffer.isView(data)) return new Uint8Array(data.buffer, data.byteOffset, data.byteLength);
+    if (Array.isArray(data)) return new Uint8Array(data);
+    return null;
+}
+
+function hashBytes(u8) {                       // FNV-1a, fast enough for 128 KB
+    let h = 0x811c9dc5;
+    for (let i = 0; i < u8.length; i++) { h ^= u8[i]; h = Math.imul(h, 0x01000193); }
+    return (h >>> 0).toString(16) + ':' + u8.length;
+}
+
+function isBlankSave(u8) {                     // all 0x00 or all 0xFF = untouched
+    if (!u8 || !u8.length) return true;
+    const first = u8[0];
+    if (first !== 0x00 && first !== 0xFF) return false;
+    for (let i = 1; i < u8.length; i++) if (u8[i] !== first) return false;
+    return true;
+}
+
+function getEmu() {
+    const e = window.EJS_emulator;
+    return (e && e.gameManager && e.gameManager.FS) ? e : null;
+}
+
+// Read the live save file out of the emulator (forces the core to flush first)
+function readLiveSave() {
+    const emu = getEmu();
+    if (!emu) return null;
     try {
-        await saveGameSave(_currentGameName, _lastSaveData);
-        showToast('Saved!', 'success');
+        const raw = emu.gameManager.getSaveFile(true);
+        const u8  = toU8(raw);
+        return u8 && u8.length ? new Uint8Array(u8) : null;   // copy: FS buffers get reused
+    } catch(e) { console.warn('readLiveSave failed', e); return null; }
+}
+
+// Write a save file into the emulator and make the game pick it up
+function injectSave(u8, { restart = true } = {}) {
+    const emu = getEmu();
+    if (!emu) return false;
+    try {
+        const gm   = emu.gameManager;
+        const path = gm.getSaveFilePath();
+        const FS   = gm.FS;
+        // make sure the folder exists
+        const parts = path.split('/'); let cur = '';
+        for (let i = 1; i < parts.length - 1; i++) {
+            cur += '/' + parts[i];
+            if (!FS.analyzePath(cur).exists) { try { FS.mkdir(cur); } catch(e) {} }
+        }
+        if (FS.analyzePath(path).exists) FS.unlink(path);
+        FS.writeFile(path, u8);
+        gm.loadSaveFiles();
+        // Most games only read their save at boot, so reset once so it is seen.
+        if (restart) setTimeout(() => { try { gm.restart(); } catch(e) { console.warn(e); } }, 400);
+        return true;
+    } catch(e) { console.warn('injectSave failed', e); return false; }
+}
+
+// Store the live save in IndexedDB if it changed. Returns true if written.
+async function flushSave({ force = false, quiet = true } = {}) {
+    if (!_savGame || !db) return false;
+    const live = readLiveSave();
+    if (!live || isBlankSave(live)) return false;
+    const h = hashBytes(live);
+    if (!force && h === _savHash) return false;
+    try {
+        await saveGameSave(SAV_PREFIX + _savGame, live);
+        _savHash = h;
+        if (!quiet) showToast('Game save stored!', 'success', 1800);
+        return true;
+    } catch(e) {
+        console.error('flushSave failed', e);
+        showToast('Could not store your game save (storage full or blocked?).', 'error');
+        return false;
+    }
+}
+
+// Called once the emulator is running
+async function beginSaveSync(gameName) {
+    if (_savStarted || gameName !== _currentGameName) return;
+    if (!getEmu()) return;
+    _savStarted = true;
+    _savGame    = gameName;
+
+    try {
+        const stored = toU8(await getGameSave(SAV_PREFIX + gameName));
+        if (stored && stored.length && !isBlankSave(stored)) {
+            const live = readLiveSave();
+            if (!live || hashBytes(live) !== hashBytes(stored)) {
+                if (injectSave(stored)) {
+                    showToast('Restored your saved game.', 'success');
+                    _savHash = hashBytes(stored);
+                }
+            } else {
+                _savHash = hashBytes(stored);
+            }
+        } else {
+            // Legacy behaviour: no real save yet, but an old save state exists -> load it.
+            const legacy = toU8(await getGameSave(gameName));
+            if (legacy && legacy.length) {
+                setTimeout(() => {
+                    try { getEmu().gameManager.loadState(legacy); showToast('Loaded your old save state.', 'info'); }
+                    catch(e) { console.warn('legacy state load failed', e); }
+                }, 1500);
+            }
+        }
+    } catch(e) { console.warn('save restore failed', e); }
+
+    clearInterval(_savTimer);
+    _savTimer = setInterval(() => flushSave(), SAV_SYNC_MS);
+}
+
+// Called by EmulatorJS (and by a fallback poller below)
+function onEmulatorStarted(gameName) {
+    // give the core a moment to finish booting before we touch its filesystem
+    setTimeout(() => beginSaveSync(gameName), 1200);
+}
+
+function stopSaveSync() {
+    clearInterval(_savTimer); _savTimer = null;
+    _savStarted = false; _savGame = null; _savHash = null;
+}
+
+// Flush when the tab is hidden or closed (best effort; IndexedDB puts started here usually complete)
+function flushOnLeave() { if (_savGame) flushSave(); }
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') flushOnLeave(); });
+window.addEventListener('pagehide', flushOnLeave);
+window.addEventListener('beforeunload', flushOnLeave);
+
+// ---- toolbar: quick save state --------------------------------------------
+function captureState() {
+    const emu = getEmu();
+    if (!emu) return null;
+    try { return toU8(emu.gameManager.getState()); } catch(e) { console.warn('getState failed', e); return null; }
+}
+
+async function triggerManualSave() {
+    if (!_currentGameName) { showToast('No game running.', 'warn'); return; }
+    // Always store the real game save too, so the button never loses progress.
+    await flushSave({ force: true });
+    let state = captureState();
+    if (!state || !state.length) state = _lastSaveData ? toU8(_lastSaveData) : null;
+    if (!state || !state.length) { showToast('Could not capture a state yet — play a bit first!', 'warn'); return; }
+    try {
+        _lastSaveData = state;
+        await saveGameSave(_currentGameName, state);
+        showToast('State saved!', 'success');
     } catch(e) {
         showToast('Save failed.', 'error');
     }
 }
 
+async function triggerLoadState() {
+    if (!_currentGameName) return;
+    try {
+        const state = toU8(await getGameSave(_currentGameName));
+        if (!state || !state.length) { showToast('No saved state for this game yet.', 'warn'); return; }
+        getEmu().gameManager.loadState(state);
+        showToast('State loaded.', 'success');
+    } catch(e) {
+        console.warn(e);
+        showToast('Could not load the state.', 'error');
+    }
+}
+
+// ---- toolbar: raw .sav export / import --------------------------------------
+async function downloadSav() {
+    if (!_currentGameName) return;
+    let data = readLiveSave();
+    if (!data || isBlankSave(data)) data = toU8(await getGameSave(SAV_PREFIX + _currentGameName));
+    if (!data || !data.length) { showToast('No game save yet — save in the game first.', 'warn'); return; }
+    const blob = new Blob([data], { type: 'application/octet-stream' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href     = url;
+    a.download = _currentGameName.replace(/\.(nds|gba|gb|gbc)$/i, '') + '.sav';
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    showToast('Save downloaded.', 'success');
+}
+
+async function importSavFile(file) {
+    if (!file || !_currentGameName) return;
+    try {
+        const u8 = new Uint8Array(await file.arrayBuffer());
+        if (!u8.length) throw new Error('empty');
+        if (!injectSave(u8)) throw new Error('inject failed');
+        await saveGameSave(SAV_PREFIX + _currentGameName, u8);
+        _savHash = hashBytes(u8);
+        showToast('Save imported — the game is restarting.', 'success');
+    } catch(e) {
+        console.warn(e);
+        showToast('Could not import that save file.', 'error');
+    }
+}
+
 document.getElementById('btn-save-state').addEventListener('click', triggerManualSave);
+document.getElementById('btn-load-state').addEventListener('click', triggerLoadState);
+document.getElementById('btn-download-sav').addEventListener('click', downloadSav);
+document.getElementById('btn-upload-sav').addEventListener('click', () => document.getElementById('sav-file-input').click());
+document.getElementById('sav-file-input').addEventListener('change', e => { importSavFile(e.target.files[0]); e.target.value = ''; });
 
 // ─────────────────────────────────────────────────────────────
 // STORAGE METER
@@ -1618,7 +1835,7 @@ async function applySortAndFilter(overrideQuery) {
         return;
     }
 
-    filtered.forEach(rom => grid.appendChild(createGameCard(rom, saveKeys.includes(rom.name))));
+    filtered.forEach(rom => grid.appendChild(createGameCard(rom, hasAnySave(saveKeys, rom.name))));
     lucide.createIcons({ nodes: [grid] });
 }
 
@@ -1681,7 +1898,7 @@ function createGameCard(rom, hasSave = false) {
         <div class="card-meta">
             <span class="console">${info.consoleName}</span>
             <div class="card-meta-right">
-                ${hasSave ? '<span class="save-icon" title="Save state exists"><i data-lucide="save"></i></span>' : ''}
+                ${hasSave ? '<span class="save-icon" title="Save data exists"><i data-lucide="save"></i></span>' : ''}
                 <span>${rom.size}</span>
             </div>
         </div>
@@ -1793,7 +2010,7 @@ async function renderLibrary() {
             recentGrid.innerHTML = `<div class="empty-state"><div class="empty-state-icon">🎮</div>No games yet. Load a ROM above to start!</div>`;
         } else {
             const recentRoms = [...roms].sort((a, b) => (b.lastPlayed || 0) - (a.lastPlayed || 0)).slice(0, 3);
-            recentRoms.forEach(rom => recentGrid.appendChild(createGameCard(rom, saveKeys.includes(rom.name))));
+            recentRoms.forEach(rom => recentGrid.appendChild(createGameCard(rom, hasAnySave(saveKeys, rom.name))));
         }
 
         // Library grid (re-apply current filter/sort)
@@ -1865,25 +2082,22 @@ function trackURL(url) {
 // QUIT — saves state first, then returns to launcher
 // ─────────────────────────────────────────────────────────────
 async function quitEmulator() {
-    // If we have unsaved state, save it before quitting
-    if (_lastSaveData && _currentGameName) {
-        try {
-            await saveGameSave(_currentGameName, _lastSaveData);
-            showToast('Progress saved!', 'success');
-        } catch(e) { /* non-fatal */ }
-    }
+    // Flush the game's real save first, then wait for IndexedDB before reloading
+    try { await flushSave({ force: true }); } catch(e) { /* non-fatal */ }
+    stopSaveSync();
     revokeAll();
     _currentGameName = null;
     _lastSaveData    = null;
+    await new Promise(r => setTimeout(r, 200));
     window.location.reload();
 }
 
 document.getElementById('btn-quit').addEventListener('click', () => {
     showModal(
         'Quit game',
-        'Your save state will be preserved. Ready to quit?',
+        'Your in-game save is stored automatically. Ready to quit?',
         quitEmulator,
-        'Quit & Save',
+        'Save & Quit',
         'background:#ef4444;'
     );
 });
@@ -1969,45 +2183,32 @@ async function launchEmulator(file, gameName) {
 
     await updateLastPlayed(gameName);
 
-    // Load prior save state
-    try {
-        const existingSave = await getGameSave(gameName);
-        if (existingSave) {
-            window.EJS_loadStateURL = trackURL(URL.createObjectURL(new Blob([existingSave])));
-            progressEl.textContent = '↩ Restoring your save…';
-        } else {
-            delete window.EJS_loadStateURL;
-        }
-    } catch(e) { delete window.EJS_loadStateURL; }
+    // Real saves are restored after the core boots (see beginSaveSync).
+    // Never carry a state URL over from a previous launch.
+    delete window.EJS_loadStateURL;
+    stopSaveSync();
 
-    // FIX: Robust save state handler — EJS emits various event shapes
+    // EJS state-button callback (kept so the in-menu save-state button also stores a state)
     window.EJS_onSaveState = async function(event) {
-        // EJS passes either (data) or an event-like object
-        let saveData = null;
-        if (event instanceof ArrayBuffer || ArrayBuffer.isView(event)) {
-            saveData = event;
-        } else if (event && typeof event === 'object') {
-            saveData = event.state ?? event.data ?? event[0] ?? event[1] ?? null;
-        }
-        if (!saveData) return;
-
-        _lastSaveData = saveData; // cache for manual saves too
-
-        try {
-            await saveGameSave(gameName, saveData);
-            showToast('Progress auto-saved!', 'success', 2000);
-        } catch(err) {
-            showToast('Auto-save failed!', 'error');
-        }
-    };
-
-    // Also capture any load-state events to keep _lastSaveData fresh
-    window.EJS_onLoadState = function(event) {
         let saveData = null;
         if (event instanceof ArrayBuffer || ArrayBuffer.isView(event)) saveData = event;
-        else if (event && typeof event === 'object') saveData = event.state ?? event.data ?? null;
-        if (saveData) _lastSaveData = saveData;
+        else if (event && typeof event === 'object') saveData = event.state ?? event.data ?? event[1] ?? event[0] ?? null;
+        saveData = toU8(saveData);
+        if (!saveData) return;
+        _lastSaveData = saveData;
+        try { await saveGameSave(gameName, saveData); showToast('State saved!', 'success', 2000); }
+        catch(err) { showToast('State save failed!', 'error'); }
     };
+
+    // Menu "Save SAV file" button: still downloads, and also mirrors it
+    window.EJS_onGameStart = function() { onEmulatorStarted(gameName); };
+
+    // Fallback in case EJS_onGameStart never fires in this EmulatorJS build
+    let _tries = 0;
+    const poll = setInterval(() => {
+        if (_savStarted || gameName !== _currentGameName || ++_tries > 120) { clearInterval(poll); return; }
+        if (getEmu()) { clearInterval(poll); onEmulatorStarted(gameName); }
+    }, 1000);
 
     // Animate transition
     const appUI = document.getElementById('app-ui');
@@ -2052,7 +2253,7 @@ async function launchEmulator(file, gameName) {
 // KEYBOARD SHORTCUT: Escape to open quit dialog while playing
 // ─────────────────────────────────────────────────────────────
 document.addEventListener('keydown', e => {
-    if (e.key === 'Escape' && document.getElementById('emulator-wrapper').classList.contains('active')) {
+    if (e.key === 'Escape' && !document.fullscreenElement && document.getElementById('emulator-wrapper').classList.contains('active')) {
         document.getElementById('btn-quit').click();
     }
 });
