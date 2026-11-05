@@ -162,9 +162,9 @@
         <div class="opt-row">
           <label for="quality" class="muted small">Quality</label>
           <select id="quality">
-            <option value="15">Near-lossless (biggest file)</option>
-            <option value="18" selected>High (default)</option>
-            <option value="23">Smaller file</option>
+            <option value="16">Near-lossless (biggest file)</option>
+            <option value="21" selected>Balanced (default)</option>
+            <option value="26">Smaller file</option>
           </select>
           <span class="muted small">The video is re-encoded so the cut lands on the exact frame. Audio is copied untouched.</span>
         </div>
@@ -202,8 +202,7 @@
 
 /* ---------- config ---------- */
 const CDN = {
-  ffmpeg: 'https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.15/dist/umd',
-  core:   'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.10/dist/umd',
+  core: 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.10/dist/umd',
 };
 const MARKER_KEY = 'postparty_clipped';     // the metadata key we write and look for
 const MARKER_COMMENT = 'Clipped in Postparty (outro removed)';
@@ -430,33 +429,89 @@ el.file.addEventListener('change', () => loadFile(el.file.files[0]));
 el.drop.addEventListener('drop', e => loadFile(e.dataTransfer.files[0]));
 
 /* ---------- ffmpeg.wasm ---------- */
+/*
+ * We use only the ffmpeg.wasm *core* (the actual ffmpeg build) and talk to it through a tiny
+ * classic Web Worker created from a blob. This avoids @ffmpeg/ffmpeg's own worker, which can't be
+ * started from a CDN. Single-threaded core: no SharedArrayBuffer / COOP+COEP headers needed.
+ */
 let ffPromise = null, onProgress = null;
-function loadScript(src) {
-  return new Promise((res, rej) => {
-    const s = document.createElement('script');
-    s.src = src; s.onload = res; s.onerror = () => rej(new Error('Could not load ' + src));
-    document.head.appendChild(s);
+const recentLog = [];
+const WORKER_SRC = `
+let core;
+self.onmessage = async ({ data: { id, type, args } }) => {
+  try {
+    let result;
+    if (type === 'load') {
+      importScripts(args.coreURL);
+      core = await self.createFFmpegCore({
+        mainScriptUrlOrBlob: args.coreURL + '#' + btoa(JSON.stringify({ wasmURL: args.wasmURL, workerURL: '' })),
+      });
+      core.setLogger(d => self.postMessage({ type: 'log', data: d }));
+      core.setProgress(d => self.postMessage({ type: 'progress', data: d }));
+    } else if (type === 'writeFile') {
+      core.FS.writeFile(args.path, args.data);
+    } else if (type === 'readFile') {
+      result = core.FS.readFile(args.path, { encoding: args.encoding });
+    } else if (type === 'deleteFile') {
+      core.FS.unlink(args.path);
+    } else if (type === 'exec') {
+      core.setTimeout(-1);
+      core.exec(...args.args);
+      result = core.ret;
+      core.reset();
+    }
+    self.postMessage({ id, result }, result instanceof Uint8Array ? [result.buffer] : []);
+  } catch (e) {
+    self.postMessage({ id, error: String((e && e.message) || e) });
+  }
+};`;
+
+function createRunner() {
+  const worker = new Worker(URL.createObjectURL(new Blob([WORKER_SRC], { type: 'text/javascript' })));
+  const pending = new Map();
+  let nextId = 1;
+  worker.onmessage = ({ data }) => {
+    if (data.type === 'progress') { if (onProgress) onProgress(data.data.progress); return; }
+    if (data.type === 'log') { recentLog.push(data.data.message); if (recentLog.length > 40) recentLog.shift(); return; }
+    const p = pending.get(data.id);
+    if (!p) return;
+    pending.delete(data.id);
+    if (data.error) p.rej(new Error(data.error)); else p.res(data.result);
+  };
+  worker.onerror = e => {
+    for (const p of pending.values()) p.rej(new Error('Encoder worker crashed: ' + (e.message || 'unknown error')));
+    pending.clear();
+  };
+  const call = (type, args, transfer = []) => new Promise((res, rej) => {
+    const id = nextId++;
+    pending.set(id, { res, rej });
+    worker.postMessage({ id, type, args }, transfer);
   });
+  return {
+    load: (coreURL, wasmURL) => call('load', { coreURL, wasmURL }),
+    writeFile: (path, data) => call('writeFile', { path, data }, [data.buffer]),
+    readFile: (path, encoding) => call('readFile', { path, encoding }),
+    deleteFile: path => call('deleteFile', { path }),
+    exec: args => call('exec', { args }),
+  };
 }
+
 function getFFmpeg() {
   if (ffPromise) return ffPromise;
   ffPromise = (async () => {
-    await loadScript(CDN.ffmpeg + '/ffmpeg.js');
-    const { FFmpeg } = FFmpegWASM;
-    // Fetch a CDN file and re-serve it from a same-origin blob: URL (Workers can't be created cross-origin)
+    // Re-serve the CDN files from same-origin blob: URLs so the worker is allowed to load them.
     const toBlobURL = async (url, type) => {
       const r = await fetch(url);
       if (!r.ok) throw new Error(`Could not download ${url} (${r.status})`);
       return URL.createObjectURL(new Blob([await r.arrayBuffer()], { type }));
     };
-    const ff = new FFmpeg();
-    ff.on('progress', ({ progress }) => { if (onProgress) onProgress(progress); });
-    await ff.load({
-      classWorkerURL: await toBlobURL(CDN.ffmpeg + '/814.ffmpeg.js', 'text/javascript'),
-      coreURL: await toBlobURL(CDN.core + '/ffmpeg-core.js', 'text/javascript'),
-      wasmURL: await toBlobURL(CDN.core + '/ffmpeg-core.wasm', 'application/wasm'),
-    });
-    return ff;
+    const [coreURL, wasmURL] = await Promise.all([
+      toBlobURL(CDN.core + '/ffmpeg-core.js', 'text/javascript'),
+      toBlobURL(CDN.core + '/ffmpeg-core.wasm', 'application/wasm'),
+    ]);
+    const runner = createRunner();
+    await runner.load(coreURL, wasmURL);
+    return runner;
   })();
   ffPromise.catch(() => { ffPromise = null; });
   return ffPromise;
