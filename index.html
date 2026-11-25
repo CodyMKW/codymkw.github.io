@@ -1,1020 +1,158 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>CodyMKW // My Hub</title>
-    <style>
-        :root {
-            --bg-main: #060913;
-            --bg-card: rgba(10, 15, 30, 0.75);
-            --bg-card-hover: rgba(16, 24, 48, 0.85);
-            --border-line: rgba(255, 255, 255, 0.05);
-            --text-primary: #f0f4f8;
-            --text-muted: #7e8c9a;
-            --accent-green: #00ff87;
-            --accent-cyan: #60efff;
-            --font-stack: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            --safe-bottom: env(safe-area-inset-bottom, 0px);
-        }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-
-        body {
-            background-color: var(--bg-main);
-            background-image:
-                radial-gradient(circle at 15% 15%, rgba(0, 255, 135, 0.07) 0%, transparent 45%),
-                radial-gradient(circle at 85% 85%, rgba(96, 239, 255, 0.06) 0%, transparent 45%),
-                linear-gradient(to bottom, #060913, #02040a);
-            background-attachment: fixed;
-            color: var(--text-primary);
-            font-family: var(--font-stack);
-            min-height: 100vh;
-            min-height: 100dvh;
-            overflow-x: hidden;
-            padding-bottom: var(--safe-bottom);
-        }
-
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: var(--bg-main); }
-        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--accent-green); }
-
-        /* ── Layout ── */
-        .page-wrap {
-            width: 100%;
-            max-width: 980px;
-            margin: 0 auto;
-            padding: 48px 20px 60px;
-        }
-
-        .dashboard {
-            display: grid;
-            grid-template-columns: 300px 1fr;
-            gap: 24px;
-            align-items: start;
-        }
-
-        /* ── Cards ── */
-        .card {
-            background: var(--bg-card);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-            border: 1px solid var(--border-line);
-            border-radius: 20px;
-            padding: 24px;
-            box-shadow: 0 16px 48px rgba(0,0,0,0.35);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .card::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(255,255,255,0.025) 0%, transparent 60%);
-            pointer-events: none;
-        }
-
-        /* ── Profile panel ── */
-        .profile-panel {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            position: sticky;
-            top: 24px;
-        }
-
-        /* Header card */
-        .identity-card {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
-
-        .profile-avatar {
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            border: 2px solid var(--accent-green);
-            box-shadow: 0 0 20px rgba(0,255,135,0.25);
-            object-fit: cover;
-            flex-shrink: 0;
-        }
-
-        .identity-text { flex: 1; min-width: 0; }
-
-        .identity-text h1 {
-            font-size: 1.7rem;
-            font-weight: 800;
-            letter-spacing: -0.5px;
-            background: linear-gradient(to right, #fff 40%, var(--text-muted));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            line-height: 1.1;
-            white-space: nowrap;
-        }
-
-        .identity-text p {
-            margin-top: 4px;
-            font-size: 0.82rem;
-            color: var(--text-muted);
-            line-height: 1.4;
-        }
-
-        .rank-badge {
-            background: linear-gradient(135deg, rgba(0,255,135,0.1), rgba(96,239,255,0.1));
-            border: 1px solid rgba(0,255,135,0.3);
-            color: var(--accent-green);
-            padding: 5px 12px;
-            border-radius: 12px;
-            font-size: 0.8rem;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            box-shadow: 0 0 16px rgba(0,255,135,0.12);
-            white-space: nowrap;
-            flex-shrink: 0;
-            align-self: flex-start;
-        }
-
-        /* Interest badges */
-        .matrix-tags {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-        }
-
-        .matrix-badge {
-            background: rgba(255,255,255,0.02);
-            border: 1px solid var(--border-line);
-            padding: 10px 12px;
-            border-radius: 12px;
-            font-size: 0.78rem;
-            font-weight: 600;
-            color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: background 0.2s, border-color 0.2s, transform 0.2s;
-        }
-
-        .matrix-badge span { font-size: 1rem; }
-
-        .matrix-badge:hover {
-            background: rgba(255,255,255,0.05);
-            border-color: rgba(255,255,255,0.15);
-            transform: translateY(-2px);
-        }
-
-        /* Widgets card */
-        .widgets-card {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            padding: 16px;
-        }
-
-        .system-widget {
-            background: rgba(0,0,0,0.2);
-            border: 1px solid var(--border-line);
-            border-radius: 12px;
-            padding: 12px 14px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.82rem;
-            gap: 10px;
-        }
-
-        .system-widget.status-widget {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 6px;
-        }
-
-        .widget-label {
-            color: var(--text-muted);
-            display: flex;
-            align-items: center;
-            gap: 7px;
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-            font-weight: 600;
-            font-size: 0.75rem;
-            white-space: nowrap;
-        }
-
-        .widget-value {
-            font-family: monospace;
-            color: var(--accent-cyan);
-            font-weight: 700;
-            font-size: 0.85rem;
-        }
-
-        #cafe-status {
-            font-size: 0.82rem;
-            color: var(--text-primary);
-            line-height: 1.45;
-        }
-
-        /* Buttons */
-        .action-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .btn-prime {
-            background: linear-gradient(90deg, var(--accent-green), var(--accent-cyan));
-            color: #04060c;
-            border: none;
-            border-radius: 12px;
-            padding: 14px;
-            font-weight: 700;
-            font-size: 0.95rem;
-            text-align: center;
-            text-decoration: none;
-            cursor: pointer;
-            display: block;
-            box-shadow: 0 6px 20px rgba(0,255,135,0.2);
-            transition: transform 0.2s, box-shadow 0.2s;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        .btn-prime:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(0,255,135,0.35); }
-        .btn-prime:active { transform: scale(0.97); }
-
-        .btn-sub {
-            background: rgba(255,255,255,0.03);
-            color: var(--text-primary);
-            border: 1px solid var(--border-line);
-            border-radius: 12px;
-            padding: 12px;
-            font-weight: 600;
-            font-size: 0.88rem;
-            text-align: center;
-            cursor: pointer;
-            transition: background 0.2s, border-color 0.2s, color 0.2s;
-            -webkit-tap-highlight-color: transparent;
-            font-family: var(--font-stack);
-        }
-
-        .btn-sub:hover { background: rgba(255,255,255,0.07); border-color: rgba(255,255,255,0.15); }
-        .btn-sub:active { transform: scale(0.97); }
-
-        /* ── Feed panel ── */
-        .telemetry-panel {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .panel-heading {
-            font-size: 0.72rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin: 0 0 4px 2px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .panel-heading::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: var(--border-line);
-        }
-
-        .feed-row {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            background: rgba(5,8,16,0.4);
-            border: 1px solid var(--border-line);
-            padding: 14px 16px;
-            border-radius: 16px;
-            text-decoration: none;
-            color: inherit;
-            opacity: 0;
-            transform: translateY(8px);
-            animation: rowIn 0.35s ease forwards;
-            transition: background 0.22s, border-color 0.22s, transform 0.22s;
-            will-change: transform, opacity;
-            -webkit-tap-highlight-color: transparent;
-            min-height: 56px;
-        }
-
-        .feed-row:hover {
-            background: var(--bg-card-hover);
-            border-color: rgba(255,255,255,0.12);
-            transform: translateX(3px);
-        }
-
-        .feed-row:active { transform: scale(0.985); }
-
-        @keyframes rowIn { to { opacity: 1; transform: translateY(0); } }
-
-        .feed-row:nth-child(1) { animation-delay: 0.04s; }
-        .feed-row:nth-child(2) { animation-delay: 0.08s; }
-        .feed-row:nth-child(3) { animation-delay: 0.12s; }
-        .feed-row:nth-child(4) { animation-delay: 0.16s; }
-        .feed-row:nth-child(5) { animation-delay: 0.20s; }
-        .feed-row:nth-child(6) { animation-delay: 0.24s; }
-
-        .live-active {
-            border-color: rgba(0,255,135,0.28) !important;
-            box-shadow: 0 8px 24px rgba(0,255,135,0.05);
-            background: linear-gradient(90deg, rgba(0,255,135,0.025), rgba(5,8,16,0.4)) !important;
-        }
-
-        .status-node {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--text-muted);
-            flex-shrink: 0;
-        }
-
-        .feed-row.live-active .status-node {
-            background: var(--accent-green);
-            box-shadow: 0 0 10px var(--accent-green);
-            animation: beacon 2s infinite;
-        }
-
-        @keyframes beacon {
-            0%   { transform: scale(1);   opacity: 1; }
-            50%  { transform: scale(1.45); opacity: 0.55; }
-            100% { transform: scale(1);   opacity: 1; }
-        }
-
-        .feed-media {
-            width: 46px;
-            height: 46px;
-            border-radius: 11px;
-            background: #111625;
-            border: 1px solid rgba(255,255,255,0.06);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.35rem;
-            overflow: hidden;
-            flex-shrink: 0;
-            box-shadow: inset 0 2px 6px rgba(0,0,0,0.5);
-            transition: filter 0.3s;
-        }
-
-        .feed-media img { width: 100%; height: 100%; object-fit: cover; }
-        .feed-media.dimmed { filter: grayscale(0.6) brightness(0.45); }
-
-        .feed-content { flex: 1; overflow: hidden; }
-
-        .feed-title {
-            font-weight: 700;
-            color: #fff;
-            font-size: 0.95rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            margin-bottom: 3px;
-            line-height: 1.3;
-        }
-
-        .feed-subtitle {
-            font-size: 0.78rem;
-            color: var(--text-muted);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            line-height: 1.3;
-        }
-
-        .feed-meta {
-            font-family: monospace;
-            font-size: 0.68rem;
-            color: rgba(255,255,255,0.18);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            padding: 3px 7px;
-            background: rgba(0,0,0,0.2);
-            border-radius: 6px;
-            border: 1px solid var(--border-line);
-            flex-shrink: 0;
-        }
-
-        /* ── Sub-Tools Grid Layout Track ── */
-        .tools-heading {
-            margin-top: 24px;
-        }
-
-        .tools-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-            gap: 10px;
-            margin-top: 4px;
-        }
-
-        .tool-card {
-            background: rgba(5,8,16,0.3);
-            border: 1px solid var(--border-line);
-            padding: 12px 14px;
-            border-radius: 14px;
-            text-decoration: none;
-            color: var(--text-muted);
-            font-size: 0.82rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: background 0.2s, border-color 0.2s, color 0.2s, transform 0.2s;
-        }
-
-        .tool-card:hover {
-            background: var(--bg-card-hover);
-            border-color: rgba(255,255,255,0.12);
-            color: #fff;
-            transform: translateY(-1px);
-        }
-
-        /* Shimmer skeleton */
-        @keyframes shimmer {
-            0%   { background-position: -400px 0; }
-            100% { background-position: 400px 0; }
-        }
-
-        .pulse {
-            background: linear-gradient(90deg,
-                rgba(255,255,255,0.04) 25%,
-                rgba(255,255,255,0.09) 50%,
-                rgba(255,255,255,0.04) 75%);
-            background-size: 800px 100%;
-            animation: shimmer 1.6s infinite linear;
-            border-radius: 5px;
-            color: transparent !important;
-            user-select: none;
-            min-width: 100px;
-            display: inline-block;
-        }
-
-        /* ════════════════════════════════════════
-           MOBILE — everything below 640px
-        ════════════════════════════════════════ */
-        @media (max-width: 640px) {
-            body { background-attachment: scroll; }
-
-            .page-wrap {
-                padding: 20px 14px 40px;
-                padding-bottom: calc(40px + var(--safe-bottom));
-            }
-
-            .dashboard {
-                grid-template-columns: 1fr;
-                gap: 0;
-            }
-
-            /* ── Mobile profile header ── */
-            .profile-panel {
-                position: static;
-                gap: 0;
-                margin-bottom: 20px;
-            }
-
-            /* Hero banner style on mobile */
-            .profile-panel > .card:first-child {
-                border-radius: 20px 20px 0 0;
-                border-bottom: none;
-                padding: 20px;
-                background: linear-gradient(135deg, rgba(0,255,135,0.06), rgba(96,239,255,0.04), rgba(10,15,30,0.9));
-            }
-
-            .identity-card {
-                gap: 12px;
-            }
-
-            .profile-avatar {
-                width: 50px;
-                height: 50px;
-            }
-
-            .identity-text h1 { font-size: 1.55rem; }
-            .identity-text p  { font-size: 0.78rem; }
-
-            /* Badges — seamlessly attached to header */
-            .matrix-tags {
-                grid-template-columns: repeat(4, 1fr);
-                gap: 0;
-                border-radius: 0;
-                border-left: 1px solid var(--border-line);
-                border-right: 1px solid var(--border-line);
-                background: rgba(5,8,16,0.6);
-                border-top: 1px solid var(--border-line);
-            }
-
-            .matrix-badge {
-                flex-direction: column;
-                justify-content: center;
-                text-align: center;
-                gap: 4px;
-                padding: 10px 4px;
-                border-radius: 0;
-                border: none;
-                font-size: 0.65rem;
-                background: transparent;
-            }
-
-            .matrix-badge:hover { transform: none; }
-
-            .matrix-badge span { font-size: 1.2rem; }
-
-            /* Widgets — attached below badges */
-            .widgets-card {
-                border-radius: 0;
-                border-top: none;
-                border-bottom: none;
-                padding: 12px;
-                gap: 6px;
-                background: rgba(5,8,16,0.5);
-                border-left: 1px solid var(--border-line);
-                border-right: 1px solid var(--border-line);
-            }
-
-            /* On mobile, show time + ping side by side, status full width */
-            .widgets-inner {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 6px;
-            }
-
-            .status-full { grid-column: 1 / -1; }
-
-            .system-widget {
-                padding: 10px 12px;
-                border-radius: 10px;
-                font-size: 0.78rem;
-            }
-
-            .system-widget.status-widget {
-                gap: 4px;
-            }
-
-            #cafe-status { font-size: 0.78rem; }
-
-            .widget-label { font-size: 0.68rem; }
-            .widget-value { font-size: 0.82rem; }
-
-            /* Buttons — attached at bottom */
-            .action-group {
-                flex-direction: row;
-                gap: 0;
-                border: 1px solid var(--border-line);
-                border-top: none;
-                border-radius: 0 0 20px 20px;
-                overflow: hidden;
-                background: rgba(5,8,16,0.6);
-                padding: 10px;
-                gap: 8px;
-            }
-
-            .btn-prime, .btn-sub {
-                flex: 1;
-                padding: 13px 10px;
-                font-size: 0.85rem;
-                border-radius: 10px;
-            }
-
-            /* ── Feed rows on mobile ── */
-            .telemetry-panel { gap: 10px; }
-
-            .feed-row {
-                padding: 13px 14px;
-                gap: 12px;
-                border-radius: 14px;
-            }
-
-            .feed-media {
-                width: 42px;
-                height: 42px;
-                border-radius: 10px;
-                font-size: 1.2rem;
-            }
-
-            .feed-title   { font-size: 0.9rem; }
-            .feed-subtitle { font-size: 0.75rem; }
-
-            .feed-meta {
-                font-size: 0.62rem;
-                padding: 2px 6px;
-            }
-
-            /* Remove hover slide on touch */
-            .feed-row:hover { transform: none; }
-
-            /* Responsive micro layout overrides for tools */
-            .tools-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        /* Tablet tweak */
-        @media (min-width: 641px) and (max-width: 820px) {
-            .page-wrap { padding: 32px 20px 48px; }
-            .dashboard { grid-template-columns: 1fr; gap: 20px; }
-            .profile-panel { position: static; flex-direction: row; flex-wrap: wrap; gap: 16px; }
-            .profile-panel > .card:first-child { flex: 1 1 100%; }
-            .matrix-tags { flex: 1 1 calc(50% - 8px); }
-            .widgets-card { flex: 1 1 calc(50% - 8px); }
-            .action-group { flex: 1 1 100%; flex-direction: row; }
-            .btn-prime, .btn-sub { flex: 1; }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>CodyMKW // My Hub</title>
+  <meta name="description" content="Cody’s hub: live Switch and 3DS status, what I’m watching and listening to, and every web tool and game I’ve built.">
+  <meta name="theme-color" content="#eceef3" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#14161f" media="(prefers-color-scheme: dark)">
+  <meta property="og:title" content="CodyMKW // My Hub">
+  <meta property="og:description" content="Live Switch and 3DS status plus every web tool and game I’ve built.">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;800&display=swap">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>
+    // Apply a saved theme before first paint to avoid a flash.
+    try { var t = localStorage.getItem('theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+  </script>
 </head>
 <body>
-<div class="page-wrap">
-<div class="dashboard">
+  <a class="skip" href="#shelf">Skip to projects</a>
 
-    <!-- ── Left / Profile panel ── -->
-    <div class="profile-panel">
+  <header class="top">
+    <a class="brand" href="/" aria-label="CodyMKW home">
+      <img src="https://www.gravatar.com/avatar/5127de8a3a295a02ff3fc55bb6b2fabe?s=96" alt="" width="32" height="32">
+      <span>CodyMKW</span>
+    </a>
+    <button class="icon-btn" id="theme-toggle" type="button" aria-pressed="false" aria-label="Dark mode">
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+    </button>
+  </header>
 
-        <!-- Identity -->
-        <div class="card">
-            <div class="identity-card">
-                <img src="https://www.gravatar.com/avatar/5127de8a3a295a02ff3fc55bb6b2fabe?s=2048" alt="CodyMKW Avatar" class="profile-avatar">
-                <div class="identity-text">
-                    <h1>CodyMKW</h1>
-                    <p id="dynamic-greet">Loading things up…</p>
-                </div>
-                <div class="rank-badge" id="level-badge">Lv. --</div>
-            </div>
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <h1>Cody’s corner of the&nbsp;web</h1>
+        <p class="lede" id="greeting">Welcome in.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="https://codymkw.nekoweb.org">Visit my main site</a>
+          <button class="btn" id="copy-link" type="button">Copy link</button>
+        </div>
+      </div>
+      <div class="level" aria-label="Level">
+        <img src="https://www.gravatar.com/avatar/5127de8a3a295a02ff3fc55bb6b2fabe?s=512" alt="Cody’s avatar" width="132" height="132">
+        <span id="level">Lv. --</span>
+      </div>
+    </section>
+
+    <section class="console" aria-labelledby="live-heading">
+      <div class="screen">
+        <div class="statusbar">
+          <h2 id="live-heading">What I’m up to</h2>
+          <div class="statusbar-right">
+            <span class="signal" id="signal" data-level="0" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span id="ping">-- ms</span>
+            <time id="clock">--:--</time>
+          </div>
         </div>
 
-        <!-- Interest badges -->
-        <div class="matrix-tags">
-            <div class="matrix-badge"><span>🐙</span> Splatoon</div>
-            <div class="matrix-badge"><span>🍃</span> Animal Crossing</div>
-            <div class="matrix-badge"><span>💥</span> Ultra Rumble</div>
-            <div class="matrix-badge"><span>🛠️</span> Dev</div>
+        <div class="tiles">
+          <a class="tile tile-wide" data-feed="switch" href="https://github.com/samuelthomas2774/nxapi" target="_blank" rel="noopener noreferrer">
+            <span class="tile-art" aria-hidden="true">🎮</span>
+            <span class="tile-body">
+              <span class="tile-source">Nintendo Switch</span>
+              <span class="tile-title skeleton">Checking Switch…</span>
+              <span class="tile-sub">Am I playing right now?</span>
+            </span>
+            <span class="tile-state" aria-live="polite"></span>
+          </a>
+
+          <a class="tile" data-feed="ds" href="https://3dsrpc.com" target="_blank" rel="noopener noreferrer">
+            <span class="tile-art" aria-hidden="true">🕹️</span>
+            <span class="tile-body">
+              <span class="tile-source">Nintendo 3DS</span>
+              <span class="tile-title skeleton">Checking 3DS…</span>
+              <span class="tile-sub">Is my handheld on?</span>
+            </span>
+            <span class="tile-state" aria-live="polite"></span>
+          </a>
+
+          <a class="tile" data-feed="github" href="https://github.com/CodyMKW" target="_blank" rel="noopener noreferrer">
+            <span class="tile-art" aria-hidden="true">🐙</span>
+            <span class="tile-body">
+              <span class="tile-source">GitHub</span>
+              <span class="tile-title skeleton">Checking GitHub…</span>
+              <span class="tile-sub">Finding my last commit</span>
+            </span>
+            <span class="tile-state"></span>
+          </a>
+
+          <a class="tile" data-feed="anime" href="https://myanimelist.net/profile/CodyMKW" target="_blank" rel="noopener noreferrer">
+            <span class="tile-art" aria-hidden="true">📺</span>
+            <span class="tile-body">
+              <span class="tile-source">MyAnimeList</span>
+              <span class="tile-title skeleton">Checking MyAnimeList…</span>
+              <span class="tile-sub">Finding my last episode</span>
+            </span>
+            <span class="tile-state" aria-live="polite"></span>
+          </a>
+
+          <a class="tile" data-feed="music" href="https://www.last.fm/user/CodyMKW" target="_blank" rel="noopener noreferrer">
+            <span class="tile-art" aria-hidden="true">🎵</span>
+            <span class="tile-body">
+              <span class="tile-source">Last.fm</span>
+              <span class="tile-title skeleton">Checking Last.fm…</span>
+              <span class="tile-sub">Finding my last song</span>
+            </span>
+            <span class="tile-state"></span>
+          </a>
+
+          <a class="tile tile-wide" data-feed="rumble" href="https://ultrarumble.com" target="_blank" rel="noopener noreferrer">
+            <span class="tile-art" aria-hidden="true">💥</span>
+            <span class="tile-body">
+              <span class="tile-source">Ultra Rumble</span>
+              <span class="tile-title skeleton">Checking active maps…</span>
+              <span class="tile-sub">Looking up the rotation</span>
+            </span>
+            <span class="tile-state"></span>
+          </a>
+
+          <a class="tile" data-feed="status" href="https://status.cafe/codymkw" target="_blank" rel="noopener noreferrer">
+            <span class="tile-art" aria-hidden="true">☕</span>
+            <span class="tile-body">
+              <span class="tile-source">Status</span>
+              <span class="tile-title skeleton">Loading status…</span>
+              <span class="tile-sub">status.cafe</span>
+            </span>
+            <span class="tile-state"></span>
+          </a>
         </div>
+      </div>
+    </section>
 
-        <!-- Widgets -->
-        <div class="card widgets-card">
-            <div class="widgets-inner">
-                <div class="system-widget status-widget status-full">
-                    <div class="widget-label">💬 Status</div>
-                    <div id="cafe-status">Loading status…</div>
-                </div>
-                <div class="system-widget">
-                    <div class="widget-label">🕒 Time</div>
-                    <div class="widget-value" id="runtime-clock">12:00 AM</div>
-                </div>
-                <div class="system-widget">
-                    <div class="widget-label">📡 Ping</div>
-                    <div class="widget-value" id="ping-tracker">-- ms</div>
-                </div>
-            </div>
-        </div>
+    <section class="projects" aria-labelledby="projects-heading">
+      <div class="projects-head">
+        <h2 id="projects-heading">Things I’ve built</h2>
+        <label class="search">
+          <span class="visually-hidden">Search projects</span>
+          <input id="search" type="search" placeholder="Search projects (press /)" autocomplete="off">
+        </label>
+      </div>
+      <div class="chips" id="chips" role="group" aria-label="Filter by category"></div>
+      <div class="shelf" id="shelf"></div>
+      <p class="empty" id="empty" hidden>Nothing matches that search. Try a different word or clear the filter.</p>
+    </section>
+  </main>
 
-        <!-- Actions -->
-        <div class="action-group">
-            <a href="https://codymkw.nekoweb.org" class="btn-prime">Visit My Main Site</a>
-            <button class="btn-sub" id="share-hub-btn">Copy Link</button>
-        </div>
+  <footer class="foot">
+    <p>Built by hand with plain HTML, CSS, and JavaScript. No build step.</p>
+    <p><a href="https://github.com/CodyMKW/codymkw.github.io">Source on GitHub</a></p>
+  </footer>
 
-    </div>
-
-    <!-- ── Right / Feed panel ── -->
-    <div class="telemetry-panel">
-        <div class="panel-heading">What I'm up to lately</div>
-
-        <a href="https://github.com/CodyMKW" target="_blank" rel="noopener noreferrer" class="feed-row" id="gh-container">
-            <div class="feed-media">🐙</div>
-            <div class="feed-content">
-                <div class="feed-title pulse" id="gh-title">Checking GitHub…</div>
-                <div class="feed-subtitle" id="gh-sub">Finding my last commit</div>
-            </div>
-            <div class="feed-meta">Code</div>
-        </a>
-
-        <a href="https://github.com/samuelthomas2774/nxapi" target="_blank" rel="noopener noreferrer" class="feed-row" id="switch-container">
-            <div class="feed-media" id="switch-icon">🎮</div>
-            <div class="feed-content">
-                <div class="feed-title pulse" id="switch-title">Checking Switch…</div>
-                <div class="feed-subtitle" id="switch-sub">Am I playing right now?</div>
-            </div>
-            <div class="status-node"></div>
-        </a>
-
-        <a href="https://3dsrpc.com" target="_blank" rel="noopener noreferrer" class="feed-row" id="rpc-container">
-            <div class="feed-media" id="rpc-icon">🎮</div>
-            <div class="feed-content">
-                <div class="feed-title pulse" id="rpc-title">Checking 3DS…</div>
-                <div class="feed-subtitle" id="rpc-sub">Seeing if my handheld is on</div>
-            </div>
-            <div class="status-node"></div>
-        </a>
-
-        <a href="https://myanimelist.net/profile/CodyMKW" target="_blank" rel="noopener noreferrer" class="feed-row" id="al-container">
-            <div class="feed-media" id="al-icon">📺</div>
-            <div class="feed-content">
-                <div class="feed-title pulse" id="al-title">Checking MyAnimeList…</div>
-                <div class="feed-subtitle" id="al-sub">Finding my last watched episode</div>
-            </div>
-            <div class="feed-meta">Anime</div>
-        </a>
-
-        <a href="https://www.last.fm/user/CodyMKW" target="_blank" rel="noopener noreferrer" class="feed-row" id="lfm-container">
-            <div class="feed-media" id="lfm-icon">🎵</div>
-            <div class="feed-content">
-                <div class="feed-title pulse" id="lfm-title">Checking Last.fm…</div>
-                <div class="feed-subtitle" id="lfm-sub">Finding what I last listened to</div>
-            </div>
-            <div class="feed-meta">Music</div>
-        </a>
-
-        <a href="https://ultrarumble.com" target="_blank" rel="noopener noreferrer" class="feed-row" id="ur-container">
-            <div class="feed-media" id="ur-icon">💥</div>
-            <div class="feed-content">
-                <div class="feed-title pulse" id="ur-title">Checking active maps…</div>
-                <div class="feed-subtitle" id="ur-sub">Looking up game rotation info</div>
-            </div>
-            <div class="feed-meta">Ultra Rumble</div>
-        </a>
-
-        <!-- Secondary Internal Web Tools Anchor Track -->
-        <div class="panel-heading tools-heading">Web Tools</div>
-        <div class="tools-grid">
-            <a href="/anime-guess" class="tool-card">Anime Guess</a>
-            <a href="/bmp-converter" class="tool-card">BMP Converter</a>
-            <a href="/switch-intro-merger" class="tool-card">Switch Merger</a>
-            <a href="/clip-studio" class="tool-card">Clip Studio</a>
-            <a href="/frame-studio" class="tool-card">Frame Studio</a>
-            <a href="/mhur-main" class="tool-card">MHUR Main</a>
-            <a href="/poke-a-joseph" class="tool-card">Poke-A-Joseph</a>
-            <a href="/town-ledger" class="tool-card">Town Ledger</a>
-            <a href="/ndsweb" class="tool-card">NDSWeb</a>
-            <a href="/nincfg-editor" class="tool-card">Nincfg Editor</a>
-            <a href="/blog-studio" class="tool-card">Blog Studio</a>
-            <a href="/bootscreenNintendo" class="tool-card">bootscreenNintendo</a>
-            <a href="/visual-noval" class="tool-card">Vusual Noval</a>
-            <a href="/visual-noval/sequel" class="tool-card">Vusual Noval Sequel</a>
-            <a href="/visual-noval/final" class="tool-card">Vusual Noval Final</a>
-            <a href="/battle-royale" class="tool-card">Battle Royale</a>
-            <a href="/tag-bundles" class="tool-card">Tag Bundles</a>
-            <a href="/3dsMediaManager" class="tool-card">3ds Media Manager</a>
-        </div>
-    </div>
-
-</div>
-</div>
-
-<script>
-// ─── Core: time, greeting, level ─────────────────────────────────────────────
-(function () {
-    const birthday = new Date('1991-01-17T00:00:00');
-    const today = new Date();
-    let age = today.getFullYear() - birthday.getFullYear();
-    const m = today.getMonth() - birthday.getMonth();
-    if (m < 0 || (m === 0 && today.getDate() < birthday.getDate())) age--;
-    document.getElementById('level-badge').innerText = `Lv. ${age}`;
-
-    const hrs = today.getHours();
-    let greeting = "Welcome to my little corner of the web.";
-    if (hrs < 12)      greeting = "Good morning! Hope your day's off to a great start.";
-    else if (hrs < 18) greeting = "Good afternoon! Thanks for stopping by.";
-    else               greeting = "Good evening! Hope you're having a chill night.";
-    document.getElementById('dynamic-greet').innerText = greeting;
-
-    function tickClock() {
-        const n = new Date();
-        let h = n.getHours(), min = n.getMinutes();
-        const ampm = h >= 12 ? 'PM' : 'AM';
-        h = h % 12 || 12;
-        document.getElementById('runtime-clock').innerText = h + ':' + String(min).padStart(2, '0') + ' ' + ampm;
-    }
-    tickClock();
-    setInterval(tickClock, 1000);
-})();
-
-// ─── Ping ─────────────────────────────────────────────────────────────────────
-(function () {
-    function probe() {
-        const t0 = performance.now();
-        fetch('https://www.gravatar.com/avatar/5127de8a3a295a02ff3fc55bb6b2fabe?s=1', { cache: 'no-store', mode: 'no-cors' })
-            .then(() => { document.getElementById('ping-tracker').innerText = Math.round(performance.now() - t0) + ' ms'; })
-            .catch(() => { document.getElementById('ping-tracker').innerText = '-- ms'; });
-    }
-    probe();
-    setInterval(probe, 8000);
-})();
-
-// ─── Copy link ────────────────────────────────────────────────────────────────
-document.getElementById('share-hub-btn').addEventListener('click', function () {
-    const btn = this;
-    const done = () => {
-        btn.innerText = "Copied!";
-        btn.style.color = "var(--accent-green)";
-        setTimeout(() => { btn.innerText = "Copy Link"; btn.style.color = ""; }, 2000);
-    };
-    if (navigator.clipboard) {
-        navigator.clipboard.writeText(window.location.href).then(done).catch(done);
-    } else {
-        const ta = document.createElement('textarea');
-        ta.value = window.location.href;
-        document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove();
-        done();
-    }
-});
-
-// ─── GitHub ───────────────────────────────────────────────────────────────────
-fetch('https://api.github.com/users/CodyMKW/events/public')
-    .then(r => r.json())
-    .then(data => {
-        const latest = data?.[0];
-        if (!latest) throw new Error();
-        const typeMap = { PushEvent: 'Pushed to', WatchEvent: 'Starred', CreateEvent: 'Created', ForkEvent: 'Forked' };
-        document.getElementById('gh-title').innerText = latest.repo.name;
-        document.getElementById('gh-title').classList.remove('pulse');
-        document.getElementById('gh-sub').innerText = (typeMap[latest.type] || 'Active in') + ' this repository';
-        document.getElementById('gh-container').href = `https://github.com/${latest.repo.name}`;
-    })
-    .catch(() => {
-        document.getElementById('gh-title').innerText = "My GitHub Profile";
-        document.getElementById('gh-title').classList.remove('pulse');
-        document.getElementById('gh-sub').innerText = "Check out what I'm working on";
-    });
-
-// ─── Nintendo Switch ──────────────────────────────────────────────────────────
-fetch('https://nxapi-presence.fancy.org.uk/api/presence/644cd5195d154bd5?include-splatoon3=1')
-    .then(r => r.json())
-    .then(data => {
-        if (!data?.friend) throw new Error();
-        const f = data.friend, p = f.presence;
-        const iconEl = document.getElementById('switch-icon');
-        const titleEl = document.getElementById('switch-title');
-        const subEl = document.getElementById('switch-sub');
-        const containerEl = document.getElementById('switch-container');
-        let imgUrl = f.imageUri;
-
-        if (p?.state === 'ONLINE' && p.game) {
-            titleEl.innerText = p.game.name || "Playing something on Switch";
-            if (p.game.imageUri) imgUrl = p.game.imageUri;
-            const hours = Math.floor((p.game.totalPlayTime || 0) / 60);
-            subEl.innerText = `Online now • ${hours.toLocaleString()}+ hrs played`;
-            containerEl.classList.add('live-active');
-        } else {
-            titleEl.innerText = "Currently Offline";
-            subEl.innerText = "Not on the Switch right now";
-            iconEl.classList.add('dimmed');
-        }
-        if (imgUrl) iconEl.innerHTML = `<img src="${imgUrl}" alt="">`;
-        titleEl.classList.remove('pulse');
-    })
-    .catch(() => {
-        document.getElementById('switch-title').innerText = "Switch status unavailable";
-        document.getElementById('switch-title').classList.remove('pulse');
-        document.getElementById('switch-sub').innerText = "Couldn't connect to the API";
-    });
-
-// ─── Nintendo 3DS ─────────────────────────────────────────────────────────────
-fetch('https://3dsrpc.codymkw.workers.dev/?fc=3189-0001-4178&network=pretendo')
-    .then(r => r.json())
-    .then(data => {
-        if (!data) throw new Error();
-        const iconEl = document.getElementById('rpc-icon');
-        const titleEl = document.getElementById('rpc-title');
-        const subEl = document.getElementById('rpc-sub');
-        const containerEl = document.getElementById('rpc-container');
-        const imgUrl = data.isOnline && data.currentGameImage ? data.currentGameImage : data.miiImage;
-
-        if (imgUrl) iconEl.innerHTML = `<img src="${imgUrl}" alt="">`;
-
-        if (data.isOnline) {
-            titleEl.innerText = data.currentGame || "Playing on 3DS";
-            subEl.innerText = data.currentGameActivity || "Online right now!";
-            containerEl.classList.add('live-active');
-        } else {
-            titleEl.innerText = data.statusMessage || "Currently Offline";
-            subEl.innerText = data.favoriteGame ? `Favorite: ${data.favoriteGame}` : "3DS is turned off";
-            iconEl.classList.add('dimmed');
-        }
-        titleEl.classList.remove('pulse');
-        containerEl.href = data.profileUrl || 'https://3dsrpc.com';
-    })
-    .catch(() => {
-        document.getElementById('rpc-title').innerText = "3DS status unavailable";
-        document.getElementById('rpc-title').classList.remove('pulse');
-        document.getElementById('rpc-sub').innerText = "Couldn't connect to the API";
-    });
-
-// ─── MyAnimeList ──────────────────────────────────────────────────────────────
-fetch('https://mal.codymkw.workers.dev/v2/users/CodyMKW/animelist?sort=list_updated_at&limit=1&fields=list_status,alternative_titles')
-    .then(r => r.json())
-    .then(data => {
-        const item = data?.data?.[0];
-        if (!item) throw new Error();
-
-        const node = item.node;
-        const status = item.list_status;
-        const title = node.alternative_titles?.en || node.title;
-
-        const statusMap = {
-            watching: 'Watching right now',
-            completed: 'Finished watching',
-            on_hold: 'On hold',
-            dropped: 'Dropped',
-            plan_to_watch: 'Planning to watch'
-        };
-
-        let sub = statusMap[status.status] || status.status;
-
-        if (status.is_rewatching) {
-            sub += ' • Rewatching';
-        }
-
-        if (status.num_episodes_watched > 0) {
-            sub += ` • Ep ${status.num_episodes_watched}`;
-        }
-
-        if (node.main_picture?.large || node.main_picture?.medium) {
-            document.getElementById('al-icon').innerHTML = `<img src="${node.main_picture.large || node.main_picture.medium}" alt="">`;
-        }
-
-        document.getElementById('al-title').innerText = title;
-        document.getElementById('al-title').classList.remove('pulse');
-        document.getElementById('al-sub').innerText = sub;
-        document.getElementById('al-container').href = `https://myanimelist.net/anime/${node.id}`;
-
-        if (status.status === 'watching') {
-            document.getElementById('al-container').classList.add('live-active');
-        }
-    })
-    .catch(() => {
-        document.getElementById('al-title').innerText = "MyAnimeList Profile";
-        document.getElementById('al-title').classList.remove('pulse');
-        document.getElementById('al-sub').innerText = "Check out my watch list";
-    });
-
-// ─── Last.fm ──────────────────────────────────────────────────────────────────
-fetch('https://lastfm-last-played.biancarosa.com.br/CodyMKW/latest-song')
-    .then(r => r.json())
-    .then(data => {
-        const track = data?.track;
-        if (!track) throw new Error();
-        const art = track.image?.find(i => i.size === 'extralarge')?.['#text'] || track.image?.find(i => i.size === 'large')?.['#text'];
-        const artist = track.artist?.['#text'];
-        const album = track.album?.['#text'];
-
-        if (art) document.getElementById('lfm-icon').innerHTML = `<img src="${art}" alt="">`;
-        document.getElementById('lfm-title').innerText = `${track.name} — ${artist}`;
-        document.getElementById('lfm-title').classList.remove('pulse');
-        document.getElementById('lfm-sub').innerText = `Last listened • ${album || artist}`;
-        document.getElementById('lfm-container').href = track.url || 'https://www.last.fm/user/CodyMKW';
-    })
-    .catch(() => {
-        document.getElementById('lfm-title').innerText = "My Last.fm Profile";
-        document.getElementById('lfm-title').classList.remove('pulse');
-        document.getElementById('lfm-sub').innerText = "See what I've been listening to";
-    });
-
-// ─── Ultra Rumble ─────────────────────────────────────────────────────────────
-fetch('https://ultrarumble-api.codymkw.workers.dev')
-    .then(r => r.json())
-    .then(data => {
-        if (!data?.maps) throw new Error();
-        const ranked = data.maps.find(m => m.mode === 'Ranked Match') || data.maps[0];
-        const casual = data.maps.find(m => m.mode === 'Standard Match' || m.mode === 'Casual Match');
-        const season = data.season?.name || 'Active Season';
-
-        if (ranked.image) document.getElementById('ur-icon').innerHTML = `<img src="${ranked.image}" alt="">`;
-        document.getElementById('ur-title').innerText = (casual && casual.map !== ranked.map)
-            ? `Ranked: ${ranked.map} | Casual: ${casual.map}` : ranked.map;
-        document.getElementById('ur-title').classList.remove('pulse');
-
-        let sub = season;
-        if (data.timeLeft || data.rotation_left) sub += ` • ${data.timeLeft || data.rotation_left} left`;
-        else if (data.event) sub += ` • Event: ${data.event.name || data.event}`;
-        else sub += ` • Rotation live`;
-        document.getElementById('ur-sub').innerText = sub;
-    })
-    .catch(() => {
-        document.getElementById('ur-title').innerText = "Ultra Rumble Maps";
-        document.getElementById('ur-title').classList.remove('pulse');
-        document.getElementById('ur-sub').innerText = "Couldn't grab the map data right now";
-    });
-
-// ─── status.cafe ──────────────────────────────────────────────────────────────
-fetch('https://status.cafe/users/codymkw/status.json')
-    .then(r => r.json())
-    .then(data => {
-        if (!data?.content) throw new Error();
-        const face = data.face ? data.face + ' ' : '';
-        const time = data.timeAgo ? ` <span style="opacity:0.45;font-size:0.75rem;">${data.timeAgo}</span>` : '';
-        document.getElementById('cafe-status').innerHTML = face + data.content + time;
-    })
-    .catch(() => {
-        document.getElementById('cafe-status').innerText = 'No status set.';
-    });
-</script>
+  <script type="module" src="/assets/js/main.js"></script>
 </body>
 </html>
