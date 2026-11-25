@@ -24,7 +24,7 @@ export const LINKS = {
   anime: 'https://myanimelist.net/profile/CodyMKW',
   music: 'https://www.last.fm/user/CodyMKW',
   rumble: 'https://ultrarumble.com',
-  status: 'https://status.cafe/codymkw',
+  status: 'https://status.cafe/users/codymkw',
 };
 
 // Used to measure "ping" — a tiny image request.
