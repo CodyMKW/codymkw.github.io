@@ -32,14 +32,12 @@ export const PROJECTS = [
   // Games
   { name: 'Anime Guess', path: '/anime-guess/', icon: '🎌', cat: 'games', desc: 'Guess the anime from the clues.' },
   { name: 'Poke-A-Joseph', path: '/poke-a-joseph/', icon: '👉', cat: 'games', desc: 'Poke Joseph, Cody, and Falcon.' },
-  { name: 'Last Squad Standing', path: '/battle-royale/', icon: '🏝️', cat: 'games', desc: 'A Spring Hours battle royale.' },
+  { name: 'Blossom Drop', path: '/Our-Spring-Hours-Definitive-Edition/blossom', icon: '🌸', cat: 'games', desc: 'A Suika-style merge game set in the Spring Hours world.' },
   { name: 'MHUR Main', path: '/mhur-main/', icon: '💥', cat: 'games', desc: 'Ultra Rumble character profile.' },
   { name: 'Trade Pile', path: '/game-trade-club/', icon: '🎲', cat: 'games', desc: 'Swap games with a friend.', hidden: true },
   { name: 'Kira’s Judgement', path: '/deathnote/', icon: '📓', cat: 'games', desc: 'A Death Note game.', hidden: true },
   { name: 'Codyverse Plaza', path: '/codyverse/', icon: '🌐', cat: 'games', desc: 'Community plaza archive.', hidden: true },
 
   // Stories
-  { name: 'Our Spring Hours', path: '/visual-noval/', icon: '🌸', cat: 'stories', desc: 'Part one of the visual novel trilogy.' },
-  { name: 'Ashfall', path: '/visual-noval/sequel/', icon: '🔥', cat: 'stories', desc: 'Part two.' },
-  { name: 'Last Light', path: '/visual-noval/final/', icon: '🌅', cat: 'stories', desc: 'Part three, the finale.' },
+  { name: 'Our Spring Hours: Definitive Edition', path: '/Our-Spring-Hours-Definitive-Edition/', icon: '🌅', cat: 'stories', desc: 'The complete visual novel trilogy in one place.' },
 ];

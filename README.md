@@ -37,7 +37,7 @@ My hub: one page that shows what I'm playing, watching, listening to, and coding
 └── <project folders>/    Each tool or game is a self-contained folder with its own index.html
 ```
 
-The project folders (`town-ledger/`, `clip-studio/`, `visual-noval/`, and so on) stay at the repo root on purpose. Their paths are public URLs, and several of them link back to `/`.
+The project folders (`town-ledger/`, `clip-studio/`, `frame-studio/`, and so on) stay at the repo root on purpose. Their paths are public URLs, and several of them link back to `/`.
 
 ## Where the data comes from
 
