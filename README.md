@@ -1,50 +1,76 @@
 # codymkw.github.io
 
-My personal little corner of the internet — a single-page dashboard that pulls together what I'm currently playing, watching, listening to, and coding into one page. No frameworks, no build step, no backend beyond a couple of tiny Cloudflare Workers. Just one HTML file doing its thing.
+My hub: one page that shows what I'm playing, watching, listening to, and coding right now, plus a shelf of every web tool and game I've built. Plain HTML, CSS, and JavaScript. No framework, no build step.
 
-## What is this exactly
+**Live:** https://codymkw.github.io
 
-Basically I got tired of having my "presence" scattered across GitHub, Switch, 3DS, MyAnimeList, Last.fm, and Ultra Rumble with no single place to actually show any of it off. So this page just fetches from all of those on load and lays it out like a little live status board. If you land on it, you can see in about two seconds whether I'm currently playing something, what I last watched, what's stuck in my head music-wise, and what I've been coding lately.
+## What's on the page
 
-Everything is client-side — the page hits each API directly in the browser, no server rendering, no database, nothing to maintain besides the two Workers that proxy the 3DS and Ultra Rumble stuff (since those don't have public browser-friendly APIs on their own).
+- **A console screen of live status.** Each tile pulls from a real source and glows green with a "Live" badge when it's happening right now.
+  - Nintendo Switch presence (game, hours played)
+  - Nintendo 3DS presence via friend code
+  - Latest GitHub activity
+  - Latest anime on MyAnimeList
+  - Last song on Last.fm
+  - Ultra Rumble map rotation and season
+  - My status.cafe status
+- **A status bar** with your local time and a ping reading measured from your browser.
+- **A project shelf** with category filters and search (press `/` to jump to the search box).
+- **Light and dark themes.** It follows your system and remembers the toggle.
+- If a source is down, its tile falls back to a plain link instead of breaking.
 
-## What's actually on it
+## Repo layout
 
-- **A profile card** with an auto-calculated age (does the math off my real birthday so I never have to remember to update it) and a greeting that changes depending on what time it is for whoever's visiting
-- **A "what I'm up to" feed** that live-pulls:
-  - My latest GitHub activity (commit, repo, what kind of action it was)
-  - Whether I'm online on Switch right now, and what I'm playing
-  - Same deal but for 3DS, via a friend-code lookup
-  - My most recently watched anime on MyAnimeList
-  - Whatever I last had playing on Last.fm
-  - Current Ultra Rumble map rotation and season info
-  - A little status.cafe blurb if I've set one
-- **Green glow + pulsing dot** on the Switch/3DS cards specifically when I'm actually online right now, so you can tell "live" apart from "last seen"
-- **Shimmer/skeleton loading** on every row while it's fetching, so it doesn't just look broken for a second
-- **A grid of links** to a bunch of the other random web tools and projects I've built (converters, editors, little games, whatever)
-- Everything fails gracefully — if any one API is down or rate-limited, that row just falls back to a generic "check out my profile" link instead of looking broken
+```
+.
+├── index.html            The hub page
+├── 404.html              Not-found page
+├── assets/
+│   ├── css/style.css     All hub styles and design tokens
+│   ├── js/
+│   │   ├── config.js     Usernames, friend codes, endpoints (edit this to make it yours)
+│   │   ├── feeds.js      One loader per live source
+│   │   ├── projects.js   The project shelf data
+│   │   └── main.js       Clock, ping, theme, tiles, filtering
+│   └── img/favicon.svg
+├── fonts/                Legacy fonts, kept in place in case other pages link them
+└── <project folders>/    Each tool or game is a self-contained folder with its own index.html
+```
 
-## How it's built
+The project folders (`town-ledger/`, `clip-studio/`, `visual-noval/`, and so on) stay at the repo root on purpose. Their paths are public URLs, and several of them link back to `/`.
 
-Plain HTML/CSS/JS, no dependencies, no bundler. All the live data comes from:
+## Where the data comes from
 
-| What | Where from |
+| Tile | Source |
 |---|---|
-| GitHub activity | GitHub's public events API |
-| Switch presence | [nxapi](https://github.com/samuelthomas2774/nxapi) |
-| 3DS presence | a Worker I run that talks to 3DSRPC |
-| Anime | MyAnimeList's API (via a Worker to dodge CORS) |
-| Music | Last.fm, through a public last-played proxy |
-| Ultra Rumble | a Worker I run that scrapes/caches map rotation data |
+| GitHub | GitHub's public events API |
+| Switch | [nxapi presence](https://github.com/samuelthomas2774/nxapi) |
+| 3DS | A Cloudflare Worker that talks to 3DSRPC |
+| Anime | MyAnimeList API through a Cloudflare Worker (for CORS) |
+| Music | A public Last.fm last-played proxy |
+| Ultra Rumble | A Cloudflare Worker that caches map rotation data |
 | Status | status.cafe |
 
-The two Workers exist purely because those two APIs won't play nice with being called directly from a browser (CORS, auth, etc.) — everything else just gets fetched straight from the client.
+## Run it locally
 
-## Tweaking it for yourself
+The scripts are ES modules, so opening `index.html` straight from disk won't work. Serve the folder instead:
 
-If you want to fork this for your own hub, basically everything you'd want to change lives right at the top of the relevant `fetch()` calls in the `<script>` — swap out usernames/friend codes/worker URLs and you're most of the way there. The birthday used for the level badge is just a plain `Date` near the top of the script too.
+```sh
+python3 -m http.server 8000
+# then open http://localhost:8000
+```
 
-## Heads up
+## Common edits
 
-- The 3DS and Ultra Rumble Workers are mine specifically, so if you're forking this you'll need to stand up your own or point at different data sources for those two
-- No dependencies means no dependency hell, but also means if an upstream API changes its response shape, that one card just breaks quietly instead of loudly — check the console if something's not showing up right
+| I want to… | Edit |
+|---|---|
+| Add or hide a project | `assets/js/projects.js`. Add an object, or set `hidden: true` to keep it off the shelf. |
+| Change a username, friend code, or endpoint | `assets/js/config.js` |
+| Change how a tile reads its data | `assets/js/feeds.js` |
+| Change colors, fonts, or spacing | The `:root` tokens at the top of `assets/css/style.css` |
+
+## Forking it
+
+Swap the values in `config.js`, replace the entries in `projects.js`, and update the avatar and links in `index.html`. The 3DS, Ultra Rumble, and MyAnimeList endpoints are my own Workers, so you'll need to run your own or point those tiles at other sources.
+
+If an upstream API changes its response shape, that one tile falls back quietly. Check the browser console (look for `[hub]` warnings) if something isn't showing up.
